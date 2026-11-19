@@ -68,3 +68,32 @@ CREATE TABLE IF NOT EXISTS vendegut (             -- visszaigazolt foglalás ven
   elkuldve TEXT NOT NULL DEFAULT '{}',            -- JSON: {visszaigazolas, elotte, ma_erkezik, tavozas, ertekeles: időbélyeg}
   letrehozva TEXT NOT NULL DEFAULT (datetime('now'))
 );
+CREATE TABLE IF NOT EXISTS vendeg (               -- vendégkártya: a vendég saját, hozzájárulással megadott elérhetősége (a portálok ezt elrejtik)
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  email TEXT NOT NULL UNIQUE,                     -- kisbetűsítve
+  nev TEXT NOT NULL, nyelv TEXT NOT NULL DEFAULT 'hu' CHECK (nyelv IN ('hu','en')),
+  token TEXT NOT NULL UNIQUE,                     -- a kártya címe: /#/kartya/<token>
+  hirlevel INTEGER NOT NULL DEFAULT 0,            -- 1 = kifejezett, külön hozzájárulás (Grt. 6. §); visszavonható
+  hirlevel_ido TEXT, leiratkozva TEXT,            -- a hozzájárulás és a visszavonás ideje (bizonyításhoz)
+  forras TEXT NOT NULL DEFAULT 'kartya',          -- kartya | foglalas | visszaigazolas
+  letrehozva TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE TABLE IF NOT EXISTS ajanlat_ar (           -- a foglaláskor mutatott ár bontása (a vendég ezt látta); Ernő a Pénzügyekben javíthatja
+  ajanlat_id INTEGER PRIMARY KEY REFERENCES ajanlatkeres(id) ON DELETE CASCADE,
+  szallas INTEGER NOT NULL DEFAULT 0, extra INTEGER NOT NULL DEFAULT 0, kedvezmeny INTEGER NOT NULL DEFAULT 0,
+  visszatero INTEGER NOT NULL DEFAULT 0, osszeg INTEGER NOT NULL DEFAULT 0, ifa INTEGER NOT NULL DEFAULT 0,
+  reszletek TEXT NOT NULL DEFAULT '{}'
+);
+CREATE TABLE IF NOT EXISTS penz (                 -- bevételek és kiadások (Pénzügyek fül): kézi és automatikus sorok
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  datum TEXT NOT NULL CHECK (datum GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'),
+  tipus TEXT NOT NULL CHECK (tipus IN ('bevetel','kiadas')),
+  kategoria TEXT NOT NULL,                        -- bevétel: szallas, extra, egyeb · kiadás: takaritas, etel, extra, jutalek, rezsi, karbantartas, marketing, egyeb
+  osszeg INTEGER NOT NULL CHECK (osszeg >= 0),
+  forras TEXT NOT NULL DEFAULT 'kozvetlen',       -- kozvetlen | booking | szallashu | airbnb | egyeb
+  ajanlat_id INTEGER REFERENCES ajanlatkeres(id) ON DELETE SET NULL,
+  szulo_id INTEGER REFERENCES penz(id) ON DELETE CASCADE,   -- automatikus jutalék-sor a portálos bevételhez
+  megjegyzes TEXT, auto INTEGER NOT NULL DEFAULT 0,
+  letrehozva TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS penz_datum ON penz(datum);

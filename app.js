@@ -9,6 +9,10 @@
   try { nyelv = localStorage.getItem("akv-nyelv") || ((navigator.language || "hu").slice(0, 2) === "hu" ? "hu" : "en"); } catch (e) {}
   var foglalt = {}, szelfik = [], duna = null, ido = null;
   var F = { erk: null, tav: null, felnott: 2, gyerek: 0, ap: null, lepes: 1, ho: null, extrak: {} };
+  var BE = { visszatero_kedvezmeny: "10", kozvetlen_kedvezmeny: "0", elonyok_hu: "", elonyok_en: "" };      // a kezelőből (/api/adat)
+  var KARTYA = (function () { try { return JSON.parse(localStorage.getItem("akv-kartya") || "null"); } catch (x) { return null; } })();
+  function kartyaIr(k) { KARTYA = k; try { if (k) localStorage.setItem("akv-kartya", JSON.stringify(k)); else localStorage.removeItem("akv-kartya"); } catch (x) {} }
+  function visszaKed() { return KARTYA && KARTYA.ottlet > 0 ? Math.max(0, Math.min(50, +BE.visszatero_kedvezmeny || 0)) : 0; }
 
   var S = {
     hu: {
@@ -23,6 +27,7 @@
       blog: "Zebegényi hét", blog_al: "Minden héten új bejegyzés a következő hétvégéről: időjárás, Duna, naplemente, egy ajánlat és a szabad helyek. Hivatalos adatokból, forrással.", blog_ures: "Az első bejegyzés hamarosan elkészül.", blog_alap: "Zebegényi útmutató", korabbi: "Korábbi", ujabb: "Újabb", osszes: "összes cikk", tovabb: "Tovább", hetvege_szabad: "Erre a hétvégére most szabad", hetvege_tele: "Erre a hétvégére már minden apartman foglalt. Nézd meg a következő hetet.", hv_foglal: "Ezt a hétvégét foglalom", forrasok: "Források", elo_most: "élő adat, most frissítve",
       kviz: "Melyik apartman illik hozzátok?", kviz_al: "Két kérdés, és megmutatjuk.", k1: "Fent vagy lent?", k1a: ["Emelet", "nagy ablakok, kilátás az ágyból és a fürdőből is"], k1b: ["Földszint", "saját nagy terasz, üvegfalú fürdő, kedvezőbb ár"], k2: "Mit néznél esténként?", k2fent: [["szonyi", "A vizet és a Visegrádi-hegységet"], ["bereny", "A Dunakanyart a hálószobából"]], k2lent: [["amrita", "A Dunát és a Börzsönyt"], ["karpathy", "A naplementét a teraszról"]], kviz_ered: "Nektek a(z)", ujra: "Újra",
       holnap: "Mit csináljunk holnap?", holnap_ido: "Holnap délben",
+      kartya: "Vendégkártya", kartya_al: "Ha már aludtál nálunk, legközelebb közvetlenül foglalva {p}% kedvezményt kapsz a szállás árából. Alkalmazás nem kell.", kartya_ment: "Kártyát kérek", kartya_hir: "Kérek évente néhány levelet a szabad hétvégékről és az ajánlatokról. Bármikor leiratkozhatok.", kartya_ottlet: "ottlét", kartya_kov: "Következő közvetlen foglalásodnál", kartya_meg: "Az első közvetlen foglalásod után jár a kedvezmény.", kartya_foglal: "Foglalok a kártyámmal", kartya_masik: "Másik eszközön ezzel a kóddal nyithatod meg:", kartya_hir_ok: "Hírlevél: kérted, bármikor leiratkozhatsz a levelek alján.", kartya_torol: "Kártya eltávolítása erről a telefonról", kartya_nincs: "Ez a kártyalink nem érvényes.", kartya_mar: "Erre a címre már van kártyád: a linkjét elküldtük e-mailben.", kozv_cim: "Közvetlenül nálunk", kozv_al: "Ha itt foglalsz, nem portálon át, ezt kapod:", kozv_olcsobb: "{p}%-kal olcsóbb, mint a foglalási portálokon", kozv_vissza: "Visszatérő vendégként −{p}% a szállás árából", kozv_szemely: "Személyes válasz Ernőtől, nem ügyfélszolgálattól", kozv_vk: "Saját vendégkönyv a telefonodon, már érkezés előtt", ar_vissza: "visszatérő vendég", hirlevel_kerem: "Kérek évente néhány levelet a szabad hétvégékről. Bármikor leiratkozhatok.", kesz_vissza: "Visszatérő vendégként felismertünk: a kedvezményt a visszaigazolásban látod.", vk_kartya: "Vendégkártyád", vk_kartya_al: "Mentsd el, és legközelebb közvetlenül foglalva kedvezményt kapsz.",
       vk_cim: "Vendégkönyv", vk_udv: "Üdv", vk_napmulva: "nap múlva érkeztek", vk_ma_erk: "Ma érkeztek – 15 órától vár az apartman", vk_itt: "Jó pihenést! Távozás napján 10 óráig", vk_ma_tav: "Ma utaztok – 10 óráig kérjük elhagyni az apartmant", vk_vege: "Köszönjük, hogy nálunk voltatok!", vk_zarva: "A wifi és a bejutás tudnivalói az érkezés előtt 2 nappal jelennek meg itt.", vk_wifi: "Wifi", vk_halo: "Hálózat", vk_jelszo: "Jelszó", vk_masol: "Másolás", vk_masolva: "Másolva ✓", vk_bejutas: "Bejutás", vk_parkolas: "Parkolás", vk_jakuzzi: "Jakuzzi", vk_naplem: "Ma naplemente", vk_kerek: "Kérnél valamit?", vk_kerek_al: "Egy koppintás, és Ernő megkapja. Válaszolni e-mailben vagy telefonon fog.", vk_tip: [["kesoi", "Késői távozás", "10 óra után, szabad hely függvényében, 5500 Ft/óra"], ["korai", "Korai érkezés", "15 óra előtt, szabad hely függvényében, 5500 Ft/óra"], ["reggeli", "Reggeli", "48 órával előtte kell kérni"], ["masszazs", "Masszázs", "3–4 héttel előtte érdemes kérni"]], vk_uzenet: "Üzenet Ernőnek", vk_kuld: "Küldés", vk_elment: "Elküldve. Ernő hamarosan jelentkezik.", vk_ertekeles: "Értékelés írása", vk_nincs: "Ez a vendégkönyv-link nem érvényes. Nézd meg a visszaigazoló levelet, vagy hívj minket.", vk_hivj: "Hívás",
       ejtol: "Ft/éj-től", fo: "fő", mikor: "Mikor jönnél?", mikor_al: "Szabad napok és ár azonnal", szabad_gomb: "Szabad?", mutasd: "Mutasd",
       felnott: "Felnőtt", gyerek: "Gyerek 3–13", valassz_erk: "Koppints az érkezés napjára.", valassz_tav: "Most a távozás napját.",
@@ -49,6 +54,7 @@
       blog: "Zebegény this week", blog_al: "A new post every week about the coming weekend: weather, the Danube, sunset, one tip and the free apartments. From official data, with sources.", blog_ures: "The first post is on its way.", blog_alap: "Zebegény guide", korabbi: "Earlier", ujabb: "Newer", osszes: "all posts", tovabb: "Read", hetvege_szabad: "Free this weekend right now", hetvege_tele: "Every apartment is booked for this weekend. Try the week after.", hv_foglal: "Book this weekend", forrasok: "Sources", elo_most: "live, updated now",
       kviz: "Which apartment suits you?", kviz_al: "Two questions and we will show you.", k1: "Upstairs or downstairs?", k1a: ["Upstairs", "large windows, the view from the bed and the bathroom"], k1b: ["Ground floor", "your own large terrace, glass-walled bathroom, lower price"], k2: "What would you watch in the evening?", k2fent: [["szonyi", "The river and the Visegrád Hills"], ["bereny", "The Danube Bend from the bedroom"]], k2lent: [["amrita", "The Danube and the Börzsöny hills"], ["karpathy", "The sunset from the terrace"]], kviz_ered: "Your apartment:", ujra: "Start again",
       holnap: "What shall we do tomorrow?", holnap_ido: "Tomorrow at noon",
+      kartya: "Guest card", kartya_al: "Once you have stayed with us, you get {p}% off the room price whenever you book directly. No app needed.", kartya_ment: "Get my card", kartya_hir: "Send me a few emails a year about free weekends and offers. I can unsubscribe at any time.", kartya_ottlet: "stays", kartya_kov: "On your next direct booking", kartya_meg: "The discount applies after your first direct stay.", kartya_foglal: "Book with my card", kartya_masik: "Open it on another device with this code:", kartya_hir_ok: "Newsletter: requested; unsubscribe at the bottom of any email.", kartya_torol: "Remove the card from this phone", kartya_nincs: "This card link is not valid.", kartya_mar: "There is already a card for this address: we have emailed you its link.", kozv_cim: "Book directly with us", kozv_al: "Booking here instead of through a portal gets you:", kozv_olcsobb: "{p}% cheaper than on booking portals", kozv_vissza: "{p}% off the room price as a returning guest", kozv_szemely: "A personal reply from Ernő, not a call centre", kozv_vk: "Your own guest book on your phone, before you arrive", ar_vissza: "returning guest", hirlevel_kerem: "Send me a few emails a year about free weekends. I can unsubscribe at any time.", kesz_vissza: "We recognised you as a returning guest: the discount will be in your confirmation.", vk_kartya: "Your guest card", vk_kartya_al: "Save it, and next time you book directly you get a discount.",
       vk_cim: "Guest book", vk_udv: "Welcome", vk_napmulva: "days until you arrive", vk_ma_erk: "You arrive today – the apartment is ready from 15:00", vk_itt: "Enjoy your stay! On departure day, check-out is by 10:00", vk_ma_tav: "Departure today – please leave the apartment by 10:00", vk_vege: "Thank you for staying with us!", vk_zarva: "Wi-Fi and arrival details appear here 2 days before you arrive.", vk_wifi: "Wi-Fi", vk_halo: "Network", vk_jelszo: "Password", vk_masol: "Copy", vk_masolva: "Copied ✓", vk_bejutas: "Getting in", vk_parkolas: "Parking", vk_jakuzzi: "Hot tub", vk_naplem: "Sunset today", vk_kerek: "Anything you need?", vk_kerek_al: "One tap and Ernő gets it. He will reply by email or phone.", vk_tip: [["kesoi", "Late departure", "after 10:00, subject to availability, 5,500 HUF/hour"], ["korai", "Early arrival", "before 15:00, subject to availability, 5,500 HUF/hour"], ["reggeli", "Breakfast", "ask 48 hours ahead"], ["masszazs", "Massage", "best to ask 3–4 weeks ahead"]], vk_uzenet: "Message to Ernő", vk_kuld: "Send", vk_elment: "Sent. Ernő will be in touch shortly.", vk_ertekeles: "Write a review", vk_nincs: "This guest book link is not valid. Check your confirmation email or call us.", vk_hivj: "Call",
       ejtol: "HUF/night from", fo: "guests", mikor: "When are you coming?", mikor_al: "Free dates and prices instantly", szabad_gomb: "Available?", mutasd: "Show me",
       felnott: "Adults", gyerek: "Children 3–13", valassz_erk: "Tap your arrival day.", valassz_tav: "Now your departure day.",
@@ -160,7 +166,8 @@
       ej++; d.setDate(d.getDate() + 1);
     }
     var gy = gyerek * 15000 * ej, egy = ej === 1 ? 20000 : 0, ked = ej >= 7 ? Math.round(szallas * 0.05) : 0, ifa = 750 * felnott * ej, ex = extraOssz(ej);
-    return { ej: ej, szallas: szallas, gyerek: gy, egy: egy, kedvezmeny: ked, extra: ex, ifa: ifa, ossz: szallas + gy + egy - ked + ex.ossz };
+    var vissza = Math.round(szallas * visszaKed() / 100);          // visszatérő vendég (vendégkártya); a szerver újra ellenőrzi
+    return { ej: ej, szallas: szallas, gyerek: gy, egy: egy, kedvezmeny: ked, vissza: vissza, extra: ex, ifa: ifa, ossz: szallas + gy + egy - ked - vissza + ex.ossz };
   }
   function szabadE(id, erk, tav) {
     var fg = foglalt[id] || {}, d = dt(erk), v = dt(tav);
@@ -206,7 +213,7 @@
   function fooldal() {
     menu("fo");
     var h = '<section class="jelenet"><img src="' + e(kep("Bereny-apartman-nappali.jpg")) + '" alt="" fetchpriority="high"><div class="bel"><h1>Akvarell</h1><p class="al">' + e(sz("alcim")) + '</p><div class="chipek" id="chipek">' + chipek() + "</div></div></section>";
-    h += '<section class="szakasz" id="apartmanok"><h2 class="emel">' + s("negy") + '</h2><p class="lead emel">' + s("negy_al") + '</p><div class="sor" id="sor">' + aps().map(kartya).join("") + '</div><div class="blokk emel" id="kviz">' + kviz() + "</div></section>";
+    h += '<section class="szakasz" id="apartmanok"><h2 class="emel">' + s("negy") + '</h2><p class="lead emel">' + s("negy_al") + '</p><div class="sor" id="sor">' + aps().map(kartya).join("") + '</div><div class="blokk emel" id="kviz">' + kviz() + '</div><div class="blokk emel" id="kozvetlen">' + kozvetlen() + "</div></section>";
     h += '<section class="jelenet kozel"><img class="festek" loading="lazy" src="' + e(kep("Szonyi-apartman-furdo-kilatas.jpg")) + '" alt=""><div class="bel"><h2>' + s("furdo") + '</h2><p class="al">' + s("furdo_al") + "</p></div></section>";
     h += '<section class="jelenet kozel"><img class="festek" loading="lazy" src="' + e(kep("Jakuzzi-5.jpg")) + '" alt=""><div class="bel"><h2>' + s("jakuzzi") + '</h2><p class="al">' + s("jakuzzi_al") + '</p><div class="chipek"><span class="chip">' + IK.nap + s("naplem") + " " + hhmm(NAP.idok(new Date()).nyugszik) + "</span></div></div></section>";
     var V = O.ertekeles;
@@ -320,15 +327,16 @@
         (r.gyerek ? '<div class="sor2"><span>' + s("ar_gyerek") + "</span><span>" + ft(r.gyerek) + "</span></div>" : "") +
         (r.egy ? '<div class="sor2"><span>' + s("ar_egyej") + "</span><span>" + ft(r.egy) + "</span></div>" : "") +
         (r.kedvezmeny ? '<div class="sor2"><span>' + s("ar_ked") + "</span><span>−" + ft(r.kedvezmeny) + "</span></div>" : "") +
+        (r.vissza ? '<div class="sor2 jo"><span>' + s("ar_vissza") + " −" + visszaKed() + "%</span><span>−" + ft(r.vissza) + "</span></div>" : "") +
         r.extra.sorok.map(function (x) { return '<div class="sor2"><span>' + e(x.nev) + "</span><span>" + ft(x.ossz) + "</span></div>"; }).join("") +
         '<div class="sor2 vegso"><span>' + s("ossz") + "</span><span>" + ft(r.ossz) + '</span></div><div class="sor2"><span>' + s("ar_ifa") + "</span><span>" + ft(r.ifa) + '</span></div><div class="jelmag">' + s("tajekoztato") + "</div></div>";
       h += '<details class="extrak"' + (Object.keys(F.extrak).length ? " open" : "") + '><summary>' + s("extrak") + "</summary>" + OLDALAK.extrak.map(function (x) {
         var db = F.extrak[x.id] || 0, arsz = x.ar === null ? "" : x.ar === 0 ? (nyelv === "hu" ? "díjmentes" : "free") : ft(x.ar) + (x.egyseg === "fo_alkalom" ? (nyelv === "hu" ? "/fő" : "/person") : x.egyseg === "fo_nap" ? (nyelv === "hu" ? "/fő/nap" : "/person/day") : x.egyseg === "ora" ? (nyelv === "hu" ? "/óra" : "/hour") : "");
         return '<div class="extra"><div><b>' + e(x.cim[nyelv]) + '</b> <span class="jelmag">' + arsz + '</span><br><span class="jelmag">' + e(x.leiras[nyelv]) + '</span></div><div class="leptet kis"><button type="button" data-extra="' + x.id + '" data-d="-1" aria-label="−">−</button><b>' + db + '</b><button type="button" data-extra="' + x.id + '" data-d="1" aria-label="+">+</button></div></div>';
       }).join("") + "</details>";
-      h += '<form id="ajanlat" novalidate><label class="mezo"><span>' + s("nev") + '</span><input id="f-nev" required autocomplete="name"></label><label class="mezo"><span>' + s("email") + '</span><input id="f-email" type="email" required autocomplete="email" inputmode="email"></label><label class="mezo"><span>' + s("tel") + '</span><input id="f-tel" type="tel" autocomplete="tel"></label><label class="mezo"><span>' + s("uzenet") + '</span><textarea id="f-uz" rows="2"></textarea></label><input id="f-web" name="weboldal" tabindex="-1" autocomplete="off" aria-hidden="true" class="rejt"><p class="jelmag">' + s("adatkez") + '</p><button class="gomb teljes" type="submit">' + s("kuld") + '</button><div id="f-eredm"></div></form><button type="button" class="gomb masod teljes" data-lepes="2" style="margin-top:10px">' + s("vissza") + "</button>";
+      h += '<form id="ajanlat" novalidate><label class="mezo"><span>' + s("nev") + '</span><input id="f-nev" required autocomplete="name"></label><label class="mezo"><span>' + s("email") + '</span><input id="f-email" type="email" required autocomplete="email" inputmode="email"></label><label class="mezo"><span>' + s("tel") + '</span><input id="f-tel" type="tel" autocomplete="tel"></label><label class="mezo"><span>' + s("uzenet") + '</span><textarea id="f-uz" rows="2"></textarea></label><input id="f-web" name="weboldal" tabindex="-1" autocomplete="off" aria-hidden="true" class="rejt"><p class="jelmag">' + s("adatkez") + '</p><label class="pipa-sor"><input type="checkbox" id="f-hir"> <span>' + s("hirlevel_kerem") + '</span></label><button class="gomb teljes" type="submit">' + s("kuld") + '</button><div id="f-eredm"></div></form><button type="button" class="gomb masod teljes" data-lepes="2" style="margin-top:10px">' + s("vissza") + "</button>";
     } else {
-      h = '<div class="kesz-lap"><div class="pipa">✓</div><h2>' + s("kesz") + "</h2><p>" + s("kesz_al") + '</p><p class="jelmag">' + e(ap(F.ap).nev) + " · " + rovid(F.erk) + " – " + rovid(F.tav) + '</p><button type="button" class="gomb" data-lap="zar">OK</button></div>';
+      h = '<div class="kesz-lap"><div class="pipa">✓</div><h2>' + s("kesz") + "</h2><p>" + s("kesz_al") + "</p>" + (F.visszatero ? '<p class="uzenet ok">' + s("kesz_vissza") + "</p>" : "") + '<p><p class="jelmag">' + e(ap(F.ap).nev) + " · " + rovid(F.erk) + " – " + rovid(F.tav) + '</p><button type="button" class="gomb" data-lap="zar">OK</button></div>';
     }
     t.innerHTML = h; savFrissit();
   }
@@ -362,6 +370,9 @@
     var ex = OLDALAK.extrak.filter(function (x) { return F.extrak[x.id]; }).map(function (x) { return x.cim.hu + " ×" + F.extrak[x.id]; }).join(", ");
     var uz = [$("#f-uz").value.trim(), ex ? "Extrák: " + ex : ""].filter(Boolean).join("\n");
     var adat = { apartman_id: F.ap, erkezes: F.erk, tavozas: F.tav, felnott: F.felnott, gyerek: F.gyerek, nev: $("#f-nev").value.trim(), email: $("#f-email").value.trim(), telefon: $("#f-tel").value.trim() || null, uzenet: uz || null, nyelv: nyelv, weboldal: $("#f-web").value };
+    var ar0 = arSzamol(ap(F.ap), F.erk, F.tav, F.felnott, F.gyerek);
+    adat.ar = { szallas: ar0.szallas, gyerek: ar0.gyerek, egy: ar0.egy, kedvezmeny: ar0.kedvezmeny, extra: ar0.extra.ossz, ifa: ar0.ifa };   // a visszatérő kedvezményt a szerver számolja
+    adat.kartya = KARTYA ? KARTYA.token : null; adat.hirlevel = !!($("#f-hir") || {}).checked;
     if (adat.nev.length < 2) { out.className = "uzenet hiba"; out.textContent = s("nev") + "?"; $("#f-nev").focus(); return; }
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(adat.email)) { out.className = "uzenet hiba"; out.textContent = s("email") + "?"; $("#f-email").focus(); return; }
     btn.disabled = true;
@@ -369,7 +380,7 @@
       var r = await api("/api/ajanlat", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(adat) });
       if (r._status === 409) { out.className = "uzenet hiba"; out.textContent = s("utkozik"); btn.disabled = false; frissit(); return; }
       if (!r.ok) throw new Error(r.hiba || "hiba");
-      F.lepes = 4; lapRajz();
+      F.visszatero = !!r.visszatero; F.lepes = 4; lapRajz();
     } catch (x) { out.className = "uzenet hiba"; out.textContent = s("hiba"); btn.disabled = false; }
   }
 
@@ -537,6 +548,57 @@
       '</div><button type="button" class="gomb teljes" data-hetvege="' + e(het) + '" style="margin-top:12px">' + s("hv_foglal") + " →</button>";
   }
 
+  /* ---------- közvetlen foglalás előnyei (a kezelőben szerkeszthető; a %-ok a beállításokból) ---------- */
+  function kozvetlen() {
+    var L = [], kp = +BE.kozvetlen_kedvezmeny || 0, vp = +BE.visszatero_kedvezmeny || 0, sajat = (BE["elonyok_" + nyelv] || BE.elonyok_hu || "").split("\n").map(function (x) { return x.trim(); }).filter(Boolean);
+    if (kp > 0) L.push(s("kozv_olcsobb").replace("{p}", kp));
+    if (vp > 0) L.push(s("kozv_vissza").replace("{p}", vp));
+    L = L.concat(sajat.length ? sajat : [s("kozv_szemely"), s("kozv_vk")]);
+    return "<h3>" + s("kozv_cim") + '</h3><p class="jelmag">' + s("kozv_al") + '</p><ul class="pipalista">' + L.map(function (x) { return "<li>" + e(x) + "</li>"; }).join("") + '</ul><div class="gombok"><button type="button" class="gomb" data-lap="nyit">' + s("mikor") + ' →</button><a class="gomb masod" href="#/kartya">' + s("kartya") + "</a></div>";
+  }
+
+  /* ---------- vendégkártya: #/kartya (igénylés), #/kartya/h/<házkód> (a szoba QR-kódjáról), #/kartya/<token> (megnyitás) ---------- */
+  var KB = { all: "" };
+  function kartyaBetolt(a, b) {
+    if (!a || a === "h") return;
+    if (KARTYA && KARTYA.token === a && KB.all === a) return;
+    KB.all = a;
+    api("/api/kartya/" + encodeURIComponent(a)).then(function (d) { if (d._status === 200) kartyaIr(d); else KB.hiba = a; if (location.hash.indexOf("kartya") > 0) $("#fo").innerHTML = kartyaOldal(a, b); qrRajz(); }).catch(function () {});
+  }
+  function kartyaOldal(a, b) {
+    menu("kartya");
+    var vp = +BE.visszatero_kedvezmeny || 10, h = fejlec(s("kartya"), s("kartya_al").replace("{p}", vp));
+    if (a && a !== "h" && KB.hiba === a) return h + '<p class="uzenet hiba">' + s("kartya_nincs") + "</p></section>";
+    if (KARTYA && (!a || a === "h" || KARTYA.token === a)) {
+      var k = KARTYA, ked = k.ottlet > 0;
+      h += '<div class="vkartya"><small>Akvarell Apartmanház · Zebegény</small><b>' + e(k.nev) + '</b><span>' + k.ottlet + " " + s("kartya_ottlet") + "</span><em>" + (ked ? s("kartya_kov") + ": −" + vp + "%" : s("kartya_meg")) + '</em><div id="kartya-qr" class="qr" aria-hidden="true"></div></div>';
+      h += '<button type="button" class="gomb teljes" data-lap="nyit">' + s("kartya_foglal") + " →</button>";
+      if (k.hirlevel) h += '<p class="jelmag">' + s("kartya_hir_ok") + "</p>";
+      h += '<p class="jelmag">' + s("kartya_masik") + '</p><button type="button" class="link" data-kartyatorol>' + s("kartya_torol") + "</button>";
+      setTimeout(qrRajz, 0);
+      return h + "</section>";
+    }
+    if (a && a !== "h") return h + '<p class="jelmag">…</p></section>';
+    return h + '<form id="kartya-urlap" class="blokk" novalidate data-haz="' + e(a === "h" ? b || "" : "") + '"><label class="mezo"><span>' + s("nev") + '</span><input id="k-nev" autocomplete="name"></label><label class="mezo"><span>' + s("email") + '</span><input id="k-email" type="email" autocomplete="email" inputmode="email"></label><label class="pipa-sor"><input type="checkbox" id="k-hir"> <span>' + s("kartya_hir") + '</span></label><input id="k-web" class="rejt" tabindex="-1" autocomplete="off" aria-hidden="true"><p class="jelmag">' + s("adatkez").replace(/foglaláshoz|booking/, nyelv === "hu" ? "kártyához" : "card") + '</p><button class="gomb teljes" type="submit">' + s("kartya_ment") + '</button><div id="k-eredm"></div></form></section>';
+  }
+  function qrRajz() {
+    var el = $("#kartya-qr"); if (!el || !KARTYA || !window.qrcode) return;
+    var q = qrcode(0, "M"); q.addData(location.origin + "/#/kartya/" + KARTYA.token); q.make(); el.innerHTML = q.createSvgTag({ cellSize: 3, margin: 2, scalable: true });
+  }
+  async function kartyaKer() {
+    var out = $("#k-eredm"), f = $("#kartya-urlap"), adat = { nev: $("#k-nev").value.trim(), email: $("#k-email").value.trim(), hirlevel: $("#k-hir").checked, nyelv: nyelv, haz: f.dataset.haz || null, weboldal: $("#k-web").value };
+    if (adat.nev.length < 2) { out.className = "uzenet hiba"; out.textContent = s("nev") + "?"; $("#k-nev").focus(); return; }
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(adat.email)) { out.className = "uzenet hiba"; out.textContent = s("email") + "?"; $("#k-email").focus(); return; }
+    out.className = "uzenet"; out.textContent = "…";
+    try {
+      var r = await api("/api/kartya", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(adat) });
+      if (r._status === 200 && r.mar_van) { out.className = "uzenet ok"; out.textContent = s("kartya_mar"); return; }
+      if (r._status !== 200 || !r.token) throw new Error();
+      kartyaIr({ token: r.token, nev: r.nev, ottlet: r.ottlet, kedvezmeny: r.kedvezmeny, hirlevel: r.hirlevel }); KB.all = r.token;
+      $("#fo").innerHTML = kartyaOldal(); qrRajz();
+    } catch (x) { out.className = "uzenet hiba"; out.textContent = s("hiba"); }
+  }
+
   /* ---------- vendégkönyv: a visszaigazolt vendég saját oldala (#/vendeg/<token>) ---------- */
   var VK = {};
   function vendegBetolt(tk) {
@@ -562,6 +624,7 @@
     if (ma <= F2.tavozas) h += '<div id="holnap">' + holnap() + "</div>";
     if (ma <= F2.tavozas) h += '<div class="blokk" id="vk-keres"><h3>' + s("vk_kerek") + '</h3><p class="jelmag">' + s("vk_kerek_al") + '</p><div class="valasz">' + s("vk_tip").map(function (x) { return '<button type="button" class="opcio" data-vkkeres="' + x[0] + '"><b>' + e(x[1]) + "</b><small>" + e(x[2]) + "</small></button>"; }).join("") +
       '</div><form id="vk-uzenet" style="margin-top:12px"><label class="mezo"><span>' + s("vk_uzenet") + '</span><textarea id="vk-sz" rows="2"></textarea></label><button class="gomb" type="submit">' + s("vk_kuld") + '</button></form><div id="vk-eredm"></div></div>';
+    if (d.kartya) h += '<a class="blokk kartya-link" href="#/kartya/' + e(d.kartya) + '"><b>' + s("vk_kartya") + '</b><span class="jelmag">' + s("vk_kartya_al") + "</span><span>→</span></a>";
     if (ma >= F2.tavozas && V.ertekeles_link) h += '<a class="gomb teljes" href="' + e(V.ertekeles_link) + '" target="_blank" rel="noopener">' + s("vk_ertekeles") + " ↗</a>";
     var tel = V.tel || (O.kapcsolat || {}).tel;
     h += '<div class="gombok" style="margin-top:16px">' + (tel ? '<a class="gomb" href="tel:' + e(tel.replace(/\s/g, "")) + '">' + s("vk_hivj") + " · " + e(tel) + "</a>" : "") + '<a class="gomb masod" href="https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent("2627 Zebegény, Csalogány utca 4.") + '" target="_blank" rel="noopener">' + s("utvonal") + ' ↗</a><a class="gomb masod" href="#/hazirend">' + s("hazirend") + "</a></div>";
@@ -579,7 +642,7 @@
   }
 
   function menuLap() {
-    var L = [["#/", s("apartmanok")], ["#/elmenyek", s("elmenyek")], ["#/felszereltseg", s("felszereltseg")], ["#/arak", s("arak_m")], ["#/ajandek", s("ajandek")], ["#/zebegeny", s("zebegeny")], ["#/blog", s("blog")], ["#/kihivas", s("kihivas")], ["#/rolunk", s("rolunk")], ["#/hazirend", s("hazirend")], ["#/adatkezeles", s("adatkezeles")]];
+    var L = [["#/", s("apartmanok")], ["#/elmenyek", s("elmenyek")], ["#/felszereltseg", s("felszereltseg")], ["#/arak", s("arak_m")], ["#/ajandek", s("ajandek")], ["#/zebegeny", s("zebegeny")], ["#/blog", s("blog")], ["#/kartya", s("kartya")], ["#/kihivas", s("kihivas")], ["#/rolunk", s("rolunk")], ["#/hazirend", s("hazirend")], ["#/adatkezeles", s("adatkezeles")]];
     $("#menulap .tartalom").innerHTML = '<nav class="menu-lista">' + L.map(function (x) { return '<a href="' + x[0] + '" data-menuzar>' + e(x[1]) + "<span>→</span></a>"; }).join("") + '<a href="' + e((O.kapcsolat || {}).virtualis) + '" target="_blank" rel="noopener">' + s("virtualis") + "<span>↗</span></a></nav>";
     $("#menulap h2").textContent = s("menu");
   }
@@ -616,6 +679,7 @@
     else if (r[0] === "arak") fo.innerHTML = arakOldal();
     else if (r[0] === "ajandek") fo.innerHTML = ajandekOldal();
     else if (r[0] === "rolunk") fo.innerHTML = rolunkOldal();
+    else if (r[0] === "kartya") { fo.innerHTML = kartyaOldal(r[1], r[2]); kartyaBetolt(r[1], r[2]); }
     else if (r[0] === "vendeg") { fo.innerHTML = vendegOldal(r[1]); vendegBetolt(r[1]); }
     else if (r[0] === "blog") { fo.innerHTML = r[1] ? blogCikk(r[1]) : blogOldal(); blogBetolt(); }
     else if (r[0] === "hazirend") fo.innerHTML = hosszuOldal("hazirend", s("hazirend"));
@@ -650,6 +714,7 @@
       var sc = $("#lap-tartalom").scrollTop; lapRajz(); $("#lap-tartalom").scrollTop = sc;
       Object.keys(mentes).forEach(function (id) { document.getElementById(id).value = mentes[id]; }); return;
     }
+    if (ev.target.closest("[data-kartyatorol]")) { kartyaIr(null); rajzol(); return; }
     var ms = ev.target.closest("[data-masol]");
     if (ms) { var mt = ms.dataset.masol; (navigator.clipboard ? navigator.clipboard.writeText(mt) : Promise.reject()).then(function () { ms.textContent = s("vk_masolva"); }).catch(function () {}); return; }
     var vt = ev.target.closest("[data-vkkeres]");
@@ -666,7 +731,7 @@
   $("#lap").addEventListener("click", function (ev) { if (ev.target === this) this.close(); });
   $("#menulap").addEventListener("click", function (ev) { if (ev.target === this) this.close(); });
   document.addEventListener("change", function (ev) { if (ev.target.dataset && ev.target.dataset.allomas && ev.target.files && ev.target.files[0]) szelfiKuld(ev.target); });
-  document.addEventListener("submit", function (ev) { if (ev.target.id === "ajanlat") ajanlatKuld(ev); if (ev.target.id === "uzenet") uzenetKuld(ev); if (ev.target.id === "vk-uzenet") { ev.preventDefault(); vendegKuld("egyeb", $("#vk-sz").value); } });
+  document.addEventListener("submit", function (ev) { if (ev.target.id === "ajanlat") ajanlatKuld(ev); if (ev.target.id === "uzenet") uzenetKuld(ev); if (ev.target.id === "kartya-urlap") { ev.preventDefault(); kartyaKer(); } if (ev.target.id === "vk-uzenet") { ev.preventDefault(); vendegKuld("egyeb", $("#vk-sz").value); } });
   window.addEventListener("hashchange", function () {
     ["#lap", "#menulap"].forEach(function (q) { var d = $(q); if (d.open) d.close(); });     // lapváltáskor a felcsúszó lapok bezárulnak
     atmenet(function () { rajzol(); window.scrollTo(0, 0); });
@@ -684,6 +749,7 @@
     try {
       var d = await api("/api/adat");
       if (d._status === 200) {
+        if (d.beallitas) BE = d.beallitas;
         if (d.apartmanok && d.apartmanok.length) T.apartmanok = d.apartmanok;
         (d.tartalom || []).forEach(function (x) { T.szoveg[x.kulcs] = { hu: x.hu, en: x.en }; });
         foglalt = {}; (d.foglalt || []).forEach(function (x) { (foglalt[x.apartman_id] = foglalt[x.apartman_id] || {})[x.nap] = true; });
@@ -697,6 +763,7 @@
     var c = $("#chipek"); if (c) c.innerHTML = chipek();
     var el = $("#elo"); if (el) el.innerHTML = elo();
     var ho = $("#holnap"); if (ho) ho.innerHTML = holnap();
+    var kz = $("#kozvetlen"); if (kz) kz.innerHTML = kozvetlen();
     var bt = $("#blogteaser"); if (bt) bt.innerHTML = blogTeaser();
     var bs = $("#hetvege"); if (bs) bs.innerHTML = hetvegeSzabad(bs.dataset.het);
     szelfikRajz(); if ($("#lap").open && F.lepes < 3) lapRajz();

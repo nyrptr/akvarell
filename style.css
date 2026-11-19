@@ -259,3 +259,19 @@ body.vendegmod{padding-bottom:24px}
 .lapozo a{display:flex;flex-direction:column;gap:2px;padding:12px 14px;min-height:64px;border:1px solid var(--vonal);border-radius:16px;background:var(--lap);text-decoration:none;color:var(--tus);font-family:Literata,Georgia,serif;font-size:16px;line-height:1.25}
 .lapozo a small{font:600 13px "Source Sans 3",system-ui,sans-serif;color:var(--duna)}
 .lapozo a.jobb{text-align:right;grid-column:2}
+/* ---------- közvetlen foglalás, vendégkártya ---------- */
+.osszeg .sor2.jo{color:var(--zold);font-weight:600}
+.pipa-sor{display:flex;gap:10px;align-items:flex-start;font-size:15px;color:var(--halk);margin:4px 0 14px;cursor:pointer}
+.pipa-sor input{width:22px;height:22px;flex:none;margin:2px 0 0;accent-color:var(--duna)}
+.pipalista{list-style:none;padding:0;margin:8px 0 14px}
+.pipalista li{position:relative;padding:6px 0 6px 30px}
+.pipalista li::before{content:"✓";position:absolute;left:4px;top:5px;color:var(--zold);font-weight:700}
+.vkartya{position:relative;display:flex;flex-direction:column;gap:2px;padding:20px 20px 20px 20px;min-height:170px;margin:14px 0 18px;border-radius:22px;color:#fff;background:var(--duna);background:linear-gradient(135deg,var(--duna),#1d2a35);box-shadow:var(--arnyek);overflow:hidden}
+.vkartya small{opacity:.85;font-size:13px}
+.vkartya b{font-family:Literata,Georgia,serif;font-size:26px;margin-top:10px}
+.vkartya span{opacity:.85}
+.vkartya em{font-style:normal;font-weight:600;margin-top:auto;padding-top:14px;max-width:62%}
+.vkartya .qr{position:absolute;right:16px;bottom:16px;width:86px;height:86px;background:#fff;border-radius:10px;padding:4px}
+.vkartya .qr svg{width:100%;height:100%;display:block}
+.kartya-link{display:flex;flex-direction:column;gap:4px;text-decoration:none;color:var(--tus);position:relative;padding-right:40px}
+.kartya-link>span:last-child{position:absolute;right:18px;top:50%;transform:translateY(-50%);color:var(--duna)}

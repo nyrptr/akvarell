@@ -19,12 +19,12 @@
   }
   function kilep() { location.href = "/cdn-cgi/access/logout"; }
 
-  var FULEK = [["keres", "Foglalások"], ["uzenet", "Üzenetek"], ["naptar", "Foglalt napok"], ["osszekotes", "Booking / Szállás.hu"], ["blog", "Zebegényi hét"], ["vk", "Vendégkönyv"], ["ar", "Árak, szövegek"], ["tartalom", "Főoldal"], ["kihivas", "Kihívás-képek"]];
+  var FULEK = [["keres", "Foglalások"], ["uzenet", "Üzenetek"], ["naptar", "Foglalt napok"], ["osszekotes", "Booking / Szállás.hu"], ["blog", "Zebegényi hét"], ["vk", "Vendégkönyv"], ["penz", "Pénzügyek"], ["vendegek", "Vendégek"], ["ar", "Árak, szövegek"], ["tartalom", "Főoldal"], ["kihivas", "Kihívás-képek"]];
   function vaz() {
     fo.innerHTML = '<nav class="ful">' + FULEK.map(function (f) { return '<button data-ful="' + f[0] + '"' + (f[0] === ful ? ' class="most"' : "") + ">" + f[1] + "</button>"; }).join("") + '</nav><div id="tart"></div><p><a class="gomb masod" href="/admin/api/mentes">Teljes mentés letöltése</a> <button class="gomb masod" id="ki">Kilépés</button></p>';
     fo.querySelectorAll("[data-ful]").forEach(function (b) { b.onclick = function () { ful = b.dataset.ful; vaz(); }; });
     document.getElementById("ki").onclick = kilep;
-    ({ keres: keresek, uzenet: uzenetek, naptar: naptar, osszekotes: osszekotes, blog: blog, vk: vendegkonyv, ar: arak, tartalom: tartalom, kihivas: kihivas })[ful]();
+    ({ keres: keresek, uzenet: uzenetek, naptar: naptar, osszekotes: osszekotes, blog: blog, vk: vendegkonyv, penz: penzugyek, vendegek: vendegek, ar: arak, tartalom: tartalom, kihivas: kihivas })[ful]();
   }
   var CIMKE = { uj: "új", visszaigazolva: "visszaigazolva", elutasitva: "elutasítva" };
   function t() { return document.getElementById("tart"); }
@@ -99,6 +99,80 @@
     };
   }
 
+  function ft(n) { return Math.round(n || 0).toLocaleString("hu-HU").replace(/[  ]/g, " ") + " Ft"; }
+
+  /* Pénzügyek: a visszaigazolt közvetlen foglalások magától bekerülnek; a portálos foglalást és a kiadásokat itt rögzíted. */
+  var KAT = { bevetel: { szallas: "Szállás", extra: "Extrák (reggeli, masszázs…)", egyeb: "Egyéb bevétel" }, kiadas: { takaritas: "Takarítás", etel: "Étel, reggeli alapanyag", extra: "Extrák költsége", jutalek: "Portáljutalék", rezsi: "Rezsi", karbantartas: "Karbantartás", marketing: "Hirdetés", egyeb: "Egyéb kiadás" } };
+  var FORR = { kozvetlen: "Közvetlen (weboldal, telefon)", booking: "Booking.com", szallashu: "Szállás.hu", airbnb: "Airbnb", egyeb: "Egyéb" };
+  var pz = { ev: String(new Date().getFullYear()), ho: String(new Date().getMonth() + 1).padStart(2, "0") };
+  async function penzugyek() {
+    var r = await api("penz?ev=" + pz.ev);
+    if (!r.ok) { t().innerHTML = '<p class="uzenet hiba">Nem sikerült betölteni.</p>'; return; }
+    var S = r.data.sorok, jp = +r.data.beall.portal_jutalek || 15, honap = S.filter(function (x) { return pz.ho === "ev" || x.datum.slice(5, 7) === pz.ho; });
+    function osz(L, f) { return L.filter(f).reduce(function (a, x) { return a + x.osszeg; }, 0); }
+    var bev = osz(honap, function (x) { return x.tipus === "bevetel"; }), kia = osz(honap, function (x) { return x.tipus === "kiadas"; }),
+      kozv = osz(honap, function (x) { return x.tipus === "bevetel" && x.forras === "kozvetlen"; }), jut = osz(honap, function (x) { return x.kategoria === "jutalek"; }),
+      fogl = honap.filter(function (x) { return x.tipus === "bevetel" && x.forras === "kozvetlen" && x.kategoria === "szallas"; }).length;
+    var HO = ["jan.", "febr.", "márc.", "ápr.", "máj.", "jún.", "júl.", "aug.", "szept.", "okt.", "nov.", "dec."];
+    var h = '<div class="blokk"><div class="gombok"><button data-ev="-1">‹ ' + (+pz.ev - 1) + "</button><b style=\"align-self:center\">" + pz.ev + '</b><button data-ev="1">' + (+pz.ev + 1) + ' ›</button></div><div class="honapok">' + HO.map(function (n, i) { var k = String(i + 1).padStart(2, "0"); return '<button data-ho="' + k + '"' + (pz.ho === k ? ' class="most"' : "") + ">" + n + "</button>"; }).join("") + '<button data-ho="ev"' + (pz.ho === "ev" ? ' class="most"' : "") + ">Egész év</button></div>";
+    h += '<div class="merok"><div><small>Bevétel</small><b>' + ft(bev) + '</b></div><div><small>Kiadás</small><b>' + ft(kia) + '</b></div><div class="' + (bev - kia >= 0 ? "jo" : "rossz") + '"><small>Eredmény</small><b>' + ft(bev - kia) + '</b></div><div class="jo"><small>Megspórolt jutalék (' + jp + "%, " + fogl + ' közvetlen foglalás)</small><b>' + ft(kozv * jp / 100) + '</b></div><div><small>Kifizetett portáljutalék</small><b>' + ft(jut) + "</b></div></div>";
+    function savok(tipus) {
+      var o = {}; honap.filter(function (x) { return x.tipus === tipus; }).forEach(function (x) { o[x.kategoria] = (o[x.kategoria] || 0) + x.osszeg; });
+      var k = Object.keys(o).sort(function (a, b) { return o[b] - o[a]; }), max = Math.max.apply(null, k.map(function (x) { return o[x]; }).concat([1]));
+      return k.length ? k.map(function (x) { return '<div class="sav-sor"><span>' + e(KAT[tipus][x] || x) + '</span><i style="width:' + Math.max(3, o[x] / max * 100) + '%" class="' + tipus + '"></i><b>' + ft(o[x]) + "</b></div>"; }).join("") : '<p class="jelmag">Nincs még ' + (tipus === "bevetel" ? "bevétel" : "kiadás") + ".</p>";
+    }
+    h += "<h3>Bevételek</h3>" + savok("bevetel") + "<h3>Kiadások</h3>" + savok("kiadas") + "</div>";
+    var ma = new Date().toISOString().slice(0, 10);
+    h += '<div class="blokk"><h2>Új tétel</h2><div class="gombok" id="pz-tip"><button data-tip="bevetel" class="most">Bevétel</button><button data-tip="kiadas">Kiadás</button></div><label class="mezo"><span>Kategória</span><select id="pz-kat"></select></label><label class="mezo"><span>Összeg (Ft)</span><input id="pz-osszeg" type="number" inputmode="numeric" step="100" min="0"></label><label class="mezo"><span>Dátum</span><input id="pz-datum" type="date" value="' + ma + '"></label><label class="mezo" id="pz-forras-m"><span>Honnan jött</span><select id="pz-forras">' + Object.keys(FORR).map(function (k) { return '<option value="' + k + '">' + FORR[k] + "</option>"; }).join("") + '</select></label><label class="mezo"><span>Megjegyzés</span><input id="pz-mj" placeholder="pl. Kárpáthy, 2 éj, Booking"></label><p class="jelmag" id="pz-sugo">Portálos bevételnél a jutalékot (' + jp + '%) a rendszer magától kiadásként rögzíti. A visszaigazolt közvetlen foglalások maguktól bekerülnek.</p><button class="gomb" id="pz-ment">Rögzítés</button></div>';
+    h += '<div class="blokk"><h2>Tételek</h2>' + (honap.length ? honap.map(function (x) { return '<div class="sor penzsor"><span><b>' + (x.tipus === "bevetel" ? "+" : "−") + ft(x.osszeg) + "</b> " + e((KAT[x.tipus] || {})[x.kategoria] || x.kategoria) + '<br><span class="jelmag">' + x.datum + " · " + e(FORR[x.forras] || x.forras) + (x.auto ? " · automatikus" : "") + (x.megjegyzes ? " · " + e(x.megjegyzes) : "") + '</span></span><button data-torol="' + x.id + '" aria-label="Törlés">×</button></div>'; }).join("") : '<p class="jelmag">Ebben az időszakban nincs tétel.</p>') + "</div>";
+    t().innerHTML = h;
+    var mh = t().querySelector(".honapok .most"); if (mh) mh.parentNode.scrollLeft = mh.offsetLeft - 40;      // a kiválasztott hónap látsszon
+    var tip = "bevetel";
+    function katok() { $("#pz-kat").innerHTML = Object.keys(KAT[tip]).map(function (k) { return '<option value="' + k + '">' + KAT[tip][k] + "</option>"; }).join(""); }
+    katok();
+    t().querySelectorAll("[data-tip]").forEach(function (b) { b.onclick = function () { tip = b.dataset.tip; t().querySelectorAll("[data-tip]").forEach(function (y) { y.classList.toggle("most", y === b); }); katok(); }; });
+    t().querySelectorAll("[data-ev]").forEach(function (b) { b.onclick = function () { pz.ev = String(+pz.ev + +b.dataset.ev); penzugyek(); }; });
+    t().querySelectorAll("[data-ho]").forEach(function (b) { b.onclick = function () { pz.ho = b.dataset.ho; penzugyek(); }; });
+    t().querySelectorAll("[data-torol]").forEach(function (b) { b.onclick = async function () { if (!confirm("Törlöd ezt a tételt?")) return; var k = await api("penz", { torol: +b.dataset.torol }); if (k.ok) penzugyek(); }; });
+    $("#pz-ment").onclick = async function () {
+      var d = { tipus: tip, kategoria: $("#pz-kat").value, osszeg: +$("#pz-osszeg").value, datum: $("#pz-datum").value, forras: $("#pz-forras").value, megjegyzes: $("#pz-mj").value };
+      var k = await api("penz", d); if (k.ok) { pz.ev = d.datum.slice(0, 4); pz.ho = d.datum.slice(5, 7); penzugyek(); } else mentve(this.parentNode, false, k.data.hiba || "Nem sikerült");
+    };
+  }
+  function $(q) { return document.querySelector(q); }
+
+  /* Vendégek: vendégkártyák, hírlevél, beállítások, QR-kártya a szobába */
+  async function vendegek() {
+    var r = await api("vendegek");
+    if (!r.ok) { t().innerHTML = '<p class="uzenet hiba">Nem sikerült betölteni.</p>'; return; }
+    var V = r.data.vendegek, B = r.data.beall, hir = V.filter(function (x) { return x.hirlevel; }).length, vissza = V.filter(function (x) { return x.ottlet > 1; }).length;
+    var qrUrl = location.origin + "/#/kartya/h/" + r.data.haz_kod;
+    var h = '<div class="blokk"><div class="merok"><div><small>Vendégkártya</small><b>' + V.length + '</b></div><div><small>Hírlevélre feliratkozott</small><b>' + hir + '</b></div><div class="jo"><small>Visszatérő (2+ közvetlen ottlét)</small><b>' + vissza + "</b></div></div></div>";
+    h += '<div class="blokk"><h2>QR-kártya a szobákba</h2><p class="jelmag">Nyomtasd ki, és tedd ki mind a négy apartmanba. Aki erről kér kártyát, annak a portálos ottléte is számít: legközelebb közvetlenül foglalva kedvezményt kap.</p><div id="qr-elo" class="qr-elo"></div><div class="gombok"><button class="gomb" id="qr-nyomtat">Nyomtatható kártya</button><button id="qr-uj">Új kód (ha a régi kikerült)</button></div></div>';
+    var M = [["visszatero_kedvezmeny", "Visszatérő vendég kedvezménye (%)", "n"], ["kozvetlen_kedvezmeny", "Közvetlen foglalás ennyivel olcsóbb, mint a portálokon (%) – csak akkor írd be, ha a portálokon valóban ennyivel drágább az ár", "n"], ["portal_jutalek", "Portáljutalék (%) – a megspórolt jutalék számításához", "n"], ["takaritas_dij", "Takarítás díja foglalásonként (Ft) – visszaigazoláskor magától kiadás lesz", "n"], ["elonyok_hu", "Közvetlen foglalás előnyei, soronként (magyarul) – üresen az alapszöveg", "a"], ["elonyok_en", "Ugyanez angolul", "a"]];
+    h += '<div class="blokk"><h2>Beállítások</h2>' + M.map(function (m) { return '<label class="mezo"><span>' + m[1] + "</span>" + (m[2] === "a" ? '<textarea rows="3" data-b="' + m[0] + '">' + e(B[m[0]]) + "</textarea>" : '<input data-b="' + m[0] + '" type="number" inputmode="numeric" value="' + e(B[m[0]]) + '">') + "</label>"; }).join("") + '<button class="gomb" id="b-ment">Mentés</button></div>';
+    h += '<div class="blokk"><h2>Hírlevél</h2><p class="jelmag">Csak azok kapják, akik külön kérték. Minden levél alján leiratkozó link van. Előbb küldj próbát magadnak.</p><label class="mezo"><span>Tárgy</span><input id="h-targy" placeholder="Szabad még a szilveszter"></label><label class="mezo"><span>Szöveg magyarul</span><textarea id="h-hu" rows="5"></textarea></label><label class="mezo"><span>Szöveg angolul (üresen a magyar megy)</span><textarea id="h-en" rows="4"></textarea></label><div class="gombok"><button id="h-proba">Próba nekem</button><button class="gomb" id="h-kuld">Küldés ' + hir + ' címzettnek</button></div><p><a class="gomb masod" href="/admin/api/vendegek.csv">Feliratkozók letöltése (CSV)</a></p></div>';
+    h += '<div class="blokk"><h2>Vendégek</h2>' + (V.length ? V.map(function (x) { return '<div class="sor"><b>' + e(x.nev) + '</b> <span class="jelmag">' + e(x.email) + "</span><br>" + x.ottlet + " közvetlen ottlét" + (x.forras === "haz" ? " · a házban kérte" : "") + " · hírlevél: " + (x.hirlevel ? "igen (" + e((x.hirlevel_ido || "").slice(0, 10)) + ")" : x.leiratkozva ? "leiratkozott" : "nem") + "</div>"; }).join("") : '<p class="jelmag">Még nincs vendégkártya.</p>') + "</div>";
+    t().innerHTML = h;
+    function qr() { var q = qrcode(0, "M"); q.addData(qrUrl); q.make(); return q.createSvgTag({ cellSize: 4, margin: 2, scalable: true }); }
+    $("#qr-elo").innerHTML = qr();
+    $("#qr-nyomtat").onclick = function () {
+      var w = window.open("", "_blank"); if (!w) return;
+      w.document.write('<!doctype html><meta charset="utf-8"><title>Akvarell vendégkártya QR</title><body style="font:16px Georgia,serif;margin:0"><div style="width:148mm;min-height:105mm;margin:10mm auto;border:1px solid #ccc;border-radius:8mm;padding:10mm;display:flex;gap:8mm;align-items:center;box-sizing:border-box"><div style="width:48mm;flex:none">' + qr() + '</div><div><div style="color:#2c6a89;font-weight:700">Akvarell Apartmanház · Zebegény</div><h1 style="font-size:22pt;margin:6px 0">Jöjj vissza hozzánk!</h1><p>Olvasd be a kódot, és kérj vendégkártyát. Legközelebb közvetlenül foglalva <b>' + (+B.visszatero_kedvezmeny || 10) + '% kedvezményt</b> kapsz a szállás árából.</p><p style="color:#5b6670;font-size:12pt">Scan the code for your guest card: ' + (+B.visszatero_kedvezmeny || 10) + '% off when you book directly next time.</p></div></div><script>setTimeout(function(){print()},300)<\/script></body>');
+      w.document.close();
+    };
+    $("#qr-uj").onclick = async function () { if (!confirm("Új QR-kód: a régi kártyák a szobákban nem működnek tovább. Folytatod?")) return; var k = await api("haz_kod", {}); if (k.ok) vendegek(); };
+    $("#b-ment").onclick = async function () { var d = {}; t().querySelectorAll("[data-b]").forEach(function (x) { d[x.dataset.b] = x.value.trim(); }); var k = await api("beallitasok", d); mentve(this.parentNode, k.ok); };
+    async function hk(proba, gomb) {
+      var d = { targy: $("#h-targy").value, hu: $("#h-hu").value, en: $("#h-en").value, proba: proba };
+      if (!proba && !confirm("Elküldöd " + hir + " címzettnek?")) return;
+      var k = await api("hirlevel", d);
+      mentve(gomb.parentNode, k.ok, k.ok ? (k.data.kihagyva ? "Nincs beállítva a levelező (Brevo)" : "Elküldve: " + k.data.elkuldve + " / " + k.data.cimzett) : (k.data.hiba || "Nem sikerült"));
+    }
+    $("#h-proba").onclick = function () { hk(true, this); };
+    $("#h-kuld").onclick = function () { hk(false, this); };
+  }
+
   async function blog() {
     var r = await api("blog");
     if (!r.ok) { t().innerHTML = '<p class="uzenet hiba">Nem sikerült betölteni.</p>'; return; }
@@ -122,7 +196,7 @@
     if (!r.data.length) { t().innerHTML = '<div class="blokk"><p>Még nincs ajánlatkérés.</p></div>'; return; }
     t().innerHTML = '<div class="blokk">' + r.data.map(function (x) {
       var targy = encodeURIComponent((x.nyelv === "en" ? "Akvarell – your stay " : "Akvarell – foglalás ") + x.erkezes + " – " + x.tavozas);
-      return '<div class="sor" data-id="' + x.id + '"><b>' + e(x.nev) + '</b> <span class="allapot ' + x.allapot + '">' + CIMKE[x.allapot] + "</span><br>" + e(x.apartman_id) + " · " + x.erkezes + " → " + x.tavozas + " · " + x.felnott + " felnőtt" + (x.gyerek ? ", " + x.gyerek + " gyerek" : "") + " · " + x.nyelv.toUpperCase() +
+      return '<div class="sor" data-id="' + x.id + '"><b>' + e(x.nev) + '</b> <span class="allapot ' + x.allapot + '">' + CIMKE[x.allapot] + "</span><br>" + e(x.apartman_id) + " · " + x.erkezes + " → " + x.tavozas + " · " + x.felnott + " felnőtt" + (x.gyerek ? ", " + x.gyerek + " gyerek" : "") + " · " + x.nyelv.toUpperCase() + (x.ar_osszeg ? " · <b>" + ft(x.ar_osszeg) + "</b>" : "") + (x.visszatero ? ' <span class="allapot visszaigazolva">visszatérő −' + ft(x.ar_kedvezmeny || 0) + "</span>" : "") +
         '<br><a href="mailto:' + e(x.email) + "?subject=" + targy + '">' + e(x.email) + "</a>" + (x.telefon ? ' · <a href="tel:' + e(x.telefon) + '">' + e(x.telefon) + "</a>" : "") + (x.uzenet ? '<br><span class="jelmag">' + e(x.uzenet) + "</span>" : "") +
         vkSor(x) + '<div class="gombok"><button data-a="visszaigazolva">Visszaigazolva + napok foglaltra</button><button data-a="elutasitva">Elutasítva</button></div></div>';
     }).join("") + "</div>";
