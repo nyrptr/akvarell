@@ -1,7 +1,9 @@
 // GET /api/adat – minden, ami a vendégoldalhoz kell, egy kérésben.
 import { J, ma } from '../_kozos/k.js';
-export async function onRequestGet({ env }) {
+import { szinkron } from '../_kozos/naptar.js';
+export async function onRequestGet({ env, waitUntil }) {
   const db = env.DB;
+  waitUntil(szinkron(env).catch(() => { }));                            // külső naptárak: legfeljebb félóránként, a válaszra nem vár
   const [a, t, f, k] = await db.batch([
     db.prepare('SELECT * FROM apartman ORDER BY sorrend'),
     db.prepare('SELECT kulcs, hu, en FROM tartalom'),

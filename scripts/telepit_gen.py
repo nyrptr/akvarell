@@ -10,11 +10,12 @@ open('functions/_kozos/telepit.js','w').write(
 f"const SEMA = {json.dumps(sema, ensure_ascii=False)};\n"
 f"const SEED = {json.dumps(seed, ensure_ascii=False)};\n"
 "let kesz = false;\n"
+"// A séma minden indításkor lefut (CREATE ... IF NOT EXISTS → új táblák a meglévő adatbázisban is), a kezdő tartalom csak üres adatbázisba.\n"
 "export async function telepit(db) {\n"
 "  if (kesz) return;\n"
-"  try { await db.prepare('SELECT 1 FROM apartman LIMIT 1').first(); kesz = true; return; } catch (e) { }\n"
 "  await db.batch(SEMA.map(s => db.prepare(s)));\n"
-"  await db.batch(SEED.map(s => db.prepare(s)));\n"
+"  const n = await db.prepare('SELECT COUNT(*) n FROM apartman').first();\n"
+"  if (!n.n) await db.batch(SEED.map(s => db.prepare(s)));\n"
 "  kesz = true;\n"
 "}\n")
 print(len(sema),len(seed))
