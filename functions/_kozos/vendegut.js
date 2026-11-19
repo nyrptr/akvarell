@@ -21,14 +21,14 @@ async function beall(db) {
   r.forEach(x => { o[x.kulcs.slice(3)] = x.ertek; }); return o;
 }
 
-function szoveg(tipus, a, link, en, V) {
+function szoveg(tipus, a, link, en, V, kartya) {
   const nap = (k) => new Date(k + 'T12:00:00Z').toLocaleDateString(en ? 'en-GB' : 'hu-HU', { month: 'long', day: 'numeric', weekday: 'long', timeZone: 'UTC' });
   const gomb = `<p style="margin:22px 0"><a href="${esc(link)}" style="background:#1d2a35;color:#fff;padding:13px 22px;border-radius:999px;text-decoration:none;font:600 16px system-ui,sans-serif">${en ? 'Open your guest book' : 'A vendégkönyved'}</a></p>`;
   const tel = V.tel ? `<p>${en ? 'Questions? Call us:' : 'Kérdés esetén hívj:'} <a href="tel:${esc(V.tel.replace(/\s/g, ''))}">${esc(V.tel)}</a></p>` : '';
   const sor = `<p><b>${esc(a.apnev)}</b> · ${nap(a.erkezes)} → ${nap(a.tavozas)}</p>`;
   if (tipus === 'visszaigazolas') return {
     subject: en ? 'Your stay is confirmed – Akvarell, Zebegény' : 'Visszaigazoltuk a foglalásodat – Akvarell, Zebegény',
-    html: keret(en ? `See you soon, ${a.nev}!` : `Hamarosan találkozunk, ${a.nev}!`, sor + `<p>${en ? 'Everything for your stay is in your guest book: arrival, Wi-Fi, the hot tub, tips for each day. It works on your phone, no app needed.' : 'Minden, ami az ottléthez kell, a vendégkönyvedben van: érkezés, wifi, jakuzzi, napi ajánló. Telefonon működik, alkalmazás nélkül.'}</p>` + gomb + tel) };
+    html: keret(en ? `See you soon, ${a.nev}!` : `Hamarosan találkozunk, ${a.nev}!`, sor + `<p>${en ? 'Everything for your stay is in your guest book: arrival, Wi-Fi, the hot tub, tips for each day. It works on your phone, no app needed.' : 'Minden, ami az ottléthez kell, a vendégkönyvedben van: érkezés, wifi, jakuzzi, napi ajánló. Telefonon működik, alkalmazás nélkül.'}</p>` + gomb + (kartya ? `<p>${en ? 'Your guest card is ready too: next time you book directly, the returning-guest discount is applied automatically.' : 'A vendégkártyád is elkészült: legközelebb közvetlenül foglalva a visszatérő kedvezmény magától jár.'} <a href="${esc(kartya)}">${en ? 'Open your card' : 'A kártyád'}</a></p>` : '') + tel) };
   if (tipus === 'elotte') return {
     subject: en ? 'Three days to go – arriving in Zebegény' : 'Még három nap – érkezés Zebegénybe',
     html: keret(en ? 'Three days to go' : 'Még három nap', sor + `<p>${en ? 'Check-in is from 15:00. If you would like to arrive earlier or need breakfast, tell us 48 hours ahead.' : 'Az apartman 15 órától foglalható el. Ha korábban érkeznél, vagy reggelit kérsz, 48 órával előtte jelezd.'}</p>` + gomb + tel) };
@@ -48,7 +48,8 @@ async function jelol(db, id, tipus) {
 
 export async function kuldVendegnek(env, a, tipus, origin) {
   const db = env.DB, V = await beall(db), t = await token(db, a.id), link = `${origin}/#/vendeg/${t}`;
-  const s = szoveg(tipus, a, link, a.nyelv === 'en', V);
+  const g = await db.prepare('SELECT token FROM vendeg WHERE email = ?').bind(String(a.email).toLowerCase()).first();
+  const s = szoveg(tipus, a, link, a.nyelv === 'en', V, g ? `${origin}/#/kartya/${g.token}` : null);
   const r = await kuld(env, { to: a.email, replyTo: env.ERTESITES_EMAIL, subject: s.subject, html: s.html });
   if (r.ok) await jelol(db, a.id, tipus);
   return r;

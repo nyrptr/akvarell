@@ -60,3 +60,12 @@
 ## 2026-11-19 – Claude (blog-cikkek)
 - **6 állandó cikk** (bemutató-dátumokkal, heti ritmusban visszafelé: nov. 14. – okt. 10.; lapozás a cikkek alján: Korábbi / Újabb) (`blog_alap.js`, HU/EN): Szőnyi és a festők, egyórás séta (templom, Héthíd, Napraforgó-házak), téli hétvége, öt kilátó, hajóval Esztergomba/Visegrádra, apartmanválasztó. Tények Ernő oldalairól (látnivalók, kilátók, hajó, apartmanleírások), saját szavakkal; a hajómenetrendet nem adjuk meg, a Mahartra utalunk.
 - A blog a heti gépi bejegyzéseket és az állandó cikkeket együtt mutatja; az állandó cikk alján a következő hétvége szabad apartmanjai élőben.
+
+## 2026-11-19 – Claude (vendegkor) – közvetlen foglalás, vendégkártya, pénzügyek
+- **Közvetlen foglalás előnyei** (főoldal, `#kozvetlen`): a %-ok és a szöveg a kezelőből; „X%-kal olcsóbb, mint a portálokon” csak akkor jelenik meg, ha Ernő beállítja (és a portálon valóban drágább).
+- **Vendégkártya** (`#/kartya`, `#/kartya/<token>`, `#/kartya/h/<házkód>`; `/api/kartya`, `vendeg` tábla): név + e-mail + külön hírlevél-hozzájárulás időbélyeggel; QR a kártyán. A szoba QR-kódjáról (titkos házkód) kért kártya ottlétnek számít → a portálos vendég is visszatérő lesz. Létező címre a token nem jön vissza, a link e-mailben megy (idegen cím beírása ellen). Visszaigazoláskor kártya magától, a visszaigazoló levélben link.
+- **Visszatérő kedvezmény**: a foglaló lapon sor, a szerver újra ellenőrzi (kártya vagy korábbi visszaigazolt foglalás azonos e-maillel), `ajanlat_ar` tárolja a vendég által látott árat; Ernő értesítőjében „VISSZATÉRŐ VENDÉG”.
+- **Hírlevél**: hozzájárulás a kártyán és a foglalási űrlapon (külön jelölőnégyzet), leiratkozás egy kattintással (`/api/leiratkozas`), küldés a kezelőből (próba magamnak, ≤250/kör, Brevo), CSV-export a feliratkozókról.
+- **Pénzügyek fül** (`penz` tábla): hónap/év, bevétel, kiadás, eredmény, megspórolt jutalék, kifizetett jutalék, kategória-sávok; kézi tétel (portálos bevételnél a jutalék magától kiadás), visszaigazolt közvetlen foglalás magától bevétel (szállás + extrák), takarítási díj magától kiadás.
+- **Vendégek fül**: számlálók, nyomtatható QR-kártya a szobákba (új kód generálható), beállítások, hírlevél, vendéglista.
+- Nem tesztelt: valódi levélküldés (Brevo-kulcs nélkül); Apple/Google Wallet-kártya nincs (fejlesztői fiók kell) – a kártya most weboldalon él, QR-ral.

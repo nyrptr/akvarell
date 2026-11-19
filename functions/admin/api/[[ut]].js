@@ -3,6 +3,24 @@ import { J, kezelo, NAP } from '../../_kozos/k.js';
 import { szinkron } from '../../_kozos/naptar.js';
 import { hetiBejegyzes } from '../../_kozos/blog.js';
 import { token, kuldVendegnek, utemezett } from '../../_kozos/vendegut.js';
+import { beall, ALAP, vendegMent, hazKod, ujToken, szazalek } from '../../_kozos/vendeg.js';
+import { kuld, keret, esc } from '../../_kozos/level.js';
+const KIADAS = ['takaritas', 'etel', 'extra', 'jutalek', 'rezsi', 'karbantartas', 'marketing', 'egyeb'], BEVETEL = ['szallas', 'extra', 'egyeb'], FORRAS = ['kozvetlen', 'booking', 'szallashu', 'airbnb', 'egyeb'];
+// visszaigazolt közvetlen foglalás → automatikus bevétel-sorok (szállás, extra) és takarítási kiadás; elutasításkor törlődnek
+async function penzFoglalasbol(db, a, allapot) {
+  await db.prepare('DELETE FROM penz WHERE ajanlat_id = ? AND auto = 1').bind(a.id).run();
+  if (allapot !== 'visszaigazolva') return;
+  const ar = await db.prepare('SELECT * FROM ajanlat_ar WHERE ajanlat_id = ?').bind(a.id).first(), B = await beall(db, ['takaritas_dij']);
+  const L = [], m = `${a.nev} · ${a.apartman_id} · ${a.erkezes}–${a.tavozas}`;
+  if (ar && ar.osszeg) {
+    const ex = Math.min(ar.extra, ar.osszeg);
+    L.push(db.prepare("INSERT INTO penz (datum, tipus, kategoria, osszeg, forras, ajanlat_id, megjegyzes, auto) VALUES (?, 'bevetel', 'szallas', ?, 'kozvetlen', ?, ?, 1)").bind(a.erkezes, ar.osszeg - ex, a.id, m));
+    if (ex) L.push(db.prepare("INSERT INTO penz (datum, tipus, kategoria, osszeg, forras, ajanlat_id, megjegyzes, auto) VALUES (?, 'bevetel', 'extra', ?, 'kozvetlen', ?, ?, 1)").bind(a.erkezes, ex, a.id, m));
+  }
+  const tk = Math.max(0, Math.round(+B.takaritas_dij || 0));
+  if (tk) L.push(db.prepare("INSERT INTO penz (datum, tipus, kategoria, osszeg, forras, ajanlat_id, megjegyzes, auto) VALUES (?, 'kiadas', 'takaritas', ?, 'kozvetlen', ?, ?, 1)").bind(a.tavozas, tk, a.id, m));
+  if (L.length) await db.batch(L);
+}
 const APARTMAN_MEZOK = ['ar_hetkoznap', 'ar_hetvege', 'ar3_hetkoznap', 'ar3_hetvege', 'kiemeles_hu', 'kiemeles_en', 'leiras_hu', 'leiras_en', 'festo_hu', 'festo_en'];
 
 export async function onRequest({ request, env, params, waitUntil }) {
@@ -16,7 +34,7 @@ export async function onRequest({ request, env, params, waitUntil }) {
   if (ut === 'en') return J(200, { email: ki });
 
   if (ut === 'ajanlatok' && m === 'GET')
-    return J(200, (await db.prepare('SELECT a.*, v.token, v.elkuldve FROM ajanlatkeres a LEFT JOIN vendegut v ON v.ajanlat_id = a.id ORDER BY a.letrehozva DESC LIMIT 200').all()).results);
+    return J(200, (await db.prepare('SELECT a.*, v.token, v.elkuldve, p.osszeg ar_osszeg, p.visszatero, p.kedvezmeny ar_kedvezmeny FROM ajanlatkeres a LEFT JOIN vendegut v ON v.ajanlat_id = a.id LEFT JOIN ajanlat_ar p ON p.ajanlat_id = a.id ORDER BY a.letrehozva DESC LIMIT 200').all()).results);
 
   if (ut === 'ajanlat' && m === 'POST') {
     const d = await be();
@@ -29,7 +47,9 @@ export async function onRequest({ request, env, params, waitUntil }) {
         lepes.push(db.prepare("INSERT OR IGNORE INTO foglalt_nap (apartman_id, nap, forras) VALUES (?, ?, 'ajanlat')").bind(a.apartman_id, n.toISOString().slice(0, 10)));
     }
     await db.batch(lepes);
-    if (d.allapot === 'visszaigazolva') {                 // vendégkönyv-link + visszaigazoló levél (ha a Brevo be van állítva)
+    await penzFoglalasbol(db, a, d.allapot);
+    if (d.allapot === 'visszaigazolva') {
+      await vendegMent(db, { email: a.email, nev: a.nev, nyelv: a.nyelv, hirlevel: false, forras: 'visszaigazolas' });   // vendégkártya magától                 // vendégkönyv-link + visszaigazoló levél (ha a Brevo be van állítva)
       const t = await token(db, a.id), ap = await db.prepare('SELECT nev FROM apartman WHERE id = ?').bind(a.apartman_id).first();
       const v = await db.prepare('SELECT elkuldve FROM vendegut WHERE ajanlat_id = ?').bind(a.id).first();
       let level = null;
@@ -60,6 +80,65 @@ export async function onRequest({ request, env, params, waitUntil }) {
     await db.batch(k.map(x => db.prepare("INSERT OR REPLACE INTO beallitas (kulcs, ertek, frissitve) VALUES (?, ?, datetime('now'))").bind('vk_' + x, String(d[x]).slice(0, 2000))));
     return J(200, { ok: true });
   }
+  /* Pénzügyek: bevételek és kiadások egy évre; összesítés a kezelőben */
+  if (ut === 'penz' && m === 'GET') {
+    const ev = /^\d{4}$/.test(u.searchParams.get('ev') || '') ? u.searchParams.get('ev') : String(new Date().getFullYear());
+    const sorok = (await db.prepare("SELECT * FROM penz WHERE datum LIKE ? ORDER BY datum DESC, id DESC").bind(ev + '-%').all()).results;
+    return J(200, { ev, sorok, beall: await beall(db, ['portal_jutalek', 'takaritas_dij']) });
+  }
+  if (ut === 'penz' && m === 'POST') {
+    const d = await be();
+    if (d.torol) { await db.prepare('DELETE FROM penz WHERE id = ?').bind(+d.torol).run(); return J(200, { ok: true }); }
+    const tipus = d.tipus === 'kiadas' ? 'kiadas' : 'bevetel', kat = String(d.kategoria || ''), forras = FORRAS.includes(d.forras) ? d.forras : 'kozvetlen';
+    if (!(tipus === 'kiadas' ? KIADAS : BEVETEL).includes(kat)) return J(400, { hiba: 'kategória' });
+    const osszeg = Math.round(+d.osszeg || 0); if (!(osszeg > 0 && osszeg < 1e8)) return J(400, { hiba: 'összeg' });
+    if (!NAP.test(d.datum || '')) return J(400, { hiba: 'dátum' });
+    const mj = String(d.megjegyzes || '').slice(0, 300) || null;
+    if (d.id) { await db.prepare('UPDATE penz SET datum = ?, tipus = ?, kategoria = ?, osszeg = ?, forras = ?, megjegyzes = ?, auto = 0 WHERE id = ?').bind(d.datum, tipus, kat, osszeg, forras, mj, +d.id).run(); return J(200, { ok: true }); }
+    const r = await db.prepare('INSERT INTO penz (datum, tipus, kategoria, osszeg, forras, megjegyzes) VALUES (?,?,?,?,?,?)').bind(d.datum, tipus, kat, osszeg, forras, mj).run();
+    // portálos bevétel → a jutalék magától kiadásként (a beállított %-kal), hogy a nettó látsszon
+    if (tipus === 'bevetel' && forras !== 'kozvetlen' && forras !== 'egyeb') {
+      const B = await beall(db, ['portal_jutalek']), j = Math.round(osszeg * szazalek(B.portal_jutalek) / 100);
+      if (j) await db.prepare("INSERT INTO penz (datum, tipus, kategoria, osszeg, forras, szulo_id, megjegyzes, auto) VALUES (?, 'kiadas', 'jutalek', ?, ?, ?, ?, 1)").bind(d.datum, j, forras, r.meta.last_row_id, `${szazalek(B.portal_jutalek)}% jutalék`).run();
+    }
+    return J(200, { ok: true });
+  }
+
+  /* Vendégek: vendégkártyák, hírlevél-hozzájárulások, beállítások, QR-kód, hírlevél */
+  if (ut === 'vendegek' && m === 'GET') {
+    const v = (await db.prepare(`SELECT g.id, g.nev, g.email, g.nyelv, g.hirlevel, g.hirlevel_ido, g.leiratkozva, g.forras, g.letrehozva,
+      (SELECT COUNT(*) FROM ajanlatkeres a WHERE lower(a.email) = g.email AND a.allapot = 'visszaigazolva') ottlet FROM vendeg g ORDER BY g.letrehozva DESC LIMIT 500`).all()).results;
+    return J(200, { vendegek: v, beall: await beall(db), haz_kod: await hazKod(db) });
+  }
+  if (ut === 'vendegek.csv' && m === 'GET') {                       // csak a hírlevélre feliratkozottak, hozzájárulási idővel
+    const v = (await db.prepare('SELECT nev, email, nyelv, hirlevel_ido FROM vendeg WHERE hirlevel = 1 ORDER BY hirlevel_ido').all()).results;
+    const q = (x) => '"' + String(x ?? '').replace(/"/g, '""') + '"';
+    return new Response('\ufeffnév,email,nyelv,hozzájárulás ideje\n' + v.map(x => [x.nev, x.email, x.nyelv, x.hirlevel_ido].map(q).join(',')).join('\n'), { headers: { 'content-type': 'text/csv; charset=utf-8', 'content-disposition': 'attachment; filename="akvarell-hirlevel.csv"' } });
+  }
+  if (ut === 'beallitasok' && m === 'POST') {
+    const d = await be(), k = Object.keys(ALAP).filter(x => x in d);
+    if (!k.length) return J(400, { hiba: 'nincs mező' });
+    await db.batch(k.map(x => db.prepare("INSERT OR REPLACE INTO beallitas (kulcs, ertek, frissitve) VALUES (?, ?, datetime('now'))").bind(x, String(d[x]).slice(0, 2000))));
+    return J(200, { ok: true });
+  }
+  if (ut === 'haz_kod' && m === 'POST') {                          // új QR-kód kell, ha a régi kikerült a házból
+    await db.prepare("INSERT OR REPLACE INTO beallitas (kulcs, ertek, frissitve) VALUES ('haz_kod', ?, datetime('now'))").bind(ujToken().slice(0, 10)).run();
+    return J(200, { haz_kod: await hazKod(db) });
+  }
+  if (ut === 'hirlevel' && m === 'POST') {                          // hírlevél a feliratkozottaknak (Brevo, legfeljebb 250 címzett/kör), leiratkozó linkkel
+    const d = await be(), targy = String(d.targy || '').trim().slice(0, 150), hu = String(d.hu || '').trim().slice(0, 5000), en = String(d.en || '').trim().slice(0, 5000) || hu;
+    if (targy.length < 3 || hu.length < 10) return J(400, { hiba: 'tárgy és szöveg kell' });
+    const L = d.proba ? [{ email: env.ERTESITES_EMAIL, nyelv: 'hu', token: 'proba-proba-proba-proba' }] : (await db.prepare('SELECT email, nyelv, token FROM vendeg WHERE hirlevel = 1 LIMIT 250').all()).results;
+    if (!L.length || !L[0].email) return J(400, { hiba: 'nincs címzett' });
+    let ok = 0, kihagyva = false;
+    for (const v of L) {
+      const sz = v.nyelv === 'en' ? en : hu, le = `${u.origin}/api/leiratkozas?t=${encodeURIComponent(v.token)}`;
+      const r = await kuld(env, { to: v.email, subject: targy, html: keret(targy, `<p style="white-space:pre-line">${esc(sz)}</p><p style="margin:22px 0"><a href="${u.origin}/#/kartya/${encodeURIComponent(v.token)}" style="background:#1d2a35;color:#fff;padding:13px 22px;border-radius:999px;text-decoration:none;font:600 16px system-ui,sans-serif">${v.nyelv === 'en' ? 'Book with your guest card' : 'Foglalás a vendégkártyáddal'}</a></p><p style="font-size:13px;color:#5b6670">${v.nyelv === 'en' ? 'You receive this because you asked for it.' : 'Azért kapod, mert kérted.'} <a href="${le}">${v.nyelv === 'en' ? 'Unsubscribe' : 'Leiratkozás'}</a></p>`) });
+      if (r.ok) ok++; if (r.kihagyva) { kihagyva = true; break; }
+    }
+    return J(200, { elkuldve: ok, cimzett: L.length, kihagyva });
+  }
+
   if (ut === 'vendegut' && m === 'POST') return J(200, await utemezett(env, u.origin));   // kézi futtatás (próbához)
 
   if (ut === 'apartmanok' && m === 'GET')
@@ -127,7 +206,7 @@ export async function onRequest({ request, env, params, waitUntil }) {
     await db.prepare('UPDATE blog SET allapot = ? WHERE id = ?').bind(d.allapot, +d.id).run(); return J(200, { ok: true });
   }
   if (ut === 'mentes' && m === 'GET') {                             // teljes kimentés JSON-ban (költözéshez, biztonsági mentéshez)
-    const t = {}; for (const n of ['apartman', 'tartalom', 'foglalt_nap', 'ajanlatkeres', 'uzenet', 'beallitas', 'blog', 'vendegut']) t[n] = (await db.prepare('SELECT * FROM ' + n).all()).results;
+    const t = {}; for (const n of ['apartman', 'tartalom', 'foglalt_nap', 'ajanlatkeres', 'ajanlat_ar', 'uzenet', 'beallitas', 'blog', 'vendegut', 'vendeg', 'penz']) t[n] = (await db.prepare('SELECT * FROM ' + n).all()).results;
     t.kihivas = (await db.prepare('SELECT id, becenev, allomas, tipus, jovahagyva, letrehozva FROM kihivas').all()).results;   // a képek a /admin/api/kep/<id> címen
     return J(200, t, { 'content-disposition': 'attachment; filename="akvarell-mentes.json"' });
   }
