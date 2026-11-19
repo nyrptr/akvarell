@@ -205,6 +205,11 @@
       sor.querySelectorAll("[data-a]").forEach(function (b) {
         b.onclick = async function () {
           var v = await api("ajanlat", { id: x.id, allapot: b.dataset.a }), ok = v.ok;
+          if (v.status === 409 && v.data.napok) {            // közben foglalt lett: csak kifejezett megerősítéssel
+            var FN = { ical: "Booking/Szállás.hu naptár", kezi: "kézzel jelölve", ajanlat: "másik visszaigazolt foglalás" };
+            if (!confirm("Figyelem, ezek a napok már foglaltak:\n" + v.data.napok.map(function (n) { return n.nap + " – " + (FN[n.forras] || n.forras); }).join("\n") + "\n\nBiztosan visszaigazolod? (Dupla foglalás lehet.)")) { mentve(b.parentNode, false, "Nem igazoltam vissza"); return; }
+            v = await api("ajanlat", { id: x.id, allapot: b.dataset.a, megis: true }); ok = v.ok;
+          }
           var cimke = sor.querySelector(".allapot"); if (ok) { cimke.className = "allapot " + b.dataset.a; cimke.textContent = CIMKE[b.dataset.a]; }
           if (ok && v.data.token) { x.token = v.data.token; var vs = sor.querySelector(".vk-sor"); if (vs) vs.outerHTML = vkSor(x); }
           mentve(b.parentNode, ok, ok && v.data.level ? "Mentve ✓ · levél: " + v.data.level : null);

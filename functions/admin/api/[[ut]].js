@@ -41,6 +41,11 @@ export async function onRequest({ request, env, params, waitUntil }) {
     if (!['uj', 'visszaigazolva', 'elutasitva'].includes(d.allapot)) return J(400, { hiba: 'állapot' });
     const a = await db.prepare('SELECT * FROM ajanlatkeres WHERE id = ?').bind(+d.id).first();
     if (!a) return J(404, { hiba: 'nincs' });
+    // dupla foglalás elleni zár: ha közben a napok foglaltak lettek (Booking/Szállás.hu naptár, kézi, másik visszaigazolás), nem igazolja vissza
+    if (d.allapot === 'visszaigazolva' && a.allapot !== 'visszaigazolva' && !d.megis) {
+      const ut2 = (await db.prepare("SELECT nap, forras FROM foglalt_nap WHERE apartman_id = ? AND nap >= ? AND nap < ? ORDER BY nap").bind(a.apartman_id, a.erkezes, a.tavozas).all()).results;
+      if (ut2.length) return J(409, { hiba: 'ütközés', napok: ut2 });
+    }
     const lepes = [db.prepare('UPDATE ajanlatkeres SET allapot = ? WHERE id = ?').bind(d.allapot, a.id)];
     if (d.allapot === 'visszaigazolva') {
       for (let n = new Date(a.erkezes + 'T12:00:00Z'); n.toISOString().slice(0, 10) < a.tavozas; n.setUTCDate(n.getUTCDate() + 1))
