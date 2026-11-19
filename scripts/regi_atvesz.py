@@ -19,7 +19,7 @@ def blokkok(t):
         i = t.find(v)
         if i > 0: t = t[:i]
     sorok = [re.sub(r"\s+", " ", s).strip() for s in t.split("\n")]
-    sorok = [s for s in sorok if s and "– Akvarell" not in s and "- Akvarell" not in s]
+    sorok = [s for s in sorok if s and "– Akvarell" not in s and "- Akvarell" not in s and "Apartmanház Zebegény szállás" not in s and "Apartmanház szállás jakuzzival" not in s]   # képaláírások
     ki, cim = [], None
     for i, s in enumerate(sorok):
         if i == 0: ki.append({"c": "h1", "t": s}); continue
@@ -33,8 +33,8 @@ def blokkok(t):
         if tiszta and b["c"] == "h" and tiszta[-1]["c"] == "h" and tiszta[-1]["t"] == b["t"]: continue
         e = tiszta[-1] if tiszta else None
         # sortöréssel kettévágott mondat (a régi oldal HTML-je így tördelt): visszaillesztjük
-        if e and e["c"] == "p" and b["c"] in ("p", "h") and not re.search(r"[.!?:;)”\"]$", e["t"]) and b["t"][:1].islower():
-            e["t"] += " " + b["t"]; continue
+        if e and e["c"] in ("p", "h") and b["c"] in ("p", "h") and (b["t"][:1].islower() or (e["c"] == "p" and not re.search(r"[.!?:;)”\"]$", e["t"]) and e["t"].endswith((",", "–", "-")))):
+            e["t"] += " " + b["t"]; e["c"] = "p"; continue      # kisbetűvel folytatódó sor: az előző mondat része
         tiszta.append(b)
     return tiszta
 ki = {}

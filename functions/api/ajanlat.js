@@ -1,6 +1,7 @@
 // POST /api/ajanlat – vendég ajánlatkérése. Ellenőrzés itt és az adatbázisban is.
 import { J, NAP, ma } from '../_kozos/k.js';
-export async function onRequestPost({ request, env }) {
+import { kuld, keret, esc } from '../_kozos/level.js';
+export async function onRequestPost({ request, env, waitUntil }) {
   let d; try { d = await request.json(); } catch (e) { return J(400, { hiba: 'rossz kérés' }); }
   if (d.weboldal) return J(200, { ok: true });                      // csapda a robotoknak
   const s = (v, n) => String(v ?? '').trim().slice(0, n);
@@ -14,5 +15,12 @@ export async function onRequestPost({ request, env }) {
   if (fog.n > 0) return J(409, { hiba: 'foglalt' });
   await db.prepare('INSERT INTO ajanlatkeres (apartman_id, erkezes, tavozas, felnott, gyerek, nev, email, telefon, uzenet, nyelv) VALUES (?,?,?,?,?,?,?,?,?,?)')
     .bind(a.apartman_id, a.erkezes, a.tavozas, a.felnott, a.gyerek, a.nev, a.email, a.telefon, a.uzenet, a.nyelv).run();
+  // értesítés Ernőnek és visszaigazolás a vendégnek (ha a Brevo be van állítva); a válaszra nem vár
+  const ap = await db.prepare('SELECT nev FROM apartman WHERE id = ?').bind(a.apartman_id).first();
+  const sor = `${esc(ap ? ap.nev : a.apartman_id)} · ${a.erkezes} → ${a.tavozas} · ${a.felnott} felnőtt${a.gyerek ? ', ' + a.gyerek + ' gyerek' : ''}`;
+  waitUntil(Promise.all([
+    kuld(env, { to: env.ERTESITES_EMAIL, replyTo: a.email, subject: `Új foglalási kérés: ${ap ? ap.nev : ''} ${a.erkezes}`, html: keret('Új foglalási kérés', `<p>${sor}</p><p>${esc(a.nev)} · <a href="mailto:${esc(a.email)}">${esc(a.email)}</a>${a.telefon ? ' · ' + esc(a.telefon) : ''}</p>${a.uzenet ? `<p style="white-space:pre-line">${esc(a.uzenet)}</p>` : ''}<p>Visszaigazolás a kezelőben: /admin/</p>`) }),
+    kuld(env, { to: a.email, replyTo: env.ERTESITES_EMAIL, subject: a.nyelv === 'en' ? 'We have received your booking request – Akvarell' : 'Megkaptuk a foglalási kérésedet – Akvarell', html: keret(a.nyelv === 'en' ? 'Thank you for your request!' : 'Köszönjük a kérésedet!', `<p>${sor}</p><p>${a.nyelv === 'en' ? 'We will confirm by email shortly. Payment is due within 2 hours of confirmation.' : 'Hamarosan visszaigazoljuk e-mailben. A visszaigazolás után 2 órán belül kell fizetni.'}</p>`) }),
+  ]).catch(() => { }));
   return J(200, { ok: true });
 }

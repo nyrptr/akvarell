@@ -21,6 +21,10 @@ export async function onRequestGet({ env }) {
       const m = await (await fetch(MET, { headers: { 'user-agent': 'akvarell-zebegeny github.com/nyrptr/akvarell' } })).json();
       const t = m.properties.timeseries[0].data;
       ido = { t: t.instant.details.air_temperature, jel: (t.next_1_hours || t.next_6_hours || {}).summary?.symbol_code || '' };
+      // holnap délben (helyi dél ≈ 11:00 UTC télen, 10:00 nyáron – a 11:00 vagy 12:00 UTC sor, amelyik van)
+      const h = new Date(Date.now() + 864e5).toISOString().slice(0, 10);
+      const hs = m.properties.timeseries.find(x => x.time === `${h}T11:00:00Z`) || m.properties.timeseries.find(x => x.time === `${h}T12:00:00Z`);
+      if (hs) ido.holnap = { t: hs.data.instant.details.air_temperature, jel: (hs.data.next_6_hours || hs.data.next_1_hours || {}).summary?.symbol_code || '', csap: hs.data.next_6_hours?.details?.precipitation_amount ?? null };
     } catch (e) { }
     const v = { nagymaros: ki.Nagymaros, esztergom: ki.Esztergom || null, ido, forras: 'OVF vízügyi geoportál; met.no', lekerve: most };
     await db.prepare("INSERT OR REPLACE INTO gyorsitotar (kulcs, ertek, ido) VALUES ('duna', ?, ?)").bind(JSON.stringify(v), most).run();

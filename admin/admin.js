@@ -19,16 +19,77 @@
   }
   function kilep() { location.href = "/cdn-cgi/access/logout"; }
 
-  var FULEK = [["keres", "Ajánlatkérések"], ["naptar", "Foglalt napok"], ["ar", "Árak, szövegek"], ["tartalom", "Főoldal"], ["kihivas", "Kihívás-képek"]];
+  var FULEK = [["keres", "Foglalások"], ["uzenet", "Utalványok"], ["naptar", "Foglalt napok"], ["osszekotes", "Booking / Szállás.hu"], ["blog", "Zebegényi hét"], ["ar", "Árak, szövegek"], ["tartalom", "Főoldal"], ["kihivas", "Kihívás-képek"]];
   function vaz() {
     fo.innerHTML = '<nav class="ful">' + FULEK.map(function (f) { return '<button data-ful="' + f[0] + '"' + (f[0] === ful ? ' class="most"' : "") + ">" + f[1] + "</button>"; }).join("") + '</nav><div id="tart"></div><p><a class="gomb masod" href="/admin/api/mentes">Teljes mentés letöltése</a> <button class="gomb masod" id="ki">Kilépés</button></p>';
     fo.querySelectorAll("[data-ful]").forEach(function (b) { b.onclick = function () { ful = b.dataset.ful; vaz(); }; });
     document.getElementById("ki").onclick = kilep;
-    ({ keres: keresek, naptar: naptar, ar: arak, tartalom: tartalom, kihivas: kihivas })[ful]();
+    ({ keres: keresek, uzenet: uzenetek, naptar: naptar, osszekotes: osszekotes, blog: blog, ar: arak, tartalom: tartalom, kihivas: kihivas })[ful]();
   }
   var CIMKE = { uj: "új", visszaigazolva: "visszaigazolva", elutasitva: "elutasítva" };
   function t() { return document.getElementById("tart"); }
 
+
+  /* Ajándékutalvány-kérések és egyéb üzenetek */
+  async function uzenetek() {
+    var r = await api("uzenetek");
+    if (!r.ok) { t().innerHTML = '<p class="uzenet hiba">Nem sikerült betölteni.</p>'; return; }
+    if (!r.data.length) { t().innerHTML = '<div class="blokk"><p>Még nincs utalványkérés.</p></div>'; return; }
+    t().innerHTML = '<div class="blokk">' + r.data.map(function (x) {
+      return '<div class="sor" data-id="' + x.id + '"><b>' + e(x.nev) + '</b> <span class="allapot ' + (x.allapot === "kesz" ? "visszaigazolva" : "uj") + '">' + (x.allapot === "kesz" ? "elintézve" : "új") + "</span><br>" + (x.tipus === "utalvany" ? "Ajándékutalvány" : "Üzenet") + " · " + e(x.letrehozva) +
+        '<br><a href="mailto:' + e(x.email) + '">' + e(x.email) + "</a>" + (x.telefon ? ' · <a href="tel:' + e(x.telefon) + '">' + e(x.telefon) + "</a>" : "") + (x.szoveg ? '<br><span class="jelmag" style="white-space:pre-line">' + e(x.szoveg) + "</span>" : "") +
+        '<div class="gombok"><button data-a="kesz">Elintézve</button><button data-a="uj">Újra nyitott</button></div></div>';
+    }).join("") + "</div>";
+    t().querySelectorAll(".sor").forEach(function (sor) {
+      sor.querySelectorAll("[data-a]").forEach(function (b) {
+        b.onclick = async function () {
+          var ok = (await api("uzenet", { id: sor.dataset.id, allapot: b.dataset.a })).ok, c = sor.querySelector(".allapot");
+          if (ok) { c.className = "allapot " + (b.dataset.a === "kesz" ? "visszaigazolva" : "uj"); c.textContent = b.dataset.a === "kesz" ? "elintézve" : "új"; }
+          mentve(b.parentNode, ok);
+        };
+      });
+    });
+  }
+
+  /* Naptár-összekötés: Booking / Szállás.hu / Airbnb / régi oldal iCal-címei be, a saját naptár címe ki */
+  async function osszekotes() {
+    var ap = await api("apartmanok"), n = await api("naptarak");
+    if (!ap.ok || !n.ok) { t().innerHTML = '<p class="uzenet hiba">Nem sikerült betölteni.</p>'; return; }
+    var alap = location.origin;
+    t().innerHTML = '<div class="blokk"><p style="margin-top:0">Így látja az oldal a máshol (Booking, Szállás.hu, Airbnb, régi oldal) érkezett foglalásokat, és így látják azok az itteni foglalásokat. A szinkron félóránként magától fut.</p>' +
+      (n.data.ido ? '<p class="jelmag">Utolsó szinkron: ' + new Date(n.data.ido).toLocaleString("hu-HU") + "</p>" : "") + '<button class="gomb" id="szinkron">Szinkron most</button><span id="sz-e"></span></div>' +
+      ap.data.map(function (a) {
+        var er = n.data.eredmeny[a.id];
+        return '<div class="blokk" data-ap="' + a.id + '"><h3>' + e(a.nev) + '</h3><label class="mezo"><span>Külső naptár címe (iCal export, https://…)</span><input data-m="cim" value="' + e(n.data.cimek[a.id] || "") + '" placeholder="https://admin.booking.com/…/ical.html?…"></label>' +
+          (er ? '<p class="jelmag">' + (er.ok ? "Rendben: " + er.napok + " foglalt nap" : "Hiba: " + e(er.hiba)) + "</p>" : "") +
+          '<button class="gomb">Mentés</button><p class="jelmag" style="margin-top:12px">Ezt a címet add meg a Bookingnak / Szállás.hu-nak (naptár importálása):</p><code style="word-break:break-all">' + e(alap) + "/ical/" + a.id + ".ics</code></div>";
+      }).join("");
+    document.getElementById("szinkron").onclick = async function () {
+      var r = await api("szinkron", {}), el = document.getElementById("sz-e"), db = Object.keys(r.data || {}).length;
+      mentve(el, r.ok, r.ok ? (db ? "Kész: " + db + " naptár" : "Nincs beállított külső naptár") : null);
+    };
+    t().querySelectorAll("[data-ap]").forEach(function (b) {
+      b.querySelector(".gomb").onclick = async function () { var r = await api("naptar", { ap: b.dataset.ap, cim: b.querySelector("[data-m=cim]").value.trim() }); mentve(this.parentNode, r.ok, r.ok ? null : (r.data.hiba || "Nem sikerült")); };
+    });
+  }
+
+  /* Zebegényi hét: heti gépi bejegyzés (met.no, OVF, naplemente, szabad helyek) */
+  async function blog() {
+    var r = await api("blog");
+    if (!r.ok) { t().innerHTML = '<p class="uzenet hiba">Nem sikerült betölteni.</p>'; return; }
+    var NEV = { kint: "kint van", vazlat: "vázlat", levett: "levéve" };
+    t().innerHTML = '<div class="blokk"><p style="margin-top:0">Minden héten magától elkészül a hétvégi bejegyzés hivatalos adatokból. Ha be van kapcsolva, azonnal kikerül; ha nincs, vázlat marad, amíg ki nem teszed.</p><label style="display:flex;gap:10px;align-items:center;min-height:44px"><input type="checkbox" id="b-auto"' + (r.data.auto ? " checked" : "") + '> Automatikus kitétel</label><button class="gomb" id="b-gen">A következő hétvége bejegyzése most</button><span id="b-e"></span></div>' +
+      (r.data.bejegyzesek.length ? '<div class="blokk">' + r.data.bejegyzesek.map(function (x) {
+        var ki = x.allapot === "kint";
+        return '<div class="sor" data-id="' + x.id + '"><b>' + e(x.cim_hu) + '</b> <span class="allapot ' + (ki ? "visszaigazolva" : "uj") + '">' + NEV[x.allapot] + '</span><details><summary class="jelmag">Szöveg</summary>' + JSON.parse(x.test_hu).map(function (b) { return b[0] === "h" ? "<b>" + e(b[1]) + "</b><br>" : '<span class="jelmag">' + e(b[1]) + "</span><br>"; }).join("") + '</details><div class="gombok">' + (ki ? '<button data-a="levett">Leveszem</button>' : '<button data-a="kint">Kiteszem</button>') + "</div></div>";
+      }).join("") + "</div>" : "");
+    document.getElementById("b-auto").onchange = async function () { var r2 = await api("blog", { auto: this.checked }); mentve(this.parentNode, r2.ok); };
+    document.getElementById("b-gen").onclick = async function () { var r2 = await api("blog/general", {}); mentve(document.getElementById("b-e"), r2.ok, r2.ok ? (r2.data.mar_van ? "Erre a hétvégére már van" : "Elkészült") : null); if (r2.ok && !r2.data.mar_van) setTimeout(blog, 800); };
+    t().querySelectorAll(".sor").forEach(function (sor) {
+      var b = sor.querySelector("[data-a]");
+      b.onclick = async function () { var ok = (await api("blog", { id: sor.dataset.id, allapot: b.dataset.a })).ok; mentve(b.parentNode, ok); if (ok) setTimeout(blog, 600); };
+    });
+  }
   /* Ajánlatkérések */
   async function keresek() {
     var r = await api("ajanlatok");
