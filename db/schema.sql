@@ -39,3 +39,9 @@ CREATE TABLE IF NOT EXISTS kihivas (
 );
 CREATE INDEX IF NOT EXISTS ajanlat_ido ON ajanlatkeres(letrehozva);
 CREATE INDEX IF NOT EXISTS kihivas_jo ON kihivas(jovahagyva, letrehozva);
+CREATE TABLE IF NOT EXISTS beallitas (            -- pl. ical_szonyi = külső naptár (Booking, Szállás.hu, Airbnb) exportcíme
+  kulcs TEXT PRIMARY KEY, ertek TEXT NOT NULL DEFAULT '', frissitve TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE TABLE IF NOT EXISTS gyorsitotar (          -- külső adat (vízállás, naptár-szinkron ideje) rövid tárolása
+  kulcs TEXT PRIMARY KEY, ertek TEXT NOT NULL, ido INTEGER NOT NULL
+);

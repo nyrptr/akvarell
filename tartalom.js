@@ -66,23 +66,5 @@ window.TARTALOM = {
     ajandek: { hu: "[Az ajándékot Ernő adja meg.]", en: "[Reward to be set by the owner.]" },
     uzemelteto: { hu: "Üzemeltető: Ferenczy Ernő Ervin egyéni vállalkozó · 2627 Zebegény, Csalogány utca 4. · NTAK: [szám] · Adószám: [szám]", en: "Operator: Ernő Ervin Ferenczy, sole proprietor · 2627 Zebegény, Csalogány utca 4 · NTAK: [number] · Tax no.: [number]" }
   },
-  allomasok: ["Zebegényi strand", "Napraforgó Babapark", "Hétlyukú híd", "Fischer köz", "Szőnyi István Emlékmúzeum", "Hirling köz", "Sziklakápolna", "Országzászló és Trianon-emlékmű", "Havas Boldogasszony-templom", "Akvarell Apartmanház"],
-  /* „Így érti a vendég”: a mostani angol oldal hibái (ellenőrizve 2026-11-19) */
-  hibak: [
-    { hol: "Nyitóoldal, első bemutatkozó mondat", link: "https://akvarellzebegeny.hu/en/", most: "If a pleasant, calm and beautiful Location you want log off…", ertik: "Ha egy kellemes, nyugodt és gyönyörű Helyszín ön akar kijelentkezni…", javitva: "Looking for a calm, beautiful place to switch off?" },
-    { hol: "Nyitóoldal, keresőpanel", link: "https://akvarellzebegeny.hu/en/", most: "Search at · Arrival · Leave · SEARCH AT", ertik: "Keress -nál · Érkezés · Menj el! · KERESS -NÁL", javitva: "Check availability · Arrival · Departure · Search" },
-    { hol: "Minden apartman, cím alatt", link: "https://akvarellzebegeny.hu/en/apartment-in-szonyi-zebegeny/", most: "Information from", ertik: "Információ -tól", javitva: "Details" },
-    { hol: "Minden apartman, lista első sora", link: "https://akvarellzebegeny.hu/en/apartment-in-szonyi-zebegeny/", most: "Capacity to absorb: 3 adults", ertik: "Elnyelőképesség: 3 felnőtt", javitva: "Sleeps: 3 adults" },
-    { hol: "Szőnyi, fő bekezdés", link: "https://akvarellzebegeny.hu/en/apartment-in-szonyi-zebegeny/", most: "…one with the nature leaflet…", ertik: "…eggyé válni a természet szórólappal…", javitva: "…feel at one with nature…" },
-    { hol: "Szőnyi, a festő bemutatása", link: "https://akvarellzebegeny.hu/en/apartment-in-szonyi-zebegeny/", most: "At building garden also today painting a free school.", ertik: "Épületnél kert is ma festés egy ingyen iskola.", javitva: "A free painting school still runs in its garden." },
-    { hol: "Berény, alcím", link: "https://akvarellzebegeny.hu/en/bereny-apartment-zebegeny/", most: "Accommodation in Jakuzzi", ertik: "Szállás a jakuzziban", javitva: "Accommodation with a hot tub" },
-    { hol: "Berény, fő bekezdés", link: "https://akvarellzebegeny.hu/en/bereny-apartment-zebegeny/", most: "…a from bedroom or even the from bathroom we can also enjoy.", ertik: "…a -ból hálószoba vagy akár a -ból fürdőszoba mi is élvezhetjük.", javitva: "…in view from the bedroom and even the bathroom." },
-    { hol: "Amrita, alcím", link: "https://akvarellzebegeny.hu/en/amrita-apartment-zebegeny/", most: "Budget Accommodation with Jacuzzi", ertik: "Olcsó szállás jakuzzival", javitva: "Accommodation with a hot tub in Zebegény" },
-    { hol: "Amrita, első bekezdés", link: "https://akvarellzebegeny.hu/en/amrita-apartment-zebegeny/", most: "…as well as the Börzsöny trains.", ertik: "…valamint a Börzsöny vonatai.", javitva: "…and the Börzsöny hills." },
-    { hol: "Amrita, fürdőszoba", link: "https://akvarellzebegeny.hu/en/amrita-apartment-zebegeny/", most: "Retrieved from glass bathroom walls…", ertik: "Letöltve: üveg fürdőszobafalak…", javitva: "The bathroom has glass walls…" },
-    { hol: "Kárpáthy, fürdőszoba", link: "https://akvarellzebegeny.hu/en/karpathy-apartment-zebegeny/", most: "…more also visible in the shower should be.", ertik: "…még is látható a zuhanyban kellene lennie.", javitva: "…so the view stays with you in the shower." },
-    { hol: "Szolgáltatások oldal webcíme", link: "https://akvarellzebegeny.hu/en/slave-tattoos/", most: "/en/slave-tattoos/", ertik: "/rabszolga-tetovalasok/", javitva: "/en/services/" },
-    { hol: "Ajándékutalvány és SZÉP kártya webcíme", link: "https://akvarellzebegeny.hu/en/time-sensitive/", most: "/en/time-sensitive/ · /en/nice-card-acceptance/", ertik: "/idoerzekeny/ · /kedves-kartya-elfogadas/", javitva: "/en/gift-vouchers/ · /en/szep-card/" },
-    { hol: "Magyarul maradt webcímek", link: "https://akvarellzebegeny.hu/en/arak/", most: "/en/arak/ · /en/esemenynaptar/ · /en/hazirend/", ertik: "(angol vendégnek érthetetlen)", javitva: "/en/prices/ · /en/events/ · /en/house-rules/" }
-  ]
+  allomasok: ["Zebegényi strand", "Napraforgó Babapark", "Hétlyukú híd", "Fischer köz", "Szőnyi István Emlékmúzeum", "Hirling köz", "Sziklakápolna", "Országzászló és Trianon-emlékmű", "Havas Boldogasszony-templom", "Akvarell Apartmanház"]
 };

@@ -2,30 +2,54 @@
 <html lang="hu">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Akvarell Apartmanház – Zebegény</title>
-<meta name="description" content="Négy apartman Zebegényben, panorámával a Dunára, a Pilisre és a Visegrádi-hegységre.">
+<meta name="description" content="Négy apartman Zebegényben, panorámával a Dunára, a Pilisre és a Visegrádi-hegységre. Szabad napok és ár azonnal.">
+<meta name="theme-color" content="#f6f1e7">
+<!-- megosztási előnézet (Facebook, Messenger, WhatsApp) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Akvarell Apartmanház">
+<meta property="og:title" content="Akvarell Apartmanház – Zebegény">
+<meta property="og:description" content="Négy apartman, négy festő, egy kilátás a Dunakanyarra. Szabad napok és ár egy koppintással.">
+<meta property="og:image" content="https://akvarellzebegeny.hu/wp-content/uploads/2024/05/Bereny-apartman-nappali.jpg">
+<meta property="og:locale" content="hu_HU">
+<meta property="og:locale:alternate" content="en_GB">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,600&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=32831e8c">
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,600;1,7..72,500&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="https://akvarellzebegeny.hu/wp-content/uploads/2024/05/Bereny-apartman-nappali.jpg">
+<link rel="stylesheet" href="style.css?v=8c2a2dc8">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"LodgingBusiness","name":"Akvarell Apartmanház","address":{"@type":"PostalAddress","streetAddress":"Csalogány utca 4.","postalCode":"2627","addressLocality":"Zebegény","addressCountry":"HU"},"numberOfRooms":4,"amenityFeature":[{"@type":"LocationFeatureSpecification","name":"Kültéri jakuzzi","value":true},{"@type":"LocationFeatureSpecification","name":"Elektromosautó-töltő","value":true}]}
+{"@context":"https://schema.org","@type":"LodgingBusiness","name":"Akvarell Apartmanház","image":"https://akvarellzebegeny.hu/wp-content/uploads/2024/05/Bereny-apartman-nappali.jpg","address":{"@type":"PostalAddress","streetAddress":"Csalogány utca 4.","postalCode":"2627","addressLocality":"Zebegény","addressCountry":"HU"},"geo":{"@type":"GeoCoordinates","latitude":47.80,"longitude":18.91},"numberOfRooms":4,"amenityFeature":[{"@type":"LocationFeatureSpecification","name":"Kültéri jakuzzi","value":true},{"@type":"LocationFeatureSpecification","name":"Elektromosautó-töltő","value":true},{"@type":"LocationFeatureSpecification","name":"Ingyenes parkolás","value":true},{"@type":"LocationFeatureSpecification","name":"Wifi","value":true}]}
 </script>
+<script type="speculationrules">{"prefetch":[{"where":{"href_matches":"/*"},"eagerness":"moderate"}]}</script>
 </head>
 <body>
-<header class="fej">
+<header class="fej" id="fej">
   <div class="belso">
     <a class="logo" href="#/">Akvarell</a>
+    <nav class="menu" id="menu"></nav>
     <div class="nyelv" role="group" aria-label="Nyelv / Language">
       <button type="button" data-ny="hu" aria-pressed="true">HU</button>
       <button type="button" data-ny="en" aria-pressed="false">EN</button>
     </div>
   </div>
-  <nav class="menu" id="menu"></nav>
 </header>
 <main id="fo"></main>
 <footer class="lab" id="lab"></footer>
-<script src="tartalom.js?v=942dbc2f"></script>
-<script src="app.js?v=b5aee065"></script>
+
+<div class="sav" id="sav">
+  <button type="button" class="mi" id="sav-mi" data-lap="nyit"><b id="sav-cim">Mikor jönnél?</b><small id="sav-al">Szabad napok és ár azonnal</small></button>
+  <button type="button" class="gomb" data-lap="nyit" id="sav-gomb">Szabad?</button>
+</div>
+
+<dialog class="lap" id="lap" aria-labelledby="lap-cim">
+  <div class="fogo" aria-hidden="true"></div>
+  <div class="fejsor"><h2 id="lap-cim">Mikor jönnél?</h2><button type="button" class="zar" data-lap="zar" aria-label="Bezárom">×</button></div>
+  <div class="tartalom" id="lap-tartalom"></div>
+</dialog>
+
+<script src="tartalom.js?v=b8a924e4"></script>
+<script src="app.js?v=cc8f5217"></script>
 </body>
 </html>
