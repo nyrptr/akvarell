@@ -255,3 +255,7 @@ button.link{background:none;border:0;color:var(--duna);padding:12px 4px;min-heig
 body.vendegmod .sav{display:none}
 body.vendegmod{padding-bottom:24px}
 .wifi{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0 0 12px}.wifi dt{color:var(--halk)}.wifi dd{margin:0;font-weight:700;font-size:20px;word-break:break-all}
+.lapozo{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0}
+.lapozo a{display:flex;flex-direction:column;gap:2px;padding:12px 14px;min-height:64px;border:1px solid var(--vonal);border-radius:16px;background:var(--lap);text-decoration:none;color:var(--tus);font-family:Literata,Georgia,serif;font-size:16px;line-height:1.25}
+.lapozo a small{font:600 13px "Source Sans 3",system-ui,sans-serif;color:var(--duna)}
+.lapozo a.jobb{text-align:right;grid-column:2}

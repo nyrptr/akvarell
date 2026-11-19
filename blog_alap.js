@@ -1,9 +1,9 @@
 /* „Zebegényi hét” állandó cikkei – Ernő saját oldalainak tényeiből (akvarellzebegeny.hu: látnivalók, kilátók, hajókirándulás, apartmanok),
    saját szavakkal, magyarul és angolul. Kitalált adat nincs; nyitvatartás Ernő látnivaló-oldala szerint. Szerkesztés: ez a fájl.
-   Blokkok: ["h", cím] vagy ["p", bekezdés]. A cikk alján az oldal élőben mutatja a következő hétvége szabad apartmanjait. */
+   Blokkok: ["h", cím] vagy ["p", bekezdés]. A dátum a megjelenés napja a bemutatóban (heti ritmusban visszafelé). A cikk alján az oldal élőben mutatja a következő hétvége szabad apartmanjait. */
 window.BLOG_ALAP = [
   {
-    id: "a-szonyi", het: "2026-11-01", kep: "Szonyi-apartman-nappali-halo.jpg", tema: "latnivalok",
+    id: "a-szonyi", het: "2026-11-07", kep: "Szonyi-apartman-nappali-halo.jpg", tema: "latnivalok",
     cim_hu: "Szőnyi István nyomában – a festők faluja", cim_en: "In the footsteps of István Szőnyi – a village of painters",
     test_hu: [
       ["p", "Zebegényt sokan a festők falujaként ismerik. Szőnyi István, a 20. századi magyar festészet egyik legnagyobb alakja 1924-től 1960-ban bekövetkezett haláláig itt élt és dolgozott; képeit a táj és a falu emberei ihlették."],
@@ -26,7 +26,7 @@ window.BLOG_ALAP = [
     forrasok: ["akvarellzebegeny.hu – Zebegény látnivalói", "szonyimuzeum.hu"]
   },
   {
-    id: "a-seta", het: "2026-10-25", kep: "https://akvarellzebegeny.hu/wp-content/uploads/2026/05/templom-4fc7cce1-10474514.jpg", tema: "latnivalok",
+    id: "a-seta", het: "2026-10-31", kep: "https://akvarellzebegeny.hu/wp-content/uploads/2026/05/templom-4fc7cce1-10474514.jpg", tema: "latnivalok",
     cim_hu: "Egy óra séta: templom, Héthíd, Napraforgó-házak", cim_en: "A one-hour walk: the church, the Seven-Arch Bridge, the Sunflower Houses",
     test_hu: [
       ["p", "Zebegény kicsi, gyalog minden közel van. Ez a séta a főtérről indul, és egy óra alatt kényelmesen bejárható."],
@@ -51,7 +51,7 @@ window.BLOG_ALAP = [
     forrasok: ["akvarellzebegeny.hu – Zebegény látnivalói"]
   },
   {
-    id: "a-tel", het: "2026-11-15", kep: "Jakuzzi-5.jpg", tema: "kilatok",
+    id: "a-tel", het: "2026-11-14", kep: "Jakuzzi-5.jpg", tema: "kilatok",
     cim_hu: "Téli hétvége Zebegényben", cim_en: "A winter weekend in Zebegény",
     test_hu: [
       ["p", "Télen csendesebb a falu, és rövidebbek a napok. Egy jó téli hétvégéhez nem kell sok: egy rövid séta fel a dombra, egy múzeum, és este a meleg víz."],
@@ -74,7 +74,7 @@ window.BLOG_ALAP = [
     forrasok: ["akvarellzebegeny.hu – Zebegény látnivalói", "csillagászati számítás"]
   },
   {
-    id: "a-kilatok", het: "2026-10-18", kep: "https://akvarellzebegeny.hu/wp-content/uploads/2024/05/BT_20240516_Aquarell_088.jpg", tema: "kilatok",
+    id: "a-kilatok", het: "2026-10-24", kep: "https://akvarellzebegeny.hu/wp-content/uploads/2024/05/BT_20240516_Aquarell_088.jpg", tema: "kilatok",
     cim_hu: "Öt kilátó a Dunakanyarban, könnyűtől a csúcsig", cim_en: "Five lookouts in the Danube Bend, from easy to summit",
     test_hu: [
       ["p", "A Dunakanyar a kilátók vidéke. Öt, Zebegényből jól elérhető pont, a legrövidebb sétától a Börzsöny tetejéig."],
@@ -105,7 +105,7 @@ window.BLOG_ALAP = [
     forrasok: ["akvarellzebegeny.hu – 10 kilátó a Dunakanyarban"]
   },
   {
-    id: "a-hajo", het: "2026-10-11", kep: "https://akvarellzebegeny.hu/wp-content/uploads/2024/05/BT_20240516_Aquarell_075.jpg", tema: "hajo",
+    id: "a-hajo", het: "2026-10-17", kep: "https://akvarellzebegeny.hu/wp-content/uploads/2024/05/BT_20240516_Aquarell_075.jpg", tema: "hajo",
     cim_hu: "Hajóval Esztergomba vagy Visegrádra", cim_en: "By boat to Esztergom or Visegrád",
     test_hu: [
       ["p", "Tavasztól a Mahart PassNave sétahajóin Zebegényből két körjárathoz lehet csatlakozni: az esztergomihoz és a visegrádihoz. A menetrend évről évre változik, indulás előtt nézd meg a Mahart oldalán."],
@@ -126,7 +126,7 @@ window.BLOG_ALAP = [
     forrasok: ["akvarellzebegeny.hu – Hajókirándulás Zebegényben"]
   },
   {
-    id: "a-apartman", het: "2026-10-04", kep: "Bereny-apartman-nappali.jpg", tema: "kihivas",
+    id: "a-apartman", het: "2026-10-10", kep: "Bereny-apartman-nappali.jpg", tema: "kihivas",
     cim_hu: "Fent vagy lent? Hogyan válassz apartmant", cim_en: "Upstairs or downstairs? How to choose your apartment",
     test_hu: [
       ["p", "Az Akvarellben négy apartman van, kettő az emeleten, kettő a földszinten. Mind a négyből a Dunára látni – a különbség abban van, honnan és mennyiért."],
