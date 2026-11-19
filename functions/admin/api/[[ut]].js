@@ -115,6 +115,13 @@ export async function onRequest({ request, env, params, waitUntil }) {
       (SELECT COUNT(*) FROM ajanlatkeres a WHERE lower(a.email) = g.email AND a.allapot = 'visszaigazolva') ottlet FROM vendeg g ORDER BY g.letrehozva DESC LIMIT 500`).all()).results;
     return J(200, { vendegek: v, beall: await beall(db), haz_kod: await hazKod(db) });
   }
+  if (ut === 'ertekelesek' && m === 'GET')
+    return J(200, (await db.prepare('SELECT e.*, a.apartman_id FROM ertekeles e LEFT JOIN ajanlatkeres a ON a.id = e.ajanlat_id ORDER BY e.letrehozva DESC LIMIT 200').all()).results);
+  if (ut === 'ertekeles' && m === 'POST') {
+    const d = await be(); if (!['uj', 'kint', 'rejtett'].includes(d.allapot)) return J(400, { hiba: 'állapot' });
+    await db.prepare('UPDATE ertekeles SET allapot = ? WHERE id = ?').bind(d.allapot, +d.id).run();
+    return J(200, { ok: true });
+  }
   if (ut === 'vendegek.csv' && m === 'GET') {                       // csak a hírlevélre feliratkozottak, hozzájárulási idővel
     const v = (await db.prepare('SELECT nev, email, nyelv, hirlevel_ido FROM vendeg WHERE hirlevel = 1 ORDER BY hirlevel_ido').all()).results;
     const q = (x) => '"' + String(x ?? '').replace(/"/g, '""') + '"';
@@ -211,7 +218,7 @@ export async function onRequest({ request, env, params, waitUntil }) {
     await db.prepare('UPDATE blog SET allapot = ? WHERE id = ?').bind(d.allapot, +d.id).run(); return J(200, { ok: true });
   }
   if (ut === 'mentes' && m === 'GET') {                             // teljes kimentés JSON-ban (költözéshez, biztonsági mentéshez)
-    const t = {}; for (const n of ['apartman', 'tartalom', 'foglalt_nap', 'ajanlatkeres', 'ajanlat_ar', 'uzenet', 'beallitas', 'blog', 'vendegut', 'vendeg', 'penz']) t[n] = (await db.prepare('SELECT * FROM ' + n).all()).results;
+    const t = {}; for (const n of ['apartman', 'tartalom', 'foglalt_nap', 'ajanlatkeres', 'ajanlat_ar', 'uzenet', 'beallitas', 'blog', 'vendegut', 'vendeg', 'penz', 'ertekeles']) t[n] = (await db.prepare('SELECT * FROM ' + n).all()).results;
     t.kihivas = (await db.prepare('SELECT id, becenev, allomas, tipus, jovahagyva, letrehozva FROM kihivas').all()).results;   // a képek a /admin/api/kep/<id> címen
     return J(200, t, { 'content-disposition': 'attachment; filename="akvarell-mentes.json"' });
   }

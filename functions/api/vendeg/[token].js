@@ -23,6 +23,15 @@ export async function onRequestPost({ request, env, params, waitUntil }) {
   const a = await foglalas(env.DB, params.token);
   if (!a || a.allapot !== 'visszaigazolva') return J(404, { hiba: 'nincs' });
   let d; try { d = await request.json(); } catch (e) { return J(400, { hiba: 'rossz kérés' }); }
+  if (d.tipus === 'ertekeles') {                      // saját, igazolt értékelés: csak érkezés után, foglalásonként egy (újraküldve felülírja)
+    if (isoBp() < a.erkezes) return J(400, { hiba: 'még nem érkeztél' });
+    const pont = Math.round(+d.pont || 0), szov = String(d.szoveg || '').trim().slice(0, 1200) || null;
+    if (!(pont >= 1 && pont <= 10)) return J(400, { hiba: 'pont' });
+    await env.DB.prepare("INSERT INTO ertekeles (ajanlat_id, nev, pont, szoveg, nyelv, ottlet) VALUES (?,?,?,?,?,?) ON CONFLICT(ajanlat_id) DO UPDATE SET pont = excluded.pont, szoveg = excluded.szoveg, allapot = 'uj'")
+      .bind(a.id, String(a.nev).split(' ').slice(-1)[0], pont, szov, a.nyelv, a.erkezes.slice(0, 7)).run();
+    waitUntil(kuld(env, { to: env.ERTESITES_EMAIL, replyTo: a.email, subject: `Új értékelés: ${pont}/10 – ${a.apnev}`, html: keret(`${pont}/10 – ${a.nev}`, `<p style="white-space:pre-line">${esc(szov || '(szöveg nélkül)')}</p><p>Kitenni a kezelő Vendégek fülén lehet.</p>`) }).catch(() => { }));
+    return J(200, { ok: true });
+  }
   const TIP = { kesoi: 'Késői távozás', korai: 'Korai érkezés', reggeli: 'Reggeli', masszazs: 'Masszázs', egyeb: 'Üzenet' };
   const tip = TIP[d.tipus] ? d.tipus : 'egyeb', szoveg = String(d.szoveg || '').trim().slice(0, 800);
   if (tip === 'egyeb' && szoveg.length < 2) return J(400, { hiba: 'üres' });
