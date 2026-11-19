@@ -15,7 +15,8 @@
       apartmanok: "Apartmanok", zebegeny: "Zebegény ma", kihivas: "10-es kihívás",
       negy: "Négy festő, négy apartman", negy_al: "Mindegyik apartman egy festőről kapta a nevét, aki Zebegényben élt vagy alkotott. Lapozz, és nézz be.",
       furdo: "A Dunára a fürdőből is rálátsz.", furdo_al: "A Szőnyi és a Berény apartman ablakai a Dunakanyarra néznek.",
-      teny: [["Kültéri jakuzzi", "közös"], ["Elektromosautó-töltő", "a szálláson"], ["Ingyenes parkolás", "a szálláson"], ["Wifi", "ingyenes"]],
+      jakuzzi: "Este a jakuzziból nézed, ahogy lemegy a nap a Duna fölött.", jakuzzi_al: "Fűthető, közös használatú kültéri jakuzzi a kertben, panorámával a Dunakanyarra.",
+      teny: [["Kültéri jakuzzi", "fűthető, közös, a kertben"], ["Elektromosautó-töltő", "a szálláson"], ["Ingyenes parkolás", "a szálláson"], ["Wifi", "ingyenes"]],
       ma_cim: "Zebegény ma", ma_al: "Élő adatok a faluból, ahol a Duna kanyarodik.", dunacm: "Duna, Nagymaros", vizho: "Vízhőfok", most: "Most", naplem: "Naplemente", napkel: "Napkelte",
       forras_duna: "Vízállás és vízhőfok: OVF vízügyi geoportál, Nagymaros mérce", forras_ido: "Időjárás: met.no (Yr)", forras_nap: "Napkelte, napnyugta: csillagászati számítás",
       kihivas_teaser: "Tíz állomás, tíz szelfi. Pipáld ki, ahol már jártál.", indulok: "Indulok",
@@ -36,7 +37,8 @@
       apartmanok: "Apartments", zebegeny: "Zebegény today", kihivas: "10 Challenge",
       negy: "Four painters, four apartments", negy_al: "Each apartment is named after a painter who lived or worked in Zebegény. Swipe and step inside.",
       furdo: "You can see the Danube even from the bathroom.", furdo_al: "The Szőnyi and Berény apartments look out over the Danube Bend.",
-      teny: [["Outdoor hot tub", "shared"], ["EV charger", "on site"], ["Free parking", "on site"], ["Wi-Fi", "free"]],
+      jakuzzi: "In the evening, watch the sun set over the Danube from the hot tub.", jakuzzi_al: "A heated, shared outdoor hot tub in the garden, overlooking the Danube Bend.",
+      teny: [["Outdoor hot tub", "heated, shared, in the garden"], ["EV charger", "on site"], ["Free parking", "on site"], ["Wi-Fi", "free"]],
       ma_cim: "Zebegény today", ma_al: "Live from the village where the Danube bends.", dunacm: "Danube, Nagymaros", vizho: "Water temperature", most: "Now", naplem: "Sunset", napkel: "Sunrise",
       forras_duna: "Water level and temperature: Hungarian water authority (OVF), Nagymaros gauge", forras_ido: "Weather: met.no (Yr)", forras_nap: "Sunrise and sunset: astronomical calculation",
       kihivas_teaser: "Ten stops, ten selfies. Tick off the ones you have found.", indulok: "Let's go",
@@ -169,6 +171,7 @@
     var h = '<section class="jelenet"><img src="' + e(kep("Bereny-apartman-nappali.jpg")) + '" alt="" fetchpriority="high"><div class="bel"><h1>Akvarell</h1><p class="al">' + e(sz("alcim")) + '</p><div class="chipek" id="chipek">' + chipek() + "</div></div></section>";
     h += '<section class="szakasz" id="apartmanok"><h2 class="emel">' + s("negy") + '</h2><p class="lead emel">' + s("negy_al") + '</p><div class="sor" id="sor">' + aps().map(kartya).join("") + "</div></section>";
     h += '<section class="jelenet kozel"><img class="festek" loading="lazy" src="' + e(kep("Szonyi-apartman-furdo-kilatas.jpg")) + '" alt=""><div class="bel"><h2>' + s("furdo") + '</h2><p class="al">' + s("furdo_al") + "</p></div></section>";
+    h += '<section class="jelenet kozel"><img class="festek" loading="lazy" src="' + e(kep("Jakuzzi-5.jpg")) + '" alt=""><div class="bel"><h2>' + s("jakuzzi") + '</h2><p class="al">' + s("jakuzzi_al") + '</p><div class="chipek"><span class="chip">' + IK.nap + s("naplem") + " " + hhmm(NAP.idok(new Date()).nyugszik) + "</span></div></div></section>";
     var ik = [IK.jakuzzi, IK.villam, IK.auto, IK.wifi];
     h += '<section class="szakasz"><div class="racs">' + s("teny").map(function (t, i) { return '<div class="teny emel">' + ik[i] + "<b>" + t[0] + "</b><span>" + t[1] + "</span></div>"; }).join("") + "</div></section>";
     h += '<section class="szakasz" id="zebegeny"><h2 class="emel">' + s("ma_cim") + '</h2><p class="lead emel">' + s("ma_al") + '</p><div class="elo" id="elo">' + elo() + '</div><p class="forras">' + [s("forras_duna"), s("forras_ido"), s("forras_nap")].join(" · ") + "</p></section>";
