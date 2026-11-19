@@ -1,5 +1,5 @@
 /* Beégetett tartalom: ebből jelenik meg az oldal akkor is, ha az adatbázis nem elérhető.
-   Ugyanez van a Supabase-ben; ha ott frissebb, az oldal azt mutatja. */
+   Ugyanez van az adatbázisban (D1); ha ott frissebb, az oldal azt mutatja. */
 window.TARTALOM = {
   kep: "https://akvarellzebegeny.hu/wp-content/uploads/2024/05/",
   apartmanok: [
