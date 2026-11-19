@@ -50,3 +50,9 @@
 - **Holnapi ajánló:** met.no holnap délre (`/api/zebegeny` → `ido.holnap`), Ernő élményeire mutat; múzeum téli nyitvatartása, hajószezon figyelve.
 - **Kezelő:** Utalványok, Booking / Szállás.hu (iCal be- és kimenet, „Szinkron most”), Zebegényi hét fül; Brevo-értesítés (kulcs nélkül néma).
 - **Nem tesztelt élesben:** OVF helyben nem érhető el (503, csak a helyi gépen); Brevo kulcs nélkül; Access AUD beállítása Péter/Ernő teendője.
+
+## 2026-11-19 – Claude (vendegut) – 1. csomag: vendégút és értesítések
+- **Vendégkönyv** (`#/vendeg/<token>`, `/api/vendeg/[token]`): a visszaigazolt vendég titkos linkje; üdvözlés, visszaszámlálás, wifi (másolás), bejutás, parkolás, jakuzzi + mai naplemente, holnapi ajánló, kérések egy koppintással (késői távozás, korai érkezés, reggeli, masszázs, szabad üzenet), hívás, útvonal, házirend, távozás után értékelés-link. Wifi és bejutás csak érkezés előtt 2 naptól a távozás utáni napig.
+- **Automatikus levelek** (`_kozos/vendegut.js`): visszaigazoláskor azonnal; érkezés előtt 3 nappal; távozás napján; másnap értékeléskérés. Ernőnek érkezési napon reggeli összefoglaló. Óránként legfeljebb egyszer, 8–20 óra között, csak sikeres küldés után jelölve (`vendegut` tábla).
+- **Kezelő:** Vendégkönyv fül (tudnivalók HU/EN, értékelés-link, „Ellenőrzés most”), a foglalásoknál vendégkönyv-link és levélállapot; „Utalványok” → „Üzenetek” (a vendégkérések is ide jönnek). A kezelő elrendezése javítva (a #3 óta a vendégoldal .sor/.fej stílusa szétcsúsztatta).
+- **Nem tesztelt:** valódi levélküldés (Brevo-kulcs nélkül „nincs levelező”); a késői távozás ára Ernő régi oldaláról (5500 Ft/óra).

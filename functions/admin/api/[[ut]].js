@@ -2,9 +2,10 @@
 import { J, kezelo, NAP } from '../../_kozos/k.js';
 import { szinkron } from '../../_kozos/naptar.js';
 import { hetiBejegyzes } from '../../_kozos/blog.js';
+import { token, kuldVendegnek, utemezett } from '../../_kozos/vendegut.js';
 const APARTMAN_MEZOK = ['ar_hetkoznap', 'ar_hetvege', 'ar3_hetkoznap', 'ar3_hetvege', 'kiemeles_hu', 'kiemeles_en', 'leiras_hu', 'leiras_en', 'festo_hu', 'festo_en'];
 
-export async function onRequest({ request, env, params }) {
+export async function onRequest({ request, env, params, waitUntil }) {
   const u = new URL(request.url);
   const helyi = u.hostname === 'localhost' && env.HELYI_KEZELO === 'igen';   // csak helyi próbához
   const ki = helyi ? 'helyi' : await kezelo(request, env);
@@ -15,7 +16,7 @@ export async function onRequest({ request, env, params }) {
   if (ut === 'en') return J(200, { email: ki });
 
   if (ut === 'ajanlatok' && m === 'GET')
-    return J(200, (await db.prepare('SELECT * FROM ajanlatkeres ORDER BY letrehozva DESC LIMIT 200').all()).results);
+    return J(200, (await db.prepare('SELECT a.*, v.token, v.elkuldve FROM ajanlatkeres a LEFT JOIN vendegut v ON v.ajanlat_id = a.id ORDER BY a.letrehozva DESC LIMIT 200').all()).results);
 
   if (ut === 'ajanlat' && m === 'POST') {
     const d = await be();
@@ -28,6 +29,13 @@ export async function onRequest({ request, env, params }) {
         lepes.push(db.prepare("INSERT OR IGNORE INTO foglalt_nap (apartman_id, nap, forras) VALUES (?, ?, 'ajanlat')").bind(a.apartman_id, n.toISOString().slice(0, 10)));
     }
     await db.batch(lepes);
+    if (d.allapot === 'visszaigazolva') {                 // vendégkönyv-link + visszaigazoló levél (ha a Brevo be van állítva)
+      const t = await token(db, a.id), ap = await db.prepare('SELECT nev FROM apartman WHERE id = ?').bind(a.apartman_id).first();
+      const v = await db.prepare('SELECT elkuldve FROM vendegut WHERE ajanlat_id = ?').bind(a.id).first();
+      let level = null;
+      if (!JSON.parse(v.elkuldve).visszaigazolas) level = await kuldVendegnek(env, { ...a, apnev: ap ? ap.nev : a.apartman_id }, 'visszaigazolas', u.origin).catch(() => ({ ok: false }));
+      return J(200, { ok: true, token: t, level: level && level.ok ? 'elküldve' : (level && level.kihagyva ? 'nincs levelező' : level ? 'hiba' : 'már elment') });
+    }
     return J(200, { ok: true });
   }
 
@@ -42,6 +50,17 @@ export async function onRequest({ request, env, params }) {
     else await db.prepare('DELETE FROM foglalt_nap WHERE apartman_id = ? AND nap = ?').bind(d.ap, d.nap).run();
     return J(200, { ok: true });
   }
+
+  if (ut === 'vendegkonyv' && m === 'GET')
+    return J(200, (await db.prepare("SELECT kulcs, ertek FROM beallitas WHERE kulcs LIKE 'vk_%'").all()).results);
+  if (ut === 'vendegkonyv' && m === 'POST') {
+    const d = await be(), MEZOK = ['tel', 'wifi_nev', 'wifi_jelszo', 'bejutas_hu', 'bejutas_en', 'parkolas_hu', 'parkolas_en', 'jakuzzi_hu', 'jakuzzi_en', 'ertekeles_link'];
+    const k = MEZOK.filter(x => x in d); if (!k.length) return J(400, { hiba: 'nincs mező' });
+    if (d.ertekeles_link && !/^https:\/\//.test(d.ertekeles_link)) return J(400, { hiba: 'a link https:// kezdetű legyen' });
+    await db.batch(k.map(x => db.prepare("INSERT OR REPLACE INTO beallitas (kulcs, ertek, frissitve) VALUES (?, ?, datetime('now'))").bind('vk_' + x, String(d[x]).slice(0, 2000))));
+    return J(200, { ok: true });
+  }
+  if (ut === 'vendegut' && m === 'POST') return J(200, await utemezett(env, u.origin));   // kézi futtatás (próbához)
 
   if (ut === 'apartmanok' && m === 'GET')
     return J(200, (await db.prepare('SELECT * FROM apartman ORDER BY sorrend').all()).results);
@@ -108,7 +127,7 @@ export async function onRequest({ request, env, params }) {
     await db.prepare('UPDATE blog SET allapot = ? WHERE id = ?').bind(d.allapot, +d.id).run(); return J(200, { ok: true });
   }
   if (ut === 'mentes' && m === 'GET') {                             // teljes kimentés JSON-ban (költözéshez, biztonsági mentéshez)
-    const t = {}; for (const n of ['apartman', 'tartalom', 'foglalt_nap', 'ajanlatkeres', 'uzenet', 'beallitas', 'blog']) t[n] = (await db.prepare('SELECT * FROM ' + n).all()).results;
+    const t = {}; for (const n of ['apartman', 'tartalom', 'foglalt_nap', 'ajanlatkeres', 'uzenet', 'beallitas', 'blog', 'vendegut']) t[n] = (await db.prepare('SELECT * FROM ' + n).all()).results;
     t.kihivas = (await db.prepare('SELECT id, becenev, allomas, tipus, jovahagyva, letrehozva FROM kihivas').all()).results;   // a képek a /admin/api/kep/<id> címen
     return J(200, t, { 'content-disposition': 'attachment; filename="akvarell-mentes.json"' });
   }

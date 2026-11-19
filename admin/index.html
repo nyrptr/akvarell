@@ -5,8 +5,15 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
 <title>Akvarell – kezelő</title>
-<link rel="stylesheet" href="/style.css?v=e054aa42">
+<link rel="stylesheet" href="/style.css?v=82df7150">
 <style>
+/* a kezelő a vendégoldal stílusát használja; ezek a különbségek (a fejléc itt nem lebeg, a .sor itt lista, nem lapozó sor) */
+body{padding-bottom:24px}
+.fej{position:sticky;background:var(--lap);box-shadow:0 1px 0 var(--vonal)}
+.fej .logo{color:var(--tus);text-shadow:none}
+main.admin{max-width:760px;margin:0 auto;padding:4px 14px 32px}
+.admin .sor{display:block;overflow:visible;padding:12px 0;margin:0;grid-auto-flow:unset}
+.admin .blokk h2{font-size:22px;margin-bottom:8px}
 .ful{display:flex;gap:6px;overflow-x:auto;margin:12px 0}
 .ful button{min-height:44px;border:1px solid var(--vonal,#ccc);background:#fff;border-radius:999px;padding:8px 14px;font:inherit;white-space:nowrap}
 .ful button.most{background:var(--duna,#2d5f7a);color:#fff;border-color:transparent}
@@ -23,6 +30,6 @@
 <body>
 <header class="fej"><div class="belso"><a class="logo" href="/">Akvarell</a><span class="jelmag">kezelő</span></div></header>
 <main id="fo" class="admin"><p>Betöltés…</p></main>
-<script src="/admin/admin.js?v=0cdbfe98"></script>
+<script src="/admin/admin.js?v=033b42ee"></script>
 </body>
 </html>
