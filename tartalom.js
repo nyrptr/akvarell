@@ -40,7 +40,7 @@ window.TARTALOM = {
       festo_hu: "Amrita Sher-Gil India egyik legismertebb festője, félig magyar volt, és több nyarat töltött Zebegényben. Saját szavai szerint Delhi és London között Zebegény volt számára a világ közepe.",
       festo_en: "Amrita Sher-Gil, one of India's best-known painters, was half Hungarian and spent several summers in Zebegény. In her own words, between Delhi and London, Zebegény was the centre of the world.",
       ar_hetkoznap: 42000, ar_hetvege: 48000, ar3_hetkoznap: 63000, ar3_hetvege: 72000,
-      kepek: ["Amrita-apartman-nappali-2.jpg", "Amrita-apartman-halo.jpg"]
+      kepek: ["Amrita-apartman-nappali.jpg", "Amrita-apartman-halo.jpg", "Amrita-apartman-furdo.jpg", "Amrita-apartman-konyha.jpg"]
     },
     {
       id: "karpathy", sorrend: 4, nev: "Kárpáthy",
