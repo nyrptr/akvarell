@@ -62,3 +62,9 @@ CREATE TABLE IF NOT EXISTS blog (                 -- „Zebegényi hét”: hete
   allapot TEXT NOT NULL DEFAULT 'kint' CHECK (allapot IN ('vazlat','kint','levett')),
   letrehozva TEXT NOT NULL DEFAULT (datetime('now'))
 );
+CREATE TABLE IF NOT EXISTS vendegut (             -- visszaigazolt foglalás vendégútja: titkos vendégkönyv-link és az elküldött levelek
+  ajanlat_id INTEGER PRIMARY KEY REFERENCES ajanlatkeres(id) ON DELETE CASCADE,
+  token TEXT NOT NULL UNIQUE,                     -- 24 bájtos véletlen, a vendégkönyv címe: /#/vendeg/<token>
+  elkuldve TEXT NOT NULL DEFAULT '{}',            -- JSON: {visszaigazolas, elotte, ma_erkezik, tavozas, ertekeles: időbélyeg}
+  letrehozva TEXT NOT NULL DEFAULT (datetime('now'))
+);

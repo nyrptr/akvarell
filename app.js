@@ -23,6 +23,7 @@
       blog: "Zebegényi hét", blog_al: "Minden héten új bejegyzés a következő hétvégéről: időjárás, Duna, naplemente, egy ajánlat és a szabad helyek. Hivatalos adatokból, forrással.", blog_ures: "Az első bejegyzés hamarosan elkészül.", tovabb: "Tovább", hetvege_szabad: "Erre a hétvégére most szabad", hetvege_tele: "Erre a hétvégére már minden apartman foglalt. Nézd meg a következő hetet.", hv_foglal: "Ezt a hétvégét foglalom", forrasok: "Források", elo_most: "élő adat, most frissítve",
       kviz: "Melyik apartman illik hozzátok?", kviz_al: "Két kérdés, és megmutatjuk.", k1: "Fent vagy lent?", k1a: ["Emelet", "nagy ablakok, kilátás az ágyból és a fürdőből is"], k1b: ["Földszint", "saját nagy terasz, üvegfalú fürdő, kedvezőbb ár"], k2: "Mit néznél esténként?", k2fent: [["szonyi", "A vizet és a Visegrádi-hegységet"], ["bereny", "A Dunakanyart a hálószobából"]], k2lent: [["amrita", "A Dunát és a Börzsönyt"], ["karpathy", "A naplementét a teraszról"]], kviz_ered: "Nektek a(z)", ujra: "Újra",
       holnap: "Mit csináljunk holnap?", holnap_ido: "Holnap délben",
+      vk_cim: "Vendégkönyv", vk_udv: "Üdv", vk_napmulva: "nap múlva érkeztek", vk_ma_erk: "Ma érkeztek – 15 órától vár az apartman", vk_itt: "Jó pihenést! Távozás napján 10 óráig", vk_ma_tav: "Ma utaztok – 10 óráig kérjük elhagyni az apartmant", vk_vege: "Köszönjük, hogy nálunk voltatok!", vk_zarva: "A wifi és a bejutás tudnivalói az érkezés előtt 2 nappal jelennek meg itt.", vk_wifi: "Wifi", vk_halo: "Hálózat", vk_jelszo: "Jelszó", vk_masol: "Másolás", vk_masolva: "Másolva ✓", vk_bejutas: "Bejutás", vk_parkolas: "Parkolás", vk_jakuzzi: "Jakuzzi", vk_naplem: "Ma naplemente", vk_kerek: "Kérnél valamit?", vk_kerek_al: "Egy koppintás, és Ernő megkapja. Válaszolni e-mailben vagy telefonon fog.", vk_tip: [["kesoi", "Késői távozás", "10 óra után, szabad hely függvényében, 5500 Ft/óra"], ["korai", "Korai érkezés", "15 óra előtt, szabad hely függvényében, 5500 Ft/óra"], ["reggeli", "Reggeli", "48 órával előtte kell kérni"], ["masszazs", "Masszázs", "3–4 héttel előtte érdemes kérni"]], vk_uzenet: "Üzenet Ernőnek", vk_kuld: "Küldés", vk_elment: "Elküldve. Ernő hamarosan jelentkezik.", vk_ertekeles: "Értékelés írása", vk_nincs: "Ez a vendégkönyv-link nem érvényes. Nézd meg a visszaigazoló levelet, vagy hívj minket.", vk_hivj: "Hívás",
       ejtol: "Ft/éj-től", fo: "fő", mikor: "Mikor jönnél?", mikor_al: "Szabad napok és ár azonnal", szabad_gomb: "Szabad?", mutasd: "Mutasd",
       felnott: "Felnőtt", gyerek: "Gyerek 3–13", valassz_erk: "Koppints az érkezés napjára.", valassz_tav: "Most a távozás napját.",
       szabad: "Szabad", foglaltn: "Foglalt ezekre a napokra", ej: "éj", ossz: "Összesen", vissza: "← Vissza",
@@ -48,6 +49,7 @@
       blog: "Zebegény this week", blog_al: "A new post every week about the coming weekend: weather, the Danube, sunset, one tip and the free apartments. From official data, with sources.", blog_ures: "The first post is on its way.", tovabb: "Read", hetvege_szabad: "Free this weekend right now", hetvege_tele: "Every apartment is booked for this weekend. Try the week after.", hv_foglal: "Book this weekend", forrasok: "Sources", elo_most: "live, updated now",
       kviz: "Which apartment suits you?", kviz_al: "Two questions and we will show you.", k1: "Upstairs or downstairs?", k1a: ["Upstairs", "large windows, the view from the bed and the bathroom"], k1b: ["Ground floor", "your own large terrace, glass-walled bathroom, lower price"], k2: "What would you watch in the evening?", k2fent: [["szonyi", "The river and the Visegrád Hills"], ["bereny", "The Danube Bend from the bedroom"]], k2lent: [["amrita", "The Danube and the Börzsöny hills"], ["karpathy", "The sunset from the terrace"]], kviz_ered: "Your apartment:", ujra: "Start again",
       holnap: "What shall we do tomorrow?", holnap_ido: "Tomorrow at noon",
+      vk_cim: "Guest book", vk_udv: "Welcome", vk_napmulva: "days until you arrive", vk_ma_erk: "You arrive today – the apartment is ready from 15:00", vk_itt: "Enjoy your stay! On departure day, check-out is by 10:00", vk_ma_tav: "Departure today – please leave the apartment by 10:00", vk_vege: "Thank you for staying with us!", vk_zarva: "Wi-Fi and arrival details appear here 2 days before you arrive.", vk_wifi: "Wi-Fi", vk_halo: "Network", vk_jelszo: "Password", vk_masol: "Copy", vk_masolva: "Copied ✓", vk_bejutas: "Getting in", vk_parkolas: "Parking", vk_jakuzzi: "Hot tub", vk_naplem: "Sunset today", vk_kerek: "Anything you need?", vk_kerek_al: "One tap and Ernő gets it. He will reply by email or phone.", vk_tip: [["kesoi", "Late departure", "after 10:00, subject to availability, 5,500 HUF/hour"], ["korai", "Early arrival", "before 15:00, subject to availability, 5,500 HUF/hour"], ["reggeli", "Breakfast", "ask 48 hours ahead"], ["masszazs", "Massage", "best to ask 3–4 weeks ahead"]], vk_uzenet: "Message to Ernő", vk_kuld: "Send", vk_elment: "Sent. Ernő will be in touch shortly.", vk_ertekeles: "Write a review", vk_nincs: "This guest book link is not valid. Check your confirmation email or call us.", vk_hivj: "Call",
       ejtol: "HUF/night from", fo: "guests", mikor: "When are you coming?", mikor_al: "Free dates and prices instantly", szabad_gomb: "Available?", mutasd: "Show me",
       felnott: "Adults", gyerek: "Children 3–13", valassz_erk: "Tap your arrival day.", valassz_tav: "Now your departure day.",
       szabad: "Available", foglaltn: "Booked on these dates", ej: "nights", ossz: "Total", vissza: "← Back",
@@ -528,6 +530,47 @@
       '</div><button type="button" class="gomb teljes" data-hetvege="' + e(het) + '" style="margin-top:12px">' + s("hv_foglal") + " →</button>";
   }
 
+  /* ---------- vendégkönyv: a visszaigazolt vendég saját oldala (#/vendeg/<token>) ---------- */
+  var VK = {};
+  function vendegBetolt(tk) {
+    if (VK[tk]) return;
+    api("/api/vendeg/" + encodeURIComponent(tk)).then(function (d) { VK[tk] = d._status === 200 ? d : { hiba: true }; if (location.hash.indexOf(tk) > 0) $("#fo").innerHTML = vendegOldal(tk); }).catch(function () {});
+  }
+  function vendegOldal(tk) {
+    menu("vendeg");
+    var d = VK[tk];
+    if (!d) return fejlec(s("vk_cim"), "") + '<p class="jelmag">…</p></section>';
+    if (d.hiba) return fejlec(s("vk_cim"), "") + "<p>" + s("vk_nincs") + "</p>" + (O.kapcsolat && O.kapcsolat.tel ? '<a class="gomb" href="' + e(O.kapcsolat.telLink) + '">' + s("vk_hivj") + "</a>" : "") + "</section>";
+    var F2 = d.foglalas, V = d.vk, a = ap(F2.apartman_id) || { kepek: ["Szonyi-apartman-furdo-kilatas.jpg"] }, ma = d.ma || iso(new Date()), ny = nyelv;
+    var hatra = Math.round((dt(F2.erkezes) - dt(ma)) / 864e5), all;
+    all = hatra > 0 ? hatra + " " + s("vk_napmulva") : ma === F2.erkezes ? s("vk_ma_erk") : ma < F2.tavozas ? s("vk_itt") : ma === F2.tavozas ? s("vk_ma_tav") : s("vk_vege");
+    var h = '<section class="jelenet ap-hos"><img src="' + e(kep(a.kepek[0])) + '" alt=""><div class="bel"><p class="al">' + s("vk_cim") + " · " + e(F2.apnev) + "</p><h1>" + s("vk_udv") + ", " + e(F2.nev.split(" ").slice(-1)[0]) + '!</h1><div class="chipek"><span class="chip">' + rovid(F2.erkezes) + " – " + rovid(F2.tavozas) + '</span><span class="chip">' + e(all) + "</span></div></div></section>";
+    h += '<section class="szakasz" style="padding-top:20px">';
+    if (d.nyitva && (V.wifi_nev || V.wifi_jelszo)) h += '<div class="blokk"><h3>' + s("vk_wifi") + '</h3><dl class="wifi"><dt>' + s("vk_halo") + "</dt><dd>" + e(V.wifi_nev) + "</dd><dt>" + s("vk_jelszo") + "</dt><dd>" + e(V.wifi_jelszo) + '</dd></dl><button type="button" class="gomb masod" data-masol="' + e(V.wifi_jelszo) + '">' + s("vk_masol") + "</button></div>";
+    else if (!d.nyitva && hatra > 0) h += '<div class="blokk"><p class="jelmag" style="margin:0">' + s("vk_zarva") + "</p></div>";
+    function tud(k, cim) { var x = V[k + "_" + ny] || V[k + "_hu"]; return x ? '<div class="blokk"><h3>' + cim + '</h3><p style="white-space:pre-line;margin:0">' + e(x) + "</p></div>" : ""; }
+    if (d.nyitva) h += tud("bejutas", s("vk_bejutas"));
+    h += tud("parkolas", s("vk_parkolas"));
+    h += '<div class="blokk"><h3>' + s("vk_jakuzzi") + '</h3><p style="margin:0 0 6px">' + s("vk_naplem") + ": <b>" + hhmm(NAP.idok(new Date()).nyugszik) + "</b></p>" + (V["jakuzzi_" + ny] || V.jakuzzi_hu ? '<p style="white-space:pre-line;margin:0">' + e(V["jakuzzi_" + ny] || V.jakuzzi_hu) + "</p>" : "") + "</div>";
+    if (ma <= F2.tavozas) h += '<div id="holnap">' + holnap() + "</div>";
+    if (ma <= F2.tavozas) h += '<div class="blokk" id="vk-keres"><h3>' + s("vk_kerek") + '</h3><p class="jelmag">' + s("vk_kerek_al") + '</p><div class="valasz">' + s("vk_tip").map(function (x) { return '<button type="button" class="opcio" data-vkkeres="' + x[0] + '"><b>' + e(x[1]) + "</b><small>" + e(x[2]) + "</small></button>"; }).join("") +
+      '</div><form id="vk-uzenet" style="margin-top:12px"><label class="mezo"><span>' + s("vk_uzenet") + '</span><textarea id="vk-sz" rows="2"></textarea></label><button class="gomb" type="submit">' + s("vk_kuld") + '</button></form><div id="vk-eredm"></div></div>';
+    if (ma >= F2.tavozas && V.ertekeles_link) h += '<a class="gomb teljes" href="' + e(V.ertekeles_link) + '" target="_blank" rel="noopener">' + s("vk_ertekeles") + " ↗</a>";
+    var tel = V.tel || (O.kapcsolat || {}).tel;
+    h += '<div class="gombok" style="margin-top:16px">' + (tel ? '<a class="gomb" href="tel:' + e(tel.replace(/\s/g, "")) + '">' + s("vk_hivj") + " · " + e(tel) + "</a>" : "") + '<a class="gomb masod" href="https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent("2627 Zebegény, Csalogány utca 4.") + '" target="_blank" rel="noopener">' + s("utvonal") + ' ↗</a><a class="gomb masod" href="#/hazirend">' + s("hazirend") + "</a></div>";
+    return h + "</section>";
+  }
+  async function vendegKuld(tipus, szoveg) {
+    var tk = (location.hash.split("/")[2] || ""), out = $("#vk-eredm"); if (!out) return;
+    if (tipus === "egyeb" && (szoveg || "").trim().length < 2) return;
+    out.className = "uzenet"; out.textContent = "…";
+    try {
+      var r = await api("/api/vendeg/" + encodeURIComponent(tk), { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ tipus: tipus, szoveg: szoveg }) });
+      if (r._status !== 200) throw new Error();
+      out.className = "uzenet ok"; out.textContent = s("vk_elment"); if (tipus === "egyeb") $("#vk-sz").value = "";
+    } catch (x) { out.className = "uzenet hiba"; out.textContent = s("hiba"); }
+  }
+
   function menuLap() {
     var L = [["#/", s("apartmanok")], ["#/elmenyek", s("elmenyek")], ["#/felszereltseg", s("felszereltseg")], ["#/arak", s("arak_m")], ["#/ajandek", s("ajandek")], ["#/zebegeny", s("zebegeny")], ["#/blog", s("blog")], ["#/kihivas", s("kihivas")], ["#/rolunk", s("rolunk")], ["#/hazirend", s("hazirend")], ["#/adatkezeles", s("adatkezeles")]];
     $("#menulap .tartalom").innerHTML = '<nav class="menu-lista">' + L.map(function (x) { return '<a href="' + x[0] + '" data-menuzar>' + e(x[1]) + "<span>→</span></a>"; }).join("") + '<a href="' + e((O.kapcsolat || {}).virtualis) + '" target="_blank" rel="noopener">' + s("virtualis") + "<span>↗</span></a></nav>";
@@ -566,10 +609,12 @@
     else if (r[0] === "arak") fo.innerHTML = arakOldal();
     else if (r[0] === "ajandek") fo.innerHTML = ajandekOldal();
     else if (r[0] === "rolunk") fo.innerHTML = rolunkOldal();
+    else if (r[0] === "vendeg") { fo.innerHTML = vendegOldal(r[1]); vendegBetolt(r[1]); }
     else if (r[0] === "blog") { fo.innerHTML = r[1] ? blogCikk(r[1]) : blogOldal(); blogBetolt(); }
     else if (r[0] === "hazirend") fo.innerHTML = hosszuOldal("hazirend", s("hazirend"));
     else if (r[0] === "adatkezeles") fo.innerHTML = hosszuOldal("adatkezeles", s("adatkezeles"));
     else { fo.innerHTML = fooldal(); if (r[0] === "zebegeny") setTimeout(function () { var z = $("#zebegeny"); if (z) z.scrollIntoView(); }, 0); }
+    document.body.classList.toggle("vendegmod", r[0] === "vendeg");      // a vendégkönyvben nincs foglalási sáv
     lab(); savFrissit(); fejleces();
   }
   function atmenet(fn) { if (document.startViewTransition && !matchMedia("(prefers-reduced-motion: reduce)").matches) document.startViewTransition(fn); else fn(); }
@@ -598,6 +643,10 @@
       var sc = $("#lap-tartalom").scrollTop; lapRajz(); $("#lap-tartalom").scrollTop = sc;
       Object.keys(mentes).forEach(function (id) { document.getElementById(id).value = mentes[id]; }); return;
     }
+    var ms = ev.target.closest("[data-masol]");
+    if (ms) { var mt = ms.dataset.masol; (navigator.clipboard ? navigator.clipboard.writeText(mt) : Promise.reject()).then(function () { ms.textContent = s("vk_masolva"); }).catch(function () {}); return; }
+    var vt = ev.target.closest("[data-vkkeres]");
+    if (vt) { vendegKuld(vt.dataset.vkkeres, ""); return; }
     var kv = ev.target.closest("[data-kviz]");
     if (kv) { var kk2 = kv.dataset.kviz; if (kk2 === "ujra") F.kviz = null; else if (kk2 === "fent" || kk2 === "lent") F.kviz = kk2; else F.kviz = "ap:" + kk2; $("#kviz").innerHTML = kviz(); return; }
     var hv = ev.target.closest("[data-hetvege]");
@@ -610,7 +659,7 @@
   $("#lap").addEventListener("click", function (ev) { if (ev.target === this) this.close(); });
   $("#menulap").addEventListener("click", function (ev) { if (ev.target === this) this.close(); });
   document.addEventListener("change", function (ev) { if (ev.target.dataset && ev.target.dataset.allomas && ev.target.files && ev.target.files[0]) szelfiKuld(ev.target); });
-  document.addEventListener("submit", function (ev) { if (ev.target.id === "ajanlat") ajanlatKuld(ev); if (ev.target.id === "uzenet") uzenetKuld(ev); });
+  document.addEventListener("submit", function (ev) { if (ev.target.id === "ajanlat") ajanlatKuld(ev); if (ev.target.id === "uzenet") uzenetKuld(ev); if (ev.target.id === "vk-uzenet") { ev.preventDefault(); vendegKuld("egyeb", $("#vk-sz").value); } });
   window.addEventListener("hashchange", function () {
     ["#lap", "#menulap"].forEach(function (q) { var d = $(q); if (d.open) d.close(); });     // lapváltáskor a felcsúszó lapok bezárulnak
     atmenet(function () { rajzol(); window.scrollTo(0, 0); });

@@ -19,12 +19,12 @@
   }
   function kilep() { location.href = "/cdn-cgi/access/logout"; }
 
-  var FULEK = [["keres", "Foglalások"], ["uzenet", "Utalványok"], ["naptar", "Foglalt napok"], ["osszekotes", "Booking / Szállás.hu"], ["blog", "Zebegényi hét"], ["ar", "Árak, szövegek"], ["tartalom", "Főoldal"], ["kihivas", "Kihívás-képek"]];
+  var FULEK = [["keres", "Foglalások"], ["uzenet", "Üzenetek"], ["naptar", "Foglalt napok"], ["osszekotes", "Booking / Szállás.hu"], ["blog", "Zebegényi hét"], ["vk", "Vendégkönyv"], ["ar", "Árak, szövegek"], ["tartalom", "Főoldal"], ["kihivas", "Kihívás-képek"]];
   function vaz() {
     fo.innerHTML = '<nav class="ful">' + FULEK.map(function (f) { return '<button data-ful="' + f[0] + '"' + (f[0] === ful ? ' class="most"' : "") + ">" + f[1] + "</button>"; }).join("") + '</nav><div id="tart"></div><p><a class="gomb masod" href="/admin/api/mentes">Teljes mentés letöltése</a> <button class="gomb masod" id="ki">Kilépés</button></p>';
     fo.querySelectorAll("[data-ful]").forEach(function (b) { b.onclick = function () { ful = b.dataset.ful; vaz(); }; });
     document.getElementById("ki").onclick = kilep;
-    ({ keres: keresek, uzenet: uzenetek, naptar: naptar, osszekotes: osszekotes, blog: blog, ar: arak, tartalom: tartalom, kihivas: kihivas })[ful]();
+    ({ keres: keresek, uzenet: uzenetek, naptar: naptar, osszekotes: osszekotes, blog: blog, vk: vendegkonyv, ar: arak, tartalom: tartalom, kihivas: kihivas })[ful]();
   }
   var CIMKE = { uj: "új", visszaigazolva: "visszaigazolva", elutasitva: "elutasítva" };
   function t() { return document.getElementById("tart"); }
@@ -74,6 +74,31 @@
   }
 
   /* Zebegényi hét: heti gépi bejegyzés (met.no, OVF, naplemente, szabad helyek) */
+  var LEVEL = { visszaigazolas: "visszaigazolás", elotte: "érkezés előtt", tavozas: "távozás napján", ertekeles: "értékeléskérés" };
+  function vkSor(x) {
+    if (!x.token) return '<div class="vk-sor"></div>';
+    var link = location.origin + "/#/vendeg/" + x.token, el = {}; try { el = JSON.parse(x.elkuldve || "{}"); } catch (z) {}
+    var l = Object.keys(LEVEL).map(function (k) { return (el[k] ? "✓ " : "· ") + LEVEL[k]; }).join("  ");
+    return '<div class="vk-sor jelmag">Vendégkönyv: <a href="' + e(link) + '" target="_blank" rel="noopener">megnyitás ↗</a><br>Levelek: ' + e(l) + "</div>";
+  }
+
+  /* Vendégkönyv: amit a vendég a saját linkjén lát. A wifi és a bejutás csak érkezés előtt 2 naptól látszik. */
+  async function vendegkonyv() {
+    var r = await api("vendegkonyv"), v = {};
+    (r.data || []).forEach(function (x) { v[x.kulcs.slice(3)] = x.ertek; });
+    var M = [["tel", "Telefonszám a vendégeknek", "i"], ["wifi_nev", "Wifi neve", "i"], ["wifi_jelszo", "Wifi jelszava", "i"], ["bejutas_hu", "Bejutás (kapu, kulcs) – magyarul", "a"], ["bejutas_en", "Bejutás – angolul", "a"], ["parkolas_hu", "Parkolás – magyarul", "a"], ["parkolas_en", "Parkolás – angolul", "a"], ["jakuzzi_hu", "Jakuzzi tudnivalók – magyarul", "a"], ["jakuzzi_en", "Jakuzzi tudnivalók – angolul", "a"], ["ertekeles_link", "Értékelés linkje (pl. Google-értékelés), https://…", "i"]];
+    t().innerHTML = '<div class="blokk"><p class="jelmag">A visszaigazolt vendég a levélben kap egy saját linket. Ott ezeket látja. A wifi és a bejutás csak az érkezés előtti 2. naptól a távozás utáni napig jelenik meg.</p>' +
+      M.map(function (m) { return '<label class="mezo"><span>' + m[1] + "</span>" + (m[2] === "a" ? '<textarea rows="3" data-m="' + m[0] + '">' + e(v[m[0]] || "") + "</textarea>" : '<input data-m="' + m[0] + '" value="' + e(v[m[0]] || "") + '">') + "</label>"; }).join("") +
+      '<button class="gomb" id="vk-ment">Mentés</button></div><div class="blokk"><h2>Automatikus levelek</h2><p class="jelmag">Visszaigazoláskor azonnal; érkezés előtt 3 nappal; a távozás napján; másnap értékeléskérés. Neked minden érkezési napon reggel összefoglaló. Csak ha a levelező (Brevo) be van állítva; 8 és 20 óra között.</p><button class="gomb masod" id="vk-fut">Ellenőrzés most</button></div>';
+    document.getElementById("vk-ment").onclick = async function () {
+      var d = {}; t().querySelectorAll("[data-m]").forEach(function (x) { d[x.dataset.m] = x.value.trim(); });
+      var k = await api("vendegkonyv", d); mentve(this.parentNode, k.ok, k.ok ? null : (k.data.hiba || "Nem sikerült"));
+    };
+    document.getElementById("vk-fut").onclick = async function () {
+      var k = await api("vendegut", {}); mentve(this.parentNode, k.ok, k.ok ? (k.data.kihagyva ? "Kihagyva: " + k.data.kihagyva : "Lefutott: " + ((k.data.ki || []).length) + " levél") : "Nem sikerült");
+    };
+  }
+
   async function blog() {
     var r = await api("blog");
     if (!r.ok) { t().innerHTML = '<p class="uzenet hiba">Nem sikerült betölteni.</p>'; return; }
@@ -99,15 +124,16 @@
       var targy = encodeURIComponent((x.nyelv === "en" ? "Akvarell – your stay " : "Akvarell – foglalás ") + x.erkezes + " – " + x.tavozas);
       return '<div class="sor" data-id="' + x.id + '"><b>' + e(x.nev) + '</b> <span class="allapot ' + x.allapot + '">' + CIMKE[x.allapot] + "</span><br>" + e(x.apartman_id) + " · " + x.erkezes + " → " + x.tavozas + " · " + x.felnott + " felnőtt" + (x.gyerek ? ", " + x.gyerek + " gyerek" : "") + " · " + x.nyelv.toUpperCase() +
         '<br><a href="mailto:' + e(x.email) + "?subject=" + targy + '">' + e(x.email) + "</a>" + (x.telefon ? ' · <a href="tel:' + e(x.telefon) + '">' + e(x.telefon) + "</a>" : "") + (x.uzenet ? '<br><span class="jelmag">' + e(x.uzenet) + "</span>" : "") +
-        '<div class="gombok"><button data-a="visszaigazolva">Visszaigazolva + napok foglaltra</button><button data-a="elutasitva">Elutasítva</button></div></div>';
+        vkSor(x) + '<div class="gombok"><button data-a="visszaigazolva">Visszaigazolva + napok foglaltra</button><button data-a="elutasitva">Elutasítva</button></div></div>';
     }).join("") + "</div>";
     t().querySelectorAll(".sor").forEach(function (sor) {
       var x = r.data.find(function (y) { return y.id == sor.dataset.id; });
       sor.querySelectorAll("[data-a]").forEach(function (b) {
         b.onclick = async function () {
-          var ok = (await api("ajanlat", { id: x.id, allapot: b.dataset.a })).ok;
+          var v = await api("ajanlat", { id: x.id, allapot: b.dataset.a }), ok = v.ok;
           var cimke = sor.querySelector(".allapot"); if (ok) { cimke.className = "allapot " + b.dataset.a; cimke.textContent = CIMKE[b.dataset.a]; }
-          mentve(b.parentNode, ok);
+          if (ok && v.data.token) { x.token = v.data.token; var vs = sor.querySelector(".vk-sor"); if (vs) vs.outerHTML = vkSor(x); }
+          mentve(b.parentNode, ok, ok && v.data.level ? "Mentve ✓ · levél: " + v.data.level : null);
         };
       });
     });
