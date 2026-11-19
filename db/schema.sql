@@ -31,9 +31,10 @@ CREATE TABLE IF NOT EXISTS ajanlatkeres (
   letrehozva TEXT NOT NULL DEFAULT (datetime('now'))
 );
 CREATE TABLE IF NOT EXISTS kihivas (
-  id TEXT PRIMARY KEY,                           -- a kép kulcsa a KV-ban: kep:<id>
+  id TEXT PRIMARY KEY,
   becenev TEXT NOT NULL, allomas INTEGER NOT NULL CHECK (allomas BETWEEN 1 AND 10),
-  tipus TEXT NOT NULL, jovahagyva INTEGER NOT NULL DEFAULT 0,
+  tipus TEXT NOT NULL, kep BLOB NOT NULL,       -- a böngésző 1280 px-re kicsinyíti (≤ 1,5 MB; D1-sor ≤ 2 MB)
+  jovahagyva INTEGER NOT NULL DEFAULT 0,
   letrehozva TEXT NOT NULL DEFAULT (datetime('now'))
 );
 CREATE INDEX IF NOT EXISTS ajanlat_ido ON ajanlatkeres(letrehozva);

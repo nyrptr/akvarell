@@ -60,21 +60,21 @@ export async function onRequest({ request, env, params }) {
   }
 
   if (ut === 'kihivas' && m === 'GET')
-    return J(200, (await db.prepare('SELECT * FROM kihivas ORDER BY jovahagyva, letrehozva DESC LIMIT 100').all()).results);
+    return J(200, (await db.prepare('SELECT id, becenev, allomas, tipus, jovahagyva, letrehozva FROM kihivas ORDER BY jovahagyva, letrehozva DESC LIMIT 100').all()).results);
   if (ut === 'kihivas' && m === 'POST') {
     const d = await be();
-    if (d.torol) { await env.KEPEK.delete('kep:' + d.id); await db.prepare('DELETE FROM kihivas WHERE id = ?').bind(d.id).run(); }
+    if (d.torol) { await db.prepare('DELETE FROM kihivas WHERE id = ?').bind(d.id).run(); }
     else await db.prepare('UPDATE kihivas SET jovahagyva = ? WHERE id = ?').bind(d.jovahagyva ? 1 : 0, d.id).run();
     return J(200, { ok: true });
   }
   if (ut.startsWith('kep/') && m === 'GET') {
-    const id = ut.slice(4), r = await db.prepare('SELECT tipus FROM kihivas WHERE id = ?').bind(id).first();
-    const k = r && await env.KEPEK.get('kep:' + id, 'arrayBuffer');
-    return k ? new Response(k, { headers: { 'content-type': r.tipus, 'cache-control': 'private, no-store' } }) : new Response('', { status: 404 });
+    const id = ut.slice(4), r = await db.prepare('SELECT tipus, kep FROM kihivas WHERE id = ?').bind(id).first();
+    return r ? new Response(new Uint8Array(r.kep), { headers: { 'content-type': r.tipus, 'cache-control': 'private, no-store' } }) : new Response('', { status: 404 });
   }
 
   if (ut === 'mentes' && m === 'GET') {                             // teljes kimentés JSON-ban (költözéshez, biztonsági mentéshez)
-    const t = {}; for (const n of ['apartman', 'tartalom', 'foglalt_nap', 'ajanlatkeres', 'kihivas']) t[n] = (await db.prepare('SELECT * FROM ' + n).all()).results;
+    const t = {}; for (const n of ['apartman', 'tartalom', 'foglalt_nap', 'ajanlatkeres']) t[n] = (await db.prepare('SELECT * FROM ' + n).all()).results;
+    t.kihivas = (await db.prepare('SELECT id, becenev, allomas, tipus, jovahagyva, letrehozva FROM kihivas').all()).results;   // a képek a /admin/api/kep/<id> címen
     return J(200, t, { 'content-disposition': 'attachment; filename="akvarell-mentes.json"' });
   }
   return J(404, { hiba: 'nincs ilyen' });

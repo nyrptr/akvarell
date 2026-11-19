@@ -133,14 +133,28 @@
     var el = $("#szelfik"); if (!el) return;
     el.innerHTML = szelfik.length ? szelfik.map(function (x) { return '<img loading="lazy" src="' + "/kep/" + encodeURIComponent(x.id) + '" alt="' + e(x.becenev) + '">'; }).join("") : '<p class="jelmag">' + s("nincs_kep") + "</p>";
   }
+  /* A fotó a telefonon kicsinyítve megy fel (1280 px, JPEG): gyorsabb, és belefér az adatbázisba. */
+  function kicsinyit(fajl) {
+    return new Promise(function (ok, nem) {
+      var img = new Image(), u = URL.createObjectURL(fajl);
+      img.onload = function () {
+        var k = Math.min(1, 1280 / Math.max(img.width, img.height)), c = document.createElement("canvas");
+        c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+        c.getContext("2d").drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(u);
+        c.toBlob(function (b) { b ? ok(b) : nem(new Error("kép")); }, "image/jpeg", 0.82);
+      };
+      img.onerror = function () { URL.revokeObjectURL(u); nem(new Error("kép")); };
+      img.src = u;
+    });
+  }
   async function szelfiKuld(ev) {
     ev.preventDefault();
     var out = $("#sz-eredm"), btn = ev.target.querySelector("button"), nev = $("#sz-nev").value.trim(), fajl = $("#sz-kep").files[0];
     if (nev.length < 2 || !fajl) { out.className = "uzenet hiba"; out.textContent = s("becenev") + ", " + s("foto") + "?"; return; }
-    if (fajl.size > 5242880) { out.className = "uzenet hiba"; out.textContent = "Max 5 MB"; return; }
     btn.disabled = true;
+    try { fajl = await kicsinyit(fajl); } catch (x) { out.className = "uzenet hiba"; out.textContent = s("hiba"); btn.disabled = false; return; }
     try {
-      var fd = new FormData(); fd.append("becenev", nev); fd.append("allomas", $("#sz-all").value); fd.append("kep", fajl);
+      var fd = new FormData(); fd.append("becenev", nev); fd.append("allomas", $("#sz-all").value); fd.append("kep", fajl, "szelfi.jpg");
       var r = await api("/api/kihivas", { method: "POST", body: fd });
       if (!r.ok) throw new Error(r.hiba || "hiba");
       out.className = "uzenet ok"; out.textContent = s("bekuldve"); ev.target.reset();
