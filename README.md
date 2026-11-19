@@ -10,7 +10,7 @@ Statikus oldal (HTML/CSS/JS) + Cloudflare Pages Functions + D1 + KV. Buildlépé
 - `db/schema.sql`, `db/seed.sql` – adatbázis és kezdő tartalom.
 
 ## Beállítás (egyszer, Cloudflare)
-1. **D1:** Storage & Databases → D1 → Create → név: `akvarell`. A Console fülön futtasd a `db/schema.sql`, majd a `db/seed.sql` tartalmát.
+1. **D1:** Storage & Databases → D1 → Create → név: `akvarell`. A táblákat és a kezdő tartalmat az oldal az első kéréskor maga hozza létre (`functions/_kozos/telepit.js`, a `db/` fájlokból generálva: `python3 scripts/telepit_gen.py`).
 2. **KV:** Storage & Databases → KV → Create → név: `akvarell-kepek`.
 3. **Pages:** Workers & Pages → Create → Pages → Connect to Git → `akvarell`. Build command: üres. Output directory: `/`.
 4. **Kötések** (Pages-projekt → Settings → Bindings): D1 → változónév `DB` → `akvarell`; KV → változónév `KEPEK` → `akvarell-kepek`.
