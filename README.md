@@ -14,7 +14,7 @@ Statikus oldal (HTML/CSS/JS) + Cloudflare Pages Functions + D1 (a kihívás-kép
 3. **Pages:** Workers & Pages → Create → Pages → Connect to Git → `akvarell`. Build command: üres. Output directory: `/`.
 4. **Kötések** (Pages-projekt → Settings → Bindings): D1 → változónév `DB` → `akvarell`.
 5. **Access:** Zero Trust → Access → Applications → Self-hosted → domain: `akvarell.pages.dev`, útvonal: `admin` → szabály: Emails = a kezelők címei. Az alkalmazás „Application Audience (AUD) Tag” értékét másold ki.
-6. **Változók** (Pages → Settings → Variables): `ACCESS_TEAM` = a Zero Trust csapatnév (a `<csapat>.cloudflareaccess.com` eleje), `ACCESS_AUD` = az előző AUD, `ADMIN_EMAILS` = kezelők, vesszővel.
+6. **Változó** (Pages → Settings → Variables and Secrets): `ACCESS_AUD` = az előző AUD. Választható: `ACCESS_TEAM`, `ADMIN_EMAILS` (második szűrő az Access-szabály mellé).
 7. Újratelepítés (Deployments → Retry), és kész.
 
 ## Költözés
