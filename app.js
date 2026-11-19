@@ -502,7 +502,8 @@
     if (xb) {
       var mentes = {}; ["f-nev", "f-email", "f-tel", "f-uz"].forEach(function (id) { var el = document.getElementById(id); if (el) mentes[id] = el.value; });
       var x = xb.dataset.extra, ex1 = OLDALAK.extrak.filter(function (y) { return y.id === x; })[0], min = (ex1 && ex1.min) || 1, el = F.extrak[x] || 0, uj = el + (+xb.dataset.d);
-      uj = uj > 0 && uj < min ? (+xb.dataset.d > 0 ? min : 0) : Math.max(0, Math.min(9, uj));          // pl. reggeli: legalább 2 főre if (uj) F.extrak[x] = uj; else delete F.extrak[x];
+      uj = uj > 0 && uj < min ? (+xb.dataset.d > 0 ? min : 0) : Math.max(0, Math.min(9, uj));          // pl. reggeli: legalább 2 főre
+      if (uj) F.extrak[x] = uj; else delete F.extrak[x];
       var sc = $("#lap-tartalom").scrollTop; lapRajz(); $("#lap-tartalom").scrollTop = sc;
       Object.keys(mentes).forEach(function (id) { document.getElementById(id).value = mentes[id]; }); return;
     }
