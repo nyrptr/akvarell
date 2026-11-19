@@ -53,3 +53,12 @@ CREATE TABLE IF NOT EXISTS uzenet (               -- ajándékutalvány-kérés 
   allapot TEXT NOT NULL DEFAULT 'uj' CHECK (allapot IN ('uj','kesz')),
   letrehozva TEXT NOT NULL DEFAULT (datetime('now'))
 );
+CREATE TABLE IF NOT EXISTS blog (                 -- „Zebegényi hét”: hetente gépi bejegyzés hivatalos adatokból (AI nélkül is), Ernő leveheti
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  het TEXT NOT NULL UNIQUE,                       -- a hétvége szombatja (ÉÉÉÉ-HH-NN)
+  cim_hu TEXT NOT NULL, cim_en TEXT NOT NULL,
+  test_hu TEXT NOT NULL, test_en TEXT NOT NULL,   -- JSON: [["h"|"p", szöveg], …]
+  adat TEXT NOT NULL DEFAULT '{}',                -- a számok forrással (újraellenőrzéshez)
+  allapot TEXT NOT NULL DEFAULT 'kint' CHECK (allapot IN ('vazlat','kint','levett')),
+  letrehozva TEXT NOT NULL DEFAULT (datetime('now'))
+);

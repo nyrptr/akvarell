@@ -132,3 +132,42 @@ window.ELTERES = [
   "Minibár tartalma négyféle változatban (cseh sör / szlovák lager / kézműves sör / rostos üdítő).",
   "Amrita: egy helyen „emeleti, 45 m², privát erkély” – máshol (és a valóságban) földszinti, 40 m², terasz."
 ];
+
+/* Adatkezelési tájékoztató AZ ÚJ OLDALHOZ (a régi oldalé Google Analytics-et, Facebook Pixelt és más tárhelyet ír le, ide nem igaz).
+   TERVEZET – jogi átnézés szükséges; a [szögletes zárójeles] részeket Ernő tölti ki. Az adatkezelő adatai Ernő régi tájékoztatójából. */
+window.ADATVEDELEM = {
+  hu: [
+    ["h", "Ki kezeli az adataidat?"],
+    ["p", "Adatkezelő: Ferenczy Ernő Ervin egyéni vállalkozó (Akvarell Apartmanház), székhely: 2627 Zebegény, Csalogány út 1., e-mail: foglalas@akvarellzebegeny.hu, telefon: +36 70 380 6528."],
+    ["h", "Milyen adatot kérünk, és miért?"],
+    ["p", "Foglalási kérés: név, e-mail-cím, telefonszám (nem kötelező), üzenet, az érkezés és távozás napja, a létszám, a választott extrák és a nyelv. Célja a foglalás egyeztetése és visszaigazolása; jogalapja a szerződés megkötését megelőző lépések (GDPR 6. cikk (1) b)). A megvalósult foglalás adatait a szállásadásra és a számvitelre vonatkozó jogszabályok szerint őrizzük meg (GDPR 6. cikk (1) c))."],
+    ["p", "Ajándékutalvány-kérés: név, e-mail-cím, telefonszám (nem kötelező), üzenet. Célja az utalvány elkészítése és elküldése (GDPR 6. cikk (1) b))."],
+    ["p", "10-es kihívás: becenév, az állomás és a feltöltött fotó. A fotó csak Ernő jóváhagyása után jelenik meg az oldalon. Jogalapja a hozzájárulásod (GDPR 6. cikk (1) a)), amelyet bármikor visszavonhatsz: írj, és töröljük a képet."],
+    ["p", "Technikai adatok: a tárhely (Cloudflare) a biztonságos működés érdekében rövid ideig naplózza a kérések IP-címét (GDPR 6. cikk (1) f), jogos érdek)."],
+    ["h", "Sütik és követés"],
+    ["p", "Az oldal nem használ sütit, analitikát vagy hirdetési követőkódot. A nyelvválasztást és a kihívás haladását csak a te eszközöd tárolja (helyi tárhely), hozzánk nem jut el."],
+    ["h", "Kik férnek hozzá?"],
+    ["p", "Ernő és az általa megbízott kezelő. Adatfeldolgozó: Cloudflare, Inc. (tárhely és adatbázis). Az oldal betűtípusai a Google Fonts szolgáltatásból töltődnek be, ezért a böngésződ IP-címe a Google-höz is eljut; a szobaképek Ernő régi weboldaláról töltődnek be. Az időjárás és a vízállás adatait a szerverünk kéri le, ehhez a te adataidat nem használjuk."],
+    ["h", "Meddig őrizzük?"],
+    ["p", "A meg nem valósult foglalási kérést és az utalványkérést [kitöltendő: pl. 1 évig], a megvalósult foglalás adatait a jogszabályi határidőig, a kihívás-fotót a hozzájárulás visszavonásáig vagy [kitöltendő] őrizzük."],
+    ["h", "A jogaid"],
+    ["p", "Kérhetsz tájékoztatást, helyesbítést, törlést, korlátozást, adathordozást, és tiltakozhatsz az adatkezelés ellen – írj a fenti e-mail-címre, 30 napon belül válaszolunk. Panasszal a Nemzeti Adatvédelmi és Információszabadság Hatósághoz fordulhatsz (1055 Budapest, Falk Miksa utca 9–11., www.naih.hu), vagy bírósághoz."]
+  ],
+  en: [
+    ["h", "Who handles your data?"],
+    ["p", "Controller: Ernő Ervin Ferenczy, sole proprietor (Akvarell Apartment House), registered address: 2627 Zebegény, Csalogány út 1., Hungary, email: foglalas@akvarellzebegeny.hu, phone: +36 70 380 6528."],
+    ["h", "What we ask for, and why"],
+    ["p", "Booking request: name, email, phone (optional), message, arrival and departure dates, number of guests, chosen extras and language. Purpose: to arrange and confirm your booking; legal basis: steps prior to entering into a contract (GDPR Art. 6(1)(b)). Data of completed stays are kept as required by accommodation and accounting law (Art. 6(1)(c))."],
+    ["p", "Gift voucher request: name, email, phone (optional), message. Purpose: to prepare and send the voucher (Art. 6(1)(b))."],
+    ["p", "10 Challenge: nickname, stop and the uploaded photo. The photo appears on the site only after the owner approves it. Legal basis: your consent (Art. 6(1)(a)), which you can withdraw at any time – write to us and we will delete it."],
+    ["p", "Technical data: our host (Cloudflare) briefly logs request IP addresses for secure operation (Art. 6(1)(f), legitimate interest)."],
+    ["h", "Cookies and tracking"],
+    ["p", "This site uses no cookies, analytics or advertising trackers. Your language choice and challenge progress are stored only on your device (local storage) and never reach us."],
+    ["h", "Who has access?"],
+    ["p", "The owner and the manager he appoints. Processor: Cloudflare, Inc. (hosting and database). Fonts are loaded from Google Fonts, so your browser's IP address also reaches Google; room photos are loaded from the owner's previous website. Weather and water-level data are fetched by our server without using your data."],
+    ["h", "How long we keep it"],
+    ["p", "Booking requests that did not result in a stay and voucher requests: [to be completed, e.g. 1 year]; completed stays: as required by law; challenge photos: until consent is withdrawn or [to be completed]."],
+    ["h", "Your rights"],
+    ["p", "You can request access, rectification, erasure, restriction or portability, and object to processing – write to the email above and we will reply within 30 days. You may complain to the Hungarian data protection authority (NAIH, 1055 Budapest, Falk Miksa utca 9–11., www.naih.hu) or go to court."]
+  ]
+};

@@ -1,5 +1,7 @@
 // /admin/api/* – kezelő. Minden kérés előtt: Access-belépés ellenőrzése (lásd _kozos/k.js).
 import { J, kezelo, NAP } from '../../_kozos/k.js';
+import { szinkron } from '../../_kozos/naptar.js';
+import { hetiBejegyzes } from '../../_kozos/blog.js';
 const APARTMAN_MEZOK = ['ar_hetkoznap', 'ar_hetvege', 'ar3_hetkoznap', 'ar3_hetvege', 'kiemeles_hu', 'kiemeles_en', 'leiras_hu', 'leiras_en', 'festo_hu', 'festo_en'];
 
 export async function onRequest({ request, env, params }) {
@@ -72,8 +74,41 @@ export async function onRequest({ request, env, params }) {
     return r ? new Response(new Uint8Array(r.kep), { headers: { 'content-type': r.tipus, 'cache-control': 'private, no-store' } }) : new Response('', { status: 404 });
   }
 
+  // üzenetek (ajándékutalvány-kérések)
+  if (ut === 'uzenetek' && m === 'GET') return J(200, (await db.prepare('SELECT * FROM uzenet ORDER BY letrehozva DESC LIMIT 200').all()).results);
+  if (ut === 'uzenet' && m === 'POST') {
+    const d = await be(); if (!['uj', 'kesz'].includes(d.allapot)) return J(400, { hiba: 'állapot' });
+    await db.prepare('UPDATE uzenet SET allapot = ? WHERE id = ?').bind(d.allapot, +d.id).run(); return J(200, { ok: true });
+  }
+  // naptár-összekötés: külső iCal-címek apartmanonként, kézi szinkron, utolsó eredmény
+  if (ut === 'naptarak' && m === 'GET') {
+    const b = (await db.prepare("SELECT kulcs, ertek FROM beallitas WHERE kulcs LIKE 'ical_%'").all()).results;
+    const e = await db.prepare("SELECT ertek, ido FROM gyorsitotar WHERE kulcs = 'ical_eredmeny'").first();
+    return J(200, { cimek: Object.fromEntries(b.map(x => [x.kulcs.slice(5), x.ertek])), eredmeny: e ? JSON.parse(e.ertek) : {}, ido: e ? e.ido : null });
+  }
+  if (ut === 'naptar' && m === 'POST') {
+    const d = await be(), ap = String(d.ap || ''), cim = String(d.cim || '').trim();
+    if (!(await db.prepare('SELECT 1 FROM apartman WHERE id = ?').bind(ap).first())) return J(400, { hiba: 'apartman' });
+    if (cim && !/^https:\/\/[^\s]+$/.test(cim)) return J(400, { hiba: 'https:// kezdetű cím kell' });
+    await db.prepare("INSERT OR REPLACE INTO beallitas (kulcs, ertek, frissitve) VALUES (?, ?, datetime('now'))").bind('ical_' + ap, cim).run();
+    if (!cim) await db.prepare("DELETE FROM foglalt_nap WHERE apartman_id = ? AND forras = 'ical'").bind(ap).run();
+    return J(200, { ok: true });
+  }
+  if (ut === 'szinkron' && m === 'POST') return J(200, await szinkron(env, true));
+  // blog: lista, azonnali generálás, ki/levétel, automatikus kitétel be/ki
+  if (ut === 'blog' && m === 'GET') {
+    const a = await db.prepare("SELECT ertek FROM beallitas WHERE kulcs = 'blog_auto'").first();
+    return J(200, { auto: !a || a.ertek !== 'nem', bejegyzesek: (await db.prepare('SELECT id, het, cim_hu, allapot, test_hu FROM blog ORDER BY het DESC LIMIT 50').all()).results });
+  }
+  if (ut === 'blog/general' && m === 'POST') return J(200, (await hetiBejegyzes(env)) || { mar_van: true });
+  if (ut === 'blog' && m === 'POST') {
+    const d = await be();
+    if ('auto' in d) { await db.prepare("INSERT OR REPLACE INTO beallitas (kulcs, ertek) VALUES ('blog_auto', ?)").bind(d.auto ? 'igen' : 'nem').run(); return J(200, { ok: true }); }
+    if (!['vazlat', 'kint', 'levett'].includes(d.allapot)) return J(400, { hiba: 'állapot' });
+    await db.prepare('UPDATE blog SET allapot = ? WHERE id = ?').bind(d.allapot, +d.id).run(); return J(200, { ok: true });
+  }
   if (ut === 'mentes' && m === 'GET') {                             // teljes kimentés JSON-ban (költözéshez, biztonsági mentéshez)
-    const t = {}; for (const n of ['apartman', 'tartalom', 'foglalt_nap', 'ajanlatkeres']) t[n] = (await db.prepare('SELECT * FROM ' + n).all()).results;
+    const t = {}; for (const n of ['apartman', 'tartalom', 'foglalt_nap', 'ajanlatkeres', 'uzenet', 'beallitas', 'blog']) t[n] = (await db.prepare('SELECT * FROM ' + n).all()).results;
     t.kihivas = (await db.prepare('SELECT id, becenev, allomas, tipus, jovahagyva, letrehozva FROM kihivas').all()).results;   // a képek a /admin/api/kep/<id> címen
     return J(200, t, { 'content-disposition': 'attachment; filename="akvarell-mentes.json"' });
   }

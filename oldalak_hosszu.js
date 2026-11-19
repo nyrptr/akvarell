@@ -101,11 +101,7 @@ window.HOSSZU = {
 },
 {
 "c": "p",
-"t": "Cím: 2627 Zebegény, Bartóky utca 7."
-},
-{
-"c": "h",
-"t": "www.szonyimuzeum.hu"
+"t": "Cím: 2627 Zebegény, Bartóky utca 7. www.szonyimuzeum.hu"
 },
 {
 "c": "h",
@@ -325,10 +321,6 @@ window.HOSSZU = {
 "t": "Ez a kilátás különösen vonzó lehet a fotósok számára, akik szeretnék megörökíteni Esztergom és környékének varázslatos tájképét. A Vaskapu tökéletes helyszín egy rövid kiránduláshoz, ahol a természet szépsége mellett a város történelmi jelentőségű látképe is tárul eléd. A látogatók nemcsak a friss levegőt és a gyönyörű látványt élvezhetik, hanem egy rövid, de emlékezetes kikapcsolódásban is részesülhetnek."
 },
 {
-"c": "p",
-"t": "Kilátók a Dunakanyarban Akvarell Apartmanház Zebegény szállás jakuzzival"
-},
-{
 "c": "h",
 "t": "Zsitvay-kilátó"
 },
@@ -538,11 +530,7 @@ window.HOSSZU = {
 },
 {
 "c": "p",
-"t": "A híres Galli Cukrászda fagylaltjai kelnek életre Gábor és Rita cukrászdájában, mellette a csokoládéműhelyben a hagyományos és klasszikus – a mandulás, mogyorós, marcipános, narancsos és aranymazsolás – ízvilág alapján készülnek a csokoládék, bonbonok. Nagymaros,"
-},
-{
-"c": "h",
-"t": "Magyar u. 18., www.fgmanufaktura.hu"
+"t": "A híres Galli Cukrászda fagylaltjai kelnek életre Gábor és Rita cukrászdájában, mellette a csokoládéműhelyben a hagyományos és klasszikus – a mandulás, mogyorós, marcipános, narancsos és aranymazsolás – ízvilág alapján készülnek a csokoládék, bonbonok. Nagymaros, Magyar u. 18., www.fgmanufaktura.hu"
 },
 {
 "c": "h",
@@ -614,11 +602,7 @@ window.HOSSZU = {
 },
 {
 "c": "p",
-"t": "Ha a bringázás szerelmese vagy, igazán sok útvonal közül válogathatsz. Talán az egyik legszebb útvonal a Verőce és a Zebegény közötti szakasz, ahogy a Zebegény és Esztergom közötti útvonal is egy kis szlovák kitérővel. De legalább ilyen gazdag látványban a Szentendre–Leányfalu–"
-},
-{
-"c": "p",
-"t": "Dunabogdány–Visegrád–Dömös–Esztergom útvonal is, érdemes ezt is bejárnod."
+"t": "Ha a bringázás szerelmese vagy, igazán sok útvonal közül válogathatsz. Talán az egyik legszebb útvonal a Verőce és a Zebegény közötti szakasz, ahogy a Zebegény és Esztergom közötti útvonal is egy kis szlovák kitérővel. De legalább ilyen gazdag látványban a Szentendre–Leányfalu– Dunabogdány–Visegrád–Dömös–Esztergom útvonal is, érdemes ezt is bejárnod."
 },
 {
 "c": "h",
@@ -686,15 +670,7 @@ window.HOSSZU = {
 },
 {
 "c": "p",
-"t": "1. nap: Esztergom – Szentendrei-sziget csúcsa,"
-},
-{
-"c": "h",
-"t": "2. nap: Szentendre – Római-part"
-},
-{
-"c": "p",
-"t": "Élmények a Dunakanyarban, kirándulás, szabadidő, Zebegény, Akvarell Apartmanház szállás jakuzzival"
+"t": "1. nap: Esztergom – Szentendrei-sziget csúcsa, 2. nap: Szentendre – Római-part"
 },
 {
 "c": "h",
@@ -1005,31 +981,19 @@ window.HOSSZU = {
 },
 {
 "c": "p",
-"t": "Érkezés előtti 13-4."
+"t": "Érkezés előtti 13-4. napig a szállásdíj értékének 50%-át Szolgáltató visszafizeti."
 },
 {
 "c": "p",
-"t": "napig a szállásdíj értékének 50%-át Szolgáltató visszafizeti."
-},
-{
-"c": "h",
-"t": "Érkezés előtti 3. naptól az"
-},
-{
-"c": "p",
-"t": "érkezésig történt lemondás esetén nincsen mód a befizetett szállásdíj visszafizetésére."
+"t": "Érkezés előtti 3. naptól az érkezésig történt lemondás esetén nincsen mód a befizetett szállásdíj visszafizetésére."
 },
 {
 "c": "p",
 "t": "A szállásdíj visszafizetése 5 munkanapon belül történik meg."
 },
 {
-"c": "h",
-"t": "Érkezés napját megelőző 3. napig lehetősége"
-},
-{
 "c": "p",
-"t": "van 1 alkalommal díjmentesen módosítani foglalását. Az érkezés napját megelőző 3. naptól módosításra nincs lehetőség, a módosítás csak új foglalás készítésével eszközölhető, az eredeti foglalás befizetett értékét"
+"t": "Érkezés napját megelőző 3. napig lehetősége van 1 alkalommal díjmentesen módosítani foglalását. Az érkezés napját megelőző 3. naptól módosításra nincs lehetőség, a módosítás csak új foglalás készítésével eszközölhető, az eredeti foglalás befizetett értékét"
 },
 {
 "c": "p",
@@ -1280,24 +1244,8 @@ window.HOSSZU = {
 "t": "Tájékoztató: az Adatkezelő jelen adatkezelési tájékoztatója."
 },
 {
-"c": "h",
-"t": "3. AZ ADATKEZELŐ SZEMÉLYE ÉS TEVÉKENYSÉGE"
-},
-{
-"c": "h",
-"t": "név: Ferenczy Ernő Ervin"
-},
-{
 "c": "p",
-"t": "székhely: 2627 Zebegény, Csalogány út 1."
-},
-{
-"c": "h",
-"t": "telefon: +36-70-380-6528"
-},
-{
-"c": "h",
-"t": "e-mail: foglalas@akvarellzebegeny.hu"
+"t": "3. AZ ADATKEZELŐ SZEMÉLYE ÉS TEVÉKENYSÉGE név: Ferenczy Ernő Ervin székhely: 2627 Zebegény, Csalogány út 1. telefon: +36-70-380-6528 e-mail: foglalas@akvarellzebegeny.hu"
 },
 {
 "c": "h",
@@ -1365,27 +1313,7 @@ window.HOSSZU = {
 },
 {
 "c": "p",
-"t": "4.8. Az Adatkezelő a személyes adatokat az irányadó jogszabályoknak megfelelően kezeli. Az adatkezelésre irányadó jogszabályok különösen:"
-},
-{
-"c": "p",
-"t": "az információs önrendelkezési jogról és az információszabadságról szóló 2011. évi CXII. törvény (továbbiakban: „Infotv.”);"
-},
-{
-"c": "p",
-"t": "a gazdasági reklámtevékenység alapvető feltételeiről és egyes korlátairól szóló 2008. évi XLVIII. törvény (továbbiakban: „Grtv.”);"
-},
-{
-"c": "p",
-"t": "az Európai Parlament és a Tanács 2016/679 Rendelete;"
-},
-{
-"c": "p",
-"t": "az elektronikus kereskedelmi szolgáltatások, valamint az információs társadalommal összefüggő szolgáltatások egyes kérdéseiről szóló 2001. évi CVIII. törvény;"
-},
-{
-"c": "p",
-"t": "a számvitelről szóló 2000. évi C. törvény 169. § (a bizonylatok megőrzését illetően)."
+"t": "4.8. Az Adatkezelő a személyes adatokat az irányadó jogszabályoknak megfelelően kezeli. Az adatkezelésre irányadó jogszabályok különösen: az információs önrendelkezési jogról és az információszabadságról szóló 2011. évi CXII. törvény (továbbiakban: „Infotv.”); a gazdasági reklámtevékenység alapvető feltételeiről és egyes korlátairól szóló 2008. évi XLVIII. törvény (továbbiakban: „Grtv.”); az Európai Parlament és a Tanács 2016/679 Rendelete; az elektronikus kereskedelmi szolgáltatások, valamint az információs társadalommal összefüggő szolgáltatások egyes kérdéseiről szóló 2001. évi CVIII. törvény; a számvitelről szóló 2000. évi C. törvény 169. § (a bizonylatok megőrzését illetően)."
 },
 {
 "c": "h",
@@ -1433,27 +1361,7 @@ window.HOSSZU = {
 },
 {
 "c": "p",
-"t": "Az adatkezelés célja a fentiek alapján:"
-},
-{
-"c": "p",
-"t": "a Felhasználó azonosítása, a Felhasználóval való kapcsolattartás;"
-},
-{
-"c": "p",
-"t": "az Adatkezelőt terhelő kötelezettségek teljesítése, az Adatkezelőt megillető jogok gyakorlása;"
-},
-{
-"c": "p",
-"t": "a Felhasználó külön hozzájárulása esetén reklámozás, kutatás;"
-},
-{
-"c": "p",
-"t": "elemzések, statisztikák készítése, a szolgáltatások fejlesztése – ezen célból az adatkezelő csak anonimizált adatokat, személyazonosításra alkalmatlan összesítéseket használ fel;"
-},
-{
-"c": "p",
-"t": "a Felhasználók jogainak védelme."
+"t": "Az adatkezelés célja a fentiek alapján: a Felhasználó azonosítása, a Felhasználóval való kapcsolattartás; az Adatkezelőt terhelő kötelezettségek teljesítése, az Adatkezelőt megillető jogok gyakorlása; a Felhasználó külön hozzájárulása esetén reklámozás, kutatás; elemzések, statisztikák készítése, a szolgáltatások fejlesztése – ezen célból az adatkezelő csak anonimizált adatokat, személyazonosításra alkalmatlan összesítéseket használ fel; a Felhasználók jogainak védelme."
 },
 {
 "c": "h",
@@ -1473,11 +1381,7 @@ window.HOSSZU = {
 },
 {
 "c": "p",
-"t": "Az Adatkezelő kizárólag a Felhasználók által megadott személyes adatokat kezeli. A kezelt adatok az alábbiak:"
-},
-{
-"c": "p",
-"t": "vezetéknévek, keresztnévek, becenevek, e-mail-cím, mobiltelefonszám, kapcsolattartó neve, kapcsolattartó meail címe, kapcsolattartó telefonszáma."
+"t": "Az Adatkezelő kizárólag a Felhasználók által megadott személyes adatokat kezeli. A kezelt adatok az alábbiak: vezetéknévek, keresztnévek, becenevek, e-mail-cím, mobiltelefonszám, kapcsolattartó neve, kapcsolattartó meail címe, kapcsolattartó telefonszáma."
 },
 {
 "c": "p",
@@ -1689,23 +1593,7 @@ window.HOSSZU = {
 },
 {
 "c": "p",
-"t": "Az Adatkezelő az informatikai védelemmel kapcsolatos feladatai körében gondoskodik különösen:"
-},
-{
-"c": "p",
-"t": "a jogosulatlan hozzáférés elleni védelmet biztosító intézkedésekről, ezen belül a szoftver és hardver eszközök védelméről, illetve a fizikai védelemről (hozzáférés védelem, hálózati védelem);"
-},
-{
-"c": "p",
-"t": "az adatállományok helyreállításának lehetőségét biztosító intézkedésekről, ezen belül a rendszeres biztonsági mentésről és a másolatok elkülönített, biztonságos kezeléséről (tükrözés, biztonsági mentés);"
-},
-{
-"c": "p",
-"t": "az adatállományok vírusok elleni védelméről (vírusvédelem);"
-},
-{
-"c": "p",
-"t": "az adatállományok, illetve az azokat hordozó eszközök fizikai védelméről, ezen belül a tűzkár, vízkár, villámcsapás, egyéb elemi kár elleni védelemről, illetve az ilyen események következtében bekövetkező károsodások helyreállíthatóságáról (archiválás, tűzvédelem)."
+"t": "Az Adatkezelő az informatikai védelemmel kapcsolatos feladatai körében gondoskodik különösen: a jogosulatlan hozzáférés elleni védelmet biztosító intézkedésekről, ezen belül a szoftver és hardver eszközök védelméről, illetve a fizikai védelemről (hozzáférés védelem, hálózati védelem); az adatállományok helyreállításának lehetőségét biztosító intézkedésekről, ezen belül a rendszeres biztonsági mentésről és a másolatok elkülönített, biztonságos kezeléséről (tükrözés, biztonsági mentés); az adatállományok vírusok elleni védelméről (vírusvédelem); az adatállományok, illetve az azokat hordozó eszközök fizikai védelméről, ezen belül a tűzkár, vízkár, villámcsapás, egyéb elemi kár elleni védelemről, illetve az ilyen események következtében bekövetkező károsodások helyreállíthatóságáról (archiválás, tűzvédelem)."
 },
 {
 "c": "p",
@@ -1720,32 +1608,16 @@ window.HOSSZU = {
 "t": "15. AZ ADATKEZELÉS IDŐTARTAMA"
 },
 {
-"c": "h",
-"t": "Az Adatkezelő a személyes adatot törli, ha"
+"c": "p",
+"t": "Az Adatkezelő a személyes adatot törli, ha a) a kezelése jogellenes;"
 },
 {
 "c": "p",
-"t": "a) a kezelése jogellenes;"
+"t": "Amennyiben kiderül, hogy az adatok kezelése jogellenesen történik, az Adatkezelő a törlést haladéktalanul végrehajtja. b) a Felhasználó kéri (a jogszabályon alapuló adatkezelések kivételével);"
 },
 {
 "c": "p",
-"t": "Amennyiben kiderül, hogy az adatok kezelése jogellenesen történik, az Adatkezelő a törlést haladéktalanul végrehajtja."
-},
-{
-"c": "p",
-"t": "b) a Felhasználó kéri (a jogszabályon alapuló adatkezelések kivételével);"
-},
-{
-"c": "p",
-"t": "A Felhasználó önkéntes hozzájárulása alapján kezelt adatok törlését a Felhasználó kérheti. Ez esetben az Adatkezelő az adatokat törli. A törlés csak akkor tagadható meg, ha az adatok kezelésére jogszabály felhatalmazást ad. A törlési kérelem megtagadásáról, és az adatkezelést lehetővé tevő jogszabályról az Adatkezelő minden esetben tájékoztatást ad."
-},
-{
-"c": "p",
-"t": "c) az adat hiányos vagy téves – és ez az állapot jogszerűen nem orvosolható –, feltéve, hogy a törlést törvény nem zárja ki;"
-},
-{
-"c": "p",
-"t": "d) az adatkezelés célja megszűnt, vagy az adatok tárolásának törvényben meghatározott határideje lejárt;"
+"t": "A Felhasználó önkéntes hozzájárulása alapján kezelt adatok törlését a Felhasználó kérheti. Ez esetben az Adatkezelő az adatokat törli. A törlés csak akkor tagadható meg, ha az adatok kezelésére jogszabály felhatalmazást ad. A törlési kérelem megtagadásáról, és az adatkezelést lehetővé tevő jogszabályról az Adatkezelő minden esetben tájékoztatást ad. c) az adat hiányos vagy téves – és ez az állapot jogszerűen nem orvosolható –, feltéve, hogy a törlést törvény nem zárja ki; d) az adatkezelés célja megszűnt, vagy az adatok tárolásának törvényben meghatározott határideje lejárt;"
 },
 {
 "c": "p",
@@ -1761,11 +1633,7 @@ window.HOSSZU = {
 },
 {
 "c": "p",
-"t": "Minden egyéb adatot az Adatkezelő töröl, ha nyilvánvaló, hogy az adatok felhasználására a jövőben nem kerül sor, vagyis az adatkezelés célja megszűnt."
-},
-{
-"c": "p",
-"t": "e) azt a bíróság vagy a Nemzeti Adatvédelmi és Információszabadság Hatóság elrendelte"
+"t": "Minden egyéb adatot az Adatkezelő töröl, ha nyilvánvaló, hogy az adatok felhasználására a jövőben nem kerül sor, vagyis az adatkezelés célja megszűnt. e) azt a bíróság vagy a Nemzeti Adatvédelmi és Információszabadság Hatóság elrendelte"
 },
 {
 "c": "p",

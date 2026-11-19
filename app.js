@@ -20,6 +20,9 @@
       ma_cim: "Zebegény ma", ma_al: "Élő adatok a faluból, ahol a Duna kanyarodik.", dunacm: "Duna, Nagymaros", vizho: "Vízhőfok", most: "Most", naplem: "Naplemente", napkel: "Napkelte",
       forras_duna: "Vízállás és vízhőfok: OVF vízügyi geoportál, Nagymaros mérce", forras_ido: "Időjárás: met.no (Yr)", forras_nap: "Napkelte, napnyugta: csillagászati számítás",
       kihivas_teaser: "Tíz állomás, tíz szelfi. Pipáld ki, ahol már jártál.", indulok: "Indulok",
+      blog: "Zebegényi hét", blog_al: "Minden héten új bejegyzés a következő hétvégéről: időjárás, Duna, naplemente, egy ajánlat és a szabad helyek. Hivatalos adatokból, forrással.", blog_ures: "Az első bejegyzés hamarosan elkészül.", tovabb: "Tovább", hetvege_szabad: "Erre a hétvégére most szabad", hetvege_tele: "Erre a hétvégére már minden apartman foglalt. Nézd meg a következő hetet.", hv_foglal: "Ezt a hétvégét foglalom", forrasok: "Források", elo_most: "élő adat, most frissítve",
+      kviz: "Melyik apartman illik hozzátok?", kviz_al: "Két kérdés, és megmutatjuk.", k1: "Fent vagy lent?", k1a: ["Emelet", "nagy ablakok, kilátás az ágyból és a fürdőből is"], k1b: ["Földszint", "saját nagy terasz, üvegfalú fürdő, kedvezőbb ár"], k2: "Mit néznél esténként?", k2fent: [["szonyi", "A vizet és a Visegrádi-hegységet"], ["bereny", "A Dunakanyart a hálószobából"]], k2lent: [["amrita", "A Dunát és a Börzsönyt"], ["karpathy", "A naplementét a teraszról"]], kviz_ered: "Nektek a(z)", ujra: "Újra",
+      holnap: "Mit csináljunk holnap?", holnap_ido: "Holnap délben",
       ejtol: "Ft/éj-től", fo: "fő", mikor: "Mikor jönnél?", mikor_al: "Szabad napok és ár azonnal", szabad_gomb: "Szabad?", mutasd: "Mutasd",
       felnott: "Felnőtt", gyerek: "Gyerek 3–13", valassz_erk: "Koppints az érkezés napjára.", valassz_tav: "Most a távozás napját.",
       szabad: "Szabad", foglaltn: "Foglalt ezekre a napokra", ej: "éj", ossz: "Összesen", vissza: "← Vissza",
@@ -42,6 +45,9 @@
       ma_cim: "Zebegény today", ma_al: "Live from the village where the Danube bends.", dunacm: "Danube, Nagymaros", vizho: "Water temperature", most: "Now", naplem: "Sunset", napkel: "Sunrise",
       forras_duna: "Water level and temperature: Hungarian water authority (OVF), Nagymaros gauge", forras_ido: "Weather: met.no (Yr)", forras_nap: "Sunrise and sunset: astronomical calculation",
       kihivas_teaser: "Ten stops, ten selfies. Tick off the ones you have found.", indulok: "Let's go",
+      blog: "Zebegény this week", blog_al: "A new post every week about the coming weekend: weather, the Danube, sunset, one tip and the free apartments. From official data, with sources.", blog_ures: "The first post is on its way.", tovabb: "Read", hetvege_szabad: "Free this weekend right now", hetvege_tele: "Every apartment is booked for this weekend. Try the week after.", hv_foglal: "Book this weekend", forrasok: "Sources", elo_most: "live, updated now",
+      kviz: "Which apartment suits you?", kviz_al: "Two questions and we will show you.", k1: "Upstairs or downstairs?", k1a: ["Upstairs", "large windows, the view from the bed and the bathroom"], k1b: ["Ground floor", "your own large terrace, glass-walled bathroom, lower price"], k2: "What would you watch in the evening?", k2fent: [["szonyi", "The river and the Visegrád Hills"], ["bereny", "The Danube Bend from the bedroom"]], k2lent: [["amrita", "The Danube and the Börzsöny hills"], ["karpathy", "The sunset from the terrace"]], kviz_ered: "Your apartment:", ujra: "Start again",
+      holnap: "What shall we do tomorrow?", holnap_ido: "Tomorrow at noon",
       ejtol: "HUF/night from", fo: "guests", mikor: "When are you coming?", mikor_al: "Free dates and prices instantly", szabad_gomb: "Available?", mutasd: "Show me",
       felnott: "Adults", gyerek: "Children 3–13", valassz_erk: "Tap your arrival day.", valassz_tav: "Now your departure day.",
       szabad: "Available", foglaltn: "Booked on these dates", ej: "nights", ossz: "Total", vissza: "← Back",
@@ -162,7 +168,7 @@
 
   /* ---------- fejléc, menü, lábléc ---------- */
   function menu(akt) {
-    var m = [["#/elmenyek", s("elmenyek"), "elmenyek", "mas"], ["#/arak", s("arak_m"), "arak", "mas"], ["#/kihivas", s("kihivas"), "kihivas", "mas"]];
+    var m = [["#/elmenyek", s("elmenyek"), "elmenyek", "mas"], ["#/blog", s("blog"), "blog", "mas"], ["#/arak", s("arak_m"), "arak", "mas"], ["#/kihivas", s("kihivas"), "kihivas", "mas"]];
     $("#menu").innerHTML = m.map(function (x) { return '<a href="' + x[0] + '" class="' + x[3] + (x[2] === akt ? " most" : "") + '">' + e(x[1]) + "</a>"; }).join("") + '<button type="button" class="menugomb" data-menu aria-label="' + s("menu") + '"><span></span><span></span><span></span></button>';
   }
   function lab() {
@@ -198,7 +204,7 @@
   function fooldal() {
     menu("fo");
     var h = '<section class="jelenet"><img src="' + e(kep("Bereny-apartman-nappali.jpg")) + '" alt="" fetchpriority="high"><div class="bel"><h1>Akvarell</h1><p class="al">' + e(sz("alcim")) + '</p><div class="chipek" id="chipek">' + chipek() + "</div></div></section>";
-    h += '<section class="szakasz" id="apartmanok"><h2 class="emel">' + s("negy") + '</h2><p class="lead emel">' + s("negy_al") + '</p><div class="sor" id="sor">' + aps().map(kartya).join("") + "</div></section>";
+    h += '<section class="szakasz" id="apartmanok"><h2 class="emel">' + s("negy") + '</h2><p class="lead emel">' + s("negy_al") + '</p><div class="sor" id="sor">' + aps().map(kartya).join("") + '</div><div class="blokk emel" id="kviz">' + kviz() + "</div></section>";
     h += '<section class="jelenet kozel"><img class="festek" loading="lazy" src="' + e(kep("Szonyi-apartman-furdo-kilatas.jpg")) + '" alt=""><div class="bel"><h2>' + s("furdo") + '</h2><p class="al">' + s("furdo_al") + "</p></div></section>";
     h += '<section class="jelenet kozel"><img class="festek" loading="lazy" src="' + e(kep("Jakuzzi-5.jpg")) + '" alt=""><div class="bel"><h2>' + s("jakuzzi") + '</h2><p class="al">' + s("jakuzzi_al") + '</p><div class="chipek"><span class="chip">' + IK.nap + s("naplem") + " " + hhmm(NAP.idok(new Date()).nyugszik) + "</span></div></div></section>";
     var V = O.ertekeles;
@@ -206,7 +212,8 @@
     h += '<section class="szakasz"><h2 class="emel">' + s("elmeny_cim") + '</h2><p class="lead emel">' + s("elmeny_al") + '</p><div class="sor">' + (O.elmenyek || []).slice(0, 6).map(elmenyKartya).join("") + '</div><a class="gomb masod" href="#/elmenyek">' + s("elmenyek") + " →</a></section>";
     var ik = [IK.jakuzzi, IK.villam, IK.auto, IK.wifi];
     h += '<section class="szakasz"><div class="racs">' + s("teny").map(function (t, i) { return '<div class="teny emel">' + ik[i] + "<b>" + t[0] + "</b><span>" + t[1] + "</span></div>"; }).join("") + "</div></section>";
-    h += '<section class="szakasz" id="zebegeny"><h2 class="emel">' + s("ma_cim") + '</h2><p class="lead emel">' + s("ma_al") + '</p><div class="elo" id="elo">' + elo() + '</div><p class="forras">' + [s("forras_duna"), s("forras_ido"), s("forras_nap")].join(" · ") + "</p></section>";
+    h += '<section class="szakasz" id="zebegeny"><h2 class="emel">' + s("ma_cim") + '</h2><p class="lead emel">' + s("ma_al") + '</p><div class="elo" id="elo">' + elo() + '</div><div id="holnap">' + holnap() + '</div><p class="forras">' + [s("forras_duna"), s("forras_ido"), s("forras_nap")].join(" · ") + "</p></section>";
+    h += '<section class="szakasz" id="blogteaser">' + blogTeaser() + "</section>";
     var p = kesz().length;
     h += '<section class="szakasz"><div class="blokk emel" style="display:flex;gap:16px;align-items:center"><div class="kor" style="--p:' + p * 10 + ';flex:none;margin:0"><span>' + p + '</span></div><div><h3>' + e(sz("kihivas_cim")) + '</h3><p style="margin:4px 0 10px">' + s("kihivas_teaser") + '</p><a class="gomb" href="#/kihivas">' + s("indulok") + " →</a></div></div></section>";
     return h;
@@ -378,9 +385,11 @@
     menu("elmenyek");
     return fejlec(s("elmeny_cim"), s("elmeny_al")) + '<div class="racs2">' + (O.elmenyek || []).map(elmenyKartya).join("") + "</div>" + foglalGomb() + "</section>";
   }
+  function angolE(kulcs) { var en = (window.HOSSZU_EN || {})[kulcs]; return en && H[kulcs] && en.length === H[kulcs].blokkok.length ? en : null; }   // csak ha blokkra pontosan illeszkedik
   function cikk(kulcs) {
     var c = H[kulcs]; if (!c) return "";
-    return '<div class="cikk">' + c.blokkok.slice(1).map(function (b) { return b.c === "h" ? "<h3>" + e(b.t) + "</h3>" : b.c === "li" ? '<p class="li">' + e(b.t) + "</p>" : "<p>" + e(b.t) + "</p>"; }).join("") +
+    var en = nyelv === "en" ? angolE(kulcs) : null;
+    return '<div class="cikk">' + c.blokkok.slice(1).map(function (b, i) { var t = en ? en[i + 1] : b.t; return b.c === "h" ? "<h3>" + e(t) + "</h3>" : b.c === "li" ? '<p class="li">' + e(t) + "</p>" : "<p>" + e(t) + "</p>"; }).join("") +
       '<p class="forras"><a href="' + e(c.forras) + '" target="_blank" rel="noopener">' + s("forras_regi") + " ↗</a></p></div>";
   }
   function elmenyOldal(id) {
@@ -390,7 +399,7 @@
     if (k) h += '<section class="jelenet ap-hos"><img src="' + e(kep(k)) + '" alt=""><div class="bel"><h1>' + e(x.cim[nyelv]) + '</h1><p class="al">' + e(x.rovid[nyelv]) + '</p></div></section><section class="szakasz" style="padding-top:20px">';
     else h += fejlec(x.cim[nyelv], x.rovid[nyelv]);
     if (x.hu) h += '<div class="blokk">' + bekezd(x[nyelv]) + "</div>";
-    if (x.hosszu) h += (nyelv === "en" ? '<p class="jelmag">' + s("hu_csak") + "</p>" : "") + cikk(x.hosszu);
+    if (x.hosszu) h += (nyelv === "en" && !angolE(x.hosszu) ? '<p class="jelmag">' + s("hu_csak") + "</p>" : "") + cikk(x.hosszu);
     if (x.hosszu && H[x.hosszu].kepek.length > 1) h += '<div class="galeria">' + H[x.hosszu].kepek.slice(1).map(function (u) { return '<img loading="lazy" src="' + e(u) + '" alt="">'; }).join("") + "</div>";
     return h + foglalGomb() + '<p style="margin-top:14px"><a href="#/elmenyek">← ' + s("elmenyek") + "</a></p></section>";
   }
@@ -436,10 +445,91 @@
   }
   function hosszuOldal(kulcs, cim) {
     menu("");
-    return fejlec(cim) + (nyelv === "en" ? '<p class="jelmag">' + s("hu_csak") + "</p>" : "") + cikk(kulcs) + "</section>";
+    if (kulcs === "adatkezeles" && window.ADATVEDELEM)               // az új oldal saját tájékoztatója (a régié más szolgáltatásokat ír le)
+      return fejlec(cim) + '<div class="cikk">' + ADATVEDELEM[nyelv].map(function (b) { return b[0] === "h" ? "<h3>" + e(b[1]) + "</h3>" : "<p>" + e(b[1]) + "</p>"; }).join("") + "</div></section>";
+    return fejlec(cim) + (nyelv === "en" && !angolE(kulcs) ? '<p class="jelmag">' + s("hu_csak") + "</p>" : "") + cikk(kulcs) + "</section>";
   }
+  /* ---------- kvíz: melyik apartman ---------- */
+  function kviz() {
+    var h = "<h3>" + s("kviz") + "</h3>", q = F.kviz;
+    if (!q) return h + '<p class="jelmag">' + s("kviz_al") + '</p><p style="margin:10px 0 6px"><b>' + s("k1") + '</b></p><div class="valasz">' +
+      [["fent", s("k1a")], ["lent", s("k1b")]].map(function (x) { return '<button type="button" class="opcio" data-kviz="' + x[0] + '"><b>' + e(x[1][0]) + "</b><small>" + e(x[1][1]) + "</small></button>"; }).join("") + "</div>";
+    if (q === "fent" || q === "lent") return h + '<p style="margin:10px 0 6px"><b>' + s("k2") + '</b></p><div class="valasz">' +
+      s(q === "fent" ? "k2fent" : "k2lent").map(function (x) { return '<button type="button" class="opcio" data-kviz="' + x[0] + '"><b>' + e(x[1]) + "</b></button>"; }).join("") + '</div><button type="button" class="link" data-kviz="ujra">← ' + s("ujra") + "</button>";
+    var a = ap(q.slice(3)); if (!a) { F.kviz = null; return kviz(); }
+    return h + '<a class="kviz-ered" href="#/apartman/' + a.id + '"><img loading="lazy" src="' + e(kep(a.kepek[0])) + '" alt=""><span><small>' + s("kviz_ered") + "</small><b>" + e(a.nev) + "</b><small>" + e(f(a, "emelet")) + " · " + a.m2 + " m² · " + szam(a.ar_hetkoznap) + " " + s("ejtol") + '</small></span></a><div class="gombok"><button type="button" class="gomb" data-lap="nyit" data-ap="' + a.id + '">' + s("mikor") + ' →</button><button type="button" class="link" data-kviz="ujra">' + s("ujra") + "</button></div>";
+  }
+
+  /* ---------- holnapi ajánló: met.no holnap délre + Ernő élményei; csak igaz, ellenőrizhető javaslat ---------- */
+  function holnap() {
+    var hn = ido && ido.holnap; if (!hn || hn.t == null) return "";
+    var hu = nyelv === "hu", j = hn.jel || "", t = Math.round(hn.t), es = /rain|sleet|snow|thunder/.test(j) || (hn.csap || 0) >= 1;
+    var d = new Date(Date.now() + 864e5), hetvege = d.getDay() === 0 || d.getDay() === 6, ho = d.getMonth() + 1, tel = ho >= 11 || ho <= 2, idoszak = ho >= 4 && ho <= 10;
+    var mi = /thunder/.test(j) ? (hu ? "zivatar" : "storm") : /snow|sleet/.test(j) ? (hu ? "hó" : "snow") : /rain/.test(j) ? (hu ? "eső" : "rain") : /fog/.test(j) ? (hu ? "köd" : "fog") : /clearsky/.test(j) ? (hu ? "derült" : "clear") : /fair|partlycloudy/.test(j) ? (hu ? "gomolyfelhős" : "partly cloudy") : /cloudy/.test(j) ? (hu ? "borult" : "cloudy") : "";
+    var L = [];      // [élmény-id, magyar indok, angol indok]
+    if (es) {
+      L.push(["masszazs", "Esős napra: masszázs a házban (3–4 héttel előre kérd).", "For a rainy day: a massage in the house (ask 3–4 weeks ahead)."]);
+      if (!tel || hetvege) L.push(["latnivalok", "Szőnyi Emlékmúzeum" + (tel ? " – télen csak hétvégén, 10–16 óráig." : "."), "The Szőnyi Memorial Museum" + (tel ? " – in winter open at weekends only, 10:00–16:00." : ".")]);
+      L.push(["ettermek", "Egy hosszú ebéd valamelyik dunakanyari étteremben.", "A long lunch at one of the Danube Bend restaurants."]);
+    } else {
+      if (t >= 22 && idoszak) L.push(["kajak", "Meleg, száraz nap: kajak-kenu a Dunán.", "Warm and dry: kayak or canoe on the Danube."]);
+      if (t >= 10) L.push(["ebike", "Jó idő a kerékpárútra: e-bike a Dunakanyarban.", "Good weather for the cycle path: e-bikes in the Danube Bend."]);
+      L.push(["kilatok", "Száraz idő, tiszta kilátás: séta valamelyik kilátóhoz.", "Dry weather and a clear view: walk up to a lookout."]);
+      L.push(["komp", "Komppal át Visegrádra, a Fellegvárhoz.", "Take the ferry across to Visegrád and the citadel."]);
+      if (idoszak) L.push(["hajo", "Hajókirándulás a Dunán (a szezon áprilistól októberig tart).", "A boat trip on the Danube (the season runs April to October)."]);
+    }
+    L.push(["kihivas", "Este: jakuzzi naplementekor (" + hhmm(NAP.idok(d).nyugszik) + ").", "In the evening: the hot tub at sunset (" + hhmm(NAP.idok(d).nyugszik) + ")."]);
+    var E = {}; (O.elmenyek || []).forEach(function (x) { E[x.id] = x; });
+    return '<div class="blokk holnap"><h3>' + s("holnap") + '</h3><p class="jelmag">' + s("holnap_ido") + ": " + t + " °C" + (mi ? ", " + e(mi) : "") + ' · met.no</p><ul class="javaslat">' +
+      L.slice(0, 4).map(function (x) { var el = E[x[0]], href = x[0] === "kihivas" ? "#/" : (el && (el.link || "#/elmeny/" + el.id)) || "#/elmenyek"; return '<li><a href="' + e(href) + '">' + e(hu ? x[1] : x[2]) + "<span>→</span></a></li>"; }).join("") + "</ul></div>";
+  }
+
+  /* ---------- Zebegényi hét (blog) ---------- */
+  var blogok = null, blogKer = false;
+  function blogBetolt() {
+    if (blogKer) return; blogKer = true;
+    api("/api/blog").then(function (d) { blogok = Array.isArray(d) ? d : (d && d.length != null ? Array.prototype.slice.call(d) : []); if (/^#\/blog/.test(location.hash)) rajzol(); else frissitHelyben(); }).catch(function () { blogok = []; });
+  }
+  function blogDatum(b) { var d = dt(b.het); return nyelv === "hu" ? d.getFullYear() + ". " + s("hor")[d.getMonth()] + " " + d.getDate() + "." : d.getDate() + " " + s("hor")[d.getMonth()] + " " + d.getFullYear(); }
+  function blogKep(b) { var t = (b.adat || {}).tema, x = (O.elmenyek || []).filter(function (y) { return y.id === t; })[0], k = x && (x.kep || (x.hosszu && H[x.hosszu] && H[x.hosszu].kepek[0])); return k || "Szonyi-apartman-furdo-kilatas.jpg"; }
+  function blogKartya(b) {
+    return '<a class="kartya emel" href="#/blog/' + b.id + '"><div class="kep" style="aspect-ratio:16/9"><img class="festek" loading="lazy" src="' + e(kep(blogKep(b))) + '" alt=""><span class="szalag">' + e(blogDatum(b)) + '</span></div><div class="bel"><h3>' + e(b["cim_" + nyelv]) + '</h3><div class="also"><span class="festo">' + s("tovabb") + '</span><span class="nyil">→</span></div></div></a>';
+  }
+  function blogTeaser() {
+    if (!blogok) { blogBetolt(); return ""; }
+    if (!blogok.length) return "";
+    return '<h2 class="emel">' + s("blog") + '</h2><p class="lead emel">' + s("blog_al") + '</p><div class="racs2">' + blogKartya(blogok[0]) + '</div><a class="gomb masod" href="#/blog">' + s("blog") + " →</a>";
+  }
+  function blogOldal() {
+    menu("blog");
+    var h = fejlec(s("blog"), s("blog_al"));
+    if (!blogok) return h + '<p class="jelmag">…</p></section>';
+    if (!blogok.length) return h + "<p>" + s("blog_ures") + "</p></section>";
+    return h + '<div class="racs2">' + blogok.map(blogKartya).join("") + "</div></section>";
+  }
+  function blogCikk(id) {
+    menu("blog");
+    if (!blogok) return fejlec(s("blog"), "") + '<p class="jelmag">…</p></section>';
+    var b = blogok.filter(function (x) { return String(x.id) === String(id); })[0]; if (!b) return blogOldal();
+    var h = '<section class="jelenet ap-hos"><img src="' + e(kep(blogKep(b))) + '" alt=""><div class="bel"><h1>' + e(b["cim_" + nyelv]) + '</h1><p class="al">' + e(blogDatum(b)) + '</p></div></section><section class="szakasz cikk" style="padding-top:20px">';
+    (b["test_" + nyelv] || []).forEach(function (x) { h += x[0] === "h" ? "<h2>" + e(x[1]) + "</h2>" : "<p>" + e(x[1]) + "</p>"; });
+    h += '<div class="blokk" id="hetvege" data-het="' + e(b.het) + '">' + hetvegeSzabad(b.het) + "</div>";
+    var fr = (b.adat || {}).forrasok, FE = { "OVF vízügyi geoportál": "Hungarian water authority (OVF)", "csillagászati számítás": "astronomical calculation", "saját foglalási naptár": "our booking calendar" };
+    if (fr) h += '<p class="forras">' + s("forrasok") + ": " + fr.map(function (x) { return e(nyelv === "en" && FE[x] ? FE[x] : x); }).join(" · ") + "</p>";
+    return h + '<a class="gomb masod" href="#/blog">← ' + s("blog") + "</a></section>";
+  }
+  function hetvegeSzabad(het) {
+    var sz0 = dt(het), erk = iso(new Date(sz0.getTime() - 864e5)), tav = iso(new Date(sz0.getTime() + 864e5));
+    if (tav < iso(new Date())) return "";
+    var sza = aps().filter(function (a) { return szabadE(a.id, erk, tav); });
+    if (!sza.length) return "<h3>" + rovid(erk) + " – " + rovid(tav) + "</h3><p>" + s("hetvege_tele") + "</p>";
+    return "<h3>" + s("hetvege_szabad") + '</h3><p class="jelmag">' + rovid(erk) + " – " + rovid(tav) + " · " + s("elo_most") + '</p><div class="valasz">' +
+      sza.map(function (a) { return '<button type="button" class="opcio" data-hetvege="' + e(het) + '" data-ap="' + a.id + '"><b>' + e(a.nev) + "</b><small>" + ft(arSzamol(a, erk, tav, 2, 0).ossz) + " · 2 " + s("fo") + "</small></button>"; }).join("") +
+      '</div><button type="button" class="gomb teljes" data-hetvege="' + e(het) + '" style="margin-top:12px">' + s("hv_foglal") + " →</button>";
+  }
+
   function menuLap() {
-    var L = [["#/", s("apartmanok")], ["#/elmenyek", s("elmenyek")], ["#/felszereltseg", s("felszereltseg")], ["#/arak", s("arak_m")], ["#/ajandek", s("ajandek")], ["#/zebegeny", s("zebegeny")], ["#/kihivas", s("kihivas")], ["#/rolunk", s("rolunk")], ["#/hazirend", s("hazirend")], ["#/adatkezeles", s("adatkezeles")]];
+    var L = [["#/", s("apartmanok")], ["#/elmenyek", s("elmenyek")], ["#/felszereltseg", s("felszereltseg")], ["#/arak", s("arak_m")], ["#/ajandek", s("ajandek")], ["#/zebegeny", s("zebegeny")], ["#/blog", s("blog")], ["#/kihivas", s("kihivas")], ["#/rolunk", s("rolunk")], ["#/hazirend", s("hazirend")], ["#/adatkezeles", s("adatkezeles")]];
     $("#menulap .tartalom").innerHTML = '<nav class="menu-lista">' + L.map(function (x) { return '<a href="' + x[0] + '" data-menuzar>' + e(x[1]) + "<span>→</span></a>"; }).join("") + '<a href="' + e((O.kapcsolat || {}).virtualis) + '" target="_blank" rel="noopener">' + s("virtualis") + "<span>↗</span></a></nav>";
     $("#menulap h2").textContent = s("menu");
   }
@@ -476,6 +566,7 @@
     else if (r[0] === "arak") fo.innerHTML = arakOldal();
     else if (r[0] === "ajandek") fo.innerHTML = ajandekOldal();
     else if (r[0] === "rolunk") fo.innerHTML = rolunkOldal();
+    else if (r[0] === "blog") { fo.innerHTML = r[1] ? blogCikk(r[1]) : blogOldal(); blogBetolt(); }
     else if (r[0] === "hazirend") fo.innerHTML = hosszuOldal("hazirend", s("hazirend"));
     else if (r[0] === "adatkezeles") fo.innerHTML = hosszuOldal("adatkezeles", s("adatkezeles"));
     else { fo.innerHTML = fooldal(); if (r[0] === "zebegeny") setTimeout(function () { var z = $("#zebegeny"); if (z) z.scrollIntoView(); }, 0); }
@@ -507,6 +598,10 @@
       var sc = $("#lap-tartalom").scrollTop; lapRajz(); $("#lap-tartalom").scrollTop = sc;
       Object.keys(mentes).forEach(function (id) { document.getElementById(id).value = mentes[id]; }); return;
     }
+    var kv = ev.target.closest("[data-kviz]");
+    if (kv) { var kk2 = kv.dataset.kviz; if (kk2 === "ujra") F.kviz = null; else if (kk2 === "fent" || kk2 === "lent") F.kviz = kk2; else F.kviz = "ap:" + kk2; $("#kviz").innerHTML = kviz(); return; }
+    var hv = ev.target.closest("[data-hetvege]");
+    if (hv) { var sz0 = dt(hv.dataset.hetvege); F.erk = iso(new Date(sz0.getTime() - 864e5)); F.tav = iso(new Date(sz0.getTime() + 864e5)); F.ho = new Date(sz0.getFullYear(), sz0.getMonth(), 1); F.ap = hv.dataset.ap || null; lapNyit(hv.dataset.ap); savFrissit(); return; }
     var v = ev.target.closest("[data-valaszt]"); if (v && !v.disabled) { F.ap = v.dataset.valaszt; F.lepes = 3; lapRajz(); return; }
     var ls = ev.target.closest("[data-lepes]"); if (ls) { F.lepes = +ls.dataset.lepes; if (F.lepes === 1) F.tav = null; lapRajz(); return; }
     var p = ev.target.closest("[data-pipa]");
@@ -545,6 +640,9 @@
     var sor = $("#sor"); if (sor) sor.innerHTML = aps().map(kartya).join("");
     var c = $("#chipek"); if (c) c.innerHTML = chipek();
     var el = $("#elo"); if (el) el.innerHTML = elo();
+    var ho = $("#holnap"); if (ho) ho.innerHTML = holnap();
+    var bt = $("#blogteaser"); if (bt) bt.innerHTML = blogTeaser();
+    var bs = $("#hetvege"); if (bs) bs.innerHTML = hetvegeSzabad(bs.dataset.het);
     szelfikRajz(); if ($("#lap").open && F.lepes < 3) lapRajz();
   }
   function eloAdat() {
@@ -554,7 +652,7 @@
       if (d.ido && d.ido.t != null) {
         var j = d.ido.jel || "", hu = nyelv === "hu";
         var mi = /thunder/.test(j) ? (hu ? "zivatar" : "storm") : /snow|sleet/.test(j) ? (hu ? "hó" : "snow") : /rain/.test(j) ? (hu ? "eső" : "rain") : /fog/.test(j) ? (hu ? "köd" : "fog") : /clearsky/.test(j) ? (hu ? "derült" : "clear") : /fair|partlycloudy/.test(j) ? (hu ? "gomolyfelhős" : "partly cloudy") : /cloudy/.test(j) ? (hu ? "borult" : "cloudy") : "";
-        ido = { t: d.ido.t, mi: mi };
+        ido = { t: d.ido.t, mi: mi, holnap: d.ido.holnap || null };
       }
       frissitHelyben();
     }).catch(function () {});
