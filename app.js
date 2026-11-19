@@ -661,7 +661,7 @@
     try {
       var r = await api("/api/vendeg/" + encodeURIComponent(tk), { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ tipus: "ertekeles", pont: pont, szoveg: $("#ert-sz").value }) });
       if (r._status !== 200) throw new Error();
-      f.innerHTML = "<h3>" + (hu ? "Köszönjük!" : "Thank you!") + "</h3>" + (pont >= 9 && BE.ert_google_url ? '<p>' + (hu ? "Ha van egy perced, a Google-on is sokat segít:" : "If you have a minute, a Google review helps a lot:") + '</p><a class="gomb" href="' + e(BE.ert_google_url) + '" target="_blank" rel="noopener">' + (hu ? "Értékelés a Google-on ↗" : "Review on Google ↗") + "</a>" : "");
+      f.innerHTML = "<h3>" + (hu ? "Köszönjük!" : "Thank you!") + "</h3>" + (BE.ert_google_url ? '<p>' + (hu ? "Ha van egy perced, írd meg a Google-on is, bármilyen is a véleményed:" : "If you have a minute, please share it on Google too, whatever you think:") + '</p><a class="gomb" href="' + e(BE.ert_google_url) + '" target="_blank" rel="noopener">' + (hu ? "Értékelés a Google-on ↗" : "Review on Google ↗") + "</a>" : "");
     } catch (x) { out.className = "uzenet hiba"; out.textContent = s("hiba"); }
   }
   async function vendegKuld(tipus, szoveg) {
