@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Akvarell – kezelő</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.ful{display:flex;gap:6px;overflow-x:auto;margin:12px 0}
+.ful button{border:1px solid var(--vonal,#ccc);background:#fff;border-radius:999px;padding:8px 14px;font:inherit;white-space:nowrap}
+.ful button.most{background:var(--duna,#2d5f7a);color:#fff;border-color:transparent}
+.sor{border-bottom:1px solid #e5e0d6;padding:12px 0}
+.sor:last-child{border:0}
+.gombok{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.gombok button{padding:8px 12px;border-radius:8px;border:1px solid #ccc;background:#fff;font:inherit}
+.allapot{font-size:13px;padding:2px 8px;border-radius:999px;background:#eee}
+.allapot.uj{background:#fde9c8}.allapot.visszaigazolva{background:#d6eedc}.allapot.elutasitva{background:#f3d6d6}
+.mentve{font-size:13px;color:#2e7d4f;margin-left:8px}
+.adminkep{width:100%;max-width:320px;border-radius:10px;display:block}
+</style>
+</head>
+<body>
+<header class="fej"><a class="logo" href="./">Akvarell</a><span class="jelmag">kezelő</span></header>
+<main id="fo" class="admin"><p>Betöltés…</p></main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="admin.js"></script>
+</body>
+</html>
