@@ -192,6 +192,37 @@ dialog.lap::backdrop{background:rgba(15,25,35,.45);-webkit-backdrop-filter:blur(
 @supports (scale:1){.kesz-lap .pipa{animation:pipa .6s cubic-bezier(.2,1.4,.4,1) both}}
 @keyframes pipa{from{scale:.3;opacity:0}to{scale:1;opacity:1}}
 
+/* menü */
+.menugomb{width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.22);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);display:grid;place-content:center;gap:4px;cursor:pointer}
+.menugomb span{display:block;width:18px;height:2px;border-radius:2px;background:var(--eg-szoveg)}
+.fej.tomor .menugomb{background:rgba(0,0,0,.05)}.fej.tomor .menugomb span{background:var(--tus)}
+.menu-lista a{display:flex;justify-content:space-between;align-items:center;min-height:56px;padding:0 4px;border-bottom:1px solid var(--vonal);font-family:Literata,serif;font-size:22px;color:var(--tus);text-decoration:none}
+.menu-lista a span{color:var(--duna)}
+/* oldalak */
+.racs2{display:grid;gap:14px;grid-template-columns:1fr}
+@media (min-width:700px){.racs2{grid-template-columns:repeat(3,1fr)}}
+.ikonkep{width:100%;height:100%;display:grid;place-items:center;background:linear-gradient(160deg,var(--eg1),var(--eg2));color:#fff}
+.ikonkep svg{width:56px;height:56px}
+.szolg img{width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:14px;margin-bottom:10px}
+.szolg p{margin:6px 0}
+.cikk h3{font-size:22px;margin:22px 0 6px}
+.cikk p{margin:8px 0}
+.cikk p.li{padding-left:14px;border-left:3px solid var(--duna2)}
+.arak td:nth-child(2),.arak td:nth-child(3){text-align:right;font-weight:700;white-space:nowrap;padding-left:8px}
+.pont{display:flex;align-items:baseline;gap:8px;margin-bottom:12px}
+.pont b{font-family:Literata,serif;font-size:48px;color:var(--duna)}
+.pont span{color:var(--halk)}
+.velemeny{margin:0;scroll-snap-align:center;background:var(--lap);border:1px solid var(--vonal);border-radius:20px;padding:18px}
+.velemeny blockquote{margin:0;font-family:Literata,serif;font-size:18px;line-height:1.45}
+.velemeny figcaption{margin-top:10px;color:var(--halk);font-weight:600}
+details.kerdes{background:var(--lap);border:1px solid var(--vonal);border-radius:16px;margin:8px 0}
+details.kerdes summary{min-height:52px;display:flex;align-items:center;padding:0 16px;font-weight:700;cursor:pointer}
+details.kerdes p{margin:0;padding:0 16px 14px}
+details.extrak{margin:12px 0;background:var(--lap);border:1px solid var(--vonal);border-radius:16px}
+details.extrak summary{min-height:52px;display:flex;align-items:center;padding:0 16px;font-weight:700;cursor:pointer}
+.extra{display:flex;gap:10px;align-items:center;padding:10px 16px;border-top:1px solid var(--vonal)}
+.extra>div:first-child{flex:1}
+.leptet.kis{flex:none;padding:4px;gap:6px}
 /* lábléc */
 .lab{max-width:1100px;margin:40px auto 0;padding:24px 20px;color:var(--halk);font-size:14px;border-top:1px solid var(--vonal)}
 .lab .linkek{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}

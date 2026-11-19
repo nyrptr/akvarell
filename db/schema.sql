@@ -45,3 +45,11 @@ CREATE TABLE IF NOT EXISTS beallitas (            -- pl. ical_szonyi = külső n
 CREATE TABLE IF NOT EXISTS gyorsitotar (          -- külső adat (vízállás, naptár-szinkron ideje) rövid tárolása
   kulcs TEXT PRIMARY KEY, ertek TEXT NOT NULL, ido INTEGER NOT NULL
 );
+CREATE TABLE IF NOT EXISTS uzenet (               -- ajándékutalvány-kérés és egyéb megkeresés (nem szállásfoglalás)
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  tipus TEXT NOT NULL CHECK (tipus IN ('utalvany','kerdes')),
+  nev TEXT NOT NULL, email TEXT NOT NULL, telefon TEXT, szoveg TEXT,
+  nyelv TEXT NOT NULL DEFAULT 'hu' CHECK (nyelv IN ('hu','en')),
+  allapot TEXT NOT NULL DEFAULT 'uj' CHECK (allapot IN ('uj','kesz')),
+  letrehozva TEXT NOT NULL DEFAULT (datetime('now'))
+);

@@ -1,5 +1,16 @@
 # Fejlesztési napló – Akvarell bemutató
 
+## 2026-11-19 késő éjjel – Claude (munka-teljes-tartalom)
+- Péter: „Minden van az oldalon, ami eddig volt, minden szolgáltatás?” → nem volt; Ernő régi oldalának minden menüpontja áthozva.
+  - `oldalak.js` (kézzel, Ernő szövegéből; EN saját): felszereltség, árak (kiemelt időszak, hosszú hétvégék 2026, 7 éj 5%, IFA külön, fizetés, lemondás), extrák, élmények (masszázs, e-bike, kajak-kenu, komp, hajó, látnivalók, kilátók, éttermek, 17 élmény), ajándékutalvány, vélemények (Booking 9,8), GYIK, elérhetőség, virtuális séta (Ernő 3DVista oldala).
+  - `oldalak_hosszu.js` GENERÁLT (`scripts/regi_atvesz.py scripts/regi`): látnivalók, blogcikkek, hajókirándulás, házirend, adatkezelés – Ernő szövege szó szerint, forráslinkkel.
+  - Foglalási lap: extrák léptetővel (reggeli min. 2 fő), ár: húsvét/pünkösd/karácsony is kiemelt, 7+ éj 5%, hosszú hétvégék minimuma; IFA külön sor (Ernő: nem része a szállásdíjnak).
+  - Menü (felcsúszó lap), új oldalak, lábléc elérhetőséggel; ajándékutalvány-kérés → `/api/uzenet` (új tábla: `uzenet`).
+  - Hiba javítva: lapváltáskor nyitva maradt a felcsúszó lap.
+- Visszatéve: „fizetni a visszaigazolás után 2 órán belül” – Ernő Árak oldala igazolja (korábban tévesen vettem ki).
+- Ernő oldalának belső ellentmondásai: `oldalak.js` → `ELTERES` (reggeli ára, lemondási határ, TV-csatornák, minibár, Amrita adatai) – Ernőtől kérdezni.
+- Teszt: kapu 0 hiba (a helyi /api/zebegeny 503 a hálózat miatt), 15 képernyőkép. NEM tesztelt: angol hosszú cikkek (magyarul maradnak, jelzéssel), kezelőben az `uzenet` lista (még nincs).
+
 ## 2026-11-19 éjjel – Claude (munka-elo-oldal)
 - Péter: „csili-vili… nagyon egyszerű, de nagyon látványos és funkcionális” → „Élő akvarell” vendégoldal (új `index.html`, `app.js`, `style.css`).
   - Teljes képernyős jelenetek; görgetésre vízfesték-folt előtűnés (scroll-driven animation, ahol a böngésző tudja; máshol mozgás nélkül).
