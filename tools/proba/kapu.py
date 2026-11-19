@@ -8,14 +8,14 @@ import argparse, asyncio, os, sys
 from playwright.async_api import async_playwright
 
 MERET = [("320", 320, 700), ("390", 390, 844), ("gep", 1280, 900)]
-OLDAL = ["/#/", "/#/apartman/szonyi", "/#/apartman/bereny", "/#/apartman/amrita", "/#/apartman/karpathy", "/#/kihivas", "/#/vendeg", "/admin/"]
+OLDAL = ["/#/", "/#/apartman/szonyi", "/#/apartman/bereny", "/#/apartman/amrita", "/#/apartman/karpathy", "/#/kihivas", "/#/zebegeny", "/admin/"]
 
 MERES = """() => {
   const h = [];
   if (document.documentElement.scrollWidth > innerWidth + 1) h.push('kicsúszik: ' + document.documentElement.scrollWidth + ' > ' + innerWidth);
   for (const i of document.images) if (i.complete && i.naturalWidth === 0 && i.getAttribute('loading') !== 'lazy') h.push('kép nem töltött be: ' + i.src);
   for (const e of document.querySelectorAll('a,button,select,input,textarea')) {
-    const r = e.getBoundingClientRect(); if (!r.width || getComputedStyle(e).visibility === 'hidden' || e.closest('[aria-hidden=true]') || e.tabIndex < 0) continue;
+    const r = e.getBoundingClientRect(); if (!r.width || r.right < 0 || getComputedStyle(e).visibility === 'hidden' || e.closest('[aria-hidden=true]') || e.tabIndex < 0) continue;
     if (e.tagName === 'A' && getComputedStyle(e).display === 'inline') continue;   // szövegközi link
     if (r.height < 40 && !e.closest('.napok')) h.push('kicsi koppintási cél (' + Math.round(r.height) + ' px): ' + (e.textContent || e.name || e.tagName).trim().slice(0, 30));
   }
@@ -41,16 +41,20 @@ async def main():
             await c.close()
         if "localhost" in a.url or "127.0.0.1" in a.url:
             c = await b.new_context(viewport={"width": 390, "height": 844}, locale="hu-HU"); pg = await c.new_page()
-            await pg.goto(a.url + "/#/apartman/karpathy"); await pg.wait_for_timeout(1800)
-            szabad = await pg.evaluate("[...document.querySelectorAll('[data-nap]')].filter(b=>!b.disabled&&!b.classList.contains('foglalt')).map(b=>b.dataset.nap).slice(-3)")
-            if len(szabad) < 3:
-                await pg.click("[data-lep='1']"); szabad = await pg.evaluate("[...document.querySelectorAll('[data-nap]')].filter(b=>!b.disabled&&!b.classList.contains('foglalt')).map(b=>b.dataset.nap).slice(-3)")
-            await pg.click(f"[data-nap='{szabad[0]}']"); await pg.click(f"[data-nap='{szabad[2]}']")
-            if not await pg.is_visible("#osszeg"): hibak.append("[folyamat] árbecslés nem jelent meg")
+            await pg.goto(a.url + "/#/"); await pg.wait_for_timeout(1800)
+            await pg.click("#sav-gomb"); await pg.wait_for_timeout(500)
+            for _ in range(3):                                   # első hónap, ahol mind a 4 apartman szabad 3 egymást követő napon
+                napok = await pg.evaluate("[...document.querySelectorAll('[data-nap]')].filter(b=>!b.disabled&&!b.classList.contains('foglalt')&&!b.classList.contains('resz')).map(b=>b.dataset.nap)")
+                if len(napok) >= 3: break
+                await pg.click("[data-ho='1']"); await pg.wait_for_timeout(200)
+            await pg.click(f"[data-nap='{napok[-3]}']"); await pg.click(f"[data-nap='{napok[-1]}']"); await pg.wait_for_timeout(300)
+            if await pg.locator("[data-valaszt]:not([disabled])").count() < 1: hibak.append("[folyamat] nincs szabad apartman a lapon")
+            await pg.click("[data-valaszt='karpathy']"); await pg.wait_for_timeout(300)
+            if not await pg.is_visible(".osszeg .vegso"): hibak.append("[folyamat] végösszeg nem jelent meg")
             await pg.fill("#f-nev", "KAPU próba"); await pg.fill("#f-email", "kapu@example.com"); await pg.click("#ajanlat button[type=submit]"); await pg.wait_for_timeout(1500)
-            if "ok" not in (await pg.get_attribute("#f-eredm", "class") or ""): hibak.append("[folyamat] ajánlatkérés nem ment át: " + (await pg.text_content("#f-eredm") or ""))
-            await pg.click("[data-ny='en']"); await pg.wait_for_timeout(300)
-            if "Apartments" not in (await pg.text_content("#menu")): hibak.append("[folyamat] nyelvváltás nem működik")
+            if not await pg.is_visible(".kesz-lap"): hibak.append("[folyamat] foglalás nem ment át: " + (await pg.text_content("#f-eredm") or ""))
+            await pg.click(".kesz-lap [data-lap='zar']"); await pg.click("[data-ny='en']"); await pg.wait_for_timeout(300)
+            if "Challenge" not in (await pg.text_content("#menu")): hibak.append("[folyamat] nyelvváltás nem működik")
             await c.close()
         await b.close()
     for x in hibak: print("HIBA", x)
