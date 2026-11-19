@@ -1,7 +1,12 @@
 // Vendégkártya és visszatérő vendég: egy vendég = egy e-mail-cím (kisbetűsen). A hírlevél-hozzájárulás külön, időbélyeggel,
 // visszavonható. Beállítások (beallitas tábla, a kezelő Vendégek fülén): visszatero_kedvezmeny %, kozvetlen_kedvezmeny %,
 // portal_jutalek %, takaritas_dij Ft/foglalás, elonyok_hu / elonyok_en (soronként egy előny).
-export const ALAP = { visszatero_kedvezmeny: '10', kozvetlen_kedvezmeny: '0', portal_jutalek: '15', takaritas_dij: '0', elonyok_hu: '', elonyok_en: '' };
+export const ALAP = { visszatero_kedvezmeny: '10', kozvetlen_kedvezmeny: '0', portal_jutalek: '15', takaritas_dij: '0', elonyok_hu: '', elonyok_en: '',
+  // külső értékelések: a portálok nem engedik élőben a saját oldalon (a Booking Review API-ja csak belső használatra), ezért Ernő írja át, dátummal, és a pont a portálra visz
+  ert_booking_pont: '9,8', ert_booking_db: '', ert_booking_url: 'https://www.booking.com/hotel/hu/akvarell-apartmanhaz.html',
+  ert_szallas_pont: '9,9', ert_szallas_db: '46', ert_szallas_url: 'https://szallas.hu/zebegeny',
+  ert_google_url: '', ert_frissitve: '2026-11-20', google_place_id: '' };
+export const NYILVANOS = ['visszatero_kedvezmeny', 'kozvetlen_kedvezmeny', 'elonyok_hu', 'elonyok_en', 'ert_booking_pont', 'ert_booking_db', 'ert_booking_url', 'ert_szallas_pont', 'ert_szallas_db', 'ert_szallas_url', 'ert_google_url', 'ert_frissitve', 'google_place_id'];
 export async function beall(db, kulcsok = Object.keys(ALAP)) {
   const r = (await db.prepare(`SELECT kulcs, ertek FROM beallitas WHERE kulcs IN (${kulcsok.map(() => '?').join(',')})`).bind(...kulcsok).all()).results;
   const o = {}; kulcsok.forEach(k => { o[k] = ALAP[k] ?? ''; }); r.forEach(x => { o[x.kulcs] = x.ertek; });

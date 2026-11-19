@@ -275,3 +275,22 @@ body.vendegmod{padding-bottom:24px}
 .vkartya .qr svg{width:100%;height:100%;display:block}
 .kartya-link{display:flex;flex-direction:column;gap:4px;text-decoration:none;color:var(--tus);position:relative;padding-right:40px}
 .kartya-link>span:last-child{position:absolute;right:18px;top:50%;transform:translateY(-50%);color:var(--duna)}
+/* ---------- értékelések ---------- */
+.forrasok{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0 14px}
+.forrasjel{display:flex;align-items:baseline;gap:8px;padding:10px 14px;min-height:48px;border:1px solid var(--vonal);border-radius:16px;background:var(--lap);text-decoration:none;color:var(--tus)}
+.forrasjel b{font-family:Literata,serif;font-size:28px;color:var(--duna)}
+.forrasjel span{font-size:14px;color:var(--halk)}
+.forrasjel.sajat b{color:var(--zold)}
+.velemeny .vpont{font-weight:700;color:var(--duna);margin-bottom:6px}
+.velemeny figcaption a{color:var(--duna)}
+.igazolt{color:var(--zold)}
+.google-fej b{font-family:Literata,serif;font-size:24px}
+.pontok{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:10px 0 14px}
+.pontok button{min-height:48px;border:1px solid var(--vonal);border-radius:12px;background:var(--lap);font-weight:700;font-size:18px}
+.pontok button.most{background:var(--duna);color:#fff;border-color:transparent}
+.bizalom{display:inline-flex;align-items:center;gap:6px;margin-top:12px;min-height:44px;padding:8px 14px;border:0;border-radius:999px;background:rgba(255,255,255,.88);color:var(--tus);font-size:15px;cursor:pointer}
+.bizalom:empty{display:none}
+.bizalom b{color:var(--duna)}
+.bizalom-sor{font-size:14px;color:var(--halk);margin:10px 0 0}
+.bizalom-sor b{color:var(--duna)}
+#ertekelesek,#zebegeny{scroll-margin-top:72px}

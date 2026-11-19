@@ -196,6 +196,12 @@
   }
 
   /* ---------- nyitóoldal ---------- */
+  function bizalom() {              // a legerősebb érv a legelején: valós, forrásolt pontszámok (a kezelőből)
+    var p = [];
+    if (BE.ert_booking_pont) p.push("<b>" + e(BE.ert_booking_pont) + "</b> Booking");
+    if (BE.ert_szallas_pont) p.push("<b>" + e(BE.ert_szallas_pont) + "</b> Szállás.hu");
+    return p.length ? "★ " + p.join(" · ") + ' <span aria-hidden="true">↓</span>' : "";
+  }
   function chipek() {
     var t = NAP.idok(new Date()), most = new Date(), c = [];
     c.push('<span class="chip">' + IK.nap + (most < t.nyugszik ? s("naplem") + " " + hhmm(t.nyugszik) : s("napkel") + " " + hhmm(NAP.idok(new Date(Date.now() + 864e5)).kel)) + "</span>");
@@ -212,12 +218,11 @@
   }
   function fooldal() {
     menu("fo");
-    var h = '<section class="jelenet"><img src="' + e(kep("Bereny-apartman-nappali.jpg")) + '" alt="" fetchpriority="high"><div class="bel"><h1>Akvarell</h1><p class="al">' + e(sz("alcim")) + '</p><div class="chipek" id="chipek">' + chipek() + "</div></div></section>";
+    var h = '<section class="jelenet"><img src="' + e(kep("Bereny-apartman-nappali.jpg")) + '" alt="" fetchpriority="high"><div class="bel"><h1>Akvarell</h1><p class="al">' + e(sz("alcim")) + '</p><div class="chipek" id="chipek">' + chipek() + '</div><button type="button" class="bizalom" data-ugras="ertekelesek" id="bizalom">' + bizalom() + "</button></div></section>";
     h += '<section class="szakasz" id="apartmanok"><h2 class="emel">' + s("negy") + '</h2><p class="lead emel">' + s("negy_al") + '</p><div class="sor" id="sor">' + aps().map(kartya).join("") + '</div><div class="blokk emel" id="kviz">' + kviz() + '</div><div class="blokk emel" id="kozvetlen">' + kozvetlen() + "</div></section>";
+    h += '<section class="szakasz" id="ertekelesek">' + ertekelesBlokk() + "</section>";
     h += '<section class="jelenet kozel"><img class="festek" loading="lazy" src="' + e(kep("Szonyi-apartman-furdo-kilatas.jpg")) + '" alt=""><div class="bel"><h2>' + s("furdo") + '</h2><p class="al">' + s("furdo_al") + "</p></div></section>";
     h += '<section class="jelenet kozel"><img class="festek" loading="lazy" src="' + e(kep("Jakuzzi-5.jpg")) + '" alt=""><div class="bel"><h2>' + s("jakuzzi") + '</h2><p class="al">' + s("jakuzzi_al") + '</p><div class="chipek"><span class="chip">' + IK.nap + s("naplem") + " " + hhmm(NAP.idok(new Date()).nyugszik) + "</span></div></div></section>";
-    var V = O.ertekeles;
-    if (V) h += '<section class="szakasz"><div class="pont emel"><b>' + e(V.pont) + "</b><span>/ 10 " + s("ertekeles") + '</span></div><div class="sor velemenyek">' + V.velemenyek.map(function (v) { return '<figure class="velemeny"><blockquote>„' + e(v[nyelv]) + '”</blockquote><figcaption>' + e(v.nev) + "</figcaption></figure>"; }).join("") + "</div></section>";
     h += '<section class="szakasz"><h2 class="emel">' + s("elmeny_cim") + '</h2><p class="lead emel">' + s("elmeny_al") + '</p><div class="sor">' + (O.elmenyek || []).slice(0, 6).map(elmenyKartya).join("") + '</div><a class="gomb masod" href="#/elmenyek">' + s("elmenyek") + " →</a></section>";
     var ik = [IK.jakuzzi, IK.villam, IK.auto, IK.wifi];
     h += '<section class="szakasz"><div class="racs">' + s("teny").map(function (t, i) { return '<div class="teny emel">' + ik[i] + "<b>" + t[0] + "</b><span>" + t[1] + "</span></div>"; }).join("") + "</div></section>";
@@ -334,6 +339,7 @@
         var db = F.extrak[x.id] || 0, arsz = x.ar === null ? "" : x.ar === 0 ? (nyelv === "hu" ? "díjmentes" : "free") : ft(x.ar) + (x.egyseg === "fo_alkalom" ? (nyelv === "hu" ? "/fő" : "/person") : x.egyseg === "fo_nap" ? (nyelv === "hu" ? "/fő/nap" : "/person/day") : x.egyseg === "ora" ? (nyelv === "hu" ? "/óra" : "/hour") : "");
         return '<div class="extra"><div><b>' + e(x.cim[nyelv]) + '</b> <span class="jelmag">' + arsz + '</span><br><span class="jelmag">' + e(x.leiras[nyelv]) + '</span></div><div class="leptet kis"><button type="button" data-extra="' + x.id + '" data-d="-1" aria-label="−">−</button><b>' + db + '</b><button type="button" data-extra="' + x.id + '" data-d="1" aria-label="+">+</button></div></div>';
       }).join("") + "</details>";
+      if (bizalom()) h += '<p class="bizalom-sor">' + bizalom().replace(/ <span[^>]*>↓<\/span>/, "") + (nyelv === "hu" ? " · személyes válasz Ernőtől" : " · a personal reply from Ernő") + "</p>";      // bizalom közvetlenül a foglalás előtt
       h += '<form id="ajanlat" novalidate><label class="mezo"><span>' + s("nev") + '</span><input id="f-nev" required autocomplete="name"></label><label class="mezo"><span>' + s("email") + '</span><input id="f-email" type="email" required autocomplete="email" inputmode="email"></label><label class="mezo"><span>' + s("tel") + '</span><input id="f-tel" type="tel" autocomplete="tel"></label><label class="mezo"><span>' + s("uzenet") + '</span><textarea id="f-uz" rows="2"></textarea></label><input id="f-web" name="weboldal" tabindex="-1" autocomplete="off" aria-hidden="true" class="rejt"><p class="jelmag">' + s("adatkez") + '</p><label class="pipa-sor"><input type="checkbox" id="f-hir"> <span>' + s("hirlevel_kerem") + '</span></label><button class="gomb teljes" type="submit">' + s("kuld") + '</button><div id="f-eredm"></div></form><button type="button" class="gomb masod teljes" data-lepes="2" style="margin-top:10px">' + s("vissza") + "</button>";
     } else {
       h = '<div class="kesz-lap"><div class="pipa">✓</div><h2>' + s("kesz") + "</h2><p>" + s("kesz_al") + "</p>" + (F.visszatero ? '<p class="uzenet ok">' + s("kesz_vissza") + "</p>" : "") + '<p><p class="jelmag">' + e(ap(F.ap).nev) + " · " + rovid(F.erk) + " – " + rovid(F.tav) + '</p><button type="button" class="gomb" data-lap="zar">OK</button></div>';
@@ -549,6 +555,30 @@
   }
 
   /* ---------- közvetlen foglalás előnyei (a kezelőben szerkeszthető; a %-ok a beállításokból) ---------- */
+  /* ---------- értékelések: minden forrás kattintható; saját, igazolt értékelések; Google élőben, kérésre ---------- */
+  var SAJAT = { lista: [], atlag: null }, GO = null;
+  function ertekelesBlokk() {
+    var hu = nyelv === "hu", V = O.ertekeles || {}, F2 = [], frissit = BE.ert_frissitve ? (hu ? "Pontszámok: " : "Scores as of ") + BE.ert_frissitve : "";
+    function forras(nev, pont, db, url) { if (!pont) return; F2.push('<a class="forrasjel" href="' + e(url || "#") + '" target="_blank" rel="noopener"><b>' + e(pont) + "</b><span>" + e(nev) + (db ? " · " + e(db) + (hu ? " értékelés" : " reviews") : "") + " ↗</span></a>"); }
+    forras("Booking.com", BE.ert_booking_pont || V.pont, BE.ert_booking_db, BE.ert_booking_url);
+    forras("Szállás.hu", BE.ert_szallas_pont, BE.ert_szallas_db, BE.ert_szallas_url);
+    if (SAJAT.atlag) F2.push('<span class="forrasjel sajat"><b>' + String(SAJAT.atlag.atlag).replace(".", hu ? "," : ".") + "</b><span>" + (hu ? "igazolt vendégeink · " : "verified guests · ") + SAJAT.atlag.db + "</span></span>");
+    var h = '<h2 class="emel">' + (hu ? "Amit a vendégek mondanak" : "What guests say") + '</h2><div class="forrasok emel">' + F2.join("") + "</div>";
+    var L = SAJAT.lista.map(function (v) { var d = v.ottlet ? v.ottlet.split("-") : null; return '<figure class="velemeny"><div class="vpont">' + v.pont + '/10</div><blockquote>' + (v.szoveg ? "„" + e(v.szoveg) + "”" : "") + "</blockquote><figcaption>" + e(v.nev) + ' · <span class="igazolt">✓ ' + (hu ? "igazolt vendég" : "verified guest") + "</span>" + (d ? " · " + (hu ? d[0] + ". " + s("hor")[+d[1] - 1] : s("hor")[+d[1] - 1] + " " + d[0]) : "") + "</figcaption></figure>"; })
+      .concat((V.velemenyek || []).map(function (v) { return '<figure class="velemeny"><blockquote>„' + e(v[nyelv]) + '”</blockquote><figcaption>' + e(v.nev) + ' · <a href="' + e(BE.ert_booking_url || "#") + '" target="_blank" rel="noopener">Booking.com ↗</a></figcaption></figure>'; }));      // előbb a saját, igazolt értékelések, utána a Booking-idézetek
+    h += '<div class="sor velemenyek">' + L.join("") + "</div>";
+    if (BE.google_elo) h += '<button type="button" class="gomb masod" data-google>' + (hu ? "Google-értékelések" : "Google reviews") + '</button><div id="google-ert"></div>';
+    else if (BE.ert_google_url) h += '<a class="gomb masod" href="' + e(BE.ert_google_url) + '" target="_blank" rel="noopener">' + (hu ? "Értékelések a Google-on ↗" : "Reviews on Google ↗") + "</a>";
+    return h + (frissit ? '<p class="forras">' + e(frissit) + "</p>" : "");
+  }
+  function googleBetolt() {
+    var el = $("#google-ert"); if (!el) return; el.innerHTML = '<p class="jelmag">…</p>'; GO = 1;
+    api("/api/google?ny=" + nyelv).then(function (d) {
+      if (d._status !== 200) { el.innerHTML = '<p class="jelmag">' + (nyelv === "hu" ? "A Google most nem érhető el." : "Google is not available right now.") + "</p>"; return; }
+      el.innerHTML = '<p class="google-fej"><b>' + (d.pont != null ? String(d.pont).replace(".", nyelv === "hu" ? "," : ".") : "–") + "</b> / 5 · " + d.db + (nyelv === "hu" ? " értékelés a Google-on" : " reviews on Google") + (d.link ? ' · <a href="' + e(d.link) + '" target="_blank" rel="noopener">Google Térkép ↗</a>' : "") + '</p><div class="sor velemenyek">' + d.velemenyek.map(function (v) { return '<figure class="velemeny"><div class="vpont">' + "★".repeat(v.pont || 0) + "</div><blockquote>" + e(v.szoveg) + "</blockquote><figcaption>" + (v.szerzo_link ? '<a href="' + e(v.szerzo_link) + '" target="_blank" rel="noopener">' + e(v.szerzo) + "</a>" : e(v.szerzo)) + " · " + e(v.mikor) + " · Google</figcaption></figure>"; }).join("") + "</div>";
+    }).catch(function () {});
+  }
+
   function kozvetlen() {
     var L = [], kp = +BE.kozvetlen_kedvezmeny || 0, vp = +BE.visszatero_kedvezmeny || 0, sajat = (BE["elonyok_" + nyelv] || BE.elonyok_hu || "").split("\n").map(function (x) { return x.trim(); }).filter(Boolean);
     if (kp > 0) L.push(s("kozv_olcsobb").replace("{p}", kp));
@@ -624,11 +654,22 @@
     if (ma <= F2.tavozas) h += '<div id="holnap">' + holnap() + "</div>";
     if (ma <= F2.tavozas) h += '<div class="blokk" id="vk-keres"><h3>' + s("vk_kerek") + '</h3><p class="jelmag">' + s("vk_kerek_al") + '</p><div class="valasz">' + s("vk_tip").map(function (x) { return '<button type="button" class="opcio" data-vkkeres="' + x[0] + '"><b>' + e(x[1]) + "</b><small>" + e(x[2]) + "</small></button>"; }).join("") +
       '</div><form id="vk-uzenet" style="margin-top:12px"><label class="mezo"><span>' + s("vk_uzenet") + '</span><textarea id="vk-sz" rows="2"></textarea></label><button class="gomb" type="submit">' + s("vk_kuld") + '</button></form><div id="vk-eredm"></div></div>';
+    if (ma >= F2.erkezes) h += '<form class="blokk" id="ert-urlap" data-pont=""><h3>' + (nyelv === "hu" ? "Milyen volt nálunk?" : "How was your stay?") + '</h3><p class="jelmag">' + (nyelv === "hu" ? "Koppints egy számra (1–10). Ernő minden értékelést elolvas." : "Tap a number (1–10). Ernő reads every review.") + '</p><div class="pontok">' + [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(function (n) { return '<button type="button" data-pont="' + n + '">' + n + "</button>"; }).join("") + '</div><label class="mezo"><span>' + (nyelv === "hu" ? "Pár mondat (nem kötelező)" : "A few words (optional)") + '</span><textarea id="ert-sz" rows="3"></textarea></label><button class="gomb" type="submit">' + s("vk_kuld") + '</button><div id="ert-eredm"></div></form>';
     if (d.kartya) h += '<a class="blokk kartya-link" href="#/kartya/' + e(d.kartya) + '"><b>' + s("vk_kartya") + '</b><span class="jelmag">' + s("vk_kartya_al") + "</span><span>→</span></a>";
     if (ma >= F2.tavozas && V.ertekeles_link) h += '<a class="gomb teljes" href="' + e(V.ertekeles_link) + '" target="_blank" rel="noopener">' + s("vk_ertekeles") + " ↗</a>";
     var tel = V.tel || (O.kapcsolat || {}).tel;
     h += '<div class="gombok" style="margin-top:16px">' + (tel ? '<a class="gomb" href="tel:' + e(tel.replace(/\s/g, "")) + '">' + s("vk_hivj") + " · " + e(tel) + "</a>" : "") + '<a class="gomb masod" href="https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent("2627 Zebegény, Csalogány utca 4.") + '" target="_blank" rel="noopener">' + s("utvonal") + ' ↗</a><a class="gomb masod" href="#/hazirend">' + s("hazirend") + "</a></div>";
     return h + "</section>";
+  }
+  async function ertekelesKuld() {
+    var f = $("#ert-urlap"), out = $("#ert-eredm"), pont = +f.dataset.pont, hu = nyelv === "hu";
+    if (!pont) { out.className = "uzenet hiba"; out.textContent = hu ? "Koppints egy számra." : "Tap a number."; return; }
+    var tk = (location.hash.split("/")[2] || "");
+    try {
+      var r = await api("/api/vendeg/" + encodeURIComponent(tk), { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ tipus: "ertekeles", pont: pont, szoveg: $("#ert-sz").value }) });
+      if (r._status !== 200) throw new Error();
+      f.innerHTML = "<h3>" + (hu ? "Köszönjük!" : "Thank you!") + "</h3>" + (BE.ert_google_url ? '<p>' + (hu ? "Ha van egy perced, írd meg a Google-on is, bármilyen is a véleményed:" : "If you have a minute, please share it on Google too, whatever you think:") + '</p><a class="gomb" href="' + e(BE.ert_google_url) + '" target="_blank" rel="noopener">' + (hu ? "Értékelés a Google-on ↗" : "Review on Google ↗") + "</a>" : "");
+    } catch (x) { out.className = "uzenet hiba"; out.textContent = s("hiba"); }
   }
   async function vendegKuld(tipus, szoveg) {
     var tk = (location.hash.split("/")[2] || ""), out = $("#vk-eredm"); if (!out) return;
@@ -714,6 +755,9 @@
       var sc = $("#lap-tartalom").scrollTop; lapRajz(); $("#lap-tartalom").scrollTop = sc;
       Object.keys(mentes).forEach(function (id) { document.getElementById(id).value = mentes[id]; }); return;
     }
+    var ug = ev.target.closest("[data-ugras]"); if (ug) { var cel = document.getElementById(ug.dataset.ugras); if (cel) cel.scrollIntoView({ behavior: "smooth" }); return; }
+    if (ev.target.closest("[data-google]")) { googleBetolt(); return; }
+    var pb = ev.target.closest("[data-pont]"); if (pb) { $("#ert-urlap").dataset.pont = pb.dataset.pont; pb.parentNode.querySelectorAll("button").forEach(function (x) { x.classList.toggle("most", +x.dataset.pont <= +pb.dataset.pont); }); return; }
     if (ev.target.closest("[data-kartyatorol]")) { kartyaIr(null); rajzol(); return; }
     var ms = ev.target.closest("[data-masol]");
     if (ms) { var mt = ms.dataset.masol; (navigator.clipboard ? navigator.clipboard.writeText(mt) : Promise.reject()).then(function () { ms.textContent = s("vk_masolva"); }).catch(function () {}); return; }
@@ -731,7 +775,7 @@
   $("#lap").addEventListener("click", function (ev) { if (ev.target === this) this.close(); });
   $("#menulap").addEventListener("click", function (ev) { if (ev.target === this) this.close(); });
   document.addEventListener("change", function (ev) { if (ev.target.dataset && ev.target.dataset.allomas && ev.target.files && ev.target.files[0]) szelfiKuld(ev.target); });
-  document.addEventListener("submit", function (ev) { if (ev.target.id === "ajanlat") ajanlatKuld(ev); if (ev.target.id === "uzenet") uzenetKuld(ev); if (ev.target.id === "kartya-urlap") { ev.preventDefault(); kartyaKer(); } if (ev.target.id === "vk-uzenet") { ev.preventDefault(); vendegKuld("egyeb", $("#vk-sz").value); } });
+  document.addEventListener("submit", function (ev) { if (ev.target.id === "ajanlat") ajanlatKuld(ev); if (ev.target.id === "uzenet") uzenetKuld(ev); if (ev.target.id === "ert-urlap") { ev.preventDefault(); ertekelesKuld(); } if (ev.target.id === "kartya-urlap") { ev.preventDefault(); kartyaKer(); } if (ev.target.id === "vk-uzenet") { ev.preventDefault(); vendegKuld("egyeb", $("#vk-sz").value); } });
   window.addEventListener("hashchange", function () {
     ["#lap", "#menulap"].forEach(function (q) { var d = $(q); if (d.open) d.close(); });     // lapváltáskor a felcsúszó lapok bezárulnak
     atmenet(function () { rajzol(); window.scrollTo(0, 0); });
@@ -750,6 +794,7 @@
       var d = await api("/api/adat");
       if (d._status === 200) {
         if (d.beallitas) BE = d.beallitas;
+        SAJAT = { lista: d.ertekelesek || [], atlag: d.sajat_ert };
         if (d.apartmanok && d.apartmanok.length) T.apartmanok = d.apartmanok;
         (d.tartalom || []).forEach(function (x) { T.szoveg[x.kulcs] = { hu: x.hu, en: x.en }; });
         foglalt = {}; (d.foglalt || []).forEach(function (x) { (foglalt[x.apartman_id] = foglalt[x.apartman_id] || {})[x.nap] = true; });
@@ -764,6 +809,8 @@
     var el = $("#elo"); if (el) el.innerHTML = elo();
     var ho = $("#holnap"); if (ho) ho.innerHTML = holnap();
     var kz = $("#kozvetlen"); if (kz) kz.innerHTML = kozvetlen();
+    var eb = $("#ertekelesek"); if (eb && !GO) eb.innerHTML = ertekelesBlokk();
+    var bz = $("#bizalom"); if (bz) bz.innerHTML = bizalom();
     var bt = $("#blogteaser"); if (bt) bt.innerHTML = blogTeaser();
     var bs = $("#hetvege"); if (bs) bs.innerHTML = hetvegeSzabad(bs.dataset.het);
     szelfikRajz(); if ($("#lap").open && F.lepes < 3) lapRajz();

@@ -97,3 +97,12 @@ CREATE TABLE IF NOT EXISTS penz (                 -- bevételek és kiadások (P
   letrehozva TEXT NOT NULL DEFAULT (datetime('now'))
 );
 CREATE INDEX IF NOT EXISTS penz_datum ON penz(datum);
+CREATE TABLE IF NOT EXISTS ertekeles (            -- saját, igazolt vendégértékelés: csak visszaigazolt foglalás vendégkönyvéből, Ernő teszi ki
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  ajanlat_id INTEGER UNIQUE REFERENCES ajanlatkeres(id) ON DELETE SET NULL,
+  nev TEXT NOT NULL, pont INTEGER NOT NULL CHECK (pont BETWEEN 1 AND 10),
+  szoveg TEXT, nyelv TEXT NOT NULL DEFAULT 'hu',
+  allapot TEXT NOT NULL DEFAULT 'uj' CHECK (allapot IN ('uj','kint','rejtett')),
+  ottlet TEXT,                                    -- az ottlét hónapja (ÉÉÉÉ-HH), ezt mutatjuk
+  letrehozva TEXT NOT NULL DEFAULT (datetime('now'))
+);

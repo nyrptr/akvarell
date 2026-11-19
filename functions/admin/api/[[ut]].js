@@ -41,6 +41,11 @@ export async function onRequest({ request, env, params, waitUntil }) {
     if (!['uj', 'visszaigazolva', 'elutasitva'].includes(d.allapot)) return J(400, { hiba: 'állapot' });
     const a = await db.prepare('SELECT * FROM ajanlatkeres WHERE id = ?').bind(+d.id).first();
     if (!a) return J(404, { hiba: 'nincs' });
+    // dupla foglalás elleni zár: ha közben a napok foglaltak lettek (Booking/Szállás.hu naptár, kézi, másik visszaigazolás), nem igazolja vissza
+    if (d.allapot === 'visszaigazolva' && a.allapot !== 'visszaigazolva' && !d.megis) {
+      const ut2 = (await db.prepare("SELECT nap, forras FROM foglalt_nap WHERE apartman_id = ? AND nap >= ? AND nap < ? ORDER BY nap").bind(a.apartman_id, a.erkezes, a.tavozas).all()).results;
+      if (ut2.length) return J(409, { hiba: 'ütközés', napok: ut2 });
+    }
     const lepes = [db.prepare('UPDATE ajanlatkeres SET allapot = ? WHERE id = ?').bind(d.allapot, a.id)];
     if (d.allapot === 'visszaigazolva') {
       for (let n = new Date(a.erkezes + 'T12:00:00Z'); n.toISOString().slice(0, 10) < a.tavozas; n.setUTCDate(n.getUTCDate() + 1))
@@ -109,6 +114,13 @@ export async function onRequest({ request, env, params, waitUntil }) {
     const v = (await db.prepare(`SELECT g.id, g.nev, g.email, g.nyelv, g.hirlevel, g.hirlevel_ido, g.leiratkozva, g.forras, g.letrehozva,
       (SELECT COUNT(*) FROM ajanlatkeres a WHERE lower(a.email) = g.email AND a.allapot = 'visszaigazolva') ottlet FROM vendeg g ORDER BY g.letrehozva DESC LIMIT 500`).all()).results;
     return J(200, { vendegek: v, beall: await beall(db), haz_kod: await hazKod(db) });
+  }
+  if (ut === 'ertekelesek' && m === 'GET')
+    return J(200, (await db.prepare('SELECT e.*, a.apartman_id FROM ertekeles e LEFT JOIN ajanlatkeres a ON a.id = e.ajanlat_id ORDER BY e.letrehozva DESC LIMIT 200').all()).results);
+  if (ut === 'ertekeles' && m === 'POST') {
+    const d = await be(); if (!['uj', 'kint', 'rejtett'].includes(d.allapot)) return J(400, { hiba: 'állapot' });
+    await db.prepare('UPDATE ertekeles SET allapot = ? WHERE id = ?').bind(d.allapot, +d.id).run();
+    return J(200, { ok: true });
   }
   if (ut === 'vendegek.csv' && m === 'GET') {                       // csak a hírlevélre feliratkozottak, hozzájárulási idővel
     const v = (await db.prepare('SELECT nev, email, nyelv, hirlevel_ido FROM vendeg WHERE hirlevel = 1 ORDER BY hirlevel_ido').all()).results;
@@ -206,7 +218,7 @@ export async function onRequest({ request, env, params, waitUntil }) {
     await db.prepare('UPDATE blog SET allapot = ? WHERE id = ?').bind(d.allapot, +d.id).run(); return J(200, { ok: true });
   }
   if (ut === 'mentes' && m === 'GET') {                             // teljes kimentés JSON-ban (költözéshez, biztonsági mentéshez)
-    const t = {}; for (const n of ['apartman', 'tartalom', 'foglalt_nap', 'ajanlatkeres', 'ajanlat_ar', 'uzenet', 'beallitas', 'blog', 'vendegut', 'vendeg', 'penz']) t[n] = (await db.prepare('SELECT * FROM ' + n).all()).results;
+    const t = {}; for (const n of ['apartman', 'tartalom', 'foglalt_nap', 'ajanlatkeres', 'ajanlat_ar', 'uzenet', 'beallitas', 'blog', 'vendegut', 'vendeg', 'penz', 'ertekeles']) t[n] = (await db.prepare('SELECT * FROM ' + n).all()).results;
     t.kihivas = (await db.prepare('SELECT id, becenev, allomas, tipus, jovahagyva, letrehozva FROM kihivas').all()).results;   // a képek a /admin/api/kep/<id> címen
     return J(200, t, { 'content-disposition': 'attachment; filename="akvarell-mentes.json"' });
   }

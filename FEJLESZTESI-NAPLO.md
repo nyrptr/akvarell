@@ -69,3 +69,16 @@
 - **Pénzügyek fül** (`penz` tábla): hónap/év, bevétel, kiadás, eredmény, megspórolt jutalék, kifizetett jutalék, kategória-sávok; kézi tétel (portálos bevételnél a jutalék magától kiadás), visszaigazolt közvetlen foglalás magától bevétel (szállás + extrák), takarítási díj magától kiadás.
 - **Vendégek fül**: számlálók, nyomtatható QR-kártya a szobákba (új kód generálható), beállítások, hírlevél, vendéglista.
 - Nem tesztelt: valódi levélküldés (Brevo-kulcs nélkül); Apple/Google Wallet-kártya nincs (fejlesztői fiók kell) – a kártya most weboldalon él, QR-ral.
+
+## 2026-11-19 – Claude (kockazat)
+- **Dupla foglalás elleni zár**: visszaigazoláskor a szerver megnézi, foglalt-e közben bármelyik nap (portálnaptár, kézi, másik foglalás); ütközésnél 409, a kezelő felsorolja a napokat, és csak kifejezett megerősítéssel igazol vissza. Helyben próbálva (A és B átfedő foglalás → B 409).
+- **Napi élő ellenőrzés** (`.github/workflows/ellenorzes.yml`): főoldal, /api/adat, kezelő-védelem; hibánál piros futás → GitHub e-mail. Titok nem kell.
+
+## 2026-11-20 – Claude (ertekeles) – értékelések bekötése
+- **Kutatás:** a Booking hivatalos Review API-jával lekért értékelések nyilvános oldalon nem használhatók (csak belső használatra); a külső „widgetek” a nyilvános Booking-oldalt olvassák ki – ezt nem csináljuk. A Google Places API engedi az értékelések megjelenítését szerzőmegjelöléssel, de tárolni nem szabad (csak a hely azonosítóját).
+- **Megoldás:** a főoldali értékelés-blokk minden forrása kattintható (Booking, Szállás.hu → a portál oldala), a pontszám és a dátum a kezelőből (Vendégek fül), a régi idézetek Booking-linkkel. **Saját, igazolt értékelés:** a vendégkönyvben érkezés után 1–10 + szöveg, Ernő teszi ki („✓ igazolt vendég”, az ottlét hónapja); minden értékelő a Google-értékelés linkjét kapja, pontszámtól függetlenül (a Google tiltja, hogy csak az elégedetteket küldjük oda). **Google élőben:** `/api/google`, csak ha GOOGLE_PLACES_KEY + Place ID be van állítva, gombnyomásra, gyorsítótár nélkül.
+- Nem tesztelt: a Google-ág valódi kulccsal; a Booking-link a routard-oldal címéből következtetve (a Booking robotszűrője miatt nem nyitható meg innen); a Szállás.hu-link most a zebegényi lista – Ernő írja be a pontos címet.
+
+## 2026-11-20 – Claude (ertekeles) – marketing- és UX-átnézés, módszer
+- Kutatás alapján (értékelés a legmeghatározóbb, mobil, bizalom a gomb mellett): valós pontszám a hero-ban (koppintásra az értékelésekhez ugrik), az értékelések közvetlenül az apartmanok után, bizalmi sor a foglalás elküldése előtt.
+- **MODSZER.md**: a vendégház-motor módszere gépi olvasásra (elvek, közönség, modulok, jogi tanulságok, ösztönzés, új ház bevezetése, Szegfű33 mint következő próba).

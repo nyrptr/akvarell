@@ -1,0 +1,19 @@
+# Napi élő ellenőrzés: ha a vendégoldal vagy az adatbázis nem válaszol, a futás piros lesz, és a GitHub e-mailt küld a tároló gazdájának.
+# Titok nem kell hozzá. A cím a tároló SITE_URL változójából jön (Settings → Variables), alapból akvarell.pages.dev.
+name: Napi ellenőrzés
+on:
+  schedule: [{ cron: '17 5 * * *' }]
+  workflow_dispatch:
+jobs:
+  el:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Oldal és adatbázis
+        env: { SITE: "${{ vars.SITE_URL || 'https://akvarell.pages.dev' }}" }
+        run: |
+          set -e
+          curl -fsS "$SITE/" -o /dev/null
+          curl -fsS "$SITE/api/adat" | python3 -c "import json,sys; d=json.load(sys.stdin); assert len(d['apartmanok'])>=1, 'nincs apartman'; print('apartman:', len(d['apartmanok']))"
+          curl -fsS "$SITE/api/zebegeny" -o /dev/null || echo "::warning::Duna/időjárás most nem érhető el (külső forrás)"
+          code=$(curl -s -o /dev/null -w '%{http_code}' "$SITE/admin/api/en"); test "$code" = 401 || test "$code" = 200
+          echo "rendben"
