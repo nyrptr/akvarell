@@ -108,6 +108,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .allomas .szam{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:700;background:var(--duna2);color:var(--duna)}
 .allomas.kesz .szam{background:var(--zold);color:#fff}
 .allomas .nev{flex:1 1 50%;min-width:0;font-weight:600}
+.gombok{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
 .allomas .gombok{display:flex;gap:8px;margin-left:auto}
 .allomas button,.allomas label.gomb{min-height:44px}
 .jutalom{border-radius:20px;padding:18px;background:linear-gradient(135deg,#f6dfae,#e9b86a);color:#3b2810;margin-top:14px}

@@ -108,3 +108,6 @@
 - **Próba:** Ernő szerverét letiltva a főoldal, az élmények, a látnivalók és a kihívás minden képe betölt, kifelé nem megy kérés.
 - **Nem jött át (Ernő oldalán is 404):** 3 kép a hosszú élmény-szövegekben (2024/03 mappa); ezek most rejtve maradnak.
 - Új szabály: MODSZER.md 4/b – az oldal nem függhet más szerverétől.
+
+## 2026-11-20 – Claude (gomb-koz)
+- A vendégoldalon nem volt közös `.gombok` stílus: az egymás alá törő gombok összeértek (pl. „Közvetlenül nálunk”). Most 10 px köz, sortöréssel. Próba: 320 és 390 px.
