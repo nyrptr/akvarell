@@ -59,18 +59,19 @@ export async function kuldVendegnek(env, a, tipus, origin) {
 export async function utemezett(env, origin) {
   const db = env.DB, most = Date.now();
   if (!env.BREVO_API_KEY || !env.LEVEL_FELADO) return { kihagyva: 'nincs levelező' };
-  const f = await db.prepare("SELECT ido FROM gyorsitotar WHERE kulcs = 'vendegut_futas'").first();
-  if (f && most - f.ido < 60 * 60e3) return { kihagyva: 'nemrég futott' };
-  await db.prepare("INSERT OR REPLACE INTO gyorsitotar (kulcs, ertek, ido) VALUES ('vendegut_futas', '', ?)").bind(most).run();
+  // óránként egy futás, egy lépésben lefoglalva (két egyszerre érkező kérés közül csak az egyik megy tovább → nincs dupla levél)
+  await db.prepare("INSERT OR IGNORE INTO gyorsitotar (kulcs, ertek, ido) VALUES ('vendegut_futas', '', 0)").run();
+  const zar = await db.prepare("UPDATE gyorsitotar SET ido = ? WHERE kulcs = 'vendegut_futas' AND ido < ?").bind(most, most - 60 * 60e3).run();
+  if (!zar.meta.changes) return { kihagyva: 'nemrég futott' };
   const ora = oraBp(); if (ora < 8 || ora >= 20) return { kihagyva: 'éjszaka' };
   const ma = isoBp();
   const L = (await db.prepare(`SELECT a.*, p.nev apnev, v.elkuldve FROM ajanlatkeres a JOIN apartman p ON p.id = a.apartman_id LEFT JOIN vendegut v ON v.ajanlat_id = a.id
-    WHERE a.allapot = 'visszaigazolva' AND a.tavozas >= ? AND a.erkezes <= ?`).bind(plusz(ma, -1), plusz(ma, 3)).all()).results;
+    WHERE a.allapot = 'visszaigazolva' AND a.tavozas >= ? AND a.erkezes <= ?`).bind(plusz(ma, -3), plusz(ma, 3)).all()).results;
   const ki = [];
   for (const a of L) {
     const e = JSON.parse(a.elkuldve || '{}');
     let tipus = null;
-    if (a.tavozas === plusz(ma, -1) && !e.ertekeles) tipus = 'ertekeles';
+    if (a.tavozas < ma && a.tavozas >= plusz(ma, -3) && !e.ertekeles) tipus = 'ertekeles';   // távozás után 1–3 nappal (ha egy nap kimaradna a futás, akkor is kimegy)
     else if (a.tavozas === ma && !e.tavozas) tipus = 'tavozas';
     else if (a.erkezes > ma && a.erkezes <= plusz(ma, 3) && !e.elotte) tipus = 'elotte';
     if (tipus) { const r = await kuldVendegnek(env, a, tipus, origin); ki.push([a.id, tipus, r.ok]); }

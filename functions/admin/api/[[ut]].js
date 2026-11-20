@@ -1,5 +1,6 @@
 // /admin/api/* – kezelő. Minden kérés előtt: Access-belépés ellenőrzése (lásd _kozos/k.js).
-import { J, kezelo, NAP } from '../../_kozos/k.js';
+import { J, kezelo, NAP, sajatEredet, oldalCim } from '../../_kozos/k.js';
+import { valosNap } from '../../_kozos/ar.js';
 import { szinkron } from '../../_kozos/naptar.js';
 import { hetiBejegyzes } from '../../_kozos/blog.js';
 import { token, kuldVendegnek, utemezett } from '../../_kozos/vendegut.js';
@@ -28,6 +29,8 @@ export async function onRequest({ request, env, params, waitUntil }) {
   const helyi = u.hostname === 'localhost' && env.HELYI_KEZELO === 'igen';   // csak helyi próbához
   const ki = helyi ? 'helyi' : await kezelo(request, env);
   if (!ki) return J(401, { hiba: 'belépés kell' });
+  if (!sajatEredet(request)) return J(403, { hiba: 'idegen oldalról nem megy' });
+  const cim = oldalCim(env, request);
   const ut = (params.ut || []).join('/'), m = request.method, db = env.DB;
   const be = async () => { try { return await request.json(); } catch (e) { return {}; } };
 
@@ -49,7 +52,11 @@ export async function onRequest({ request, env, params, waitUntil }) {
     const lepes = [db.prepare('UPDATE ajanlatkeres SET allapot = ? WHERE id = ?').bind(d.allapot, a.id)];
     if (d.allapot === 'visszaigazolva') {
       for (let n = new Date(a.erkezes + 'T12:00:00Z'); n.toISOString().slice(0, 10) < a.tavozas; n.setUTCDate(n.getUTCDate() + 1))
-        lepes.push(db.prepare("INSERT OR IGNORE INTO foglalt_nap (apartman_id, nap, forras) VALUES (?, ?, 'ajanlat')").bind(a.apartman_id, n.toISOString().slice(0, 10)));
+        lepes.push(db.prepare("INSERT INTO foglalt_nap (apartman_id, nap, forras) VALUES (?, ?, 'ajanlat') ON CONFLICT(apartman_id, nap) DO UPDATE SET forras = 'ajanlat'").bind(a.apartman_id, n.toISOString().slice(0, 10)));   // a portálnaptárból jött jelölést is átveszi: a következő szinkron ne szabadítsa fel
+    } else if (a.allapot === 'visszaigazolva') {
+      // visszaigazolt foglalás visszavonása: a napjai felszabadulnak – kivéve, amit egy másik visszaigazolt foglalás is lefed
+      lepes.push(db.prepare(`DELETE FROM foglalt_nap WHERE apartman_id = ?1 AND forras = 'ajanlat' AND nap >= ?2 AND nap < ?3
+        AND NOT EXISTS (SELECT 1 FROM ajanlatkeres b WHERE b.id <> ?4 AND b.apartman_id = ?1 AND b.allapot = 'visszaigazolva' AND b.erkezes <= foglalt_nap.nap AND b.tavozas > foglalt_nap.nap)`).bind(a.apartman_id, a.erkezes, a.tavozas, a.id));
     }
     await db.batch(lepes);
     await penzFoglalasbol(db, a, d.allapot);
@@ -58,7 +65,7 @@ export async function onRequest({ request, env, params, waitUntil }) {
       const t = await token(db, a.id), ap = await db.prepare('SELECT nev FROM apartman WHERE id = ?').bind(a.apartman_id).first();
       const v = await db.prepare('SELECT elkuldve FROM vendegut WHERE ajanlat_id = ?').bind(a.id).first();
       let level = null;
-      if (!JSON.parse(v.elkuldve).visszaigazolas) level = await kuldVendegnek(env, { ...a, apnev: ap ? ap.nev : a.apartman_id }, 'visszaigazolas', u.origin).catch(() => ({ ok: false }));
+      if (!JSON.parse(v.elkuldve).visszaigazolas) level = await kuldVendegnek(env, { ...a, apnev: ap ? ap.nev : a.apartman_id }, 'visszaigazolas', cim).catch(() => ({ ok: false }));
       return J(200, { ok: true, token: t, level: level && level.ok ? 'elküldve' : (level && level.kihagyva ? 'nincs levelező' : level ? 'hiba' : 'már elment') });
     }
     return J(200, { ok: true });
@@ -70,7 +77,8 @@ export async function onRequest({ request, env, params, waitUntil }) {
     return J(200, (await db.prepare('SELECT nap, forras FROM foglalt_nap WHERE apartman_id = ? AND nap LIKE ?').bind(ap, ho + '-%').all()).results);
   }
   if (ut === 'foglalt' && m === 'POST') {
-    const d = await be(); if (!NAP.test(d.nap || '')) return J(400, { hiba: 'nap' });
+    const d = await be(); if (!valosNap(String(d.nap || ''))) return J(400, { hiba: 'nap' });
+    if (!(await db.prepare('SELECT 1 FROM apartman WHERE id = ?').bind(String(d.ap || '')).first())) return J(400, { hiba: 'apartman' });
     if (d.foglalt) await db.prepare("INSERT OR IGNORE INTO foglalt_nap (apartman_id, nap, forras) VALUES (?, ?, 'kezi')").bind(d.ap, d.nap).run();
     else await db.prepare('DELETE FROM foglalt_nap WHERE apartman_id = ? AND nap = ?').bind(d.ap, d.nap).run();
     return J(200, { ok: true });
@@ -97,7 +105,7 @@ export async function onRequest({ request, env, params, waitUntil }) {
     const tipus = d.tipus === 'kiadas' ? 'kiadas' : 'bevetel', kat = String(d.kategoria || ''), forras = FORRAS.includes(d.forras) ? d.forras : 'kozvetlen';
     if (!(tipus === 'kiadas' ? KIADAS : BEVETEL).includes(kat)) return J(400, { hiba: 'kategória' });
     const osszeg = Math.round(+d.osszeg || 0); if (!(osszeg > 0 && osszeg < 1e8)) return J(400, { hiba: 'összeg' });
-    if (!NAP.test(d.datum || '')) return J(400, { hiba: 'dátum' });
+    if (!valosNap(String(d.datum || ''))) return J(400, { hiba: 'dátum' });
     const mj = String(d.megjegyzes || '').slice(0, 300) || null;
     if (d.id) { await db.prepare('UPDATE penz SET datum = ?, tipus = ?, kategoria = ?, osszeg = ?, forras = ?, megjegyzes = ?, auto = 0 WHERE id = ?').bind(d.datum, tipus, kat, osszeg, forras, mj, +d.id).run(); return J(200, { ok: true }); }
     const r = await db.prepare('INSERT INTO penz (datum, tipus, kategoria, osszeg, forras, megjegyzes) VALUES (?,?,?,?,?,?)').bind(d.datum, tipus, kat, osszeg, forras, mj).run();
@@ -124,12 +132,13 @@ export async function onRequest({ request, env, params, waitUntil }) {
   }
   if (ut === 'vendegek.csv' && m === 'GET') {                       // csak a hírlevélre feliratkozottak, hozzájárulási idővel
     const v = (await db.prepare('SELECT nev, email, nyelv, hirlevel_ido FROM vendeg WHERE hirlevel = 1 ORDER BY hirlevel_ido').all()).results;
-    const q = (x) => '"' + String(x ?? '').replace(/"/g, '""') + '"';
+    const q = (x) => { const v = String(x ?? ''); return '"' + (/^[=+\-@\t\r]/.test(v) ? "'" : '') + v.replace(/"/g, '""') + '"'; };   // képletnek látszó kezdet elé aposztróf (táblázatkezelő ne futtassa)
     return new Response('\ufeffnév,email,nyelv,hozzájárulás ideje\n' + v.map(x => [x.nev, x.email, x.nyelv, x.hirlevel_ido].map(q).join(',')).join('\n'), { headers: { 'content-type': 'text/csv; charset=utf-8', 'content-disposition': 'attachment; filename="akvarell-hirlevel.csv"' } });
   }
   if (ut === 'beallitasok' && m === 'POST') {
     const d = await be(), k = Object.keys(ALAP).filter(x => x in d);
     if (!k.length) return J(400, { hiba: 'nincs mező' });
+    for (const x of k) if (x.endsWith('_url') && d[x] && !/^https:\/\/[^\s"'<>]+$/.test(String(d[x]))) return J(400, { hiba: 'a link https:// kezdetű legyen' });
     await db.batch(k.map(x => db.prepare("INSERT OR REPLACE INTO beallitas (kulcs, ertek, frissitve) VALUES (?, ?, datetime('now'))").bind(x, String(d[x]).slice(0, 2000))));
     return J(200, { ok: true });
   }
@@ -140,18 +149,22 @@ export async function onRequest({ request, env, params, waitUntil }) {
   if (ut === 'hirlevel' && m === 'POST') {                          // hírlevél a feliratkozottaknak (Brevo, legfeljebb 250 címzett/kör), leiratkozó linkkel
     const d = await be(), targy = String(d.targy || '').trim().slice(0, 150), hu = String(d.hu || '').trim().slice(0, 5000), en = String(d.en || '').trim().slice(0, 5000) || hu;
     if (targy.length < 3 || hu.length < 10) return J(400, { hiba: 'tárgy és szöveg kell' });
-    const L = d.proba ? [{ email: env.ERTESITES_EMAIL, nyelv: 'hu', token: 'proba-proba-proba-proba' }] : (await db.prepare('SELECT email, nyelv, token FROM vendeg WHERE hirlevel = 1 LIMIT 250').all()).results;
-    if (!L.length || !L[0].email) return J(400, { hiba: 'nincs címzett' });
-    let ok = 0, kihagyva = false;
+    // Egy kérés legfeljebb 30 levelet küld (a Cloudflare kérésenként korlátozza a kimenő hívásokat); a kezelő addig hívja újra a
+    // `tol` értékkel, amíg `kov` nem üres. Így 30 címzett felett sem szakad félbe, és senki nem kapja kétszer.
+    const tol = Math.max(0, Math.round(+d.tol || 0));
+    const L = d.proba ? [{ id: 0, email: env.ERTESITES_EMAIL, nyelv: 'hu', token: 'proba-proba-proba-proba' }] : (await db.prepare('SELECT id, email, nyelv, token FROM vendeg WHERE hirlevel = 1 AND id > ? ORDER BY id LIMIT 30').bind(tol).all()).results;
+    if (!L.length || !L[0].email) return J(tol ? 200 : 400, tol ? { elkuldve: 0, cimzett: 0, kov: null } : { hiba: 'nincs címzett' });
+    let ok = 0, kihagyva = false, utolso = tol;
     for (const v of L) {
-      const sz = v.nyelv === 'en' ? en : hu, le = `${u.origin}/api/leiratkozas?t=${encodeURIComponent(v.token)}`;
-      const r = await kuld(env, { to: v.email, subject: targy, html: keret(targy, `<p style="white-space:pre-line">${esc(sz)}</p><p style="margin:22px 0"><a href="${u.origin}/#/kartya/${encodeURIComponent(v.token)}" style="background:#1d2a35;color:#fff;padding:13px 22px;border-radius:999px;text-decoration:none;font:600 16px system-ui,sans-serif">${v.nyelv === 'en' ? 'Book with your guest card' : 'Foglalás a vendégkártyáddal'}</a></p><p style="font-size:13px;color:#5b6670">${v.nyelv === 'en' ? 'You receive this because you asked for it.' : 'Azért kapod, mert kérted.'} <a href="${le}">${v.nyelv === 'en' ? 'Unsubscribe' : 'Leiratkozás'}</a></p>`) });
-      if (r.ok) ok++; if (r.kihagyva) { kihagyva = true; break; }
+      const sz = v.nyelv === 'en' ? en : hu, le = `${cim}/api/leiratkozas?t=${encodeURIComponent(v.token)}`;
+      const r = await kuld(env, { to: v.email, subject: targy, html: keret(targy, `<p style="white-space:pre-line">${esc(sz)}</p><p style="margin:22px 0"><a href="${cim}/#/kartya/${encodeURIComponent(v.token)}" style="background:#1d2a35;color:#fff;padding:13px 22px;border-radius:999px;text-decoration:none;font:600 16px system-ui,sans-serif">${v.nyelv === 'en' ? 'Book with your guest card' : 'Foglalás a vendégkártyáddal'}</a></p><p style="font-size:13px;color:#5b6670">${v.nyelv === 'en' ? 'You receive this because you asked for it.' : 'Azért kapod, mert kérted.'} <a href="${le}">${v.nyelv === 'en' ? 'Unsubscribe' : 'Leiratkozás'}</a></p>`) }).catch(() => ({ ok: false }));
+      if (r.kihagyva) { kihagyva = true; break; }
+      if (r.ok) ok++; utolso = v.id;
     }
-    return J(200, { elkuldve: ok, cimzett: L.length, kihagyva });
+    return J(200, { elkuldve: ok, cimzett: L.length, kihagyva, kov: !d.proba && !kihagyva && L.length === 30 ? utolso : null });
   }
 
-  if (ut === 'vendegut' && m === 'POST') return J(200, await utemezett(env, u.origin));   // kézi futtatás (próbához)
+  if (ut === 'vendegut' && m === 'POST') return J(200, await utemezett(env, cim));   // kézi futtatás (próbához)
 
   if (ut === 'apartmanok' && m === 'GET')
     return J(200, (await db.prepare('SELECT * FROM apartman ORDER BY sorrend').all()).results);

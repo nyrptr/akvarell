@@ -2,7 +2,9 @@
 # Titok nem kell hozzá. A cím a tároló SITE_URL változójából jön (Settings → Variables), alapból akvarell.pages.dev.
 name: Napi ellenőrzés
 on:
-  schedule: [{ cron: '17 5 * * *' }]
+  # 05:17 UTC: teljes ellenőrzés. A 08:23 és 14:23 UTC-s futás a vendégút-leveleket is elindítja (azok 8–20 óra között mennek,
+  # és az /api/adat kérése indítja őket) – így akkor is kimennek, ha aznap senki nem nyitja meg az oldalt.
+  schedule: [{ cron: '17 5 * * *' }, { cron: '23 8 * * *' }, { cron: '23 14 * * *' }]
   workflow_dispatch:
 jobs:
   el:
@@ -15,5 +17,5 @@ jobs:
           curl -fsS "$SITE/" -o /dev/null
           curl -fsS "$SITE/api/adat" | python3 -c "import json,sys; d=json.load(sys.stdin); assert len(d['apartmanok'])>=1, 'nincs apartman'; print('apartman:', len(d['apartmanok']))"
           curl -fsS "$SITE/api/zebegeny" -o /dev/null || echo "::warning::Duna/időjárás most nem érhető el (külső forrás)"
-          code=$(curl -s -o /dev/null -w '%{http_code}' "$SITE/admin/api/en"); test "$code" = 401 || test "$code" = 200
+          code=$(curl -s -o /dev/null -w '%{http_code}' "$SITE/admin/api/en"); case "$code" in 401|302|403) ;; *) echo "::error::A kezelő belépés nélkül $code választ ad (401, 302 vagy 403 kellene)"; exit 1;; esac
           echo "rendben"

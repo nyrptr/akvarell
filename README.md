@@ -14,7 +14,7 @@ Statikus oldal (HTML/CSS/JS) + Cloudflare Pages Functions + D1 (a kihívás-kép
 3. **Pages:** Workers & Pages → Create → Pages → Connect to Git → `akvarell`. Build command: üres. Output directory: `/`.
 4. **Kötések** (Pages-projekt → Settings → Bindings): D1 → változónév `DB` → `akvarell`.
 5. **Access:** Zero Trust → Access → Applications → Self-hosted → domain: `akvarell.pages.dev`, útvonal: `admin` → szabály: Emails = a kezelők címei. Az alkalmazás „Application Audience (AUD) Tag” értékét másold ki.
-6. **Változó** (Pages → Settings → Variables and Secrets): `ACCESS_AUD` = az előző AUD. Választható: `ACCESS_TEAM`, `ADMIN_EMAILS` (második szűrő az Access-szabály mellé).
+6. **Változó** (Pages → Settings → Variables and Secrets): `ACCESS_AUD` = az előző AUD, `ACCESS_TEAM` = a Zero Trust csapat neve (`<név>.cloudflareaccess.com` eleje). Mindkettő kötelező: ha bármelyik hiányzik, a kezelő senkit nem enged be. Választható: `ADMIN_EMAILS` (második szűrő az Access-szabály mellé), `OLDAL_URL` (ha az oldal saját domainre költözik: a levelek linkjei erre mutatnak).
 7. Újratelepítés (Deployments → Retry), és kész.
 
 ## Költözés

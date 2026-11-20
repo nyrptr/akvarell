@@ -82,3 +82,9 @@
 ## 2026-11-20 – Claude (ertekeles) – marketing- és UX-átnézés, módszer
 - Kutatás alapján (értékelés a legmeghatározóbb, mobil, bizalom a gomb mellett): valós pontszám a hero-ban (koppintásra az értékelésekhez ugrik), az értékelések közvetlenül az apartmanok után, bizalmi sor a foglalás elküldése előtt.
 - **MODSZER.md**: a vendégház-motor módszere gépi olvasásra (elvek, közönség, modulok, jogi tanulságok, ösztönzés, új ház bevezetése, Szegfű33 mint következő próba).
+
+## 2026-11-20 – Claude (atnezes) – biztonsági és kódátnézés az átadás előtt
+- Teljes lista: `ATNEZES-EREDMENY.md` (18 javítva, 7 döntésre vár, 12 rendben).
+- **Új:** `_kozos/korlat.js` (kéréskorlát a nyilvános POST-okra és a Google-hívásra, IP és e-mail csak napi lenyomatként), `_kozos/ar.js` (az árat a szerver számolja; `tools/proba/ar_teszt.mjs` a böngészővel egyezteti).
+- **Javítva:** levélszemét-kapu a foglalásnál és a kártyánál; ár a szerveren; visszavont foglalás napjai felszabadulnak; „mégis” visszaigazolásnál a nap nem marad portálnaptár-jelölésű; hírlevél 30-as szeletekben; dupla ütemezett levél elleni zár; értékeléskérés 1–3 napos ablakkal; `ACCESS_TEAM` kötelező; idegen oldalról indított kezelő-kérés tiltva; képfeltöltés a fájl eleje alapján; CSP és társai a `_headers`-ben; CSV-képlet; a napi ellenőrzés nem fogad el nyitott kezelőt, és napi két futás indítja a leveleket.
+- **Nem tesztelt:** valódi levélküldés és a hírlevél-szeletelés Brevo-kulccsal; valódi Access-token; a Google-ág kulccsal; előnézeti címen futó ütemező (nem tudjuk, van-e ott adatbázis-kötés). Helyben: kapu.py csak a 3 ismert OVF-503, access_teszt 12 OK, ar_teszt 0 HIBA, konzolhiba 0 (CSP mellett).
