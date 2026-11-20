@@ -111,3 +111,9 @@
 
 ## 2026-11-20 – Claude (gomb-koz)
 - A vendégoldalon nem volt közös `.gombok` stílus: az egymás alá törő gombok összeértek (pl. „Közvetlenül nálunk”). Most 10 px köz, sortöréssel. Próba: 320 és 390 px.
+
+## 2026-11-20 – Claude (rendrakas)
+- `.github/workflows/pr-kapu.yml`: minden PR-en lefutnak a gyár-szabályok, a belépés- és az ár-teszt, és a szintaxis-ellenőrzés; piros PR nem olvasztható be.
+- A napi ellenőrzés a saját képmásolatot is nézi, és figyelmeztet, ha Ernő oldala áll.
+- `.wrangler/` kikerült a tárolóból (helyi gyorsítótár volt).
+- Régi, be nem olvasztott ágak archív címkébe (`archiv/<ág>`), a beolvasztott ágak törölve; a #2 lezárva (a #11 felülírta: `ACCESS_TEAM` is kötelező).

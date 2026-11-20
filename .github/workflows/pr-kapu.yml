@@ -1,0 +1,23 @@
+# Minden PR-en és a main minden változásán: a gyár gépi szabályai, a belépés-ellenőrzés és az árszámítás egyezése.
+# Ha bármelyik hibázik, a PR piros – ilyenkor nem olvasztjuk be. Titok nem kell hozzá.
+name: Kapu
+on:
+  pull_request:
+  push: { branches: [main] }
+jobs:
+  szabalyok:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Gyár-szabályok
+        run: node tools/proba/gyar_szabalyok.mjs
+      - name: Kezelő-belépés ellenőrzése
+        run: node tools/proba/access_teszt.mjs
+      - name: Ár a böngészőben = ár a szerveren
+        run: TZ=Europe/Budapest node tools/proba/ar_teszt.mjs
+      - name: JavaScript szintaxis
+        run: |
+          for f in app.js admin/admin.js tartalom.js oldalak.js oldalak_hosszu.js oldalak_hosszu_en.js blog_alap.js terkep.js kepek/lista.js; do node --check "$f"; done
+          for f in $(find functions -name '*.js'); do cp "$f" /tmp/c.mjs && node --check /tmp/c.mjs || { echo "::error file=$f::szintaxishiba"; exit 1; }; done
