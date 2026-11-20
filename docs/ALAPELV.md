@@ -1,6 +1,6 @@
 # ALAPELV – a vendégház-motor rétegei és határai
 verzió: 2026-11-20 (1. réteg, MOTOR-ALAP.md) · olvasó: bármely AI-munkamenet · emberi olvasásra nem optimalizált · gazda: Nyári Péter
-Állapot: JAVASLAT, amíg Péter jóvá nem hagyja; utána ez dönt a 2. (próbák) és a 3. (szétválasztás) réteg minden kérdésében.
+Állapot: JÓVÁHAGYVA (Péter, 2026-11-20: „Mehet a #17, egy ház = egy telepítés”); ez dönt a 2. (próbák) és a 3. (szétválasztás) réteg minden kérdésében.
 Elsőbbség: Péter mondata > Project `claude/gyar.md` > AGENTS.md > MODSZER.md (4/b) > ez a fájl > MOTOR-ALAP.md.
 
 ## 1. Öt réteg
@@ -86,5 +86,5 @@ Soha nem változhat (MUST):
 | séma `ajanlatkeres` | `felnott 1–3`, `gyerek 0–2` CHECK a sémában, apartman `festo_*` oszlop: Akvarell-specifikus. | 3. réteg: a korlát az apartman `fo` értékéből a függvényben; `festo_*` marad (séma csak bővül), a motor „történet” mezőként kezeli. | R3 |
 | `functions/_middleware.js` | A `docs/` mappa nyilvánosan letölthető lett volna. | Javítva ebben a PR-ban (`docs` a tiltott útvonalak között). | R3 |
 
-## 9. Nyitott (Péter)
-- A 2. pont: egy ház = egy telepítés = egy adatbázis. Ha igen, a 3. réteg erre épül.
+## 9. Döntések
+- 2026-11-20, Péter: egy ház = egy telepítés = egy adatbázis (2. pont). A domain és a rajta lévő oldal a tulajé; a meglévő oldalt nem kell lecserélni (7. pont, `melle`).

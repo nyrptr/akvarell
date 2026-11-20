@@ -119,7 +119,7 @@
 - Régi, be nem olvasztott ágak archív címkébe (`archiv/<ág>`), a beolvasztott ágak törölve; a #2 lezárva (a #11 felülírta: `ACCESS_TEAM` is kötelező).
 
 ## 2026-11-20 – Claude (munka-alapelv) – motor-alap 1. réteg: gondolkodás
-- `docs/ALAPELV.md`: öt réteg (motor · ház · táj · partner · vendég), egy ház = egy telepítés = egy adatbázis, az adat három helye (beállításfájl, D1, környezeti változó), ki mihez fér, mi cserélhető és mi nem, modulok függéssel, határok (táj, partner csak jelölve). JAVASLAT, Péter jóváhagyásáig; a 3. réteg csak utána indul.
+- `docs/ALAPELV.md`: öt réteg (motor · ház · táj · partner · vendég), egy ház = egy telepítés = egy adatbázis, az adat három helye (beállításfájl, D1, környezeti változó), ki mihez fér, mi cserélhető és mi nem, modulok függéssel, határok (táj, partner csak jelölve). Péter jóváhagyta (2026-11-20: „Mehet a #17, egy ház = egy telepítés”). Meglévő oldal és domain: mellé / helyette (301) / vissza.
 - `functions/_middleware.js`: a `docs/` mappa sem tölthető le (a gyökér `.md` fájljai eddig is tiltva voltak).
 - Találat a 2–3. rétegnek (ALAPELV 8.): a hosszú hétvégék minimum éjszakáit csak a böngésző ellenőrzi; a 2026-os dátumok kézzel vannak beírva.
 - Teszt: `gyar_szabalyok.mjs`, `access_teszt.mjs`, `ar_teszt.mjs` 0 HIBA. NEM futott: `kapu.py` böngészős része (a változás leírás + egy útvonal-tiltás; a tiltás helyi szerveren nincs kipróbálva).
