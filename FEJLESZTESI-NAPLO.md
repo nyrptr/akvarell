@@ -93,3 +93,11 @@
 - `tools/proba/gyar_szabalyok.mjs`: helyőrző nyilvános szövegben, nyilvános POST korlát nélkül, kezelő-API védelme, ár a szerveren, fejlécek, escape, mentés teljessége. A kapu.py futtatja (az access- és az ár-teszttel együtt).
 - Helyőrzők eltávolítva: kihívás-jutalom („[Az ajándékot Ernő adja meg.]” – amíg nincs döntés, nem jelenik meg), üzemeltető NTAK/adószám, adatkezelés megőrzési ideje (feltételhez kötve, szám nélkül). Megjelenítéskor is szűrés (`tiszta()`), mert az éles adatbázisban a régi szöveg megvan.
 - MODSZER.md 4/b: biztonsági és minőségi alapszabályok.
+
+## 2026-11-20 – Claude (terkep-kihivas) – térképes 10-es kihívás
+- **Mi volt a baj:** a kihívásnak nem volt eleje, vége, leírása; az állomások egy része (Napraforgó Babapark, Fischer köz, Hirling köz) nem Ernő oldaláról származott, és a helyük nem volt ellenőrizhető.
+- **Új állomások:** Ernő „Zebegény látnivalói” oldalának látnivalóiból (templom, Hajózástörténeti Múzeum, Sziklakápolna, Trianoni emlékmű, Kós Károly-kilátó, Szőnyi-múzeum, Héthíd, Napraforgó utca), plusz a Duna-part és az Akvarell. Mondatok Ernő szövegéből rövidítve, HU/EN. Helyek: OpenStreetMap (Nominatim), 2026-11-20.
+- **Térkép:** `scripts/terkep_gen.py` → `terkep.js` (generált, 26 kB SVG; adat: `scripts/terkep_adat.json`, © OpenStreetMap közreműködők, a lapon feltüntetve). Szürkén indul, a megtett állomások körül kiszíneződik, 10/10-nél az egész. Indulás és érkezés: Akvarell. Állomásonként távolság az előzőtől (légvonalban, így kiírva), gyalogos útvonal-link.
+- A „Megvan” már nem rajzolja újra a lapot (nem ugrik). Új haladás-kulcs (`akv-kihivas2`), mert a számozás megváltozott. Új szövegkulcs: `kihivas_bev2` (a meglévő adatbázisba is bekerül, a kezelőben szerkeszthető).
+- **Ernő erősítse meg:** az Akvarell pontos helye a Csalogány úton (most az utca déli szakasza); a 8. állomás utcaszintű pont; jutalom nincs, amíg ő nem vállal.
+- **Nem tesztelt:** valódi telefonon a szűrők sebessége; a szelfi-feltöltés az új lapon csak a meglévő úton (kapu.py nem tölt fel képet).

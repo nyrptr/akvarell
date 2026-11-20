@@ -23,7 +23,7 @@
       teny: [["Kültéri jakuzzi", "fűthető, közös, a kertben"], ["Elektromosautó-töltő", "a szálláson"], ["Ingyenes parkolás", "a szálláson"], ["Wifi", "ingyenes"]],
       ma_cim: "Zebegény ma", ma_al: "Élő adatok a faluból, ahol a Duna kanyarodik.", dunacm: "Duna, Nagymaros", vizho: "Vízhőfok", most: "Most", naplem: "Naplemente", napkel: "Napkelte",
       forras_duna: "Vízállás és vízhőfok: OVF vízügyi geoportál, Nagymaros mérce", forras_ido: "Időjárás: met.no (Yr)", forras_nap: "Napkelte, napnyugta: csillagászati számítás",
-      kihivas_teaser: "Tíz állomás, tíz szelfi. Pipáld ki, ahol már jártál.", indulok: "Indulok",
+      kihivas_teaser: "Séta tíz állomással, az Akvarelltől az Akvarellig. Ahol jártál, ott kiszíneződik a térkép.", indulok: "Indulok",
       blog: "Zebegényi hét", blog_al: "Minden héten új bejegyzés a következő hétvégéről: időjárás, Duna, naplemente, egy ajánlat és a szabad helyek. Hivatalos adatokból, forrással.", blog_ures: "Az első bejegyzés hamarosan elkészül.", blog_alap: "Zebegényi útmutató", korabbi: "Korábbi", ujabb: "Újabb", osszes: "összes cikk", tovabb: "Tovább", hetvege_szabad: "Erre a hétvégére most szabad", hetvege_tele: "Erre a hétvégére már minden apartman foglalt. Nézd meg a következő hetet.", hv_foglal: "Ezt a hétvégét foglalom", forrasok: "Források", elo_most: "élő adat, most frissítve",
       kviz: "Melyik apartman illik hozzátok?", kviz_al: "Két kérdés, és megmutatjuk.", k1: "Fent vagy lent?", k1a: ["Emelet", "nagy ablakok, kilátás az ágyból és a fürdőből is"], k1b: ["Földszint", "saját nagy terasz, üvegfalú fürdő, kedvezőbb ár"], k2: "Mit néznél esténként?", k2fent: [["szonyi", "A vizet és a Visegrádi-hegységet"], ["bereny", "A Dunakanyart a hálószobából"]], k2lent: [["amrita", "A Dunát és a Börzsönyt"], ["karpathy", "A naplementét a teraszról"]], kviz_ered: "Nektek a(z)", ujra: "Újra",
       holnap: "Mit csináljunk holnap?", holnap_ido: "Holnap délben",
@@ -50,7 +50,7 @@
       teny: [["Outdoor hot tub", "heated, shared, in the garden"], ["EV charger", "on site"], ["Free parking", "on site"], ["Wi-Fi", "free"]],
       ma_cim: "Zebegény today", ma_al: "Live from the village where the Danube bends.", dunacm: "Danube, Nagymaros", vizho: "Water temperature", most: "Now", naplem: "Sunset", napkel: "Sunrise",
       forras_duna: "Water level and temperature: Hungarian water authority (OVF), Nagymaros gauge", forras_ido: "Weather: met.no (Yr)", forras_nap: "Sunrise and sunset: astronomical calculation",
-      kihivas_teaser: "Ten stops, ten selfies. Tick off the ones you have found.", indulok: "Let's go",
+      kihivas_teaser: "A ten-stop walk from Akvarell and back. The map fills with colour wherever you have been.", indulok: "Let's go",
       blog: "Zebegény this week", blog_al: "A new post every week about the coming weekend: weather, the Danube, sunset, one tip and the free apartments. From official data, with sources.", blog_ures: "The first post is on its way.", blog_alap: "Zebegény guide", korabbi: "Earlier", ujabb: "Newer", osszes: "all posts", tovabb: "Read", hetvege_szabad: "Free this weekend right now", hetvege_tele: "Every apartment is booked for this weekend. Try the week after.", hv_foglal: "Book this weekend", forrasok: "Sources", elo_most: "live, updated now",
       kviz: "Which apartment suits you?", kviz_al: "Two questions and we will show you.", k1: "Upstairs or downstairs?", k1a: ["Upstairs", "large windows, the view from the bed and the bathroom"], k1b: ["Ground floor", "your own large terrace, glass-walled bathroom, lower price"], k2: "What would you watch in the evening?", k2fent: [["szonyi", "The river and the Visegrád Hills"], ["bereny", "The Danube Bend from the bedroom"]], k2lent: [["amrita", "The Danube and the Börzsöny hills"], ["karpathy", "The sunset from the terrace"]], kviz_ered: "Your apartment:", ujra: "Start again",
       holnap: "What shall we do tomorrow?", holnap_ido: "Tomorrow at noon",
@@ -256,20 +256,39 @@
   }
 
   /* ---------- 10-es kihívás ---------- */
-  function kesz() { try { return JSON.parse(localStorage.getItem("akv-kihivas") || "[]"); } catch (x) { return []; } }
-  function keszIr(l) { try { localStorage.setItem("akv-kihivas", JSON.stringify(l)); } catch (x) {} }
+  function kesz() { try { return JSON.parse(localStorage.getItem("akv-kihivas2") || "[]"); } catch (x) { return []; } }
+  function keszIr(l) { try { localStorage.setItem("akv-kihivas2", JSON.stringify(l)); } catch (x) {} }
   function kihivasOldal() {
     menu("kihivas");
-    var k = kesz(), h = '<section class="szakasz" style="padding-top:96px"><h1 style="font-size:clamp(34px,9vw,56px)">' + e(sz("kihivas_cim")) + '</h1><p class="lead">' + e(sz("kihivas_bev")) + "</p>";
-    h += '<div style="display:flex;align-items:center;gap:16px"><div class="kor" style="--p:' + k.length * 10 + '"><span>' + k.length + '</span></div><div><b style="font-size:20px">' + k.length + " / 10 " + s("kesz_db") + "</b>" + (sz("ajandek") ? '<div class="jelmag">' + e(sz("ajandek")) + "</div>" : "") + "</div></div>";
-    h += '<label class="mezo"><span>' + s("becenev") + '</span><input id="sz-nev" maxlength="40" autocomplete="nickname"></label><div id="sz-eredm"></div>';
-    h += '<ol class="allomasok" style="margin-top:12px">' + T.allomasok.map(function (n, i) {
-      var ok = k.indexOf(i + 1) >= 0;
-      return '<li class="allomas' + (ok ? " kesz" : "") + '"><span class="szam">' + (ok ? "✓" : i + 1) + '</span><span class="nev">' + e(n) + '</span><span class="gombok"><label class="gomb masod" style="padding:0 14px">' + s("szelfi") + '<input class="rejt" type="file" accept="image/*" data-allomas="' + (i + 1) + '"></label><button type="button" class="gomb' + (ok ? " masod" : "") + '" style="padding:0 14px" data-pipa="' + (i + 1) + '" aria-pressed="' + ok + '">' + (ok ? "✓" : s("megvan")) + "</button></span></li>";
+    var hu = nyelv === "hu", TK = window.TERKEP, A = TK ? TK.allomasok : [], km = TK ? String(Math.round(TK.ossz_m / 100) / 10).replace(".", hu ? "," : ".") : "";
+    var h = '<section class="szakasz" style="padding-top:96px"><h1 style="font-size:clamp(34px,9vw,56px)">' + e(sz("kihivas_cim")) + '</h1><p class="lead">' + e(sz("kihivas_bev2") || sz("kihivas_bev")) + "</p>";
+    if (TK) h += '<figure class="terkep" id="terkep">' + TK.svg + '<figcaption>' + (hu ? "A pontozott vonal a sorrendet mutatja, nem az utat. Térkép: " : "The dotted line shows the order, not the path. Map: ") + '<a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap</a></figcaption></figure>';
+    h += '<div class="kih-allas"><div class="kor" id="kih-kor"><span id="kih-db">0</span></div><div><b style="font-size:20px"><span id="kih-db2">0</span> / 10 ' + s("kesz_db") + '</b><div class="jelmag">' + (TK ? (hu ? "Légvonalban összesen kb. " + km + " km. A séta ennél hosszabb, a Kálvária-dombra emelkedő visz." : "About " + km + " km in total as the crow flies. The walk itself is longer, and Calvary Hill is a climb.") : "") + "</div>" + (sz("ajandek") ? '<div class="jelmag">' + e(sz("ajandek")) + "</div>" : "") + "</div></div>";
+    h += '<ol class="allomasok" style="margin-top:12px">' + A.map(function (a, i) {
+      var elozo = i === 0 ? (hu ? "az Akvarelltől" : "from Akvarell") : (hu ? "az előzőtől" : "from the previous stop");
+      return '<li class="allomas" id="all-' + (i + 1) + '" data-all="' + (i + 1) + '"><span class="szam">' + (i + 1) + '</span><span class="nev">' + e(a.nev[nyelv]) + '<small>' + (hu ? "kb. " : "about ") + a.tav + " m " + elozo + (hu ? ", légvonalban" : ", as the crow flies") + '</small></span><p class="leir">' + e(a.szoveg[nyelv]) + '</p><span class="gombok"><a class="gomb masod" style="padding:0 14px" href="https://www.google.com/maps/dir/?api=1&travelmode=walking&destination=' + a.lat + "," + a.lon + '" target="_blank" rel="noopener">' + s("utvonal") + ' ↗</a><label class="gomb masod" style="padding:0 14px">' + s("szelfi") + '<input class="rejt" type="file" accept="image/*" data-allomas="' + (i + 1) + '"></label><button type="button" class="gomb" style="padding:0 14px" data-pipa="' + (i + 1) + '" aria-pressed="false">' + s("megvan") + "</button></span></li>";
     }).join("") + "</ol>";
-    if (k.length >= 10 && sz("ajandek")) h += '<div class="jutalom"><h3>' + s("jutalom") + '</h3><p style="margin:6px 0 0">' + e(sz("ajandek")) + "</p></div>";
+    h += '<label class="mezo" style="margin-top:14px"><span>' + s("becenev") + '</span><input id="sz-nev" maxlength="40" autocomplete="nickname"></label><div id="sz-eredm"></div>';
+    h += '<div class="jutalom" id="kih-kesz" hidden><h3>' + s("jutalom") + '</h3><p style="margin:6px 0 0">' + (hu ? "Kész a festmény: az egész térkép kiszíneződött." : "The painting is finished: the whole map is in colour.") + (sz("ajandek") ? " " + e(sz("ajandek")) : "") + "</p></div>";
     h += '<h3 style="margin-top:24px">' + s("ok_mar") + '</h3><div class="szelfik" id="szelfik"></div></section>';
+    setTimeout(kihAllapot, 0);
     return h;
+  }
+  /* a kihívás állása a lapon: számláló, lista, térkép (újrarajzolás nélkül, hogy a lap ne ugorjon) */
+  function kihAllapot() {
+    var k = kesz().filter(function (n) { return n >= 1 && n <= 10; }), t = $("#terkep");
+    if (!$("#kih-db")) return;
+    $("#kih-db").textContent = k.length; $("#kih-db2").textContent = k.length; $("#kih-kor").style.setProperty("--p", k.length * 10);
+    $("#kih-kesz").hidden = k.length < 10;
+    document.querySelectorAll(".allomas[data-all]").forEach(function (li) {
+      var n = +li.dataset.all, ok = k.indexOf(n) >= 0, b = li.querySelector("[data-pipa]");
+      li.classList.toggle("kesz", ok); li.querySelector(".szam").textContent = ok ? "✓" : n;
+      b.classList.toggle("masod", ok); b.setAttribute("aria-pressed", ok); b.textContent = ok ? "✓ " + s("megvan") : s("megvan");
+    });
+    if (t) {
+      t.classList.toggle("kesz", k.length >= 10);
+      t.querySelectorAll(".tk-m, .tk-a").forEach(function (x) { x.classList.toggle("be", k.indexOf(+x.getAttribute("data-a")) >= 0); });
+    }
   }
   function szelfikRajz() {
     var el = $("#szelfik"); if (!el) return;
@@ -297,7 +316,7 @@
       var r = await api("/api/kihivas", { method: "POST", body: fd });
       if (!r.ok) throw new Error("hiba");
       var k = kesz(); if (k.indexOf(all) < 0) { k.push(all); keszIr(k); }
-      rajzol(); $("#sz-nev").value = nev; out = $("#sz-eredm"); out.className = "uzenet"; out.style.background = "var(--duna2)"; out.textContent = s("feltoltve");
+      kihAllapot(); input.value = ""; out = $("#sz-eredm"); out.className = "uzenet"; out.style.background = "var(--duna2)"; out.textContent = s("feltoltve");
     } catch (x) { out.className = "uzenet hiba"; out.textContent = s("hiba"); }
   }
 
@@ -772,7 +791,7 @@
     var v = ev.target.closest("[data-valaszt]"); if (v && !v.disabled) { F.ap = v.dataset.valaszt; F.lepes = 3; lapRajz(); return; }
     var ls = ev.target.closest("[data-lepes]"); if (ls) { F.lepes = +ls.dataset.lepes; if (F.lepes === 1) F.tav = null; lapRajz(); return; }
     var p = ev.target.closest("[data-pipa]");
-    if (p) { var all = +p.dataset.pipa, kl = kesz(), i = kl.indexOf(all); if (i >= 0) kl.splice(i, 1); else kl.push(all); keszIr(kl); var nv = ($("#sz-nev") || {}).value; rajzol(); if (nv) $("#sz-nev").value = nv; return; }
+    if (p) { var all = +p.dataset.pipa, kl = kesz(), i = kl.indexOf(all); if (i >= 0) kl.splice(i, 1); else kl.push(all); keszIr(kl); kihAllapot(); return; }
   });
   $("#lap").addEventListener("click", function (ev) { if (ev.target === this) this.close(); });
   $("#menulap").addEventListener("click", function (ev) { if (ev.target === this) this.close(); });
