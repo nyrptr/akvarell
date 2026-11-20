@@ -3,6 +3,13 @@
 // Ha valami hiányzik, nem küld, és ezt nem tekinti hibának (a foglalás így is bekerül a kezelőbe).
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 export async function kuld(env, { to, subject, html, replyTo }) {
+  // Helyi próba (tools/proba/utak): LEVEL_PROBA=igen → a levél nem megy ki, a gyorsitotar táblába kerül, és a próba onnan olvassa vissza.
+  // Élesben nem kapcsolható be véletlenül: ha van valódi levelező-kulcs, mindig az küld.
+  if (env.LEVEL_PROBA === 'igen' && !env.BREVO_API_KEY && env.DB) {
+    if (!to) return { ok: false, kihagyva: true };
+    await env.DB.prepare('INSERT INTO gyorsitotar (kulcs, ertek, ido) VALUES (?, ?, ?)').bind('level:' + Date.now() + ':' + crypto.randomUUID(), JSON.stringify({ to, subject, html, replyTo: replyTo || null }), Date.now()).run();
+    return { ok: true, proba: true };
+  }
   if (!env.BREVO_API_KEY || !env.LEVEL_FELADO || !to) return { ok: false, kihagyva: true };
   const r = await fetch('https://api.brevo.com/v3/smtp/email', {
     method: 'POST', headers: { 'api-key': env.BREVO_API_KEY, 'content-type': 'application/json', accept: 'application/json' },

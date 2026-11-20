@@ -124,3 +124,10 @@
 - Találat a 2–3. rétegnek (ALAPELV 8.): a hosszú hétvégék minimum éjszakáit csak a böngésző ellenőrzi; a 2026-os dátumok kézzel vannak beírva.
 - Teszt: `gyar_szabalyok.mjs`, `access_teszt.mjs`, `ar_teszt.mjs` 0 HIBA. NEM futott: `kapu.py` böngészős része (a változás leírás + egy útvonal-tiltás; a tiltás helyi szerveren nincs kipróbálva).
 
+## 2026-11-20 – Claude (munka-utak-1) – motor-alap 2. réteg, 1. rész: végigjátszott próbák váza + foglalás-út
+- `tools/proba/utak/fut.mjs`: minden úthoz friss D1-gyel elindítja a helyi szervert (`HELYI_KEZELO=igen`, `LEVEL_PROBA=igen`), lefuttatja, leállítja. `_kozos.mjs`: segédek.
+- `tools/proba/utak/foglalas.mjs` (38 lépés): rossz bemenet → 400; robotcsapda; ár a szerveren (1 Ft-os böngészőár ellen); levelek; visszaigazolás → napok, vendégkönyv-token, pénz-sor (nem duplázódik); ütközés 409 (kezelő és vendég); vendégkönyv nem ad e-mailt, telefont, időablakon kívül wifit; lemondás → napok szabadok, pénz-sor eltűnik, vendégkönyv 404; két visszaigazolt foglalás közül az egyik lemondása nem szabadítja fel a másik napjait.
+- `functions/_kozos/level.js`: `LEVEL_PROBA=igen` → a levél a `gyorsitotar` táblába kerül, nem megy ki; valódi Brevo-kulcs mellett nem kapcsol be. `admin/api/proba/levelek`: csak ebben a módban olvasható vissza.
+- `.github/workflows/pr-kapu.yml`: új `utak` feladat. `_middleware.js`: a `tools/` sem tölthető le.
+- Hátravan a 2. rétegből: visszatérő vendég, vendégkönyv (kérés, értékelés), kártya, kihívás, iCal, hírlevél, kezelő-fülek (böngészővel).
+
