@@ -21,3 +21,13 @@ jobs:
         run: |
           for f in app.js admin/admin.js tartalom.js oldalak.js oldalak_hosszu.js oldalak_hosszu_en.js blog_alap.js terkep.js kepek/lista.js; do node --check "$f"; done
           for f in $(find functions -name '*.js'); do cp "$f" /tmp/c.mjs && node --check /tmp/c.mjs || { echo "::error file=$f::szintaxishiba"; exit 1; }; done
+  utak:
+    # Végigjátszott próbák (docs/ALAPELV.md 5/6.): helyi szerver friss adatbázissal, a valódi utak elejétől a végéig.
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Végigjátszott utak
+        run: node tools/proba/utak/fut.mjs

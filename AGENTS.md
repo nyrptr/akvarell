@@ -29,6 +29,7 @@ Közös gyár-szabályok: Project `claude/gyar.md` (tükör: `nyrptr/Iagent` `gy
 2. `python3 tools/proba/kapu.py` – 320 / 390 / gép; JS-hiba, 4xx/5xx, kicsúszás, be nem töltött kép, 44 px alatti koppintási cél; folyamat: árbecslés, ajánlatkérés, nyelvváltás.
 3. Képernyőképet magad nézd meg (`tmp/kapu/`), Péternek csak kész, ellenőrzött eredmény megy.
 4. Kezelő-belépés módosítása után: `node tools/proba/access_teszt.mjs` (0 HIBA). Árszabály után: `TZ=Europe/Budapest node tools/proba/ar_teszt.mjs`.
+4/b. Végigjátszott utak: `node tools/proba/utak/fut.mjs` (minden úthoz friss adatbázis, próba-levelező; 0 hibás). Új működő rész csak úttal együtt a motor része (`docs/ALAPELV.md` 5/6.).
 5. Ami nem tesztelt (pl. valódi Access-belépés), azt kiírod.
 
 ## PÉTERNEK

@@ -35,6 +35,9 @@ export async function onRequest({ request, env, params, waitUntil }) {
   const be = async () => { try { return await request.json(); } catch (e) { return {}; } };
 
   if (ut === 'en') return J(200, { email: ki });
+  // csak helyi próbában (LEVEL_PROBA=igen): a ki nem küldött, eltárolt levelek visszaolvasása
+  if (ut === 'proba/levelek' && m === 'GET' && env.LEVEL_PROBA === 'igen' && !env.BREVO_API_KEY)
+    return J(200, (await db.prepare("SELECT ertek FROM gyorsitotar WHERE kulcs LIKE 'level:%' ORDER BY ido, kulcs").all()).results.map(r => JSON.parse(r.ertek)));
 
   if (ut === 'ajanlatok' && m === 'GET')
     return J(200, (await db.prepare('SELECT a.*, v.token, v.elkuldve, p.osszeg ar_osszeg, p.visszatero, p.kedvezmeny ar_kedvezmeny FROM ajanlatkeres a LEFT JOIN vendegut v ON v.ajanlat_id = a.id LEFT JOIN ajanlat_ar p ON p.ajanlat_id = a.id ORDER BY a.letrehozva DESC LIMIT 200').all()).results);
