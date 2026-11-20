@@ -27,7 +27,7 @@ async def main():
     a = ap.parse_args(); os.makedirs(a.kepek, exist_ok=True); hibak = []
     # gyár-szabályok (az eddigi hibák gépi őrei): bármelyik hibázik → a kapu is
     import subprocess
-    for parancs in (["node", "tools/proba/gyar_szabalyok.mjs"], ["node", "tools/proba/access_teszt.mjs"], ["node", "tools/proba/ar_teszt.mjs"]):
+    for parancs in (["node", "tools/proba/gyar_szabalyok.mjs"], ["node", "tools/proba/access_teszt.mjs"], ["node", "tools/proba/ar_teszt.mjs"], ["node", "tools/proba/belepes_teszt.mjs"]):
         r = subprocess.run(parancs, capture_output=True, text=True, env={**os.environ, "TZ": "Europe/Budapest"})
         if r.returncode: hibak.append("gyár-szabály: " + " ".join(parancs[1:]) + "\n" + r.stdout[-600:])
     async with async_playwright() as p:

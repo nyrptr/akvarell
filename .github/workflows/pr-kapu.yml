@@ -31,3 +31,5 @@ jobs:
         with: { node-version: 22 }
       - name: Végigjátszott utak
         run: node tools/proba/utak/fut.mjs
+      - name: A kezelő saját belépése (beüzemelés, belépés, kilépés, jelszócsere, korlát)
+        run: node tools/proba/belepes_teszt.mjs

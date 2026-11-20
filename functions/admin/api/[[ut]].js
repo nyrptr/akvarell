@@ -35,6 +35,35 @@ export async function onRequest({ request, env, params, waitUntil }) {
   const be = async () => { try { return await request.json(); } catch (e) { return {}; } };
 
   if (ut === 'en') return J(200, { email: ki });
+  // „Ma” nyitólap: mi vár a gazdára, ki jön a héten, és mi hiányzik még a beüzemelésből (egy kérésben)
+  if (ut === 'ma' && m === 'GET') {
+    const ma0 = new Date().toISOString().slice(0, 10), het = new Date(Date.now() + 7 * 864e5).toISOString().slice(0, 10);
+    const [uj, erk, tav, uz, kep, ert, ical, vk, aj, bl, ap] = await db.batch([
+      db.prepare("SELECT id, nev, apartman_id, erkezes, tavozas, felnott, gyerek FROM ajanlatkeres WHERE allapot = 'uj' ORDER BY letrehozva LIMIT 20"),
+      db.prepare("SELECT nev, apartman_id, erkezes, tavozas, felnott, gyerek FROM ajanlatkeres WHERE allapot = 'visszaigazolva' AND erkezes >= ? AND erkezes <= ? ORDER BY erkezes").bind(ma0, het),
+      db.prepare("SELECT nev, apartman_id, erkezes, tavozas FROM ajanlatkeres WHERE allapot = 'visszaigazolva' AND tavozas >= ? AND tavozas <= ? ORDER BY tavozas").bind(ma0, het),
+      db.prepare("SELECT COUNT(*) n FROM uzenet WHERE allapot = 'uj'"),
+      db.prepare('SELECT COUNT(*) n FROM kihivas WHERE jovahagyva = 0'),
+      db.prepare("SELECT COUNT(*) n FROM ertekeles WHERE allapot = 'uj'"),
+      db.prepare("SELECT COUNT(*) n FROM beallitas WHERE kulcs LIKE 'ical_%' AND ertek <> ''"),
+      db.prepare("SELECT kulcs FROM beallitas WHERE kulcs IN ('vk_tel', 'vk_wifi_nev', 'vk_wifi_jelszo', 'vk_bejutas_hu') AND ertek <> ''"),
+      db.prepare("SELECT hu FROM tartalom WHERE kulcs = 'ajandek'"),
+      db.prepare("SELECT cim_hu, het FROM blog ORDER BY het DESC LIMIT 1"),
+      db.prepare('SELECT COUNT(*) n FROM apartman'),
+    ]);
+    const n = (x) => (x.results[0] || {}).n || 0;
+    return J(200, {
+      uj: uj.results, erkezik: erk.results, tavozik: tav.results, uzenet: n(uz), kep: n(kep), ertekeles: n(ert),
+      hianyzik: {
+        naptar: n(ical) < n(ap) ? { van: n(ical), kell: n(ap) } : null,
+        level: !env.BREVO_API_KEY || !env.LEVEL_FELADO,
+        vendegkonyv: vk.results.length < 4,
+        ajandek: !((aj.results[0] || {}).hu || '').trim(),
+      },
+      blog: bl.results[0] || null,
+    });
+  }
+
   // csak helyi próbában (LEVEL_PROBA=igen): a ki nem küldött, eltárolt levelek visszaolvasása
   if (ut === 'proba/levelek' && m === 'GET' && env.LEVEL_PROBA === 'igen' && !env.BREVO_API_KEY)
     return J(200, (await db.prepare("SELECT ertek FROM gyorsitotar WHERE kulcs LIKE 'level:%' ORDER BY ido, kulcs").all()).results.map(r => JSON.parse(r.ertek)));

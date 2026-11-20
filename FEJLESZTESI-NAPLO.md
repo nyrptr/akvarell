@@ -1,5 +1,21 @@
 # Fejlesztési napló – Akvarell bemutató
 
+## 2026-11-20 este – Claude (munka-kezelo, jelszó nélkül)
+- Péter: „nem akarok ilyen szót megjegyezni… elég nagy baromság, hogy most állandóan jelszavazzak” + az élő kezelő a befejezetlen Cloudflare-belépés miatt senkit nem enged be.
+- **Jelszó helyett link:** első belépés a beüzemelő linkkel (`#kod=`), új eszköz a belépett eszközön kért 15 perces, egyszer használható linkkel vagy QR-kóddal (`#be=`). A jelszó, a jelszócsere és a fiókválasztó kikerült. Séma: `kezelo` (szerep, kod_hash, aktiv), `kezelo_munkamenet`, új `kezelo_link`.
+- A gazda megszüntetheti az üzemeltető hozzáférését (aktiv = 0: a munkamenetei és linkjei azonnal megszűnnek, a régi kódja nem váltható be újra).
+- Tesztelve: belepes_teszt 41/41 (az „új kód” lépéshez a próba újraindítja a szervert ugyanazzal az adatbázissal), gyár-szabályok 0, access_teszt 12/12, utak 38/38; böngészőben 320 és 390 px-en: link nélkül → magyarázat; Péter linkje → bent, újratöltés után is; QR + link kérése; második telefon a linkkel bent; felhasznált link harmadik telefonon → érthető üzenet; JS-hiba nincs.
+- Nem tesztelve: élesben; valódi iPhone Safari (a süti 90 napos megmaradása).
+
+## 2026-11-20 délután – Claude (munka-kezelo)
+- Péter: „Az ajánlatunk akkor lesz kész, amikor megcsináltuk a backendet”; belépés: saját (1-es választás), Cloudflare nélkül.
+- **Két külön fiók (Péter, 11-20: „nekem is be kell tudni oda menni, ha bármit akarok üzemeltetőként”):** `gazda` és `uzemelteto`, saját jelszóval és saját beüzemelő kóddal; a gazda megszüntetheti az üzemeltető hozzáférését. A belépőn két fióknál választó van, az eszköz megjegyzi, melyik.
+- **Saját belépés a kezelőbe:** `functions/_kozos/belepes.js`, `functions/admin/api/belepes.js`, `k.js` (`kezelo()` előbb a munkamenetet nézi, az Access második útként megmaradt), séma: `kezelo`, `kezelo_munkamenet`. Beüzemelő kódnak csak a lenyomata van a tárolóban; a letölthető mentésbe a belépés táblái nem kerülnek. Részletek: README „A kezelő belépése”.
+- **Kezelő telefonra rendezve** (`admin/admin.js`, `admin/index.html`): „Ma” nyitólap (rád vár, a következő 7 nap, hiányzik még, magától megy – új végpont: `admin/api/ma`), 11 fül helyett 5 csoport alfülekkel, a főoldali szövegek magyar névvel és azzal, hol látszanak, árak címkézve, „Belépés, mentés” lap (jelszócsere, kilépés minden eszközön), 320 px-en a naptár nem lóg ki, a hónapváltó nyilak 48 px.
+- **Őrök:** `tools/proba/belepes_teszt.mjs` (43 lépés, saját szerverrel, az éles határokkal), bekötve a `kapu.py`-ba és a GitHub-kapuba; `gyar_szabalyok.mjs`: a belépő végponton kötelező a korlát és az eredet-védelem, a süti jelzői, a kódnak csak lenyomata lehet a tárolóban, a belépés táblái nem kerülhetnek a mentésbe.
+- Tesztelve: gyár-szabályok 0 hiba, access_teszt 12/12, belepes_teszt 43/43, utak/foglalás 38/38, kapu (a 3 helyi OVF-503-on kívül 0 hiba), böngészőben végigjárva 320 és 390 px-en minden fül (beüzemelés → Ma → visszaigazolás → kilépés → belépés), JS-hiba nincs.
+- **Nem tesztelve:** élesben (Cloudflare-en) a jelszó-lenyomat számítási ideje; valódi telefonon a jelszókezelő viselkedése; a „Hiányzik még” levél-sora élő `BREVO_API_KEY` mellett.
+
 ## 2026-11-19 késő éjjel – Claude (munka-teljes-tartalom)
 - Péter: „Minden van az oldalon, ami eddig volt, minden szolgáltatás?” → nem volt; Ernő régi oldalának minden menüpontja áthozva.
   - `oldalak.js` (kézzel, Ernő szövegéből; EN saját): felszereltség, árak (kiemelt időszak, hosszú hétvégék 2026, 7 éj 5%, IFA külön, fizetés, lemondás), extrák, élmények (masszázs, e-bike, kajak-kenu, komp, hajó, látnivalók, kilátók, éttermek, 17 élmény), ajándékutalvány, vélemények (Booking 9,8), GYIK, elérhetőség, virtuális séta (Ernő 3DVista oldala).
