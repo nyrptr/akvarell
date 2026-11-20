@@ -63,8 +63,8 @@ window.TARTALOM = {
     gyerek: { hu: "3–13 éves gyermek: 15 000 Ft/éj. 3 év alatt ingyenes. Egy éjszakás foglalás felára: 20 000 Ft. Idegenforgalmi adó: 750 Ft/fő/éj, 18 év felett.", en: "Children aged 3–13: HUF 15,000 per night; under 3 free. One-night stay surcharge: HUF 20,000. Tourist tax: HUF 750 per person per night, over 18." },
     kihivas_cim: { hu: "Zebegény 10-es kihívás", en: "Zebegény 10 Challenge" },
     kihivas_bev: { hu: "Tíz állomás a faluban, mindegyiknél egy szelfi. Nem szervezett túra: akkor indul, amikor kedve van. Az utolsó állomás az Akvarell.", en: "Ten stops around the village, a selfie at each. No guided tour: start whenever you like. The last stop is Akvarell." },
-    ajandek: { hu: "[Az ajándékot Ernő adja meg.]", en: "[Reward to be set by the owner.]" },
-    uzemelteto: { hu: "Üzemeltető: Ferenczy Ernő Ervin egyéni vállalkozó · 2627 Zebegény, Csalogány utca 4. · NTAK: [szám] · Adószám: [szám]", en: "Operator: Ernő Ervin Ferenczy, sole proprietor · 2627 Zebegény, Csalogány utca 4 · NTAK: [number] · Tax no.: [number]" }
+    ajandek: { hu: "", en: "" },          // a tíz állomás jutalma; amíg Ernő nem dönt róla, üres, és nem jelenik meg
+    uzemelteto: { hu: "Üzemeltető: Ferenczy Ernő Ervin egyéni vállalkozó · 2627 Zebegény, Csalogány utca 4.", en: "Operator: Ernő Ervin Ferenczy, sole proprietor · 2627 Zebegény, Csalogány utca 4" }
   },
   allomasok: ["Zebegényi strand", "Napraforgó Babapark", "Hétlyukú híd", "Fischer köz", "Szőnyi István Emlékmúzeum", "Hirling köz", "Sziklakápolna", "Országzászló és Trianon-emlékmű", "Havas Boldogasszony-templom", "Akvarell Apartmanház"]
 };

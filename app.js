@@ -71,7 +71,9 @@
     }
   };
   function s(k) { return S[nyelv][k]; }
-  function sz(k) { var v = T.szoveg[k]; return v ? v[nyelv] : ""; }
+  function sz(k) { var v = T.szoveg[k]; return v ? tiszta(v[nyelv]) : ""; }
+  /* helyőrző ([…], „kitöltendő”) soha nem jelenik meg: ha az egész szöveg az, üres; ha csak egy „ · ” tagolt része, az a rész marad ki */
+  function tiszta(x) { var H = /\[[^\]]*\]|kitöltendő/i; x = String(x || ""); if (!H.test(x)) return x; return x.split(" · ").filter(function (r) { return !H.test(r); }).join(" · "); }
   function f(a, k) { return a[k + "_" + nyelv]; }
   function e(x) { return String(x == null ? "" : x).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function szam(n) { return Math.round(n).toLocaleString(nyelv === "hu" ? "hu-HU" : "en-GB").replace(/[  ]/g, " "); }
@@ -259,13 +261,13 @@
   function kihivasOldal() {
     menu("kihivas");
     var k = kesz(), h = '<section class="szakasz" style="padding-top:96px"><h1 style="font-size:clamp(34px,9vw,56px)">' + e(sz("kihivas_cim")) + '</h1><p class="lead">' + e(sz("kihivas_bev")) + "</p>";
-    h += '<div style="display:flex;align-items:center;gap:16px"><div class="kor" style="--p:' + k.length * 10 + '"><span>' + k.length + '</span></div><div><b style="font-size:20px">' + k.length + " / 10 " + s("kesz_db") + '</b><div class="jelmag">' + e(sz("ajandek")) + "</div></div></div>";
+    h += '<div style="display:flex;align-items:center;gap:16px"><div class="kor" style="--p:' + k.length * 10 + '"><span>' + k.length + '</span></div><div><b style="font-size:20px">' + k.length + " / 10 " + s("kesz_db") + "</b>" + (sz("ajandek") ? '<div class="jelmag">' + e(sz("ajandek")) + "</div>" : "") + "</div></div>";
     h += '<label class="mezo"><span>' + s("becenev") + '</span><input id="sz-nev" maxlength="40" autocomplete="nickname"></label><div id="sz-eredm"></div>';
     h += '<ol class="allomasok" style="margin-top:12px">' + T.allomasok.map(function (n, i) {
       var ok = k.indexOf(i + 1) >= 0;
       return '<li class="allomas' + (ok ? " kesz" : "") + '"><span class="szam">' + (ok ? "✓" : i + 1) + '</span><span class="nev">' + e(n) + '</span><span class="gombok"><label class="gomb masod" style="padding:0 14px">' + s("szelfi") + '<input class="rejt" type="file" accept="image/*" data-allomas="' + (i + 1) + '"></label><button type="button" class="gomb' + (ok ? " masod" : "") + '" style="padding:0 14px" data-pipa="' + (i + 1) + '" aria-pressed="' + ok + '">' + (ok ? "✓" : s("megvan")) + "</button></span></li>";
     }).join("") + "</ol>";
-    if (k.length >= 10) h += '<div class="jutalom"><h3>' + s("jutalom") + '</h3><p style="margin:6px 0 0">' + e(sz("ajandek")) + "</p></div>";
+    if (k.length >= 10 && sz("ajandek")) h += '<div class="jutalom"><h3>' + s("jutalom") + '</h3><p style="margin:6px 0 0">' + e(sz("ajandek")) + "</p></div>";
     h += '<h3 style="margin-top:24px">' + s("ok_mar") + '</h3><div class="szelfik" id="szelfik"></div></section>';
     return h;
   }

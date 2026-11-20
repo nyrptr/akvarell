@@ -24,6 +24,7 @@ Közös gyár-szabályok: Project `claude/gyar.md` (tükör: `nyrptr/Iagent` `gy
 - Szolgáltatófüggőség: csak a `functions/` Cloudflare-specifikus. Költözés: kezelő → „Teljes mentés letöltése” (JSON) vagy `wrangler d1 export akvarell --remote --output=mentes.sql`.
 
 ## ELLENŐRZÉS (minden PR előtt, 0 hiba)
+0. `node tools/proba/gyar_szabalyok.mjs` – az eddigi hibák gépi őrei (MODSZER.md 4/b). Ha új hibafajta kerül elő, előbb ide kerül egy szabály, utána a javítás.
 1. Helyi szerver: `wrangler pages dev . --d1 DB=<tetszőleges-id> --binding HELYI_KEZELO=igen`
 2. `python3 tools/proba/kapu.py` – 320 / 390 / gép; JS-hiba, 4xx/5xx, kicsúszás, be nem töltött kép, 44 px alatti koppintási cél; folyamat: árbecslés, ajánlatkérés, nyelvváltás.
 3. Képernyőképet magad nézd meg (`tmp/kapu/`), Péternek csak kész, ellenőrzött eredmény megy.
