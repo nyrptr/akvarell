@@ -1,5 +1,12 @@
 # Fejlesztési napló – Akvarell bemutató
 
+## 2026-11-20 este – Claude (munka-kezelo, jelszó nélkül)
+- Péter: „nem akarok ilyen szót megjegyezni… elég nagy baromság, hogy most állandóan jelszavazzak” + az élő kezelő a befejezetlen Cloudflare-belépés miatt senkit nem enged be.
+- **Jelszó helyett link:** első belépés a beüzemelő linkkel (`#kod=`), új eszköz a belépett eszközön kért 15 perces, egyszer használható linkkel vagy QR-kóddal (`#be=`). A jelszó, a jelszócsere és a fiókválasztó kikerült. Séma: `kezelo` (szerep, kod_hash, aktiv), `kezelo_munkamenet`, új `kezelo_link`.
+- A gazda megszüntetheti az üzemeltető hozzáférését (aktiv = 0: a munkamenetei és linkjei azonnal megszűnnek, a régi kódja nem váltható be újra).
+- Tesztelve: belepes_teszt 41/41 (az „új kód” lépéshez a próba újraindítja a szervert ugyanazzal az adatbázissal), gyár-szabályok 0, access_teszt 12/12, utak 38/38; böngészőben 320 és 390 px-en: link nélkül → magyarázat; Péter linkje → bent, újratöltés után is; QR + link kérése; második telefon a linkkel bent; felhasznált link harmadik telefonon → érthető üzenet; JS-hiba nincs.
+- Nem tesztelve: élesben; valódi iPhone Safari (a süti 90 napos megmaradása).
+
 ## 2026-11-20 délután – Claude (munka-kezelo)
 - Péter: „Az ajánlatunk akkor lesz kész, amikor megcsináltuk a backendet”; belépés: saját (1-es választás), Cloudflare nélkül.
 - **Két külön fiók (Péter, 11-20: „nekem is be kell tudni oda menni, ha bármit akarok üzemeltetőként”):** `gazda` és `uzemelteto`, saját jelszóval és saját beüzemelő kóddal; a gazda megszüntetheti az üzemeltető hozzáférését. A belépőn két fióknál választó van, az eszköz megjegyzi, melyik.

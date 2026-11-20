@@ -40,7 +40,7 @@ for (const f of ['app.js', 'admin/admin.js']) olv(f).split('\n').forEach((sor, i
 });
 // 7. Kezelő-végpont listában szereplő minden mentés-tábla létezik a sémában (a mentés ne hagyjon ki új táblát).
 const tablak = [...olv('db/schema.sql').matchAll(/CREATE TABLE IF NOT EXISTS (\w+)/g)].map(m => m[1]);
-for (const t of tablak) if (!adm.includes(`'${t}'`) && !['gyorsitotar', 'kezelo', 'kezelo_munkamenet'].includes(t)) H('a teljes mentésből hiányzó tábla', t);
+for (const t of tablak) if (!adm.includes(`'${t}'`) && !['gyorsitotar', 'kezelo', 'kezelo_munkamenet', 'kezelo_link'].includes(t)) H('a teljes mentésből hiányzó tábla', t);
 // a belépés táblái (jelszó-lenyomat, munkamenetek) szándékosan NEM kerülnek a letölthető mentésbe
-if (/'kezelo'|'kezelo_munkamenet'/.test(adm)) H('a jelszó-lenyomat vagy a munkamenetek nem kerülhetnek a letölthető mentésbe', 'functions/admin/api/[[ut]].js');
+if (/'kezelo'|'kezelo_munkamenet'|'kezelo_link'/.test(adm)) H('a belépés adatai (fiókok, munkamenetek, linkek) nem kerülhetnek a letölthető mentésbe', 'functions/admin/api/[[ut]].js');
 console.log(hiba, 'HIBA'); process.exit(hiba ? 1 : 0);

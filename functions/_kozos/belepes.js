@@ -1,21 +1,18 @@
-// A kezelő saját belépése (Cloudflare Access nélkül is működik). Két külön fiók van, mindegyik saját jelszóval:
+// A kezelő saját belépése, jelszó nélkül (Cloudflare Access nélkül is működik). Két külön fiók van:
 //   gazda       – a ház tulajdonosa (az adatok az övéi; ő meg tudja szüntetni az üzemeltető hozzáférését),
 //   uzemelteto  – aki a rendszert üzemelteti neki.
-// Beüzemelés: fiókonként egy, egyszer használható beüzemelő kóddal lehet jelszót beállítani. A tárolóban csak a kódok SHA-256
-// lenyomata áll (a kód ~148 bit véletlen, a lenyomatból nem fejthető vissza); magát a kódot az üzemeltető adja át.
-// Elfelejtett jelszó: annak a fióknak új kód-lenyomata kerül ide (PR), azzal újra beállítható – a fiók régi munkamenetei megszűnnek.
+// Első belépés: fiókonként egy beüzemelő link (/admin/#kod=…). A kód egyszer váltható be; a tárolóban csak a SHA-256
+// lenyomata áll (~148 bit véletlen, a lenyomatból nem fejthető vissza).
+// Új eszköz: egy már belépett eszközön kért link (/admin/#be=…), 15 percig él, egyszer használható.
+// Ha egyik eszköz sincs meg: annak a fióknak új kód-lenyomata kerül ide (PR); az új kóddal újra be lehet lépni, a fiók régi munkamenetei megszűnnek.
 // Felülírható a BEUZEMELO_HASH_GAZDA / BEUZEMELO_HASH_UZEMELTETO környezeti változóval (másik ház, próba).
 export const BEUZEMELO_HASH = { gazda: '15064ba30ca10203cba9cd6adb04994c9bd865386f9862f9fd0fc5686725976f', uzemelteto: '31876df2c499c9e9b3b0b45ade6cba5045e1863f858de62e29a6f08b22fd477d' };
 export const SZEREPEK = ['gazda', 'uzemelteto'];
-export const SUTI = '__Host-akv_kezelo', NAPOK = 90, KOR = 100000, MIN_JELSZO = 10;
+export const SUTI = '__Host-akv_kezelo', NAPOK = 90, LINK_PERC = 15;
 const hex = (b) => [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('');
 const enc = (s) => new TextEncoder().encode(s);
 export const sha = async (s) => hex(await crypto.subtle.digest('SHA-256', enc(s)));
 export const veletlen = (n) => hex(crypto.getRandomValues(new Uint8Array(n)));
-export async function jelszoHash(jelszo, so, kor = KOR) {
-  const k = await crypto.subtle.importKey('raw', enc(jelszo), 'PBKDF2', false, ['deriveBits']);
-  return hex(await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: enc(so), iterations: kor }, k, 256));
-}
 // állandó idejű összehasonlítás (ne lehessen az időből kitalálni, hány jel egyezik)
 export function egyezik(a, b) {
   a = String(a); b = String(b); let d = a.length ^ b.length;
@@ -29,7 +26,7 @@ export const sutiErtek = (request) => ((request.headers.get('cookie') || '').mat
 export async function munkamenet(request, env) {
   const t = sutiErtek(request); if (!t || !env.DB) return '';
   try {
-    const r = await env.DB.prepare('SELECT lejar, szerep FROM kezelo_munkamenet WHERE token_hash = ?').bind(await sha(t)).first();
+    const r = await env.DB.prepare('SELECT m.lejar, m.szerep FROM kezelo_munkamenet m JOIN kezelo f ON f.szerep = m.szerep AND f.aktiv = 1 WHERE m.token_hash = ?').bind(await sha(t)).first();
     return r && r.lejar > Date.now() && SZEREPEK.includes(r.szerep) ? r.szerep : '';
   } catch (e) { return ''; }
 }
