@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Akvarell – Ernőnek</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,600;1,500&family=Manrope:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root { --papir:#f5f1e8; --tus:#1e2a33; --halk:#5c6770; --duna:#2f6f8f; --okker:#c08a25; }
+  * { box-sizing:border-box; margin:0; }
+  html, body { background:var(--papir); color:var(--tus); font-family:"Manrope", system-ui, -apple-system, sans-serif; }
+  body { min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:22px 16px calc(28px + env(safe-area-inset-bottom)); }
+  header { width:100%; max-width:440px; text-align:center; margin-bottom:16px; }
+  header h1 { font:600 40px/1.05 "Cormorant", Georgia, serif; }
+  header p { font:700 13px "Manrope", system-ui, sans-serif; letter-spacing:.14em; text-transform:uppercase; color:var(--okker); }
+  .keret { position:relative; width:100%; max-width:440px; aspect-ratio:9/16; border-radius:26px; overflow:hidden;
+           background:#e9e7e2; box-shadow:0 30px 60px -36px rgba(30,42,51,.55); border:1px solid rgba(30,42,51,.1); }
+  video { display:block; width:100%; height:100%; object-fit:cover; background:#e9e7e2; }
+  .vege { position:absolute; inset:0; display:none; flex-direction:column; align-items:center; justify-content:center; gap:18px;
+          background:rgba(245,241,232,.94); text-align:center; padding:30px; }
+  .vege.lat { display:flex; }
+  .vege h2 { font:600 38px/1.08 "Cormorant", Georgia, serif; }
+  .vege p { font-size:16px; color:var(--halk); line-height:1.45; }
+  .gomb { display:inline-flex; align-items:center; justify-content:center; gap:10px; min-height:58px; padding:0 30px; border-radius:999px;
+          background:var(--tus); color:#fff; font:800 18px "Manrope", system-ui, sans-serif; text-decoration:none; border:0; cursor:pointer; }
+  .gomb:active { transform:translateY(1px); }
+  .gomb.masod { background:transparent; color:var(--tus); border:2px solid var(--tus); min-height:50px; font-size:16px; }
+  .alatta { width:100%; max-width:440px; margin-top:20px; display:flex; flex-direction:column; align-items:center; gap:10px; }
+  .alatta .gomb { width:100%; }
+  .cim { font-size:15px; color:var(--halk); }
+  .gomb:focus-visible { outline:3px solid var(--okker); outline-offset:3px; }
+</style>
+</head>
+<body>
+  <header>
+    <p>Akvarell Apartmanház · Zebegény</p>
+  </header>
+
+  <div class="keret">
+    <video id="v" src="video.mp4" poster="borito.jpg" controls playsinline preload="metadata"></video>
+    <div class="vege" id="vege" role="dialog" aria-labelledby="vh">
+      <h2 id="vh">Nézd meg a saját telefonodon.</h2>
+      <p>Az új oldal már él. Lapozz bele, próbáld ki a foglalást is.</p>
+      <a class="gomb" href="/">Megnézem az oldalt →</a>
+      <button class="gomb masod" id="ujra" type="button">Újra lejátszom</button>
+    </div>
+  </div>
+
+  <div class="alatta">
+    <a class="gomb" href="/">Megnézem az új oldalt →</a>
+    <span class="cim">akvarell.pages.dev</span>
+  </div>
+
+<script src="lap.js"></script>
+</body>
+</html>
