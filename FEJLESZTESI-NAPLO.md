@@ -88,3 +88,8 @@
 - **Új:** `_kozos/korlat.js` (kéréskorlát a nyilvános POST-okra és a Google-hívásra, IP és e-mail csak napi lenyomatként), `_kozos/ar.js` (az árat a szerver számolja; `tools/proba/ar_teszt.mjs` a böngészővel egyezteti).
 - **Javítva:** levélszemét-kapu a foglalásnál és a kártyánál; ár a szerveren; visszavont foglalás napjai felszabadulnak; „mégis” visszaigazolásnál a nap nem marad portálnaptár-jelölésű; hírlevél 30-as szeletekben; dupla ütemezett levél elleni zár; értékeléskérés 1–3 napos ablakkal; `ACCESS_TEAM` kötelező; idegen oldalról indított kezelő-kérés tiltva; képfeltöltés a fájl eleje alapján; CSP és társai a `_headers`-ben; CSV-képlet; a napi ellenőrzés nem fogad el nyitott kezelőt, és napi két futás indítja a leveleket.
 - **Nem tesztelt:** valódi levélküldés és a hírlevél-szeletelés Brevo-kulccsal; valódi Access-token; a Google-ág kulccsal; előnézeti címen futó ütemező (nem tudjuk, van-e ott adatbázis-kötés). Helyben: kapu.py csak a 3 ismert OVF-503, access_teszt 12 OK, ar_teszt 0 HIBA, konzolhiba 0 (CSP mellett).
+
+## 2026-11-20 – Claude (gyar-szabalyok) – a hibákból szabály
+- `tools/proba/gyar_szabalyok.mjs`: helyőrző nyilvános szövegben, nyilvános POST korlát nélkül, kezelő-API védelme, ár a szerveren, fejlécek, escape, mentés teljessége. A kapu.py futtatja (az access- és az ár-teszttel együtt).
+- Helyőrzők eltávolítva: kihívás-jutalom („[Az ajándékot Ernő adja meg.]” – amíg nincs döntés, nem jelenik meg), üzemeltető NTAK/adószám, adatkezelés megőrzési ideje (feltételhez kötve, szám nélkül). Megjelenítéskor is szűrés (`tiszta()`), mert az éles adatbázisban a régi szöveg megvan.
+- MODSZER.md 4/b: biztonsági és minőségi alapszabályok.

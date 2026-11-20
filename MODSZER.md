@@ -40,6 +40,17 @@
 - VIZA/NTAK-adat (okmányolvasás) nem marketingadat; az NTAK-szoftver (pl. VENDÉGEM) mellettünk is kell.
 - Közös hálózatnál: közös adatkezelői megállapodás; Péter üzemeltette platformon adatfeldolgozói szerződés. Jogász nézze át.
 
+## 4/b. Biztonsági és minőségi alapszabályok (MUST; a 2026-11-20-i átnézés tanulságai, gépi őr: `tools/proba/gyar_szabalyok.mjs`, a kapu.py futtatja)
+- Nyilvános felületen soha nincs helyőrző (`[…]`, „Ernő adja meg”, kitöltendő, TODO). Ami hiányzik, az nem jelenik meg; a hiányt a kezelő és a tulajnak szóló lista mutatja. Megjelenítéskor is szűrünk (`app.js` `tiszta()`), mert az adatbázisban régi szöveg maradhat.
+- Minden nyilvános POST és minden fizetős vagy levelet küldő hívás kéréskorláttal fut (`_kozos/korlat.js`): címenként, e-mail-címenként és összesen.
+- Ár, kedvezmény, összeg: a szerver számolja az adatbázisból (`_kozos/ar.js`); a böngésző adata csak tájékoztató. A két számítás egyezését `ar_teszt.mjs` őrzi.
+- A válasz nem árulhat el személyes tényt (járt-e itt valaki, van-e kártyája); amit csak a tulaj tudhat, az levélben vagy a kezelőben jelenik meg.
+- Állapotváltásnak mindkét iránya kész: ami visszaigazoláskor lefoglal, az visszavonáskor felszabadít; ami háttérben fut, egy lépéses zárral fut (nincs dupla levél).
+- Ütemezett feladat nem függhet attól, hogy valaki megnyitja az oldalt: legyen külső indító (GitHub Actions) és pótló ablak.
+- Kezelő: rögzített Access-kiadó (`ACCESS_TEAM` kötelező), idegen eredetű módosító kérés tiltva; minden új tábla a teljes mentésbe.
+- Feltöltés típusát a fájl tartalma dönti el; minden külső szöveg escape-pel kerül HTML-be; `_headers`: CSP, keretbe ágyazás tiltva.
+- Kitalált funkció (pl. játék, jutalom) csak teljes leírással kerül ki: mi ez, hol kezdődik, hol ér véget, mit kap érte a vendég, ki vállalta. Ha a tulaj nem vállalta, nem jelenik meg jutalom.
+
 ## 5. Ösztönzés (ami szabályos)
 Jutalmazható, mert a saját rendszerünkben történik: vendégkártya-igénylés (10%), 10-es kihívás a saját oldalon, hozzájárulással (+5%), barátajánlás közvetlen foglalással, állandó vendég (3. ottlét). Értékelés: mindenkitől, ugyanúgy, jutalom nélkül.
 

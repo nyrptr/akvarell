@@ -134,7 +134,7 @@ window.ELTERES = [
 ];
 
 /* Adatkezelési tájékoztató AZ ÚJ OLDALHOZ (a régi oldalé Google Analytics-et, Facebook Pixelt és más tárhelyet ír le, ide nem igaz).
-   TERVEZET – jogi átnézés szükséges; a [szögletes zárójeles] részeket Ernő tölti ki. Az adatkezelő adatai Ernő régi tájékoztatójából. */
+   TERVEZET – jogi átnézés szükséges; hiányzó adat helyőrzővel soha nem kerül ki (tools/proba/gyar_szabalyok.mjs). Az adatkezelő adatai Ernő régi tájékoztatójából. */
 window.ADATVEDELEM = {
   hu: [
     ["h", "Ki kezeli az adataidat?"],
@@ -149,7 +149,7 @@ window.ADATVEDELEM = {
     ["h", "Kik férnek hozzá?"],
     ["p", "Ernő és az általa megbízott kezelő. Adatfeldolgozó: Cloudflare, Inc. (tárhely és adatbázis). Az oldal betűtípusai a Google Fonts szolgáltatásból töltődnek be, ezért a böngésződ IP-címe a Google-höz is eljut; a szobaképek Ernő régi weboldaláról töltődnek be. Az időjárás és a vízállás adatait a szerverünk kéri le, ehhez a te adataidat nem használjuk."],
     ["h", "Meddig őrizzük?"],
-    ["p", "A meg nem valósult foglalási kérést és az utalványkérést [kitöltendő: pl. 1 évig], a megvalósult foglalás adatait a jogszabályi határidőig, a kihívás-fotót a hozzájárulás visszavonásáig vagy [kitöltendő] őrizzük."],
+    ["p", "A meg nem valósult foglalási kérést és az utalványkérést addig őrizzük, amíg az ügy elintézéséhez szükséges, utána töröljük; a megvalósult foglalás adatait a jogszabályi határidőig; a kihívás-fotót a hozzájárulás visszavonásáig."],
     ["h", "A jogaid"],
     ["p", "Kérhetsz tájékoztatást, helyesbítést, törlést, korlátozást, adathordozást, és tiltakozhatsz az adatkezelés ellen – írj a fenti e-mail-címre, 30 napon belül válaszolunk. Panasszal a Nemzeti Adatvédelmi és Információszabadság Hatósághoz fordulhatsz (1055 Budapest, Falk Miksa utca 9–11., www.naih.hu), vagy bírósághoz."]
   ],
@@ -166,7 +166,7 @@ window.ADATVEDELEM = {
     ["h", "Who has access?"],
     ["p", "The owner and the manager he appoints. Processor: Cloudflare, Inc. (hosting and database). Fonts are loaded from Google Fonts, so your browser's IP address also reaches Google; room photos are loaded from the owner's previous website. Weather and water-level data are fetched by our server without using your data."],
     ["h", "How long we keep it"],
-    ["p", "Booking requests that did not result in a stay and voucher requests: [to be completed, e.g. 1 year]; completed stays: as required by law; challenge photos: until consent is withdrawn or [to be completed]."],
+    ["p", "Booking requests that did not result in a stay and voucher requests: as long as needed to handle them, then deleted; completed stays: as required by law; challenge photos: until consent is withdrawn."],
     ["h", "Your rights"],
     ["p", "You can request access, rectification, erasure, restriction or portability, and object to processing – write to the email above and we will reply within 30 days. You may complain to the Hungarian data protection authority (NAIH, 1055 Budapest, Falk Miksa utca 9–11., www.naih.hu) or go to court."]
   ]

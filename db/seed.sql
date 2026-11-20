@@ -9,8 +9,8 @@ INSERT OR REPLACE INTO tartalom (kulcs,hu,en) VALUES ('bevezeto','Mind a négy a
 INSERT OR REPLACE INTO tartalom (kulcs,hu,en) VALUES ('gyerek','3–13 éves gyermek: 15 000 Ft/éj. 3 év alatt ingyenes. Egy éjszakás foglalás felára: 20 000 Ft. Idegenforgalmi adó: 750 Ft/fő/éj, 18 év felett.','Children aged 3–13: HUF 15,000 per night; under 3 free. One-night stay surcharge: HUF 20,000. Tourist tax: HUF 750 per person per night, over 18.');
 INSERT OR REPLACE INTO tartalom (kulcs,hu,en) VALUES ('kihivas_cim','Zebegény 10-es kihívás','Zebegény 10 Challenge');
 INSERT OR REPLACE INTO tartalom (kulcs,hu,en) VALUES ('kihivas_bev','Tíz állomás a faluban, mindegyiknél egy szelfi. Nem szervezett túra: akkor indul, amikor kedve van. Az utolsó állomás az Akvarell.','Ten stops around the village, a selfie at each. No guided tour: start whenever you like. The last stop is Akvarell.');
-INSERT OR REPLACE INTO tartalom (kulcs,hu,en) VALUES ('ajandek','[Az ajándékot Ernő adja meg.]','[Reward to be set by the owner.]');
-INSERT OR REPLACE INTO tartalom (kulcs,hu,en) VALUES ('uzemelteto','Üzemeltető: Ferenczy Ernő Ervin egyéni vállalkozó · 2627 Zebegény, Csalogány utca 4. · NTAK: [szám] · Adószám: [szám]','Operator: Ernő Ervin Ferenczy, sole proprietor · 2627 Zebegény, Csalogány utca 4 · NTAK: [number] · Tax no.: [number]');
+INSERT OR REPLACE INTO tartalom (kulcs,hu,en) VALUES ('ajandek','','');
+INSERT OR REPLACE INTO tartalom (kulcs,hu,en) VALUES ('uzemelteto','Üzemeltető: Ferenczy Ernő Ervin egyéni vállalkozó · 2627 Zebegény, Csalogány utca 4.','Operator: Ernő Ervin Ferenczy, sole proprietor · 2627 Zebegény, Csalogány utca 4');
 INSERT OR IGNORE INTO foglalt_nap (apartman_id,nap,forras) VALUES ('szonyi','2026-11-27','minta');
 INSERT OR IGNORE INTO foglalt_nap (apartman_id,nap,forras) VALUES ('szonyi','2026-11-28','minta');
 INSERT OR IGNORE INTO foglalt_nap (apartman_id,nap,forras) VALUES ('szonyi','2026-11-29','minta');
