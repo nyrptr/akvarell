@@ -72,6 +72,11 @@ Soha nem változhat (MUST):
 - TÁJ: a 3. rétegben a zebegényi rész (`api/zebegeny`, `terkep.js`, `blog_alap.js`, látnivalók, kihívás-állomások) a ház mappájába költözik `taj` jelöléssel, külön fájlokban, hogy később átemelhető legyen. Közös `tajak/` mappa akkor lesz, amikor a második ház ugyanazt a tájat kéri (Szegfű33 = Zebegény: ott derül ki).
 - PARTNER és vendégkártya-hálózat, gyűjtőoldal: külön szolgáltatás, külön adatbázis, külön jogi alap (közös adatkezelés, MODSZER 4.). A motorban ennek egyetlen nyoma: a kártya tokenje házon belül egyedi és átlátszatlan, így később hálózati azonosító mellé tehető.
 - Csatlakozási szintek (MODSZER 7.) = modulkészletek, nem külön kód.
+- MEGLÉVŐ OLDAL ÉS DOMAIN (Péter, 2026-11-20: „akik hezitálnak”): a háznak nem kell lecserélnie a mostani oldalát. Három belépő, ugyanaz a motor, a beállításban `belepo`:
+  1. `melle` – a régi oldal marad; a motor aldomainen fut (pl. `foglalas.<domain>` vagy `<ház>.pages.dev`), a régi oldalra egy gomb kerül. Vendégkártya, vendégút, kezelő így is megy.
+  2. `helyette` – a motor a ház saját domainjén; a régi oldal minden címe 301-gyel az új megfelelőjére megy (`hazak/<ház>/atiranyitas` → `_redirects`), hogy a Google-helyezés, a portálokon és nyomtatványokon kint lévő linkek megmaradjanak. Váltás előtt a régi címek teljes listája (leltár), utána próba: minden régi cím 200-ra érkezik.
+  3. vissza: a domain a tulajé, a régi oldal mentése megmarad; a váltás egy DNS-beállítás, visszafordítható.
+  MUST: a domaint mindig a tulaj birtokolja, soha nem Péter. `OLDAL_URL` adja a levelek és a QR-ok címét; kiadott QR csak olyan címre mutat, amelyet a tulaj tart meg (5. pont 3.).
 
 ## 8. Amit az átnézés közben találtam (a 2–3. réteg dolga)
 | Hol | Mi | Lépés | R |
