@@ -27,9 +27,10 @@ Statikus oldal (HTML/CSS/JS) + Cloudflare Pages Functions + D1 (a kihívás-kép
 
 ### A kezelő belépése
 Saját belépés, Cloudflare Access nélkül is működik (`functions/_kozos/belepes.js`, `functions/admin/api/belepes.js`):
-- **Beüzemelés:** a gazda egy beüzemelő linket kap (`/admin/#kod=<kód>`), azzal állít be jelszót. A tárolóban csak a kód SHA-256 lenyomata áll (`BEUZEMELO_HASH`), a kód maga soha. Egy kód egyszer használható.
-- **Belépés:** jelszó → eszközönként 90 napos munkamenet-süti (`__Host-`, HttpOnly, Secure, SameSite=Strict). Az adatbázisban a jelszónak és a süti titkának csak a lenyomata van; a letölthető mentésbe egyik sem kerül.
-- **Elfelejtett jelszó:** új kód lenyomata kerül a `BEUZEMELO_HASH`-be (PR), az új linkkel új jelszó állítható be; a régi munkamenetek megszűnnek.
+- **Két külön fiók, saját jelszóval:** `gazda` (a ház tulajdonosa) és `uzemelteto` (aki a rendszert üzemelteti neki). Mindkettő ugyanazt látja és tudja; egymás jelszavát nem ismerik, a jelszócsere és a „kilépés minden eszközömön” csak a saját fiókra hat. A gazda megszüntetheti az üzemeltető hozzáférését (az adatok az övéi).
+- **Beüzemelés:** fiókonként egy beüzemelő link (`/admin/#kod=<kód>`), azzal lehet jelszót beállítani; a kód dönti el, melyik fióké. A tárolóban csak a kódok SHA-256 lenyomata áll (`BEUZEMELO_HASH`), a kód maga soha. Egy kód addig használható újra, amíg a fiók nincs beállítva vele (megszüntetés után igen); végleges kizáráshoz a lenyomatot is cserélni kell.
+- **Belépés:** fiók + jelszó → eszközönként 90 napos munkamenet-süti (`__Host-`, HttpOnly, Secure, SameSite=Strict). Az adatbázisban a jelszónak és a süti titkának csak a lenyomata van; a letölthető mentésbe egyik sem kerül.
+- **Elfelejtett jelszó:** a fiók új kód-lenyomata kerül a `BEUZEMELO_HASH`-be (PR), az új linkkel új jelszó állítható be; a fiók régi munkamenetei megszűnnek.
 - **Korlát:** belépés 8 próba / 15 perc címenként és 60 / óra összesen; beüzemelés 5 / óra címenként és 30 / nap összesen.
-- A Cloudflare Access (`ACCESS_AUD` + `ACCESS_TEAM`) második útként megmaradt; ha be van állítva, az is beenged.
-- Próba: `node tools/proba/belepes_teszt.mjs` (saját szervert indít, 28 lépés).
+- A Cloudflare Access (`ACCESS_AUD` + `ACCESS_TEAM`) harmadik útként megmaradt; ha be van állítva, az is beenged.
+- Próba: `node tools/proba/belepes_teszt.mjs` (saját szervert indít, 43 lépés, az éles határokkal).

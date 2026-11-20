@@ -11,7 +11,10 @@
   function iso(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
   function mentve(el, ok, szoveg) { var s = document.createElement("span"); s.className = "mentve"; s.style.color = ok ? "" : "#b33"; s.textContent = szoveg || (ok ? "Mentve ✓" : "Nem sikerült"); el.appendChild(s); setTimeout(function () { s.remove(); }, 2500); }
 
-  var ki = "";                                    // ki van bent: "kezelo" (saját jelszó), e-mail (Cloudflare Access) vagy "helyi"
+  var ki = "";                                    // ki van bent: "gazda" | "uzemelteto" (saját jelszó), e-mail (Cloudflare Access) vagy "helyi"
+  var SZEREP = { gazda: "Gazda", uzemelteto: "Üzemeltető" };
+  function sajatFiok() { return ki === "gazda" || ki === "uzemelteto"; }
+  function emlek(v) { try { if (v) localStorage.setItem("akv-kezelo-szerep", v); return localStorage.getItem("akv-kezelo-szerep") || ""; } catch (x) { return v || ""; } }
   async function indul() {
     var r = await api("en");
     if (r.status === 401) return belepo();
@@ -19,28 +22,32 @@
     ki = r.data.email || ""; vaz();
   }
   function post(body) { return api("belepes", body); }
-  // Belépő: jelszó; ha a címben beüzemelő kód van (#kod=…) és még beállítható, akkor jelszó megadása.
+  var UN = '<input type="text" name="username" autocomplete="username" value="Akvarell kezelő" hidden>';
+  // Belépő: fiók + jelszó; ha a címben beüzemelő kód van (#kod=…) és még beállítható, akkor jelszó megadása.
   async function belepo(uzenet) {
-    var a = (await api("belepes")).data || {}, kod = (location.hash.match(/kod=([a-z0-9-]+)/i) || [])[1] || "";
+    var a = (await api("belepes")).data || {}, F = a.fiokok || {}, kod = (location.hash.match(/kod=([a-z0-9-]+)/i) || [])[1] || "";
     if (kod && a.beuzemelheto) {
-      fo.innerHTML = '<div class="blokk"><h2>' + (a.van ? "Új jelszó" : "Üdv a kezelőben") + '</h2><p>Adj meg egy jelszót, amivel ezentúl belépsz. Legalább 10 jel; lehet egy hosszabb mondat is. A telefonod megjegyzi, 90 napig nem kéri újra.</p>'
-        + '<form id="bf"><input type="text" name="username" autocomplete="username" value="Akvarell kezelő" hidden><label>Jelszó<input id="j1" type="password" autocomplete="new-password" minlength="10" required></label><label>Még egyszer<input id="j2" type="password" autocomplete="new-password" minlength="10" required></label>'
+      fo.innerHTML = '<div class="blokk"><h2>Üdv a kezelőben</h2><p>Adj meg egy jelszót, amivel ezentúl belépsz. Legalább 10 jel; lehet egy hosszabb mondat is. A telefonod megjegyzi, 90 napig nem kéri újra.</p>'
+        + '<form id="bf">' + UN + '<label>Jelszó<input id="j1" type="password" autocomplete="new-password" minlength="10" required></label><label>Még egyszer<input id="j2" type="password" autocomplete="new-password" minlength="10" required></label>'
         + '<label class="pipa"><input type="checkbox" id="lat"> Mutasd, amit írok</label><div class="gombok"><button class="gomb" type="submit">Jelszó mentése és belépés</button></div><p class="uzenet hiba" id="bh"></p></form></div>';
       document.getElementById("lat").onchange = function () { ["j1", "j2"].forEach(function (i) { document.getElementById(i).type = this.checked ? "text" : "password"; }, this); };
       document.getElementById("bf").onsubmit = async function (ev) {
         ev.preventDefault(); var j1 = document.getElementById("j1").value, bh = document.getElementById("bh");
         if (j1 !== document.getElementById("j2").value) { bh.textContent = "A két jelszó nem egyezik."; return; }
         var r = await post({ muvelet: "beallit", kod: kod, jelszo: j1 });
-        if (r.ok) { history.replaceState(null, "", location.pathname); ful = "ma"; indul(); } else bh.textContent = hibaSzoveg(r);
+        if (r.ok) { emlek(r.data.szerep); history.replaceState(null, "", location.pathname); ful = "ma"; indul(); } else bh.textContent = hibaSzoveg(r);
       };
       return;
     }
-    if (!a.van) { fo.innerHTML = '<div class="blokk"><h2>A kezelő még nincs beüzemelve</h2><p>Az első belépéshez egy beüzemelő link kell. Ezt Pétertől kapod; arra koppintva tudsz jelszót beállítani.</p></div>'; return; }
-    fo.innerHTML = '<div class="blokk"><h2>Belépés</h2>' + (uzenet ? '<p class="uzenet">' + e(uzenet) + "</p>" : "") + '<form id="bf"><input type="text" name="username" autocomplete="username" value="Akvarell kezelő" hidden><label>Jelszó<input id="j1" type="password" autocomplete="current-password" required></label>'
+    if (!F.gazda && !F.uzemelteto) { fo.innerHTML = '<div class="blokk"><h2>A kezelő még nincs beüzemelve</h2><p>Az első belépéshez egy beüzemelő link kell. Ezt Pétertől kapod; arra koppintva tudsz jelszót beállítani.</p></div>'; return; }
+    var ketto = F.gazda && F.uzemelteto, elo = emlek() && F[emlek()] ? emlek() : (F.gazda ? "gazda" : "uzemelteto");
+    fo.innerHTML = '<div class="blokk"><h2>Belépés</h2>' + (uzenet ? '<p class="uzenet">' + e(uzenet) + "</p>" : "") + '<form id="bf">' + UN
+      + (ketto ? '<div class="valaszto" role="radiogroup" aria-label="Ki lép be?">' + ["gazda", "uzemelteto"].map(function (x) { return '<label><input type="radio" name="sz" value="' + x + '"' + (x === elo ? " checked" : "") + "><span>" + SZEREP[x] + "</span></label>"; }).join("") + "</div>" : "")
+      + '<label>Jelszó<input id="j1" type="password" autocomplete="current-password" required></label>'
       + '<div class="gombok"><button class="gomb" type="submit">Belépek</button></div><p class="uzenet hiba" id="bh"></p></form><p class="apro">Elfelejtetted? Szólj Péternek, ő küld új beüzemelő linket.</p></div>';
     document.getElementById("bf").onsubmit = async function (ev) {
-      ev.preventDefault(); var r = await post({ jelszo: document.getElementById("j1").value });
-      if (r.ok) { ful = "ma"; indul(); } else document.getElementById("bh").textContent = hibaSzoveg(r);
+      ev.preventDefault(); var v = fo.querySelector("input[name=sz]:checked"), r = await post({ szerep: v ? v.value : elo, jelszo: document.getElementById("j1").value });
+      if (r.ok) { emlek(r.data.szerep); ful = "ma"; indul(); } else document.getElementById("bh").textContent = hibaSzoveg(r);
     };
   }
   function hibaSzoveg(r) { return r.status === 0 ? "Nincs kapcsolat. Próbáld újra." : r.status === 429 ? "Túl sok próbálkozás. Várj negyed órát." : (r.data && r.data.hiba ? r.data.hiba.charAt(0).toUpperCase() + r.data.hiba.slice(1) + "." : "Nem sikerült."); }
@@ -98,14 +105,19 @@
 
   /* Belépés, mentés */
   async function fiok() {
-    var sajat = ki === "kezelo";
+    var sajat = sajatFiok(), a = (await api("belepes")).data || {}, F = a.fiokok || {}, V = a.valtozott || {};
+    function sor(x) { return '<div class="sor"><b>' + SZEREP[x] + "</b>" + (x === ki ? " (te)" : "") + '<br><span class="jelmag">' + (F[x] ? "van jelszava" + (V[x] ? " · utoljára változott: " + e(String(V[x]).slice(0, 10)) : "") : "még nincs beállítva") + "</span></div>"; }
     t().innerHTML = '<div class="blokk"><h2>Belépés</h2>' + (sajat
-      ? '<p>Ezen az eszközön 90 napig nem kell újra belépned.</p><form id="bf"><input type="text" name="username" autocomplete="username" value="Akvarell kezelő" hidden><label>Mostani jelszó<input id="jr" type="password" autocomplete="current-password" required></label><label>Új jelszó (legalább 10 jel)<input id="j1" type="password" autocomplete="new-password" minlength="10" required></label><div class="gombok"><button class="gomb" type="submit">Jelszó cseréje</button></div><p class="uzenet" id="bh"></p></form><p class="apro">Jelszócsere után a többi eszközön újra be kell lépni.</p>'
-      : "<p>Belépve: " + e(ki) + "</p>") + '<div class="gombok"><button id="ki">Kilépés ezen az eszközön</button>' + (sajat ? '<button id="kimind">Kilépés minden eszközön</button>' : "") + "</div></div>"
-      + '<div class="blokk"><h2>Mentés</h2><p>Minden adat (foglalások, vendégek, szövegek, pénzügyek) egy fájlban. Érdemes havonta letölteni.</p><a class="gomb masod" href="/admin/api/mentes">Teljes mentés letöltése</a></div>';
+      ? "<p>Belépve: <b>" + SZEREP[ki] + '</b>. Ezen az eszközön 90 napig nem kell újra belépned.</p><form id="bf">' + UN + '<label>Mostani jelszó<input id="jr" type="password" autocomplete="current-password" required></label><label>Új jelszó (legalább 10 jel)<input id="j1" type="password" autocomplete="new-password" minlength="10" required></label><div class="gombok"><button class="gomb" type="submit">Jelszó cseréje</button></div><p class="uzenet" id="bh"></p></form><p class="apro">Jelszócsere után a te többi eszközödön újra be kell lépni. A másik fiókot ez nem érinti.</p>'
+      : "<p>Belépve: " + e(ki) + "</p>") + '<div class="gombok"><button id="ki">Kilépés ezen az eszközön</button>' + (sajat ? '<button id="kimind">Kilépés minden eszközömön</button>' : "") + "</div></div>"
+      + '<div class="blokk"><h2>Ki fér hozzá?</h2><p class="jelmag">Két külön fiók van, saját jelszóval. Mindkettő ugyanazt látja és ugyanazt tudja; egymás jelszavát nem látják.</p>' + sor("gazda") + sor("uzemelteto")
+      + (ki === "gazda" && F.uzemelteto ? '<div class="gombok"><button id="uzki">Az üzemeltető hozzáférésének megszüntetése</button></div><p class="apro">Az adatok a tieid. Ha megszünteted, az üzemeltető azonnal kiesik, és csak új beüzemelő linkkel tud visszajönni.</p>' : "") + "</div>"
+      + '<div class="blokk"><h2>Mentés</h2><p>Minden adat (foglalások, vendégek, szövegek, pénzügyek) egy fájlban. Érdemes havonta letölteni. A jelszavak nincsenek benne.</p><a class="gomb masod" href="/admin/api/mentes">Teljes mentés letöltése</a></div>';
     document.getElementById("ki").onclick = kilep;
+    var uz = document.getElementById("uzki");
+    if (uz) uz.onclick = async function () { if (!confirm("Megszünteted az üzemeltető hozzáférését? Azonnal kiesik minden eszközén.")) return; var r = await post({ muvelet: "uzemelteto_ki" }); if (r.ok) fiok(); else mentve(uz.parentNode, false); };
     if (!sajat) return;
-    document.getElementById("kimind").onclick = async function () { if (!confirm("Minden eszközön kilépsz, itt is. Folytatod?")) return; await post({ muvelet: "kilep_mind" }); belepo("Minden eszközön kiléptél."); };
+    document.getElementById("kimind").onclick = async function () { if (!confirm("Minden eszközödön kilépsz, itt is. Folytatod?")) return; await post({ muvelet: "kilep_mind" }); belepo("Minden eszközödön kiléptél."); };
     document.getElementById("bf").onsubmit = async function (ev) {
       ev.preventDefault(); var bh = document.getElementById("bh"), r = await post({ muvelet: "jelszocsere", regi: document.getElementById("jr").value, jelszo: document.getElementById("j1").value });
       bh.className = "uzenet" + (r.ok ? "" : " hiba"); bh.textContent = r.ok ? "A jelszó megváltozott." : hibaSzoveg(r);

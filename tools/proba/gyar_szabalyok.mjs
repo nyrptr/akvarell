@@ -29,7 +29,7 @@ const bel = olv('functions/admin/api/belepes.js');
 if (!/korlatok\(db, \[\[`belep:ip:/.test(bel) || !/korlatok\(db, \[\[`beuz:ip:/.test(bel)) H('belépő végpont kéréskorlát nélkül', 'functions/admin/api/belepes.js');
 if (!/sajatEredet\(request\)/.test(bel)) H('belépő végpont idegen-eredet védelem nélkül', 'functions/admin/api/belepes.js');
 if (!/HttpOnly; Secure; SameSite=Strict/.test(olv('functions/_kozos/belepes.js'))) H('a kezelő sütije nem HttpOnly/Secure/SameSite=Strict', 'functions/_kozos/belepes.js');
-if (!/^export const BEUZEMELO_HASH = '[0-9a-f]{64}';$/m.test(olv('functions/_kozos/belepes.js'))) H('a beüzemelő kódnak csak a lenyomata állhat a tárolóban', 'functions/_kozos/belepes.js');
+if (!/^export const BEUZEMELO_HASH = \{ gazda: '[0-9a-f]{64}', uzemelteto: '[0-9a-f]{64}' \};$/m.test(olv('functions/_kozos/belepes.js'))) H('a beüzemelő kódoknak csak a lenyomata állhat a tárolóban', 'functions/_kozos/belepes.js');
 // 4. Ár: a foglalás árát a szerver számolja (_kozos/ar.js), nem a böngészőtől veszi.
 if (!/arSzamol\(apartman/.test(olv('functions/api/ajanlat.js'))) H('a foglalás ára nem a szerveren számolódik', 'functions/api/ajanlat.js');
 // 5. Biztonsági fejlécek a _headers-ben.

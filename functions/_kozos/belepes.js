@@ -1,9 +1,12 @@
-// A kezelő saját belépése (Cloudflare Access nélkül is működik): egy jelszó, eszközönként egy munkamenet-süti.
-// Beüzemelés: egyszer használható beüzemelő kóddal lehet jelszót beállítani. A tárolóban csak a kód SHA-256 lenyomata áll
-// (a kód ~148 bit véletlen, a lenyomatból nem fejthető vissza); magát a kódot Péter adja át a ház gazdájának.
-// Elfelejtett jelszó: új kód lenyomata kerül ide (PR), azzal újra beállítható – a régi munkamenetek ekkor megszűnnek.
-// Felülírható a BEUZEMELO_HASH környezeti változóval (másik ház, saját telepítés).
-export const BEUZEMELO_HASH = '31876df2c499c9e9b3b0b45ade6cba5045e1863f858de62e29a6f08b22fd477d';
+// A kezelő saját belépése (Cloudflare Access nélkül is működik). Két külön fiók van, mindegyik saját jelszóval:
+//   gazda       – a ház tulajdonosa (az adatok az övéi; ő meg tudja szüntetni az üzemeltető hozzáférését),
+//   uzemelteto  – aki a rendszert üzemelteti neki.
+// Beüzemelés: fiókonként egy, egyszer használható beüzemelő kóddal lehet jelszót beállítani. A tárolóban csak a kódok SHA-256
+// lenyomata áll (a kód ~148 bit véletlen, a lenyomatból nem fejthető vissza); magát a kódot az üzemeltető adja át.
+// Elfelejtett jelszó: annak a fióknak új kód-lenyomata kerül ide (PR), azzal újra beállítható – a fiók régi munkamenetei megszűnnek.
+// Felülírható a BEUZEMELO_HASH_GAZDA / BEUZEMELO_HASH_UZEMELTETO környezeti változóval (másik ház, próba).
+export const BEUZEMELO_HASH = { gazda: '15064ba30ca10203cba9cd6adb04994c9bd865386f9862f9fd0fc5686725976f', uzemelteto: '31876df2c499c9e9b3b0b45ade6cba5045e1863f858de62e29a6f08b22fd477d' };
+export const SZEREPEK = ['gazda', 'uzemelteto'];
 export const SUTI = '__Host-akv_kezelo', NAPOK = 90, KOR = 100000, MIN_JELSZO = 10;
 const hex = (b) => [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('');
 const enc = (s) => new TextEncoder().encode(s);
@@ -19,21 +22,22 @@ export function egyezik(a, b) {
   for (let i = 0; i < Math.max(a.length, b.length); i++) d |= (a.charCodeAt(i) || 0) ^ (b.charCodeAt(i) || 0);
   return d === 0;
 }
-export const kodHash = (env) => /^[0-9a-f]{64}$/.test(env.BEUZEMELO_HASH || '') ? env.BEUZEMELO_HASH : BEUZEMELO_HASH;
+const jo = (h) => /^[0-9a-f]{64}$/.test(h || '');
+export const kodHash = (env) => ({ gazda: jo(env.BEUZEMELO_HASH_GAZDA) ? env.BEUZEMELO_HASH_GAZDA : BEUZEMELO_HASH.gazda, uzemelteto: jo(env.BEUZEMELO_HASH_UZEMELTETO) ? env.BEUZEMELO_HASH_UZEMELTETO : BEUZEMELO_HASH.uzemelteto });
 export const sutiErtek = (request) => ((request.headers.get('cookie') || '').match(/(?:^|;\s*)__Host-akv_kezelo=([0-9a-f]{64})/) || [])[1] || '';
-// érvényes munkamenet → 'kezelo', különben ''
+// érvényes munkamenet → a fiók szerepe ('gazda' | 'uzemelteto'), különben ''
 export async function munkamenet(request, env) {
   const t = sutiErtek(request); if (!t || !env.DB) return '';
   try {
-    const r = await env.DB.prepare('SELECT lejar FROM kezelo_munkamenet WHERE token_hash = ?').bind(await sha(t)).first();
-    return r && r.lejar > Date.now() ? 'kezelo' : '';
+    const r = await env.DB.prepare('SELECT lejar, szerep FROM kezelo_munkamenet WHERE token_hash = ?').bind(await sha(t)).first();
+    return r && r.lejar > Date.now() && SZEREPEK.includes(r.szerep) ? r.szerep : '';
   } catch (e) { return ''; }
 }
-export async function ujMunkamenet(db, request) {
+export async function ujMunkamenet(db, request, szerep) {
   const t = veletlen(32), most = Date.now();
   await db.batch([
     db.prepare('DELETE FROM kezelo_munkamenet WHERE lejar < ?').bind(most),
-    db.prepare('INSERT INTO kezelo_munkamenet (token_hash, letrejott, lejar, eszkoz) VALUES (?, ?, ?, ?)').bind(await sha(t), most, most + NAPOK * 864e5, String(request.headers.get('user-agent') || '').slice(0, 120)),
+    db.prepare('INSERT INTO kezelo_munkamenet (token_hash, szerep, letrejott, lejar, eszkoz) VALUES (?, ?, ?, ?, ?)').bind(await sha(t), szerep, most, most + NAPOK * 864e5, String(request.headers.get('user-agent') || '').slice(0, 120)),
   ]);
   return `${SUTI}=${t}; Path=/; Max-Age=${NAPOK * 86400}; HttpOnly; Secure; SameSite=Strict`;
 }

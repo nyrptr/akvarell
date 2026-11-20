@@ -2,10 +2,11 @@
 
 ## 2026-11-20 délután – Claude (munka-kezelo)
 - Péter: „Az ajánlatunk akkor lesz kész, amikor megcsináltuk a backendet”; belépés: saját (1-es választás), Cloudflare nélkül.
+- **Két külön fiók (Péter, 11-20: „nekem is be kell tudni oda menni, ha bármit akarok üzemeltetőként”):** `gazda` és `uzemelteto`, saját jelszóval és saját beüzemelő kóddal; a gazda megszüntetheti az üzemeltető hozzáférését. A belépőn két fióknál választó van, az eszköz megjegyzi, melyik.
 - **Saját belépés a kezelőbe:** `functions/_kozos/belepes.js`, `functions/admin/api/belepes.js`, `k.js` (`kezelo()` előbb a munkamenetet nézi, az Access második útként megmaradt), séma: `kezelo`, `kezelo_munkamenet`. Beüzemelő kódnak csak a lenyomata van a tárolóban; a letölthető mentésbe a belépés táblái nem kerülnek. Részletek: README „A kezelő belépése”.
 - **Kezelő telefonra rendezve** (`admin/admin.js`, `admin/index.html`): „Ma” nyitólap (rád vár, a következő 7 nap, hiányzik még, magától megy – új végpont: `admin/api/ma`), 11 fül helyett 5 csoport alfülekkel, a főoldali szövegek magyar névvel és azzal, hol látszanak, árak címkézve, „Belépés, mentés” lap (jelszócsere, kilépés minden eszközön), 320 px-en a naptár nem lóg ki, a hónapváltó nyilak 48 px.
-- **Őrök:** `tools/proba/belepes_teszt.mjs` (28 lépés, saját szerverrel), bekötve a `kapu.py`-ba és a GitHub-kapuba; `gyar_szabalyok.mjs`: a belépő végponton kötelező a korlát és az eredet-védelem, a süti jelzői, a kódnak csak lenyomata lehet a tárolóban, a belépés táblái nem kerülhetnek a mentésbe.
-- Tesztelve: gyár-szabályok 0 hiba, access_teszt 12/12, belepes_teszt 28/28, utak/foglalás 38/38, kapu (a 3 helyi OVF-503-on kívül 0 hiba), böngészőben végigjárva 320 és 390 px-en minden fül (beüzemelés → Ma → visszaigazolás → kilépés → belépés), JS-hiba nincs.
+- **Őrök:** `tools/proba/belepes_teszt.mjs` (43 lépés, saját szerverrel, az éles határokkal), bekötve a `kapu.py`-ba és a GitHub-kapuba; `gyar_szabalyok.mjs`: a belépő végponton kötelező a korlát és az eredet-védelem, a süti jelzői, a kódnak csak lenyomata lehet a tárolóban, a belépés táblái nem kerülhetnek a mentésbe.
+- Tesztelve: gyár-szabályok 0 hiba, access_teszt 12/12, belepes_teszt 43/43, utak/foglalás 38/38, kapu (a 3 helyi OVF-503-on kívül 0 hiba), böngészőben végigjárva 320 és 390 px-en minden fül (beüzemelés → Ma → visszaigazolás → kilépés → belépés), JS-hiba nincs.
 - **Nem tesztelve:** élesben (Cloudflare-en) a jelszó-lenyomat számítási ideje; valódi telefonon a jelszókezelő viselkedése; a „Hiányzik még” levél-sora élő `BREVO_API_KEY` mellett.
 
 ## 2026-11-19 késő éjjel – Claude (munka-teljes-tartalom)

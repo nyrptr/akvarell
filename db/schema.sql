@@ -106,13 +106,13 @@ CREATE TABLE IF NOT EXISTS ertekeles (            -- saját, igazolt vendégért
   ottlet TEXT,                                    -- az ottlét hónapja (ÉÉÉÉ-HH), ezt mutatjuk
   letrehozva TEXT NOT NULL DEFAULT (datetime('now'))
 );
-CREATE TABLE IF NOT EXISTS kezelo (               -- a kezelő saját belépése: egy jelszó (PBKDF2), nyers jelszót nem tárolunk
-  id INTEGER PRIMARY KEY CHECK (id = 1),
+CREATE TABLE IF NOT EXISTS kezelo (               -- a kezelő saját belépése: két külön fiók (gazda, üzemeltető), mindegyik saját jelszóval (PBKDF2); nyers jelszót nem tárolunk
+  szerep TEXT PRIMARY KEY CHECK (szerep IN ('gazda','uzemelteto')),
   so TEXT NOT NULL, hash TEXT NOT NULL, kor INTEGER NOT NULL,
   kod_hash TEXT NOT NULL,                         -- melyik beüzemelő kóddal állították be (új kód = új beállítás lehetősége)
   valtozott TEXT NOT NULL DEFAULT (datetime('now'))
 );
 CREATE TABLE IF NOT EXISTS kezelo_munkamenet (    -- belépett eszközök: a süti titkának csak a lenyomata van itt
-  token_hash TEXT PRIMARY KEY, letrejott INTEGER NOT NULL, lejar INTEGER NOT NULL, eszkoz TEXT
+  token_hash TEXT PRIMARY KEY, szerep TEXT NOT NULL, letrejott INTEGER NOT NULL, lejar INTEGER NOT NULL, eszkoz TEXT
 );
 INSERT OR IGNORE INTO tartalom (kulcs, hu, en) VALUES ('kihivas_bev2', 'Séta Zebegényben, tíz állomással. Az Akvarelltől indulsz, és oda érsz vissza. Közben a főtéri templom, a Kálvária-domb, a Héthíd és a Duna-part. Minden állomásnál koppints a „Megvan” gombra, és ha kedved van, küldj egy szelfit. Ahol jártál, ott kiszíneződik a térkép, a tizedik állomásra kész a festmény. Nincs időre, több részletben is bejárható.', 'A walk around Zebegény with ten stops. You start at Akvarell and finish there. On the way: the church on the main square, Calvary Hill, the Seven-Arch Bridge and the Danube bank. Tap “Found it” at each stop and send a selfie if you like. The map fills with colour wherever you have been, and by the tenth stop the painting is finished. There is no time limit, and you can do it in several parts.');
