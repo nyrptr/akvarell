@@ -101,3 +101,10 @@
 - A „Megvan” már nem rajzolja újra a lapot (nem ugrik). Új haladás-kulcs (`akv-kihivas2`), mert a számozás megváltozott. Új szövegkulcs: `kihivas_bev2` (a meglévő adatbázisba is bekerül, a kezelőben szerkeszthető).
 - **Ernő erősítse meg:** az Akvarell pontos helye a Csalogány úton (most az utca déli szakasza); a 8. állomás utcaszintű pont; jutalom nincs, amíg ő nem vállal.
 - **Nem tesztelt:** valódi telefonon a szűrők sebessége; a szelfi-feltöltés az új lapon csak a meglévő úton (kapu.py nem tölt fel képet).
+
+## 2026-11-20 – Claude (kepek-sajat) – a képek ne függjenek Ernő tárhelyétől
+- **Ami történt:** 01:57-kor az akvarellzebegeny.hu 502/504-et adott (Ernő saját oldala is leállt), az összes fotó eltűnt az oldalunkról.
+- **Javítás:** a fotók saját másolatban a `kepek/` mappában (27 kép, 5,5 MB, legfeljebb 1600 px; `scripts/kepek_atvesz.py`, lista: `kepek/lista.js`). A `kep()` a saját másolatot adja; ha egy kép mégsem töltődik be, eltűnik, és a hero festett napszak-háttere látszik szürke folt helyett. Előtöltés és megosztási kép is saját címről.
+- **Próba:** Ernő szerverét letiltva a főoldal, az élmények, a látnivalók és a kihívás minden képe betölt, kifelé nem megy kérés.
+- **Nem jött át (Ernő oldalán is 404):** 3 kép a hosszú élmény-szövegekben (2024/03 mappa); ezek most rejtve maradnak.
+- Új szabály: MODSZER.md 4/b – az oldal nem függhet más szerverétől.

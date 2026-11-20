@@ -309,3 +309,8 @@ body.vendegmod{padding-bottom:24px}
 .allomas .leir{flex:1 1 100%;margin:0;font-size:15px;line-height:1.5}
 .allomas .gombok{flex-wrap:wrap}.allomas .gombok .gomb{min-height:44px;display:inline-flex;align-items:center}
 @media (prefers-reduced-motion:reduce){.tk-m,.tk-mind,.tk-a .tk-k,.tk-a text{transition:none}}
+
+/* kép nélkül is szép: ha a fotó nem töltődik be, a napszak-égbolt festett színe marad */
+.jelenet{background:linear-gradient(172deg,var(--eg1,#f3d2a2) 0%,var(--eg2,#7aa6c6) 55%,#2c5a73 100%)}
+img.nincskep{visibility:hidden}
+.kartya .kep,.ap-kep{background:linear-gradient(160deg,#e9dcc0,#cfe0e8)}
