@@ -160,8 +160,8 @@
     $("#qr-elo").innerHTML = qr();
     $("#qr-nyomtat").onclick = function () {
       var w = window.open("", "_blank"); if (!w) return;
-      w.document.write('<!doctype html><meta charset="utf-8"><title>Akvarell vendégkártya QR</title><body style="font:16px Georgia,serif;margin:0"><div style="width:148mm;min-height:105mm;margin:10mm auto;border:1px solid #ccc;border-radius:8mm;padding:10mm;display:flex;gap:8mm;align-items:center;box-sizing:border-box"><div style="width:48mm;flex:none">' + qr() + '</div><div><div style="color:#2c6a89;font-weight:700">Akvarell Apartmanház · Zebegény</div><h1 style="font-size:22pt;margin:6px 0">Jöjj vissza hozzánk!</h1><p>Olvasd be a kódot, és kérj vendégkártyát. Legközelebb közvetlenül foglalva <b>' + (+B.visszatero_kedvezmeny || 10) + '% kedvezményt</b> kapsz a szállás árából.</p><p style="color:#5b6670;font-size:12pt">Scan the code for your guest card: ' + (+B.visszatero_kedvezmeny || 10) + '% off when you book directly next time.</p></div></div><script>setTimeout(function(){print()},300)<\/script></body>');
-      w.document.close();
+      w.document.write('<!doctype html><meta charset="utf-8"><title>Akvarell vendégkártya QR</title><body style="font:16px Georgia,serif;margin:0"><div style="width:148mm;min-height:105mm;margin:10mm auto;border:1px solid #ccc;border-radius:8mm;padding:10mm;display:flex;gap:8mm;align-items:center;box-sizing:border-box"><div style="width:48mm;flex:none">' + qr() + '</div><div><div style="color:#2c6a89;font-weight:700">Akvarell Apartmanház · Zebegény</div><h1 style="font-size:22pt;margin:6px 0">Jöjj vissza hozzánk!</h1><p>Olvasd be a kódot, és kérj vendégkártyát. Legközelebb közvetlenül foglalva <b>' + (+B.visszatero_kedvezmeny || 10) + '% kedvezményt</b> kapsz a szállás árából.</p><p style="color:#5b6670;font-size:12pt">Scan the code for your guest card: ' + (+B.visszatero_kedvezmeny || 10) + '% off when you book directly next time.</p></div></div></body>');
+      w.document.close(); setTimeout(function () { w.print(); }, 300);
     };
     $("#qr-uj").onclick = async function () { if (!confirm("Új QR-kód: a régi kártyák a szobákban nem működnek tovább. Folytatod?")) return; var k = await api("haz_kod", {}); if (k.ok) vendegek(); };
     t().querySelectorAll("[data-ert]").forEach(function (sor) { sor.querySelectorAll("[data-ea]").forEach(function (b) { b.onclick = async function () { var k = await api("ertekeles", { id: +sor.dataset.ert, allapot: b.dataset.ea }); if (k.ok) vendegek(); else mentve(b.parentNode, false); }; }); });
@@ -169,8 +169,11 @@
     async function hk(proba, gomb) {
       var d = { targy: $("#h-targy").value, hu: $("#h-hu").value, en: $("#h-en").value, proba: proba };
       if (!proba && !confirm("Elküldöd " + hir + " címzettnek?")) return;
-      var k = await api("hirlevel", d);
-      mentve(gomb.parentNode, k.ok, k.ok ? (k.data.kihagyva ? "Nincs beállítva a levelező (Brevo)" : "Elküldve: " + k.data.elkuldve + " / " + k.data.cimzett) : (k.data.hiba || "Nem sikerült"));
+      // 30 címzettenként küld, amíg el nem fogy (a szerver megmondja, honnan folytassa)
+      var k, kuldve = 0, ossz = 0; d.tol = 0; gomb.disabled = true;
+      do { k = await api("hirlevel", d); if (!k.ok) break; kuldve += k.data.elkuldve; ossz += k.data.cimzett; d.tol = k.data.kov; if (d.tol) mentve(gomb.parentNode, true, "Küldés… " + kuldve); } while (d.tol);
+      gomb.disabled = false;
+      mentve(gomb.parentNode, k.ok, k.ok ? (k.data.kihagyva ? "Nincs beállítva a levelező (Brevo)" : "Elküldve: " + kuldve + " / " + ossz) : ((k.data && k.data.hiba) || "Nem sikerült") + (kuldve ? " – eddig elment: " + kuldve : ""));
     }
     $("#h-proba").onclick = function () { hk(true, this); };
     $("#h-kuld").onclick = function () { hk(false, this); };

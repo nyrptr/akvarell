@@ -4,6 +4,7 @@
 import { J } from '../../_kozos/k.js';
 import { beall, isoBp, plusz } from '../../_kozos/vendegut.js';
 import { kuld, keret, esc } from '../../_kozos/level.js';
+import { korlat } from '../../_kozos/korlat.js';
 async function foglalas(db, t) {
   if (!/^[A-Za-z0-9_-]{20,64}$/.test(t || '')) return null;
   return db.prepare(`SELECT a.id, a.apartman_id, a.erkezes, a.tavozas, a.felnott, a.gyerek, a.nev, a.email, a.telefon, a.nyelv, a.allapot, p.nev apnev
@@ -27,8 +28,10 @@ export async function onRequestPost({ request, env, params, waitUntil }) {
     if (isoBp() < a.erkezes) return J(400, { hiba: 'még nem érkeztél' });
     const pont = Math.round(+d.pont || 0), szov = String(d.szoveg || '').trim().slice(0, 1200) || null;
     if (!(pont >= 1 && pont <= 10)) return J(400, { hiba: 'pont' });
-    await env.DB.prepare("INSERT INTO ertekeles (ajanlat_id, nev, pont, szoveg, nyelv, ottlet) VALUES (?,?,?,?,?,?) ON CONFLICT(ajanlat_id) DO UPDATE SET pont = excluded.pont, szoveg = excluded.szoveg, allapot = 'uj'")
-      .bind(a.id, String(a.nev).split(' ').slice(-1)[0], pont, szov, a.nyelv, a.erkezes.slice(0, 7)).run();
+    if (!(await korlat(env.DB, 'ertekeles:' + a.id, 5))) return J(429, { hiba: 'sok' });
+    const nevek = String(a.nev).trim().split(/\s+/), kereszt = a.nyelv === 'en' ? nevek[0] : nevek[nevek.length - 1];   // csak a keresztnév jelenik meg (magyar sorrend: utolsó, angol: első)
+    await env.DB.prepare("INSERT INTO ertekeles (ajanlat_id, nev, pont, szoveg, nyelv, ottlet) VALUES (?,?,?,?,?,?) ON CONFLICT(ajanlat_id) DO UPDATE SET pont = excluded.pont, szoveg = excluded.szoveg, nev = excluded.nev, allapot = 'uj'")
+      .bind(a.id, kereszt, pont, szov, a.nyelv, a.erkezes.slice(0, 7)).run();
     waitUntil(kuld(env, { to: env.ERTESITES_EMAIL, replyTo: a.email, subject: `Új értékelés: ${pont}/10 – ${a.apnev}`, html: keret(`${pont}/10 – ${a.nev}`, `<p style="white-space:pre-line">${esc(szov || '(szöveg nélkül)')}</p><p>Kitenni a kezelő Vendégek fülén lehet.</p>`) }).catch(() => { }));
     return J(200, { ok: true });
   }

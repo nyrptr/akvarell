@@ -12,14 +12,17 @@ const req = (t) => ({ headers: { get: (n) => n === 'cf-access-jwt-assertion' ? t
 const jo = { aud: ['AUD1'], email: 'a@b.hu', exp: Date.now() / 1000 + 600, iss: 'https://proba.cloudflareaccess.com' };
 const masik = await subtle.generateKey({ name: 'RSASSA-PKCS1-v1_5', modulusLength: 2048, publicExponent: new Uint8Array([1,0,1]), hash: 'SHA-256' }, true, ['sign','verify']);
 const esetek = [
-  ['jó token', await tok(jo), { ACCESS_AUD: 'AUD1' }, 'a@b.hu'],
-  ['rossz AUD', await tok({ ...jo, aud: ['X'] }), { ACCESS_AUD: 'AUD1' }, ''],
-  ['lejárt', await tok({ ...jo, exp: 1 }), { ACCESS_AUD: 'AUD1' }, ''],
-  ['idegen kiadó', await tok({ ...jo, iss: 'https://gonosz.example.com' }), { ACCESS_AUD: 'AUD1' }, ''],
-  ['más kulccsal aláírt', await tok(jo, masik.privateKey), { ACCESS_AUD: 'AUD1' }, ''],
-  ['nincs AUD-változó', await tok(jo), {}, ''],
-  ['e-mail-lista, nincs rajta', await tok(jo), { ACCESS_AUD: 'AUD1', ADMIN_EMAILS: 'x@y.hu' }, ''],
-  ['e-mail-lista, rajta van', await tok(jo), { ACCESS_AUD: 'AUD1', ADMIN_EMAILS: 'x@y.hu, A@b.hu' }, 'a@b.hu'],
+  ['jó token', await tok(jo), { ACCESS_AUD: 'AUD1', ACCESS_TEAM: 'proba' }, 'a@b.hu'],
+  ['rossz AUD', await tok({ ...jo, aud: ['X'] }), { ACCESS_AUD: 'AUD1', ACCESS_TEAM: 'proba' }, ''],
+  ['lejárt', await tok({ ...jo, exp: 1 }), { ACCESS_AUD: 'AUD1', ACCESS_TEAM: 'proba' }, ''],
+  ['idegen kiadó', await tok({ ...jo, iss: 'https://gonosz.example.com' }), { ACCESS_AUD: 'AUD1', ACCESS_TEAM: 'proba' }, ''],
+  ['más kulccsal aláírt', await tok(jo, masik.privateKey), { ACCESS_AUD: 'AUD1', ACCESS_TEAM: 'proba' }, ''],
+  ['nincs AUD-változó', await tok(jo), { ACCESS_TEAM: 'proba' }, ''],
+  ['e-mail-lista, nincs rajta', await tok(jo), { ACCESS_AUD: 'AUD1', ACCESS_TEAM: 'proba', ADMIN_EMAILS: 'x@y.hu' }, ''],
+  ['e-mail-lista, rajta van', await tok(jo), { ACCESS_AUD: 'AUD1', ACCESS_TEAM: 'proba', ADMIN_EMAILS: 'x@y.hu, A@b.hu' }, 'a@b.hu'],
+  ['nincs ACCESS_TEAM', await tok(jo), { ACCESS_AUD: 'AUD1' }, ''],
+  ['nincs lejárat (exp)', await tok({ ...jo, exp: undefined }), { ACCESS_AUD: 'AUD1', ACCESS_TEAM: 'proba' }, ''],
+  ['idegen csapat, a mi AUD-unkkal', await tok({ ...jo, iss: 'https://gonosz.cloudflareaccess.com' }), { ACCESS_AUD: 'AUD1', ACCESS_TEAM: 'proba' }, ''],
   ['ACCESS_TEAM eltér a kiadótól', await tok(jo), { ACCESS_AUD: 'AUD1', ACCESS_TEAM: 'mas' }, ''],
 ];
 let hiba = 0;
