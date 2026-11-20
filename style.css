@@ -294,3 +294,18 @@ body.vendegmod{padding-bottom:24px}
 .bizalom-sor{font-size:14px;color:var(--halk);margin:10px 0 0}
 .bizalom-sor b{color:var(--duna)}
 #ertekelesek,#zebegeny{scroll-margin-top:72px}
+
+/* 10-es kihívás: akvarell térkép – ahol jártál, kiszíneződik */
+.terkep{margin:14px 0 6px}
+.terkep svg{display:block;width:100%;height:auto;border-radius:18px;border:1px solid var(--vonal);background:#f3e9cf}
+.terkep figcaption{font-size:13px;color:var(--halk);margin-top:6px}
+.terkep figcaption a{display:inline-block;padding:12px 0;color:inherit}
+.tk-m{opacity:0;transition:opacity 1.4s ease}.tk-m.be{opacity:1}
+.tk-mind{opacity:0;transition:opacity 2s ease}.terkep.kesz .tk-mind{opacity:1}
+.tk-a .tk-k{fill:#fffaf0;transition:fill .5s}.tk-a text{fill:#1d2a35;transition:fill .5s}
+.tk-a.be .tk-k{fill:var(--zold)}.tk-a.be text{fill:#fff}
+.kih-allas{display:flex;align-items:center;gap:16px;margin-top:10px}.kih-allas .kor{flex:none}
+.allomas .nev small{display:block;font-weight:400;font-size:13px;color:var(--halk)}
+.allomas .leir{flex:1 1 100%;margin:0;font-size:15px;line-height:1.5}
+.allomas .gombok{flex-wrap:wrap}.allomas .gombok .gomb{min-height:44px;display:inline-flex;align-items:center}
+@media (prefers-reduced-motion:reduce){.tk-m,.tk-mind,.tk-a .tk-k,.tk-a text{transition:none}}
