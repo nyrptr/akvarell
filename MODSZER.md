@@ -48,6 +48,7 @@
 - Állapotváltásnak mindkét iránya kész: ami visszaigazoláskor lefoglal, az visszavonáskor felszabadít; ami háttérben fut, egy lépéses zárral fut (nincs dupla levél).
 - Ütemezett feladat nem függhet attól, hogy valaki megnyitja az oldalt: legyen külső indító (GitHub Actions) és pótló ablak.
 - Kezelő: rögzített Access-kiadó (`ACCESS_TEAM` kötelező), idegen eredetű módosító kérés tiltva; minden új tábla a teljes mentésbe.
+- Az oldal nem függhet más szerverétől: a tulaj képei saját másolatban (`kepek/`, `scripts/kepek_atvesz.py`), és ami mégis kívülről jön, annak van kép nélküli, festett tartaléka (2026-11-20: Ernő tárhelye leállt, minden kép eltűnt).
 - Feltöltés típusát a fájl tartalma dönti el; minden külső szöveg escape-pel kerül HTML-be; `_headers`: CSP, keretbe ágyazás tiltva.
 - Kitalált funkció (pl. játék, jutalom) csak teljes leírással kerül ki: mi ez, hol kezdődik, hol ér véget, mit kap érte a vendég, ki vállalta. Ha a tulaj nem vállalta, nem jelenik meg jutalom.
 
