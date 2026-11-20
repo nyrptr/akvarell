@@ -131,3 +131,10 @@
 - `.github/workflows/pr-kapu.yml`: új `utak` feladat. `_middleware.js`: a `tools/` sem tölthető le.
 - Hátravan a 2. rétegből: visszatérő vendég, vendégkönyv (kérés, értékelés), kártya, kihívás, iCal, hírlevél, kezelő-fülek (böngészővel).
 
+## 2026-11-20 – Claude (munka-utak-2) – motor-alap 2. réteg, 2. rész: kártya-út és visszatérő vendég
+- `tools/proba/utak/kartya.mjs` (29 lépés): rossz bemenet, robotcsapda; új kártya e-mail nélkül a válaszban; létező címre a token nem jön vissza, a link levélben megy, 6 óránként legfeljebb 2 levél; hírlevél-hozzájárulás időbélyeggel, leiratkozás, a kártya megmarad; házkód (érvényes / rossz / meglévő kártya / újragenerálás); a 9. kérés 429.
+- `tools/proba/utak/visszatero.mjs` (15 lépés): első foglalás teljes áron; visszaigazoláskor kártya; e-mail alapján jár a kedvezmény, de a válasz nem árulja el; kártyával a válasz is jelzi; a böngésző kedvezménye nem számít; a tulaj átállítja a százalékot, 50% a felső határ; lemondás után a kártya nem ad kedvezményt.
+- Ellenpróba: a kedvezmény kikapcsolásával 3, a token kiadásával 1 lépés piros lett (utána visszaállítva) – a próbák valóban őriznek.
+- Találat (nem javítva, döntés kell): `ottletek()` megjegyzése szerint „visszaigazolt (és már elkezdett)” ottlét számít, a lekérdezés viszont a JÖVŐBELI visszaigazolt foglalást is ottlétnek veszi → aki két foglalást ad le előre, a másodikra már kedvezményt kap, mielőtt egyszer is ott aludt volna.
+- Hátravan a 2. rétegből: vendégkönyv (wifi-időablak, kérés, értékelés), kihívás, iCal, hírlevél szeletelve, kezelő-fülek (böngészővel).
+
