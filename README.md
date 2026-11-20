@@ -24,3 +24,12 @@ Statikus oldal (HTML/CSS/JS) + Cloudflare Pages Functions + D1 (a kihívás-kép
 
 ## Helyi próba
 `wrangler pages dev . --d1 DB=<id> --binding HELYI_KEZELO=igen` – a kezelő csak `localhost`-on, ezzel a kapcsolóval nyílik meg belépés nélkül.
+
+### A kezelő belépése
+Saját belépés, Cloudflare Access nélkül is működik (`functions/_kozos/belepes.js`, `functions/admin/api/belepes.js`):
+- **Beüzemelés:** a gazda egy beüzemelő linket kap (`/admin/#kod=<kód>`), azzal állít be jelszót. A tárolóban csak a kód SHA-256 lenyomata áll (`BEUZEMELO_HASH`), a kód maga soha. Egy kód egyszer használható.
+- **Belépés:** jelszó → eszközönként 90 napos munkamenet-süti (`__Host-`, HttpOnly, Secure, SameSite=Strict). Az adatbázisban a jelszónak és a süti titkának csak a lenyomata van; a letölthető mentésbe egyik sem kerül.
+- **Elfelejtett jelszó:** új kód lenyomata kerül a `BEUZEMELO_HASH`-be (PR), az új linkkel új jelszó állítható be; a régi munkamenetek megszűnnek.
+- **Korlát:** belépés 8 próba / 15 perc címenként és 60 / óra összesen; beüzemelés 5 / óra címenként és 30 / nap összesen.
+- A Cloudflare Access (`ACCESS_AUD` + `ACCESS_TEAM`) második útként megmaradt; ha be van állítva, az is beenged.
+- Próba: `node tools/proba/belepes_teszt.mjs` (saját szervert indít, 28 lépés).

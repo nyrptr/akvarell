@@ -24,6 +24,12 @@ for (const f of fajlok('functions/api').filter(x => x.endsWith('.js'))) {
 const adm = olv('functions/admin/api/[[ut]].js');
 if (!/await kezelo\(request, env\)/.test(adm)) H('kezelő-API kezelo() nélkül', 'functions/admin/api/[[ut]].js');
 if (!/sajatEredet\(request\)/.test(adm)) H('kezelő-API idegen-eredet védelem nélkül', 'functions/admin/api/[[ut]].js');
+// a saját belépés végpontja az egyetlen, amelyik belépés nélkül is válaszol: korlát és eredet-védelem nélkül nem mehet ki
+const bel = olv('functions/admin/api/belepes.js');
+if (!/korlatok\(db, \[\[`belep:ip:/.test(bel) || !/korlatok\(db, \[\[`beuz:ip:/.test(bel)) H('belépő végpont kéréskorlát nélkül', 'functions/admin/api/belepes.js');
+if (!/sajatEredet\(request\)/.test(bel)) H('belépő végpont idegen-eredet védelem nélkül', 'functions/admin/api/belepes.js');
+if (!/HttpOnly; Secure; SameSite=Strict/.test(olv('functions/_kozos/belepes.js'))) H('a kezelő sütije nem HttpOnly/Secure/SameSite=Strict', 'functions/_kozos/belepes.js');
+if (!/^export const BEUZEMELO_HASH = '[0-9a-f]{64}';$/m.test(olv('functions/_kozos/belepes.js'))) H('a beüzemelő kódnak csak a lenyomata állhat a tárolóban', 'functions/_kozos/belepes.js');
 // 4. Ár: a foglalás árát a szerver számolja (_kozos/ar.js), nem a böngészőtől veszi.
 if (!/arSzamol\(apartman/.test(olv('functions/api/ajanlat.js'))) H('a foglalás ára nem a szerveren számolódik', 'functions/api/ajanlat.js');
 // 5. Biztonsági fejlécek a _headers-ben.
@@ -34,5 +40,7 @@ for (const f of ['app.js', 'admin/admin.js']) olv(f).split('\n').forEach((sor, i
 });
 // 7. Kezelő-végpont listában szereplő minden mentés-tábla létezik a sémában (a mentés ne hagyjon ki új táblát).
 const tablak = [...olv('db/schema.sql').matchAll(/CREATE TABLE IF NOT EXISTS (\w+)/g)].map(m => m[1]);
-for (const t of tablak) if (!adm.includes(`'${t}'`) && t !== 'gyorsitotar') H('a teljes mentésből hiányzó tábla', t);
+for (const t of tablak) if (!adm.includes(`'${t}'`) && !['gyorsitotar', 'kezelo', 'kezelo_munkamenet'].includes(t)) H('a teljes mentésből hiányzó tábla', t);
+// a belépés táblái (jelszó-lenyomat, munkamenetek) szándékosan NEM kerülnek a letölthető mentésbe
+if (/'kezelo'|'kezelo_munkamenet'/.test(adm)) H('a jelszó-lenyomat vagy a munkamenetek nem kerülhetnek a letölthető mentésbe', 'functions/admin/api/[[ut]].js');
 console.log(hiba, 'HIBA'); process.exit(hiba ? 1 : 0);

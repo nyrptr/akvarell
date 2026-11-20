@@ -1,4 +1,5 @@
-// Közös rész: JSON-válasz, kezelő-ellenőrzés (Cloudflare Access).
+// Közös rész: JSON-válasz, kezelő-ellenőrzés (saját belépés: _kozos/belepes.js; vagy Cloudflare Access).
+import { munkamenet } from './belepes.js';
 export const J = (s, d, extra = {}) => new Response(JSON.stringify(d), {
   status: s, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', 'x-robots-tag': 'noindex', 'x-content-type-options': 'nosniff', ...extra },
 });
@@ -11,6 +12,7 @@ export const J = (s, d, extra = {}) => new Response(JSON.stringify(d), {
 const b64u = (s) => Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/').padEnd(Math.ceil(s.length / 4) * 4, '=')), c => c.charCodeAt(0));
 const kulcsok = {}, kulcsIdo = {};
 export async function kezelo(request, env) {
+  const sajat = await munkamenet(request, env); if (sajat) return sajat;   // saját belépés (jelszó → munkamenet-süti)
   const tok = request.headers.get('cf-access-jwt-assertion') || (request.headers.get('cookie') || '').match(/CF_Authorization=([^;]+)/)?.[1];
   if (!tok || !env.ACCESS_AUD || !/^[a-z0-9-]+$/.test(env.ACCESS_TEAM || '')) return '';
   try {

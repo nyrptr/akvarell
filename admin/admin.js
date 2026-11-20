@@ -1,4 +1,4 @@
-/* Akvarell kezelő – telefonra. Belépés: Cloudflare Access (e-mailes kód) az /admin útvonalon; a szerver minden kérésnél ellenőrzi. */
+/* Akvarell kezelő – telefonra. Belépés: saját jelszó (munkamenet-süti) vagy Cloudflare Access; a szerver minden kérésnél ellenőrzi. */
 (function () {
   "use strict";
   function api(ut, body) {
@@ -6,25 +6,111 @@
       .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, status: r.status, data: d }; }); })
       .catch(function () { return { ok: false, status: 0, data: {} }; });
   }
-  var fo = document.getElementById("fo"), ful = "keres";
+  var fo = document.getElementById("fo"), ful = "ma";
   function e(x) { return String(x == null ? "" : x).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function iso(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
   function mentve(el, ok, szoveg) { var s = document.createElement("span"); s.className = "mentve"; s.style.color = ok ? "" : "#b33"; s.textContent = szoveg || (ok ? "Mentve ✓" : "Nem sikerült"); el.appendChild(s); setTimeout(function () { s.remove(); }, 2500); }
 
+  var ki = "";                                    // ki van bent: "kezelo" (saját jelszó), e-mail (Cloudflare Access) vagy "helyi"
   async function indul() {
     var r = await api("en");
-    if (r.status === 401) { fo.innerHTML = '<div class="blokk"><p>Ehhez a kezelőhöz belépés kell. Töltsd újra az oldalt; a Cloudflare e-mailben küld egy kódot.</p></div>'; return; }
+    if (r.status === 401) return belepo();
     if (!r.ok) { fo.innerHTML = '<div class="blokk"><p class="uzenet hiba">A kezelő most nem érhető el.</p></div>'; return; }
-    vaz();
+    ki = r.data.email || ""; vaz();
   }
-  function kilep() { location.href = "/cdn-cgi/access/logout"; }
+  function post(body) { return api("belepes", body); }
+  // Belépő: jelszó; ha a címben beüzemelő kód van (#kod=…) és még beállítható, akkor jelszó megadása.
+  async function belepo(uzenet) {
+    var a = (await api("belepes")).data || {}, kod = (location.hash.match(/kod=([a-z0-9-]+)/i) || [])[1] || "";
+    if (kod && a.beuzemelheto) {
+      fo.innerHTML = '<div class="blokk"><h2>' + (a.van ? "Új jelszó" : "Üdv a kezelőben") + '</h2><p>Adj meg egy jelszót, amivel ezentúl belépsz. Legalább 10 jel; lehet egy hosszabb mondat is. A telefonod megjegyzi, 90 napig nem kéri újra.</p>'
+        + '<form id="bf"><input type="text" name="username" autocomplete="username" value="Akvarell kezelő" hidden><label>Jelszó<input id="j1" type="password" autocomplete="new-password" minlength="10" required></label><label>Még egyszer<input id="j2" type="password" autocomplete="new-password" minlength="10" required></label>'
+        + '<label class="pipa"><input type="checkbox" id="lat"> Mutasd, amit írok</label><div class="gombok"><button class="gomb" type="submit">Jelszó mentése és belépés</button></div><p class="uzenet hiba" id="bh"></p></form></div>';
+      document.getElementById("lat").onchange = function () { ["j1", "j2"].forEach(function (i) { document.getElementById(i).type = this.checked ? "text" : "password"; }, this); };
+      document.getElementById("bf").onsubmit = async function (ev) {
+        ev.preventDefault(); var j1 = document.getElementById("j1").value, bh = document.getElementById("bh");
+        if (j1 !== document.getElementById("j2").value) { bh.textContent = "A két jelszó nem egyezik."; return; }
+        var r = await post({ muvelet: "beallit", kod: kod, jelszo: j1 });
+        if (r.ok) { history.replaceState(null, "", location.pathname); ful = "ma"; indul(); } else bh.textContent = hibaSzoveg(r);
+      };
+      return;
+    }
+    if (!a.van) { fo.innerHTML = '<div class="blokk"><h2>A kezelő még nincs beüzemelve</h2><p>Az első belépéshez egy beüzemelő link kell. Ezt Pétertől kapod; arra koppintva tudsz jelszót beállítani.</p></div>'; return; }
+    fo.innerHTML = '<div class="blokk"><h2>Belépés</h2>' + (uzenet ? '<p class="uzenet">' + e(uzenet) + "</p>" : "") + '<form id="bf"><input type="text" name="username" autocomplete="username" value="Akvarell kezelő" hidden><label>Jelszó<input id="j1" type="password" autocomplete="current-password" required></label>'
+      + '<div class="gombok"><button class="gomb" type="submit">Belépek</button></div><p class="uzenet hiba" id="bh"></p></form><p class="apro">Elfelejtetted? Szólj Péternek, ő küld új beüzemelő linket.</p></div>';
+    document.getElementById("bf").onsubmit = async function (ev) {
+      ev.preventDefault(); var r = await post({ jelszo: document.getElementById("j1").value });
+      if (r.ok) { ful = "ma"; indul(); } else document.getElementById("bh").textContent = hibaSzoveg(r);
+    };
+  }
+  function hibaSzoveg(r) { return r.status === 0 ? "Nincs kapcsolat. Próbáld újra." : r.status === 429 ? "Túl sok próbálkozás. Várj negyed órát." : (r.data && r.data.hiba ? r.data.hiba.charAt(0).toUpperCase() + r.data.hiba.slice(1) + "." : "Nem sikerült."); }
+  async function kilep() {
+    if (ki.indexOf("@") > 0) { location.href = "/cdn-cgi/access/logout"; return; }
+    await post({ muvelet: "kilep" }); belepo("Kiléptél.");
+  }
 
-  var FULEK = [["keres", "Foglalások"], ["uzenet", "Üzenetek"], ["naptar", "Foglalt napok"], ["osszekotes", "Booking / Szállás.hu"], ["blog", "Zebegényi hét"], ["vk", "Vendégkönyv"], ["penz", "Pénzügyek"], ["vendegek", "Vendégek"], ["ar", "Árak, szövegek"], ["tartalom", "Főoldal"], ["kihivas", "Kihívás-képek"]];
+  // Öt csoport; a csoporton belül alfülek. A „Ma” a nyitólap.
+  var CSOP = [
+    ["ma", "Ma", [["ma", "Ma"]]],
+    ["fog", "Foglalások", [["keres", "Kérések"], ["naptar", "Naptár"], ["uzenet", "Utalványkérések"], ["penz", "Pénzügyek"]]],
+    ["ven", "Vendégek", [["vendegek", "Kártya, hírlevél"], ["vk", "Vendégkönyv"], ["kihivas", "Kihívás-képek"]]],
+    ["old", "Oldal", [["ar", "Árak, apartmanok"], ["tartalom", "Szövegek"], ["blog", "Zebegényi hét"]]],
+    ["beal", "Beállítás", [["osszekotes", "Booking, Szállás.hu"], ["fiok", "Belépés, mentés"]]]
+  ];
+  ful = "ma";
+  function csopja(f) { return CSOP.filter(function (c) { return c[2].some(function (x) { return x[0] === f; }); })[0]; }
+  function megy(f) { ful = f; vaz(); window.scrollTo(0, 0); }
   function vaz() {
-    fo.innerHTML = '<nav class="ful">' + FULEK.map(function (f) { return '<button data-ful="' + f[0] + '"' + (f[0] === ful ? ' class="most"' : "") + ">" + f[1] + "</button>"; }).join("") + '</nav><div id="tart"></div><p><a class="gomb masod" href="/admin/api/mentes">Teljes mentés letöltése</a> <button class="gomb masod" id="ki">Kilépés</button></p>';
-    fo.querySelectorAll("[data-ful]").forEach(function (b) { b.onclick = function () { ful = b.dataset.ful; vaz(); }; });
+    var cs = csopja(ful);
+    fo.innerHTML = '<nav class="ful fo-ful" aria-label="Fő részek">' + CSOP.map(function (c) { return '<button data-ful="' + c[2][0][0] + '"' + (c === cs ? ' class="most" aria-current="page"' : "") + ">" + c[1] + "</button>"; }).join("") + "</nav>"
+      + (cs[2].length > 1 ? '<nav class="ful al-ful" aria-label="' + cs[1] + '">' + cs[2].map(function (f) { return '<button data-ful="' + f[0] + '"' + (f[0] === ful ? ' class="most" aria-current="page"' : "") + ">" + f[1] + "</button>"; }).join("") + "</nav>" : "")
+      + '<div id="tart"><p class="jelmag">Betöltés…</p></div>';
+    fo.querySelectorAll("[data-ful]").forEach(function (b) { b.onclick = function () { megy(b.dataset.ful); }; });
+    ({ ma: maLap, keres: keresek, uzenet: uzenetek, naptar: naptar, osszekotes: osszekotes, blog: blog, vk: vendegkonyv, penz: penzugyek, vendegek: vendegek, ar: arak, tartalom: tartalom, kihivas: kihivas, fiok: fiok })[ful]();
+  }
+  var HONAP = ["jan.", "febr.", "márc.", "ápr.", "máj.", "jún.", "júl.", "aug.", "szept.", "okt.", "nov.", "dec."], NAPNEV = ["vasárnap", "hétfő", "kedd", "szerda", "csütörtök", "péntek", "szombat"];
+  function szepNap(n) { var d = new Date(n + "T12:00:00"), ma = iso(new Date()), h = iso(new Date(Date.now() + 864e5)); return n === ma ? "ma" : n === h ? "holnap" : HONAP[d.getMonth()] + " " + d.getDate() + "., " + NAPNEV[d.getDay()]; }
+  function fo2(x) { return x.felnott + " felnőtt" + (x.gyerek ? ", " + x.gyerek + " gyerek" : ""); }
+
+  /* Ma: mi vár rád, ki jön a héten, mi hiányzik még */
+  async function maLap() {
+    var r = await api("ma"), apk = await api("apartmanok");
+    if (!r.ok) { t().innerHTML = '<p class="uzenet hiba">Nem sikerült betölteni.</p>'; return; }
+    var d = r.data, nev = {}; (apk.data || []).forEach(function (a) { nev[a.id] = a.nev; });
+    var teendo = [];
+    if (d.uj.length) teendo.push(["keres", d.uj.length + " új foglaláskérés", d.uj.map(function (x) { return e(x.nev) + " · " + e(nev[x.apartman_id] || x.apartman_id) + " · " + szepNap(x.erkezes) + " → " + szepNap(x.tavozas); }).join("<br>")]);
+    if (d.uzenet) teendo.push(["uzenet", d.uzenet + " új utalványkérés", ""]);
+    if (d.ertekeles) teendo.push(["vendegek", d.ertekeles + " új értékelés vár arra, hogy kitedd", ""]);
+    if (d.kep) teendo.push(["kihivas", d.kep + " beküldött kép vár jóváhagyásra", ""]);
+    var h = '<div class="blokk"><h2>Rád vár</h2>' + (teendo.length ? teendo.map(function (x) { return '<button class="lepes" data-megy="' + x[0] + '"><b>' + x[1] + "</b>" + (x[2] ? '<span>' + x[2] + "</span>" : "") + "<i>→</i></button>"; }).join("") : '<p>Most nincs teendőd. Ha foglaláskérés érkezik, itt jelenik meg legfelül.</p>') + "</div>";
+    function lista(L, mi) { return L.length ? L.map(function (x) { return '<div class="sor"><b>' + szepNap(x[mi]) + "</b> · " + e(nev[x.apartman_id] || x.apartman_id) + "<br>" + e(x.nev) + (x.felnott ? " · " + fo2(x) : "") + "</div>"; }).join("") : '<p class="jelmag">Senki.</p>'; }
+    h += '<div class="blokk"><h2>A következő 7 nap</h2><h3>Érkezik</h3>' + lista(d.erkezik, "erkezes") + "<h3>Távozik</h3>" + lista(d.tavozik, "tavozas") + '<p class="jelmag">Csak az itt visszaigazolt foglalások. A Bookingon érkezőket a Booking mutatja.</p></div>';
+    var H = d.hianyzik, hi = [];
+    if (H.naptar) hi.push(["osszekotes", "Booking-naptár összekötése", H.naptar.van + " / " + H.naptar.kell + " apartman van összekötve. Amíg nincs, a Bookingon lefoglalt napot kézzel kell itt foglaltra tenni."]);
+    if (H.level) hi.push(["", "Levélküldés", "A levelek (visszaigazolás, útbaigazítás, hírlevél) még nem mennek ki. Ezt Péter állítja be; a te feladócímed kell hozzá."]);
+    if (H.vendegkonyv) hi.push(["vk", "Vendégkönyv adatai", "Telefonszám, wifi és bejutás. Ezt látja a vendég érkezés előtt."]);
+    if (H.ajandek) hi.push(["tartalom", "A 10-es kihívás ajándéka", "Mit kap, aki végigjárta a tíz állomást? Amíg üres, az oldal nem ígér ajándékot."]);
+    h += '<div class="blokk"><h2>Hiányzik még</h2>' + (hi.length ? hi.map(function (x) { return (x[0] ? '<button class="lepes" data-megy="' + x[0] + '">' : '<div class="lepes">') + "<b>" + x[1] + "</b><span>" + x[2] + "</span>" + (x[0] ? "<i>→</i></button>" : "</div>"); }).join("") : "<p>Minden be van állítva.</p>") + "</div>";
+    if (d.blog) h += '<div class="blokk"><h2>Magától megy</h2><p>Legutóbbi heti bejegyzés: <b>' + e(d.blog.cim_hu) + '</b></p><div class="gombok"><button data-megy="blog">Zebegényi hét</button><a class="gomb masod" href="/#/blog" target="_blank" rel="noopener">Megnézem az oldalon</a></div></div>';
+    t().innerHTML = h;
+    t().querySelectorAll("[data-megy]").forEach(function (b) { b.onclick = function () { megy(b.dataset.megy); }; });
+  }
+
+  /* Belépés, mentés */
+  async function fiok() {
+    var sajat = ki === "kezelo";
+    t().innerHTML = '<div class="blokk"><h2>Belépés</h2>' + (sajat
+      ? '<p>Ezen az eszközön 90 napig nem kell újra belépned.</p><form id="bf"><input type="text" name="username" autocomplete="username" value="Akvarell kezelő" hidden><label>Mostani jelszó<input id="jr" type="password" autocomplete="current-password" required></label><label>Új jelszó (legalább 10 jel)<input id="j1" type="password" autocomplete="new-password" minlength="10" required></label><div class="gombok"><button class="gomb" type="submit">Jelszó cseréje</button></div><p class="uzenet" id="bh"></p></form><p class="apro">Jelszócsere után a többi eszközön újra be kell lépni.</p>'
+      : "<p>Belépve: " + e(ki) + "</p>") + '<div class="gombok"><button id="ki">Kilépés ezen az eszközön</button>' + (sajat ? '<button id="kimind">Kilépés minden eszközön</button>' : "") + "</div></div>"
+      + '<div class="blokk"><h2>Mentés</h2><p>Minden adat (foglalások, vendégek, szövegek, pénzügyek) egy fájlban. Érdemes havonta letölteni.</p><a class="gomb masod" href="/admin/api/mentes">Teljes mentés letöltése</a></div>';
     document.getElementById("ki").onclick = kilep;
-    ({ keres: keresek, uzenet: uzenetek, naptar: naptar, osszekotes: osszekotes, blog: blog, vk: vendegkonyv, penz: penzugyek, vendegek: vendegek, ar: arak, tartalom: tartalom, kihivas: kihivas })[ful]();
+    if (!sajat) return;
+    document.getElementById("kimind").onclick = async function () { if (!confirm("Minden eszközön kilépsz, itt is. Folytatod?")) return; await post({ muvelet: "kilep_mind" }); belepo("Minden eszközön kiléptél."); };
+    document.getElementById("bf").onsubmit = async function (ev) {
+      ev.preventDefault(); var bh = document.getElementById("bh"), r = await post({ muvelet: "jelszocsere", regi: document.getElementById("jr").value, jelszo: document.getElementById("j1").value });
+      bh.className = "uzenet" + (r.ok ? "" : " hiba"); bh.textContent = r.ok ? "A jelszó megváltozott." : hibaSzoveg(r);
+      if (r.ok) { document.getElementById("jr").value = ""; document.getElementById("j1").value = ""; }
+    };
   }
   var CIMKE = { uj: "új", visszaigazolva: "visszaigazolva", elutasitva: "elutasítva" };
   function t() { return document.getElementById("tart"); }
@@ -255,7 +341,7 @@
   async function arak() {
     var r = await api("apartmanok");
     t().innerHTML = r.data.map(function (a) {
-      return '<details class="blokk" data-id="' + a.id + '"><summary><b>' + e(a.nev) + "</b> · " + a.ar_hetkoznap + " / " + a.ar_hetvege + " Ft</summary>" + MEZOK.map(function (m) {
+      return '<details class="blokk" data-id="' + a.id + '"><summary><b>' + e(a.nev) + "</b><span class='arsor'>hétköznap " + ft(a.ar_hetkoznap) + " · hétvégén és főszezonban " + ft(a.ar_hetvege) + " <small>(1–2 fő, éjszakánként)</small></span></summary>" + MEZOK.map(function (m) {
         var v = e(a[m[0]]);
         return '<label class="mezo"><span>' + m[1] + "</span>" + (m[2] === "a" ? '<textarea rows="5" data-m="' + m[0] + '">' + v + "</textarea>" : '<input data-m="' + m[0] + '"' + (m[2] === "n" ? ' type="number" inputmode="numeric" step="1000"' : "") + ' value="' + v + '">') + "</label>";
       }).join("") + '<button class="gomb">Mentés</button></details>';
@@ -271,10 +357,14 @@
   }
 
   /* Főoldali szövegek */
+  var SZOVEG = { cim: ["Főoldal: cím", "A nyitókép fölötti nagy felirat."], alcim: ["Főoldal: a cím alatti mondat", "A nyitóképen, a ház neve alatt."], bevezeto: ["Főoldal: bevezető", "Rövid bemutatkozás a főoldalon."],
+    gyerek: ["Árak: gyerekár, felár, idegenforgalmi adó", "Az Árak oldalon és a foglalásnál a táblázat alatt."], kihivas_cim: ["10-es kihívás: cím", "A kihívás oldalának címe."], kihivas_bev: ["10-es kihívás: régi bevezető", "A térképes változat óta nem ez látszik; a következő mező az érvényes."],
+    kihivas_bev2: ["10-es kihívás: bevezető", "A térkép fölötti szöveg."], ajandek: ["10-es kihívás: ajándék", "Mit kap, aki végigjárta a tíz állomást. Ha üres, az oldal nem ígér ajándékot."], uzemelteto: ["Lábléc: üzemeltető", "Minden oldal alján."] };
   async function tartalom() {
     var r = await api("tartalom");
+    r.data.sort(function (a, b) { var k = Object.keys(SZOVEG); return (k.indexOf(a.kulcs) + 1 || 99) - (k.indexOf(b.kulcs) + 1 || 99); });
     t().innerHTML = r.data.map(function (x) {
-      return '<div class="blokk" data-k="' + e(x.kulcs) + '"><h2>' + e(x.kulcs) + '</h2><label class="mezo"><span>Magyar</span><textarea rows="3" data-ny="hu">' + e(x.hu) + '</textarea></label><label class="mezo"><span>Angol</span><textarea rows="3" data-ny="en">' + e(x.en) + '</textarea></label><button class="gomb">Mentés</button></div>';
+      return '<div class="blokk" data-k="' + e(x.kulcs) + '"><h2>' + e((SZOVEG[x.kulcs] || [x.kulcs])[0]) + '</h2>' + (SZOVEG[x.kulcs] ? '<p class="jelmag">' + SZOVEG[x.kulcs][1] + "</p>" : "") + '<label class="mezo"><span>Magyar</span><textarea rows="3" data-ny="hu">' + e(x.hu) + '</textarea></label><label class="mezo"><span>Angol</span><textarea rows="3" data-ny="en">' + e(x.en) + '</textarea></label><button class="gomb">Mentés</button></div>';
     }).join("");
     t().querySelectorAll("[data-k]").forEach(function (b) {
       b.querySelector(".gomb").onclick = async function () {
