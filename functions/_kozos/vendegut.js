@@ -66,7 +66,7 @@ export async function utemezett(env, origin) {
   const ora = oraBp(); if (ora < 8 || ora >= 20) return { kihagyva: 'éjszaka' };
   const ma = isoBp();
   const L = (await db.prepare(`SELECT a.*, p.nev apnev, v.elkuldve FROM ajanlatkeres a JOIN apartman p ON p.id = a.apartman_id LEFT JOIN vendegut v ON v.ajanlat_id = a.id
-    WHERE a.allapot = 'visszaigazolva' AND a.tavozas >= ? AND a.erkezes <= ?`).bind(plusz(ma, -3), plusz(ma, 3)).all()).results;
+    WHERE a.allapot = 'visszaigazolva' AND a.id NOT IN (SELECT ajanlat_id FROM proba_ajanlat) AND a.tavozas >= ? AND a.erkezes <= ?`).bind(plusz(ma, -3), plusz(ma, 3)).all()).results;
   const ki = [];
   for (const a of L) {
     const e = JSON.parse(a.elkuldve || '{}');
