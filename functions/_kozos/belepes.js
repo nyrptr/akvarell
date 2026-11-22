@@ -6,7 +6,7 @@
 // Új eszköz: egy már belépett eszközön kért link (/admin/#be=…), 15 percig él, egyszer használható.
 // Ha egyik eszköz sincs meg: annak a fióknak új kód-lenyomata kerül ide (PR); az új kóddal újra be lehet lépni, a fiók régi munkamenetei megszűnnek.
 // Felülírható a BEUZEMELO_HASH_GAZDA / BEUZEMELO_HASH_UZEMELTETO környezeti változóval (másik ház, próba).
-export const BEUZEMELO_HASH = { gazda: '15064ba30ca10203cba9cd6adb04994c9bd865386f9862f9fd0fc5686725976f', uzemelteto: '31876df2c499c9e9b3b0b45ade6cba5045e1863f858de62e29a6f08b22fd477d' };
+export const BEUZEMELO_HASH = { gazda: '15064ba30ca10203cba9cd6adb04994c9bd865386f9862f9fd0fc5686725976f', uzemelteto: 'fefaa11638c963dc84d88bb7f3a1c1137461e73ee0c2484ce550d570f6bde819' };
 export const SZEREPEK = ['gazda', 'uzemelteto'];
 export const SUTI = '__Host-akv_kezelo', NAPOK = 90, LINK_PERC = 15;
 const hex = (b) => [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('');
