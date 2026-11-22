@@ -1,5 +1,12 @@
 # Fejlesztési napló – Akvarell bemutató
 
+## 2026-11-22 – Claude (haz-fejlec-cim)
+- Péter képernyőképein (iPhone, nyitóoldal): a tetején az „Akvarell” kétszer látszott (nagy cím + fejléc-logó), görgetéskor a chipek a logóra futottak.
+- **Ok:** alacsony kijelzőn a nyitó jelenet tartalma magasabb a képernyőnél, ezért a nagy cím a fejléc alá csúszik; a fejléc a jelenet aljáig átlátszó volt.
+- **Javítás:** a tetején a logó rejtett, ha a nagy cím ugyanaz (`body.kezdo`); görgetéskor sötét, elmosott üveg-fejléc (`.fej.gorg`); `max-height:720px` alatt sűrítettebb nyitó jelenet. Csak CSS/JS-megjelenés, a foglalást nem érinti.
+- Tesztelve: 320×568-as nézet, 0/40/120/300 px görgetésnél képernyőképpel; JS-hiba nincs.
+- **Nem tesztelt:** valódi iPhone Safari; nagy kijelzők (a szabály csak ≤720 px magasságnál lép be, a logó-elrejtés mindenhol).
+
 ## 2026-11-22 – Claude (munka-kezelo-sugo)
 - Péter (az Ernőnek szóló holnapi bemutatóra): „a kezelő oldalára is lehetne valami instrukció, ami a külön részeket megnyitva elmagyarázza.”
 - **Kezelő-súgó:** minden fül tetején egy összecsukott „Mit csinál ez a rész?” blokk (13 fül: Ma, Kérések, Naptár, Utalványkérések, Pénzügyek, Kártya/hírlevél, Vendégkönyv, Kihívás-képek, Árak, Szövegek, Zebegényi hét, Naptár-összekötés, Belépés/mentés). Alapból zárva, 44 px magas koppintási cél; szöveg a kód tényleges működéséből (pl. visszaigazolás → bevétel a Pénzügyekben, elutasítás → napok felszabadulnak). Fájlok: `admin/admin.js` (`SUGO`, `sugo()`, `vaz()`), `admin/index.html` (`.sugo` stílus, verzió-hash).
