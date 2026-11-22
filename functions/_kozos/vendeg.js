@@ -27,13 +27,36 @@ export async function ottletek(db, email) {
   const v = await db.prepare("SELECT forras FROM vendeg WHERE email = ?").bind(em).first();
   return v && v.forras === 'haz' ? 1 : 0;
 }
-// a szobában kitett QR-kód titkos házkódja (első kéréskor jön létre; a kezelőben újragenerálható, ha kikerülne)
-export async function hazKod(db) {
-  const r = await db.prepare("SELECT ertek FROM beallitas WHERE kulcs = 'haz_kod'").first();
+// A szobában kitett QR-kód titkos kódja: szobánként egy, ÁLLANDÓ (első kéréskor jön létre, utána magától soha nem változik;
+// csak a kezelőben, szobánként újragenerálható, ha a kártya kikerülne a házból). Vendégenként nem cserélődik.
+export async function szobaKod(db, ap) {
+  const kulcs = 'szoba_kod_' + ap, r = await db.prepare('SELECT ertek FROM beallitas WHERE kulcs = ?').bind(kulcs).first();
   if (r && r.ertek) return r.ertek;
   const k = ujToken().slice(0, 10);
-  await db.prepare("INSERT OR REPLACE INTO beallitas (kulcs, ertek, frissitve) VALUES ('haz_kod', ?, datetime('now'))").bind(k).run();
-  return k;
+  await db.prepare("INSERT OR IGNORE INTO beallitas (kulcs, ertek, frissitve) VALUES (?, ?, datetime('now'))").bind(kulcs, k).run();
+  return (await db.prepare('SELECT ertek FROM beallitas WHERE kulcs = ?').bind(kulcs).first()).ertek;
+}
+export async function szobaKodok(db) {
+  const ki = {};
+  for (const a of (await db.prepare('SELECT id FROM apartman ORDER BY sorrend').all()).results) ki[a.id] = await szobaKod(db, a.id);
+  return ki;
+}
+export async function ujSzobaKod(db, ap) {
+  await db.prepare("INSERT OR REPLACE INTO beallitas (kulcs, ertek, frissitve) VALUES (?, ?, datetime('now'))").bind('szoba_kod_' + ap, ujToken().slice(0, 10)).run();
+  return szobaKod(db, ap);
+}
+// kód → szoba. Ismeretlen kód: null. A régi, házszintű kód (ha egy telepítésben már van) továbbra is érvényes, szoba nélkül: { apartman_id: null }.
+export async function kodFeloldas(db, kod) {
+  if (typeof kod !== 'string' || kod.length < 8) return null;
+  const r = await db.prepare("SELECT kulcs FROM beallitas WHERE kulcs LIKE 'szoba_kod_%' AND ertek = ?").bind(kod).first();
+  if (r) return { apartman_id: r.kulcs.slice(10) };
+  const h = await db.prepare("SELECT 1 x FROM beallitas WHERE kulcs = 'haz_kod' AND ertek = ?").bind(kod).first();
+  return h ? { apartman_id: null } : null;
+}
+// a vendég kártyájához rögzíti, melyik szoba QR-kódjáról kérte (a kezelő itt látja, hol alszik/aludt)
+export async function szobaJegyez(db, email, ap) {
+  if (!ap) return;
+  await db.prepare("INSERT OR IGNORE INTO vendeg_szoba (vendeg_id, apartman_id) SELECT id, ? FROM vendeg WHERE email = ?").bind(ap, String(email).toLowerCase()).run();
 }
 // vendég mentése / frissítése; a hírlevél-hozzájárulást csak bekapcsolja (visszavonni a leiratkozás tudja)
 export async function vendegMent(db, { email, nev, nyelv, hirlevel, forras }) {

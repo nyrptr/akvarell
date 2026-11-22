@@ -78,6 +78,12 @@ CREATE TABLE IF NOT EXISTS vendeg (               -- vendégkártya: a vendég s
   forras TEXT NOT NULL DEFAULT 'kartya',          -- kartya | foglalas | visszaigazolas
   letrehozva TEXT NOT NULL DEFAULT (datetime('now'))
 );
+CREATE TABLE IF NOT EXISTS vendeg_szoba (         -- melyik szoba állandó QR-kódjáról kérte a vendég a kártyát (egy vendég több szobát is megjárhat)
+  vendeg_id INTEGER NOT NULL REFERENCES vendeg(id) ON DELETE CASCADE,
+  apartman_id TEXT NOT NULL,
+  ido TEXT NOT NULL DEFAULT (datetime('now')),
+  PRIMARY KEY (vendeg_id, apartman_id)
+);
 CREATE TABLE IF NOT EXISTS proba_ajanlat (       -- próbafoglalás jelzője: ami itt van, az nem valódi (nem foglal napot, nincs pénz-sor, nem számít visszatérőnek); külön tábla, hogy a meglévő adatbázis módosítás nélkül megkapja
   ajanlat_id INTEGER PRIMARY KEY REFERENCES ajanlatkeres(id) ON DELETE CASCADE
 );
