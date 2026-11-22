@@ -2,7 +2,7 @@
 // belépés nélkül is válaszol; ezért szigorú kéréskorlát van rajta, és csak annyit árul el, hogy melyik fiók van beüzemelve.
 import { J, kezelo, sajatEredet } from '../../_kozos/k.js';
 import { korlatok, ipLeny } from '../../_kozos/korlat.js';
-import { kodHash, sha, veletlen, egyezik, ujMunkamenet, sutiTorles, sutiErtek, SZEREPEK, LINK_PERC } from '../../_kozos/belepes.js';
+import { kodHash, sha, veletlen, egyezik, ujMunkamenet, sutiTorles, sutiErtek, SZEREPEK, LINK_PERC, megujit } from '../../_kozos/belepes.js';
 
 export async function onRequest({ request, env }) {
   const db = env.DB, m = request.method;
@@ -55,6 +55,11 @@ export async function onRequest({ request, env }) {
       db.prepare('INSERT INTO kezelo_link (token_hash, szerep, lejar) VALUES (?, ?, ?)').bind(await sha(t), sajat, most + LINK_PERC * 60000),
     ]);
     return J(200, { ok: true, token: t, perc: LINK_PERC });
+  }
+  if (d.muvelet === 'megujit') {   // „Megújítom most”: ezen az eszközön újra 90 nap
+    if (!sajat) return J(403, { hiba: 'ehhez saját fiókkal kell belépni' });
+    const mj = await megujit(request, env, true); if (!mj) return J(401, { hiba: 'belépés kell' });
+    return J(200, { ok: true, lejar: mj.lejar }, mj.suti ? { 'set-cookie': mj.suti } : {});
   }
   if (d.muvelet === 'kilep' || d.muvelet === 'kilep_mind') {
     if (d.muvelet === 'kilep_mind' && sajat) await db.batch([db.prepare('DELETE FROM kezelo_munkamenet WHERE szerep = ?').bind(sajat), db.prepare('DELETE FROM kezelo_link WHERE szerep = ?').bind(sajat)]);

@@ -6,6 +6,7 @@ import { hetiBejegyzes } from '../../_kozos/blog.js';
 import { token, kuldVendegnek, utemezett } from '../../_kozos/vendegut.js';
 import { beall, ALAP, vendegMent, szobaKodok, ujSzobaKod, ujToken, szazalek } from '../../_kozos/vendeg.js';
 import { kuld, keret, esc } from '../../_kozos/level.js';
+import { megujit } from '../../_kozos/belepes.js';
 const KIADAS = ['takaritas', 'etel', 'extra', 'jutalek', 'rezsi', 'karbantartas', 'marketing', 'egyeb'], BEVETEL = ['szallas', 'extra', 'egyeb'], FORRAS = ['kozvetlen', 'booking', 'szallashu', 'airbnb', 'egyeb'];
 // visszaigazolt közvetlen foglalás → automatikus bevétel-sorok (szállás, extra) és takarítási kiadás; elutasításkor törlődnek
 async function penzFoglalasbol(db, a, allapot) {
@@ -34,7 +35,7 @@ export async function onRequest({ request, env, params, waitUntil }) {
   const ut = (params.ut || []).join('/'), m = request.method, db = env.DB;
   const be = async () => { try { return await request.json(); } catch (e) { return {}; } };
 
-  if (ut === 'en') return J(200, { email: ki });
+  if (ut === 'en') { const mj = await megujit(request, env); return J(200, { email: ki, lejar: mj ? mj.lejar : null }, mj && mj.suti ? { 'set-cookie': mj.suti } : {}); }
   // „Ma” nyitólap: mi vár a gazdára, ki jön a héten, és mi hiányzik még a beüzemelésből (egy kérésben)
   if (ut === 'ma' && m === 'GET') {
     const ma0 = new Date().toISOString().slice(0, 10), het = new Date(Date.now() + 7 * 864e5).toISOString().slice(0, 10);

@@ -1,5 +1,12 @@
 # Fejlesztési napló – Akvarell bemutató
 
+## 2026-11-22 – Claude (haz-belepes-megujitas)
+- Péter: „mi történik 90 nap után… bentről meg tudom újítani… hogy ne kelljen hozzánk fordulni.”
+- **Megújítás:** a belépés használat közben megújul: ha a munkamenetből 60 napnál kevesebb maradt, a kezelő megnyitásakor (`/admin/api/en`) újra 90 napra nyúlik (adatbázis és süti). Aki 90 napig nem nyitja meg, annak lejár. A Beállítás → Belépés alatt látszik, meddig él a belépés, és van „Megújítom most” gomb (`belepes` → `megujit`). Új belépés nem jön létre, ugyanaz a token marad.
+- Tesztelve: `tools/proba/megujit_teszt.mjs` 9/9; `belepes_teszt.mjs` mind rendben (41); gyár-szabályok. **Nem tesztelt:** képernyőn, valódi telefonon.
+- Következő (Péter: „mehet minden sorrendben”): levélküldő (Brevo-kulcs kell), e-mailes belépés-visszaállítás, tartalék kulcs.
+- **Beolvasztás a bemutató után**, Péter külön „mehet” szavára (a belépés kódját ma nem érintjük).
+
 ## 2026-11-22 – Claude (haz-slim-sav)
 - Péter: kis kijelzőn a fejléc + lebegő „Mikor jönnél?” sáv beszűkíti a felületet.
 - **Javítás:** `max-height:720px` alatt a sáv egysoros (a „Szabad napok és ár azonnal” sor rejtve, 54 px), a fejléc 56 px; a gombok 44 px-esek maradnak. Nagy kijelzőn nincs változás.
