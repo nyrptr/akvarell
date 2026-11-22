@@ -45,17 +45,25 @@ ok(B2.hirlevel === 0 && !!B2.leiratkozva, 'leiratkozás után: hírlevél ki, id
 ok(!(await kezelo.get('vendegek.csv')).szoveg.includes('bela@proba.test'), 'a hírlevél-listából kikerült');
 ok((await get('/api/kartya/' + b.j.token)).s === 200, 'a kártya leiratkozás után is él');
 
-// 5. házkód (a szoba QR-kódja): aki a házból igényli, annak egy ottlét jár (6–8. kérés)
-const kod = V.haz_kod;
-ok(typeof kod === 'string' && kod.length >= 8, 'van házkód a kezelőben');
+// 5. szobánkénti állandó QR-kód: aki a házból igényli, annak egy ottlét jár, és a kezelő látja, melyik szobában (6–8. kérés; a 9. már a 6. pont korlátja)
+const SK = V.szoba_kodok, szobak = Object.keys(SK || {});
+ok(szobak.length >= 2 && szobak.every(id => typeof SK[id] === 'string' && SK[id].length >= 8), 'minden apartmannak van saját kódja', SK);
+ok(new Set(Object.values(SK)).size === szobak.length, 'a kódok szobánként különbözők');
+ok(JSON.stringify((await vendegek()).szoba_kodok) === JSON.stringify(SK), 'a kód állandó: újabb lekérésre ugyanaz (nem cserélődik)');
+const [s1, s2] = szobak, kod = SK[s1];
 const c = await post('/api/kartya', { nev: 'Próba Cili', email: 'cili@proba.test', haz: kod });
-ok(c.j.ottlet === 1, 'érvényes házkóddal: 1 ottlét', c.j);
+ok(c.j.ottlet === 1, 'érvényes szobakóddal: 1 ottlét', c.j);
+let Cv = (await vendegek()).vendegek.find(x => x.email === 'cili@proba.test');
+ok(Cv && Cv.forras === 'haz' && JSON.stringify(Cv.szobak) === JSON.stringify([s1]), 'a kezelő látja, melyik szoba kódjáról kérte', Cv);
 const d = await post('/api/kartya', { nev: 'Próba Dóra', email: 'dora@proba.test', haz: 'rosszkod12' });
-ok(d.j.ottlet === 0, 'rossz házkóddal: 0 ottlét', d.j);
-const d2 = await post('/api/kartya', { nev: 'Próba Dóra', email: 'dora@proba.test', haz: kod });
+ok(d.j.ottlet === 0, 'rossz kóddal: 0 ottlét', d.j);
+const d2 = await post('/api/kartya', { nev: 'Próba Dóra', email: 'dora@proba.test', haz: SK[s2] });
 ok(d2.j.mar_van === true && (await get('/api/kartya/' + d.j.token)).j.ottlet === 1, 'meglévő kártya a házból, érvényes kóddal: ottlét 0 → 1');
-const uj = await kezelo.post('haz_kod', {});
-ok(uj.s === 200 && uj.j.haz_kod && uj.j.haz_kod !== kod, 'a kezelő új házkódot kér: a régi lecserélődik');
+const Dv = (await vendegek()).vendegek.find(x => x.email === 'dora@proba.test');
+ok(JSON.stringify(Dv.szobak) === JSON.stringify([s2]), 'a másik szoba kódjáról kért vendégnél az a szoba látszik', Dv.szobak);
+const uj = await kezelo.post('szoba_kod', { ap: s1 });
+ok(uj.s === 200 && uj.j.szoba_kodok[s1] !== kod && uj.j.szoba_kodok[s2] === SK[s2], 'új kód egy szobának: csak az a kód cserélődik, a többi marad');
+ok((await kezelo.post('szoba_kod', { ap: 'nincsilyen' })).s === 400, 'ismeretlen apartmanra nem kérhető kód');
 
 // 6. kéréskorlát: egy címről óránként 8 kártyakérés (ez a 9.)
 ok((await post('/api/kartya', { nev: 'Próba Elek', email: 'elek@proba.test' })).s === 429, 'a 9. kérés egy órán belül → 429');
