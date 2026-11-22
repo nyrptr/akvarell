@@ -161,3 +161,7 @@
 - Teszt: `tools/proba/utak/proba.mjs` (16 lépés). Lefutott: gyar_szabalyok 0 HIBA (elsőre fogta, hogy a mentésből hiányzik az új tábla – javítva), ar_teszt 1467/0, access_teszt és belepes_teszt rendben, utak: foglalas 38, kartya 29, proba 16, visszatero 15, mind 0 HIBA. Böngészőben (390 px) megnézve a gombok és a jelzés.
 - Nem tesztelt: `tools/proba/kapu.py` (a vendégoldal nem változott, a kezelő igen, de csak a kézi 390 px-es képet néztem), valódi Cloudflare Access-belépés, élő adatbázison (a séma első indításkor létrehozza a táblát), valódi levélküldés (Brevo-kulcs nincs).
 - Nincs még: üzemeltetői PWA + push, `hazak/<ház>/haz.json` szétválasztás, parancspult.
+
+## 2026-11-22 · Claude (Sonnet 5.5) · Új üzemeltetői beüzemelő kód (Péter kérésére)
+- `BEUZEMELO_HASH.uzemelteto` új lenyomatra cserélve (a kód nem a tárolóban van, Péternek adtam át). A régi üzemeltetői munkamenetek megszűnnek; a gazda (Ernő) fiókja érintetlen. Ok: Péter még soha nem kapott beüzemelő kódot, így nem tudott belépni a kezelőbe.
+- Lefutott: belepes_teszt (41 lépés, mind rendben), gyar_szabalyok 0 HIBA. Nem tesztelt: az éles kód beváltása (Péter fogja).
