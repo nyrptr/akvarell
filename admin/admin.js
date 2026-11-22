@@ -32,7 +32,16 @@
   function belepo(uzenet) {
     fo.innerHTML = '<div class="blokk"><h2>Belépés</h2>' + (uzenet ? '<p class="uzenet hiba">' + e(uzenet) + "</p>" : "")
       + "<p>A kezelőbe linkkel lehet belépni, jelszó nincs. Koppints a Pétertől kapott linkre, és bent vagy; a telefonod 90 napig megjegyzi, és amíg használod, magától megújul.</p>"
-      + "<p>Másik telefonhoz: egy már belépett telefonon a <b>Beállítás → Belépés</b> alatt kérj új linket.</p></div>";
+      + "<p>Másik telefonhoz: egy már belépett telefonon a <b>Beállítás → Belépés</b> alatt kérj új linket.</p></div>"
+      + '<div id="elvesz"></div>';
+    api("belepes").then(function (r) {          // ha a levélküldő be van kötve: belépés e-mailben kért linkkel
+      var h = document.getElementById("elvesz"); if (!h || !(r.data && r.data.levelez)) return;
+      h.innerHTML = '<div class="blokk"><h2>Nem tudok belépni</h2><p>Add meg a visszaállító e-mail-címedet, és küldünk egy belépő linket. 15 percig érvényes, és egyszer használható.</p><input type="email" id="elcim" autocomplete="email" placeholder="e-mail-cím" style="width:100%;min-height:44px;margin-bottom:10px"><div class="gombok"><button class="gomb" id="elkuld">Linket kérek e-mailben</button></div><div id="elv"></div></div>';
+      document.getElementById("elkuld").onclick = async function () {
+        var x = await post({ muvelet: "email_link", email: document.getElementById("elcim").value }), v = document.getElementById("elv");
+        v.innerHTML = x.ok ? '<p class="uzenet">Ha ez a cím be van jegyezve, elküldtük a linket. Nézd meg a levelezőt (a spamet is).</p>' : '<p class="uzenet hiba">' + e(hibaSzoveg(x)) + "</p>";
+      };
+    });
   }
   function hibaSzoveg(r) { return r.status === 0 ? "Nincs kapcsolat. Próbáld újra." : r.status === 429 ? "Túl sok próbálkozás. Várj negyed órát." : (r.data && r.data.hiba ? r.data.hiba.charAt(0).toUpperCase() + r.data.hiba.slice(1) + "." : "Nem sikerült."); }
   async function kilep() {
@@ -113,6 +122,7 @@
     t().innerHTML = '<div class="blokk"><h2>Belépés</h2>' + (sajat
       ? "<p>Belépve: <b>" + SZEREP[ki] + "</b>." + (LEJAR ? " Ezen a telefonon eddig él a belépésed: <b>" + new Date(LEJAR).toLocaleDateString("hu-HU", { year: "numeric", month: "long", day: "numeric" }) + "</b>. Amíg használod a kezelőt, magától megújul." : "") + '</p><div class="gombok"><button class="gomb masod" id="megujit">Megújítom most (újra 90 nap)</button></div><div id="mj"></div><h3>Másik telefon vagy gép</h3><p class="jelmag">Kérj egy linket, és nyisd meg a másik eszközön. 15 percig él, és egyszer használható.</p><div class="gombok"><button class="gomb" id="ujl">Belépő link kérése</button></div><div id="lk"></div>'
       : "<p>Belépve: " + e(ki) + "</p>") + '<div class="gombok"><button id="ki">Kilépés ezen a telefonon</button>' + (sajat ? '<button id="kimind">Kilépés minden eszközömön</button>' : "") + "</div></div>"
+      + '<div class="blokk"><h2>Visszaállító e-mail-cím</h2><p class="jelmag">Ha elveszíted a telefonod, erre a címre kérhetsz belépő linket a belépő képernyőn.' + (a.levelez ? "" : " A levélküldő még nincs bekötve, ezért ez egyelőre nem működik, de a címet már megadhatod.") + '</p>' + (sajat ? '<p>Most: <b>' + (a.email ? e(a.email) : "nincs megadva") + '</b></p><input type="email" id="vcim" autocomplete="email" placeholder="új e-mail-cím" style="width:100%;min-height:44px;margin-bottom:10px"><div class="gombok"><button class="gomb masod" id="vmentes">Mentés</button></div><div id="vv"></div>' : "") + "</div>"
       + '<div class="blokk"><h2>Ki fér hozzá?</h2><p class="jelmag">Két külön fiók van. Mindkettő ugyanazt látja és ugyanazt tudja.</p>' + sor("gazda") + sor("uzemelteto")
       + (ki === "gazda" && F.uzemelteto ? '<div class="gombok"><button id="uzki">Az üzemeltető hozzáférésének megszüntetése</button></div><p class="apro">Az adatok a tieid. Ha megszünteted, az üzemeltető azonnal kiesik minden eszközén, és csak új beüzemelő linkkel tud visszajönni.</p>' : "") + "</div>"
       + '<div class="blokk"><h2>Mentés</h2><p>Minden adat (foglalások, vendégek, szövegek, pénzügyek) egy fájlban. Érdemes havonta letölteni. A belépések nincsenek benne.</p><a class="gomb masod" href="/admin/api/mentes">Teljes mentés letöltése</a></div>';
@@ -121,6 +131,7 @@
     if (uz) uz.onclick = async function () { if (!confirm("Megszünteted az üzemeltető hozzáférését? Azonnal kiesik minden eszközén.")) return; var r = await post({ muvelet: "uzemelteto_ki" }); if (r.ok) fiok(); else alert(hibaSzoveg(r)); };
     if (!sajat) return;
     document.getElementById("megujit").onclick = async function () { var r = await post({ muvelet: "megujit" }), x = document.getElementById("mj"); if (r.ok) { LEJAR = r.data.lejar; fiok(); } else x.innerHTML = '<p class="uzenet hiba">' + e(hibaSzoveg(r)) + "</p>"; };
+    document.getElementById("vmentes").onclick = async function () { var r = await post({ muvelet: "email_beall", email: document.getElementById("vcim").value }), v = document.getElementById("vv"); if (r.ok) fiok(); else v.innerHTML = '<p class="uzenet hiba">' + e(hibaSzoveg(r)) + "</p>"; };
     document.getElementById("kimind").onclick = async function () { if (!confirm("Minden eszközödön kilépsz, ezen is. Visszajönni csak új linkkel tudsz. Folytatod?")) return; await post({ muvelet: "kilep_mind" }); belepo("Minden eszközödön kiléptél."); };
     document.getElementById("ujl").onclick = async function () {
       var r = await post({ muvelet: "uj_link" }), lk = document.getElementById("lk");

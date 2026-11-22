@@ -303,6 +303,7 @@ export async function onRequest({ request, env, params, waitUntil }) {
   }
   if (ut === 'mentes' && m === 'GET') {                             // teljes kimentés JSON-ban (költözéshez, biztonsági mentéshez)
     const t = {}; for (const n of ['apartman', 'tartalom', 'foglalt_nap', 'ajanlatkeres', 'ajanlat_ar', 'proba_ajanlat', 'uzenet', 'beallitas', 'blog', 'vendegut', 'vendeg', 'vendeg_szoba', 'penz', 'ertekeles']) t[n] = (await db.prepare('SELECT * FROM ' + n).all()).results;
+    t.beallitas = t.beallitas.filter(x => !/^kezelo_/.test(x.kulcs));   // a belépés-visszaállító e-mail-címek nem kerülnek a mentésbe
     t.kihivas = (await db.prepare('SELECT id, becenev, allomas, tipus, jovahagyva, letrehozva FROM kihivas').all()).results;   // a képek a /admin/api/kep/<id> címen
     return J(200, t, { 'content-disposition': 'attachment; filename="akvarell-mentes.json"' });
   }

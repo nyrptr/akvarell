@@ -13,7 +13,7 @@ let sz;
 async function indit(kodU) {   // a szerver (újra)indítása; a második indítás „új beüzemelő kódot” szimulál az üzemeltetőnek, ugyanazzal az adatbázissal
   if (sz) { try { process.kill(-sz.pid); } catch (e) {} await new Promise(r => setTimeout(r, 2500)); }
   sz = spawn('npx', ['wrangler', 'pages', 'dev', '.', '--port', String(PORT), '--d1', 'DB=belepes-proba', '--persist-to', mappa,
-    '--binding', 'BEUZEMELO_HASH_GAZDA=' + h256(KOD), 'BEUZEMELO_HASH_UZEMELTETO=' + h256(kodU)], { stdio: 'ignore', detached: true });
+    '--binding', 'BEUZEMELO_HASH_GAZDA=' + h256(KOD), 'BEUZEMELO_HASH_UZEMELTETO=' + h256(kodU), 'LEVEL_PROBA=igen'], { stdio: 'ignore', detached: true });
   for (let i = 0; i < 60; i++) { try { if ((await fetch(A + '/api/adat')).ok) return; } catch (e) {} await new Promise(r => setTimeout(r, 1000)); }
 }
 const vege = (k) => { try { process.kill(-sz.pid); } catch (e) {} try { rmSync(mappa, { recursive: true, force: true }); } catch (e) {} process.exit(k); };
@@ -83,6 +83,25 @@ try {
   r = await k('belepes', { body: { muvelet: 'kilep' }, suti: sg }); jo('kilépés ezen az eszközön', r.s === 200, r.s);
   r = await k('en', { suti: sg }); jo('…a régi süti már nem jó', r.s === 401, r.s);
   r = await k('en', { suti: sg2 }); jo('…a gazda másik eszköze bent marad', r.s === 200, r.s);
+  // e-mailes visszaállítás (a levél nem megy ki: a próba-levelek a gyorsítótárba kerülnek)
+  IP = '203.0.113.6';
+  r = await k('belepes', { body: { muvelet: 'email_beall', email: 'gazda@proba.hu' } }); jo('belépés nélkül nem adható meg visszaállító cím', r.s === 401, r.s);
+  r = await k('belepes', { body: { muvelet: 'email_beall', email: 'nem-cim' }, suti: sg2 }); jo('rossz formátumú cím → 400', r.s === 400, r.s);
+  r = await k('belepes', { body: { muvelet: 'email_beall', email: 'Gazda@Proba.hu' }, suti: sg2 }); jo('a gazda megadja a visszaállító címét', r.s === 200 && /\*\*\*@proba\.hu$/.test(r.d.email), JSON.stringify(r.d));
+  r = await k('belepes', { suti: sg2 }); jo('az állapot jelzi, hogy van levelezés, és csak maszkolt címet mutat', r.d.levelez === true && /\*\*\*@proba\.hu$/.test(r.d.email || '') && !/gazda@/.test(JSON.stringify(r.d)), JSON.stringify(r.d));
+  const n0 = ((await k('proba/levelek', { suti: sg2 })).d || []).length;
+  r = await k('belepes', { body: { muvelet: 'email_link', email: 'ismeretlen@proba.hu' } }); const valIs = JSON.stringify(r.d);
+  jo('ismeretlen címre 200 és nem megy levél', r.s === 200 && ((await k('proba/levelek', { suti: sg2 })).d || []).length === n0, r.s);
+  r = await k('belepes', { body: { muvelet: 'email_link', email: 'GAZDA@proba.hu' } });
+  jo('a bejegyzett címre ugyanaz a válasz (nem árul el semmit)', r.s === 200 && JSON.stringify(r.d) === valIs, JSON.stringify(r.d));
+  const lev = ((await k('proba/levelek', { suti: sg2 })).d || []).filter(x => x.to === 'gazda@proba.hu');
+  const lt = ((lev[lev.length - 1] || {}).html || '').match(/#be=([0-9a-f]{32})/);
+  jo('a bejegyzett címre megy egy levél a belépő linkkel', lev.length === 1 && !!lt, JSON.stringify(lev.map(x => x.to)));
+  r = await k('belepes', { body: { muvelet: 'link', token: lt && lt[1] } }); jo('a levélbeli link belépteti a gazdát', r.s === 200 && r.d.szerep === 'gazda' && !!sutibol(r.sc), r.s);
+  r = await k('belepes', { body: { muvelet: 'link', token: lt && lt[1] } }); jo('…és csak egyszer használható', r.s === 403, r.s);
+  r = await k('mentes', { suti: sg2 }); jo('a letölthető mentésben nincs visszaállító e-mail-cím', r.s === 200 && !/kezelo_email|gazda@proba/.test(JSON.stringify(r.d)), r.s);
+  IP = '203.0.113.7'; let ut2 = 0; for (let i = 0; i < 6; i++) ut2 = (await k('belepes', { body: { muvelet: 'email_link', email: 'x' + i + '@proba.hu' } })).s;
+  jo('sok kérés után korlát (429)', ut2 === 429, ut2);
   // korlát
   IP = '203.0.113.4';
   let utolso = 0; for (let i = 0; i < 9; i++) utolso = (await k('belepes', { body: { muvelet: 'link', token: (i + 'a').repeat(16).slice(0, 32) } })).s;
