@@ -328,3 +328,13 @@ img.nincskep{visibility:hidden}
   .chip{min-height:32px;padding:4px 10px;font-size:14px}
   .bizalom{margin-top:8px;min-height:40px}
 }
+
+/* alacsony kijelző: karcsúbb lebegő sáv és fejléc, hogy a tartalomnak több hely maradjon */
+@media (max-height:720px){
+  .fej .belso{padding:6px 14px}
+  .sav{bottom:calc(8px + var(--alj) + env(safe-area-inset-bottom));padding:4px 4px 4px 16px}
+  .sav .mi{min-height:44px;display:flex;align-items:center}
+  .sav .mi small{display:none}
+  .sav .gomb{min-height:44px;padding:0 16px}
+  body{padding-bottom:calc(72px + var(--alj) + env(safe-area-inset-bottom))}
+}

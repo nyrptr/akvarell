@@ -1,5 +1,11 @@
 # Fejlesztési napló – Akvarell bemutató
 
+## 2026-11-22 – Claude (haz-slim-sav)
+- Péter: kis kijelzőn a fejléc + lebegő „Mikor jönnél?” sáv beszűkíti a felületet.
+- **Javítás:** `max-height:720px` alatt a sáv egysoros (a „Szabad napok és ár azonnal” sor rejtve, 54 px), a fejléc 56 px; a gombok 44 px-esek maradnak. Nagy kijelzőn nincs változás.
+- **Visszaállítás (Péter kéri, hogy bemondásra menjen):** a fejléc/sáv eredeti állapota az `eda5a9d` commit (a #28 előtt), a #28 utáni a `70dc792`. Visszaállítás = revert-PR a megfelelő commitról, beolvasztás csak Péter „mehet” szavára. (Címke nem tehető fel: a proxy tiltja, ezért a commit-azonosító a hivatkozás.)
+- Tesztelve: 320×568, 0 és 700 px görgetés, JS-hiba nincs, vízszintes kicsúszás nincs. **Nem tesztelt:** valódi iPhone Safari.
+
 ## 2026-11-22 – Claude (haz-fejlec-cim)
 - Péter képernyőképein (iPhone, nyitóoldal): a tetején az „Akvarell” kétszer látszott (nagy cím + fejléc-logó), görgetéskor a chipek a logóra futottak.
 - **Ok:** alacsony kijelzőn a nyitó jelenet tartalma magasabb a képernyőnél, ezért a nagy cím a fejléc alá csúszik; a fejléc a jelenet aljáig átlátszó volt.
