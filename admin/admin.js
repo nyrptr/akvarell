@@ -282,16 +282,27 @@
     });
   }
   /* Ajánlatkérések */
+  function probaGombok() {
+    t().querySelectorAll("[data-proba]").forEach(function (b) {
+      b.onclick = async function () {
+        var v = await api("proba", b.dataset.proba === "torol" ? { torol: true } : {});
+        if (!v.ok) { mentve(b.parentNode, false, v.data && v.data.hiba ? v.data.hiba : null); return; }
+        keresek();
+      };
+    });
+  }
   async function keresek() {
     var r = await api("ajanlatok");
     if (!r.ok) { t().innerHTML = '<p class="uzenet hiba">Nem sikerült betölteni.</p>'; return; }
-    if (!r.data.length) { t().innerHTML = '<div class="blokk"><p>Még nincs ajánlatkérés.</p></div>'; return; }
-    t().innerHTML = '<div class="blokk">' + r.data.map(function (x) {
+    var PG = '<div class="gombok"><button data-proba="uj">Próbafoglalás</button>' + (r.data.some(function (y) { return y.proba; }) ? '<button data-proba="torol">Próbák törlése</button>' : "") + '</div><p class="jelmag">A próbafoglalás nem valódi: nem foglal napot, nem kerül a naptárba és a pénzügyekbe, a levél csak neked megy.</p>';
+    if (!r.data.length) { t().innerHTML = '<div class="blokk">' + PG + '<p>Még nincs ajánlatkérés.</p></div>'; probaGombok(); return; }
+    t().innerHTML = '<div class="blokk">' + PG + r.data.map(function (x) {
       var targy = encodeURIComponent((x.nyelv === "en" ? "Akvarell – your stay " : "Akvarell – foglalás ") + x.erkezes + " – " + x.tavozas);
-      return '<div class="sor" data-id="' + x.id + '"><b>' + e(x.nev) + '</b> <span class="allapot ' + x.allapot + '">' + CIMKE[x.allapot] + "</span><br>" + e(x.apartman_id) + " · " + x.erkezes + " → " + x.tavozas + " · " + x.felnott + " felnőtt" + (x.gyerek ? ", " + x.gyerek + " gyerek" : "") + " · " + x.nyelv.toUpperCase() + (x.ar_osszeg ? " · <b>" + ft(x.ar_osszeg) + "</b>" : "") + (x.visszatero ? ' <span class="allapot visszaigazolva">visszatérő −' + ft(x.ar_kedvezmeny || 0) + "</span>" : "") +
+      return '<div class="sor" data-id="' + x.id + '"><b>' + e(x.nev) + '</b> <span class="allapot ' + x.allapot + '">' + CIMKE[x.allapot] + "</span>" + (x.proba ? ' <span class="allapot uj">PRÓBA</span>' : "") + "<br>" + e(x.apartman_id) + " · " + x.erkezes + " → " + x.tavozas + " · " + x.felnott + " felnőtt" + (x.gyerek ? ", " + x.gyerek + " gyerek" : "") + " · " + x.nyelv.toUpperCase() + (x.ar_osszeg ? " · <b>" + ft(x.ar_osszeg) + "</b>" : "") + (x.visszatero ? ' <span class="allapot visszaigazolva">visszatérő −' + ft(x.ar_kedvezmeny || 0) + "</span>" : "") +
         '<br><a href="mailto:' + e(x.email) + "?subject=" + targy + '">' + e(x.email) + "</a>" + (x.telefon ? ' · <a href="tel:' + e(x.telefon) + '">' + e(x.telefon) + "</a>" : "") + (x.uzenet ? '<br><span class="jelmag">' + e(x.uzenet) + "</span>" : "") +
-        vkSor(x) + '<div class="gombok"><button data-a="visszaigazolva">Visszaigazolva + napok foglaltra</button><button data-a="elutasitva">Elutasítva</button></div></div>';
+        vkSor(x) + '<div class="gombok"><button data-a="visszaigazolva">' + (x.proba ? "Visszaigazolva (próba: napot nem foglal)" : "Visszaigazolva + napok foglaltra") + '</button><button data-a="elutasitva">Elutasítva</button></div></div>';
     }).join("") + "</div>";
+    probaGombok();
     t().querySelectorAll(".sor").forEach(function (sor) {
       var x = r.data.find(function (y) { return y.id == sor.dataset.id; });
       sor.querySelectorAll("[data-a]").forEach(function (b) {

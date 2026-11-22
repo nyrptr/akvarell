@@ -78,6 +78,9 @@ CREATE TABLE IF NOT EXISTS vendeg (               -- vendégkártya: a vendég s
   forras TEXT NOT NULL DEFAULT 'kartya',          -- kartya | foglalas | visszaigazolas
   letrehozva TEXT NOT NULL DEFAULT (datetime('now'))
 );
+CREATE TABLE IF NOT EXISTS proba_ajanlat (       -- próbafoglalás jelzője: ami itt van, az nem valódi (nem foglal napot, nincs pénz-sor, nem számít visszatérőnek); külön tábla, hogy a meglévő adatbázis módosítás nélkül megkapja
+  ajanlat_id INTEGER PRIMARY KEY REFERENCES ajanlatkeres(id) ON DELETE CASCADE
+);
 CREATE TABLE IF NOT EXISTS ajanlat_ar (           -- a foglaláskor mutatott ár bontása (a vendég ezt látta); Ernő a Pénzügyekben javíthatja
   ajanlat_id INTEGER PRIMARY KEY REFERENCES ajanlatkeres(id) ON DELETE CASCADE,
   szallas INTEGER NOT NULL DEFAULT 0, extra INTEGER NOT NULL DEFAULT 0, kedvezmeny INTEGER NOT NULL DEFAULT 0,

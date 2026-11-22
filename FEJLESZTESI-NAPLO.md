@@ -154,3 +154,10 @@
 - Találat (nem javítva, döntés kell): `ottletek()` megjegyzése szerint „visszaigazolt (és már elkezdett)” ottlét számít, a lekérdezés viszont a JÖVŐBELI visszaigazolt foglalást is ottlétnek veszi → aki két foglalást ad le előre, a másodikra már kedvezményt kap, mielőtt egyszer is ott aludt volna.
 - Hátravan a 2. rétegből: vendégkönyv (wifi-időablak, kérés, értékelés), kihívás, iCal, hírlevél szeletelve, kezelő-fülek (böngészővel).
 
+
+## 2026-11-22 · Claude (Sonnet 5.5) · Próbafoglalás (Péter: több ház + tesztelés kár nélkül)
+- Új: `proba_ajanlat` tábla (db/schema.sql; külön tábla, hogy az élő adatbázis a séma újrafuttatásával, módosítás nélkül megkapja), `POST /admin/api/proba` (új próba / `torol:true` mind törlése), kezelő → Foglalások → Kérések: „Próbafoglalás” és „Próbák törlése” gomb, PRÓBA jelzés.
+- A próba valódi utat jár be (kérés, [PRÓBA] levél, visszaigazolás, vendégkönyv-link), de: nem foglal valódi napot, nincs iCal-ban, nincs pénz-sor, nem lesz vendégkártya, nem számít visszatérőnek (`ottletek`), nem kerül az ütemezett vendéglevélbe és a „Ma” érkezők közé; a levél csak `ERTESITES_EMAIL`-re megy; legfeljebb 20 próba egyszerre. A Teljes mentés tartalmazza a táblát.
+- Teszt: `tools/proba/utak/proba.mjs` (16 lépés). Lefutott: gyar_szabalyok 0 HIBA (elsőre fogta, hogy a mentésből hiányzik az új tábla – javítva), ar_teszt 1467/0, access_teszt és belepes_teszt rendben, utak: foglalas 38, kartya 29, proba 16, visszatero 15, mind 0 HIBA. Böngészőben (390 px) megnézve a gombok és a jelzés.
+- Nem tesztelt: `tools/proba/kapu.py` (a vendégoldal nem változott, a kezelő igen, de csak a kézi 390 px-es képet néztem), valódi Cloudflare Access-belépés, élő adatbázison (a séma első indításkor létrehozza a táblát), valódi levélküldés (Brevo-kulcs nincs).
+- Nincs még: üzemeltetői PWA + push, `hazak/<ház>/haz.json` szétválasztás, parancspult.

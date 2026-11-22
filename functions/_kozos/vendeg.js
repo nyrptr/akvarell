@@ -22,7 +22,7 @@ export const emailOk = (e) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e || '');
 // + a házban (a szoba QR-kódjáról, érvényes házkóddal) igényelt kártya egy ottlétnek számít, ha más nincs – így a portálos vendég is visszatérő lesz
 export async function ottletek(db, email) {
   const em = email.toLowerCase();
-  const r = await db.prepare("SELECT COUNT(*) n FROM ajanlatkeres WHERE lower(email) = ? AND allapot = 'visszaigazolva'").bind(em).first();
+  const r = await db.prepare("SELECT COUNT(*) n FROM ajanlatkeres WHERE lower(email) = ? AND allapot = 'visszaigazolva' AND id NOT IN (SELECT ajanlat_id FROM proba_ajanlat)").bind(em).first();
   if (r && r.n) return r.n;
   const v = await db.prepare("SELECT forras FROM vendeg WHERE email = ?").bind(em).first();
   return v && v.forras === 'haz' ? 1 : 0;
