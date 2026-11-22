@@ -179,3 +179,7 @@
 - Teszt: `kartya.mjs` 34 lépés (szobánkénti kódok, állandóság, szoba rögzítése, egyetlen kód cseréje, ismeretlen apartman), `foglalas.mjs` 38, új `szinkron.mjs` 13 (egy apartman lekérése, hibánál a régi napok maradnak, elavult-szabály) – 0 HIBA.
 - NEM tesztelt: valódi Booking/Szállás.hu feed (https-címet a helyi próba nem tud kiszolgálni); a kezelő felülete böngészőben (nyomtatás, megerősítő ablakok); a 409 `elavult` ág végpontja a helyi szerveren.
 - Korlát (nem megoldható iCal-lal): a Booking maga is órákkal késleltet a saját exportján/importján, ezért a friss lekérés a mi oldalunkat védi, a Booking felé a késés marad. Teljes megoldás: API-s csatornakezelő (havidíjas) – döntés Ernőé.
+
+## 2026-11-22 – Claude (munka-kartya-szazalek) – a kártyaoldal a valódi kedvezményt írja
+- Hiba (a videó felvételekor derült ki): a QR-ról közvetlenül megnyitott `#/kartya` oldal a beállítások megérkezése előtt rajzolódott, és nem frissült, ezért a kezelőben 5%-ra állított kedvezmény mellett is „10%”-ot ígért. 0% beállításnál szintén 10%-ot írt (`|| 10`). Javítva: a beállítások után újrarajzolja (ha még nem gépeltek), és a 0 azt jelenti: nincs ígéret. Ugyanez a `|| 10` a nyomtatható QR-kártyán (admin) is javítva.
+- Teszt: új `tools/proba/kartya_szazalek.py` (5% → „5%”, 0% → nincs „10%”, 10% → „10%”): 0 HIBA. `gyar_szabalyok.mjs`: 0 HIBA. NEM tesztelt: angol nyelvű kártyaoldal, éles Cloudflare gyorsítótár (az `/api/adat` 60 mp-ig gyorsítótárban van, ezért a kezelői változás a vendég oldalán legfeljebb ~1 percet késik).

@@ -623,9 +623,11 @@
     KB.all = a;
     api("/api/kartya/" + encodeURIComponent(a)).then(function (d) { if (d._status === 200) kartyaIr(d); else KB.hiba = a; if (location.hash.indexOf("kartya") > 0) $("#fo").innerHTML = kartyaOldal(a, b); qrRajz(); }).catch(function () {});
   }
+  // a kezelőben beállított visszatérő-kedvezmény (%); csak akkor 10, ha a beállítás még meg sem érkezett (üres). A 0 azt jelenti: nincs kedvezmény, azt nem ígérjük.
+  function vissza_szazalek() { var v = BE.visszatero_kedvezmeny; return v === "" || v == null || isNaN(+v) ? 10 : Math.max(0, Math.min(50, +v)); }
   function kartyaOldal(a, b) {
     menu("kartya");
-    var vp = +BE.visszatero_kedvezmeny || 10, h = fejlec(s("kartya"), s("kartya_al").replace("{p}", vp));
+    var vp = vissza_szazalek(), h = fejlec(s("kartya"), vp ? s("kartya_al").replace("{p}", vp) : "");
     if (a && a !== "h" && KB.hiba === a) return h + '<p class="uzenet hiba">' + s("kartya_nincs") + "</p></section>";
     if (KARTYA && (!a || a === "h" || KARTYA.token === a)) {
       var k = KARTYA, ked = k.ottlet > 0;
@@ -832,6 +834,8 @@
     frissitHelyben();
   }
   function frissitHelyben() {
+    // a QR-ról közvetlenül megnyitott kártyaoldal a beállítások megérkezése előtt rajzolódik: ha még nem kezdtek gépelni, újrarajzoljuk a valódi százalékkal
+    if (/^#\/kartya(\/|$)/.test(location.hash) && $("#k-nev") && !$("#k-nev").value && !$("#k-email").value) { var kr = (location.hash || "").slice(2).split("/"); $("#fo").innerHTML = kartyaOldal(kr[1], kr[2]); }
     var sor = $("#sor"); if (sor) sor.innerHTML = aps().map(kartya).join("");
     var c = $("#chipek"); if (c) c.innerHTML = chipek();
     var el = $("#elo"); if (el) el.innerHTML = elo();
