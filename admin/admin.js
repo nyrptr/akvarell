@@ -51,11 +51,28 @@
   ful = "ma";
   function csopja(f) { return CSOP.filter(function (c) { return c[2].some(function (x) { return x[0] === f; }); })[0]; }
   function megy(f) { ful = f; vaz(); window.scrollTo(0, 0); }
+  // „Mit csinál ez a rész?” – minden fül tetején egy összecsukott magyarázat (rövid, koppintásra nyílik; alapból zárva, hogy ne zavarjon)
+  var SUGO = {
+    ma: ["A nyitólap", "Felül azt látod, mi vár rád (új foglaláskérés, utalványkérés, értékelés, kép): koppints rá, és odaugrik. Alatta a következő 7 nap érkezői és távozói, végül ami még hiányzik a beállításból. Ha a „Rád vár” üres, nincs teendőd."],
+    keres: ["A vendégek foglaláskérései", "<b>Visszaigazolva + napok foglaltra</b>: a napok foglaltak lesznek a naptárban, a szállásdíj bevételként bekerül a Pénzügyekbe, a vendég levelet és vendégkönyv-linket kap (ha a levelező be van állítva).<br><b>Elutasítva</b>: a napok felszabadulnak, a bevétel kikerül. Ha véletlenül igazoltál vissza, ezzel csinálhatod vissza.<br><b>Próbafoglalás</b>: gyakorláshoz; nem foglal napot, nem kerül a naptárba és a pénzügyekbe."],
+    naptar: ["Foglalt napok apartmanonként", "Válassz apartmant, lapozz hónapot. Koppints egy napra: foglalt ↔ szabad, azonnal mentődik. Amit a Kérések fülön visszaigazolsz, magától bekerül; ide azt jelöld, amit telefonon vagy máshol kaptál."],
+    uzenet: ["Ajándékutalvány-kérések és üzenetek", "A vendégoldalról érkező kérések. A címre és a telefonszámra koppintva e-mailt írhatsz vagy hívhatsz. Ha elintézted, nyomd meg az „Elintézve” gombot."],
+    penz: ["Bevétel, kiadás, eredmény", "Havonta vagy évente nézheted. A visszaigazolt közvetlen foglalás bevételként magától bekerül (ha megadtál takarítási díjat, az kiadásként). Portálos bevételt te vehetsz fel az „Új tételnél”, a portáljutalék ilyenkor magától kiadásként mellé kerül, így látszik a nettó. A „megspórolt jutalék” azt mutatja, mennyit hagyott meg a közvetlen foglalás a portálokhoz képest. Téves tételt a törléssel veheted ki."],
+    vendegek: ["Vendégkártya, QR, hírlevél, értékelések", "<b>QR-kártya</b>: nyomtasd ki, és tedd ki az apartmanokba. Aki beolvassa és kártyát kér, a portálos ottléte is számít, így legközelebb kedvezményt kap közvetlen foglaláskor. Ha a kód kikerülne, az „Új kód” érvényteleníti a régieket.<br><b>Beállítások</b>: a kedvezmény és a portáljutalék százaléka.<br><b>Hírlevél</b>: csak azok kapják, akik kérték; előbb küldj próbát magadnak.<br><b>Értékelések</b>: a vendégek a vendégkönyvben írják; az jelenik meg az oldalon, amit te kiteszel."],
+    vk: ["A vendég saját oldala", "A visszaigazolt vendég a levélben kap egy titkos linket. Itt adod meg, mit lát ott: telefonszám, wifi, bejutás, parkolás. A wifi és a bejutás csak érkezés előtt 2 nappal nyílik meg, és a távozás utáni napig látszik. Lent az automatikus levelek: visszaigazolás, érkezés előtt, távozás napján, értékeléskérés."],
+    kihivas: ["A 10-es kihívás képei", "A vendégek az állomásokról küldhetnek képet. Csak az látszik az oldalon, amit jóváhagysz; a nem odavalót végleg törölheted."],
+    ar: ["Árak és apartmanleírások", "Koppints egy apartmanra a megnyitáshoz. Az éjszakai árakból számol a vendégoldali árbecslés és a foglalás végösszege. A leírások és kiemelések magyarul és angolul jelennek meg."],
+    tartalom: ["Főoldali szövegek", "A főoldal és a kihívás szövegei, magyarul és angolul. Mindkét nyelvet írd át, a mentés után az oldalon is megjelennek."],
+    blog: ["Zebegényi hét", "Minden héten magától elkészül a hétvégi bejegyzés hivatalos adatokból (időjárás, Duna, naplemente, szabad helyek). Ha az automatikus kitétel be van kapcsolva, azonnal kikerül, különben vázlat marad, amíg ki nem teszed."],
+    osszekotes: ["Naptár-összekötés", "A Bookingról, a Szállás.hu-ról vagy a régi oldalról érkezett foglalások így látszanak itt, és az itteniek így látszanak ott. Az egyik irányban beírod a külső naptár címét, a másikban a lent látható címet adod meg a portálnak. A szinkron félóránként fut."],
+    fiok: ["Belépés és mentés", "Új telefon vagy gép: kérj belépő linket (15 percig él, egyszer használható), és olvasd be a QR-t. Ezen a telefonon 90 napig nem kell újra belépned. A mentés egy fájlban tartalmaz mindent, érdemes havonta letölteni."]
+  };
+  function sugo(f) { var s = SUGO[f]; return s ? '<details class="sugo"><summary>Mit csinál ez a rész?</summary><div class="sugo-tart"><b>' + s[0] + "</b><p>" + s[1] + "</p></div></details>" : ""; }
   function vaz() {
     var cs = csopja(ful);
     fo.innerHTML = '<nav class="ful fo-ful" aria-label="Fő részek">' + CSOP.map(function (c) { return '<button data-ful="' + c[2][0][0] + '"' + (c === cs ? ' class="most" aria-current="page"' : "") + ">" + c[1] + "</button>"; }).join("") + "</nav>"
       + (cs[2].length > 1 ? '<nav class="ful al-ful" aria-label="' + cs[1] + '">' + cs[2].map(function (f) { return '<button data-ful="' + f[0] + '"' + (f[0] === ful ? ' class="most" aria-current="page"' : "") + ">" + f[1] + "</button>"; }).join("") + "</nav>" : "")
-      + '<div id="tart"><p class="jelmag">Betöltés…</p></div>';
+      + sugo(ful) + '<div id="tart"><p class="jelmag">Betöltés…</p></div>';
     fo.querySelectorAll("[data-ful]").forEach(function (b) { b.onclick = function () { megy(b.dataset.ful); }; });
     ({ ma: maLap, keres: keresek, uzenet: uzenetek, naptar: naptar, osszekotes: osszekotes, blog: blog, vk: vendegkonyv, penz: penzugyek, vendegek: vendegek, ar: arak, tartalom: tartalom, kihivas: kihivas, fiok: fiok })[ful]();
   }
