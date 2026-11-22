@@ -1,7 +1,7 @@
 # Fejlesztési napló – Akvarell bemutató
 
 ## 2026-11-22 – Claude (munka-kezelo-sugo)
-- Péter (a Ernővel való holnapi bemutatóra): „a kezelő oldalára is lehetne valami instrukció, ami a külön részeket megnyitva elmagyarázza.”
+- Péter (az Ernőnek szóló holnapi bemutatóra): „a kezelő oldalára is lehetne valami instrukció, ami a külön részeket megnyitva elmagyarázza.”
 - **Kezelő-súgó:** minden fül tetején egy összecsukott „Mit csinál ez a rész?” blokk (13 fül: Ma, Kérések, Naptár, Utalványkérések, Pénzügyek, Kártya/hírlevél, Vendégkönyv, Kihívás-képek, Árak, Szövegek, Zebegényi hét, Naptár-összekötés, Belépés/mentés). Alapból zárva, 44 px magas koppintási cél; szöveg a kód tényleges működéséből (pl. visszaigazolás → bevétel a Pénzügyekben, elutasítás → napok felszabadulnak). Fájlok: `admin/admin.js` (`SUGO`, `sugo()`, `vaz()`), `admin/index.html` (`.sugo` stílus, verzió-hash).
 - Tesztelve: gyár-szabályok 0 hiba; kapu.py (320/390/gép) csak a helyi `/api/zebegeny` 503 (hálózat), más nincs; mind a 13 fülön a súgó 44 px, nincs vízszintes kicsúszás, JS-hiba nincs; telefonméretű képernyőképeken végignézve.
 - **Nem tesztelt:** valódi iPhone Safari; a belépett (`gazda`/`uzemelteto`) kezelő (helyi próba: `HELYI_KEZELO`).
