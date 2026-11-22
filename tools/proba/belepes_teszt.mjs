@@ -102,6 +102,22 @@ try {
   r = await k('mentes', { suti: sg2 }); jo('a letölthető mentésben nincs visszaállító e-mail-cím', r.s === 200 && !/kezelo_email|gazda@proba/.test(JSON.stringify(r.d)), r.s);
   IP = '203.0.113.7'; let ut2 = 0; for (let i = 0; i < 6; i++) ut2 = (await k('belepes', { body: { muvelet: 'email_link', email: 'x' + i + '@proba.hu' } })).s;
   jo('sok kérés után korlát (429)', ut2 === 429, ut2);
+  // tartalék kulcs (egyszer használható, kinyomtatva eltett kód)
+  IP = '203.0.113.8';
+  r = await k('belepes', { body: { muvelet: 'tartalek_uj' } }); jo('belépés nélkül nem készíthető tartalék kulcs', r.s === 401, r.s);
+  r = await k('belepes', { body: { muvelet: 'tartalek_uj' }, suti: sg2 }); const tkod = (r.d || {}).kod || '';
+  jo('a gazda tartalék kulcsot készít (8×4 hexa)', r.s === 200 && /^([0-9a-f]{4}-){7}[0-9a-f]{4}$/.test(tkod), JSON.stringify(r.d));
+  r = await k('belepes', { suti: sg2 }); jo('az állapot jelzi, hogy van tartalék kulcs, a kulcsot nem mutatja', r.d.tartalek === true && !JSON.stringify(r.d).includes(tkod.slice(0, 9)), JSON.stringify(r.d));
+  r = await k('belepes', { body: { muvelet: 'tartalek', kod: 'ffff-' + tkod.slice(5) } }); jo('rossz tartalék kulcs → 403, nincs süti', r.s === 403 && !r.sc, r.s);
+  r = await k('belepes', { body: { muvelet: 'tartalek', kod: tkod.toUpperCase() }, origin: 'https://gonosz.example.com' }); jo('idegen oldalról beváltás → 403', r.s === 403, r.s);
+  r = await k('mentes', { suti: sg2 }); jo('a letölthető mentésben nincs tartalék kulcs', r.s === 200 && !JSON.stringify(r.d).replace(/-/g, '').includes(tkod.replace(/-/g, '')) && !/kezelo_tartalek/.test(JSON.stringify(r.d)), r.s);
+  r = await k('belepes', { body: { muvelet: 'tartalek', kod: tkod.toUpperCase() } }); const sgT = sutibol(r.sc);
+  jo('a tartalék kulccsal (nagybetűvel is) a gazda bent van', r.s === 200 && r.d.szerep === 'gazda' && !!sgT, JSON.stringify(r.d));
+  r = await k('en', { suti: sg2 }); jo('…a gazda régi eszköze kilépett (elveszett telefon esetén ez kell)', r.s === 401, r.s);
+  r = await k('en', { suti: sgT }); jo('…az új eszköz működik', r.s === 200, r.s);
+  r = await k('belepes', { body: { muvelet: 'tartalek', kod: tkod } }); jo('…a kulcs csak egyszer használható', r.s === 403, r.s);
+  IP = '203.0.113.9'; ut2 = 0; for (let i = 0; i < 9; i++) ut2 = (await k('belepes', { body: { muvelet: 'tartalek', kod: ('ab' + i).repeat(16).slice(0, 32) } })).s;
+  jo('sok rossz kulcs után korlát (429)', ut2 === 429, ut2);
   // korlát
   IP = '203.0.113.4';
   let utolso = 0; for (let i = 0; i < 9; i++) utolso = (await k('belepes', { body: { muvelet: 'link', token: (i + 'a').repeat(16).slice(0, 32) } })).s;

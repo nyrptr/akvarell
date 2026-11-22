@@ -13,11 +13,13 @@ export async function onRequest({ request, env, waitUntil }) {
   const KOD = {}; sorok.forEach(s => { KOD[s.szerep] = s.kod_hash; });
   const KH = kodHash(env), ki = await kezelo(request, env), sajat = SZEREPEK.includes(ki) ? ki : '';
   const EMAIL_KULCS = { gazda: 'kezelo_email_gazda', uzemelteto: 'kezelo_email_uzemelteto' };
+  const TART_KULCS = { gazda: 'kezelo_tartalek_gazda', uzemelteto: 'kezelo_tartalek_uzemelteto' };
   const EMAIL = /^[^@\s]{1,64}@[^@\s]{1,200}\.[^@\s.]{2,}$/;
   const maszk = (a) => { const [n, d] = String(a).split('@'); return n ? n[0] + '***@' + d : ''; };
   if (m === 'GET') {
     const o = { bent: ki || '', fiokok: { gazda: !!F.gazda, uzemelteto: !!F.uzemelteto }, levelez: levelezBe(env) };
     if (SZEREPEK.includes(ki)) { const e = await db.prepare('SELECT ertek FROM beallitas WHERE kulcs = ?').bind(EMAIL_KULCS[ki]).first(); o.email = e && e.ertek ? maszk(e.ertek) : ''; }
+    if (SZEREPEK.includes(ki)) o.tartalek = !!(await db.prepare('SELECT 1 FROM beallitas WHERE kulcs = ?').bind(TART_KULCS[ki]).first());
     return J(200, o);
   }
   if (m !== 'POST') return J(405, { hiba: 'nem megy' });
@@ -48,6 +50,22 @@ export async function onRequest({ request, env, waitUntil }) {
     await db.prepare('DELETE FROM kezelo_link WHERE token_hash = ? OR lejar < ?').bind(th, most).run();          // egyszer használható
     if (!sor || sor.lejar < most || !F[sor.szerep]) return J(403, { hiba: 'ez a link nem jó vagy lejárt' });
     return J(200, { ok: true, szerep: sor.szerep }, { 'set-cookie': await ujMunkamenet(db, request, sor.szerep) });
+  }
+
+  // tartalék kulcs: előre készített, egyszer használható kód (kinyomtatva, eltéve). Beváltáskor a fiók többi eszköze kilép (elveszett telefon esetén ez a cél).
+  if (d.muvelet === 'tartalek') {
+    if (!(await korlatok(db, [[`tart:ip:${ip}`, 8, 15], ['tart:mind', 60, 60]]))) return J(429, { hiba: 'túl sok próbálkozás, várj negyed órát' });
+    const t = String(d.kod || '').toLowerCase().replace(/[^0-9a-f]/g, '');
+    if (t.length !== 32) return J(403, { hiba: 'ez a kulcs nem jó vagy már felhasználták' });
+    const th = await sha(t), sorok2 = (await db.prepare("SELECT kulcs, ertek FROM beallitas WHERE kulcs IN ('kezelo_tartalek_gazda', 'kezelo_tartalek_uzemelteto')").all()).results;
+    const sz = SZEREPEK.find(x => sorok2.some(r => r.kulcs === TART_KULCS[x] && egyezik(r.ertek, th)));
+    if (!sz || !F[sz]) return J(403, { hiba: 'ez a kulcs nem jó vagy már felhasználták' });
+    await db.batch([
+      db.prepare('DELETE FROM beallitas WHERE kulcs = ?').bind(TART_KULCS[sz]),          // egyszer használható
+      db.prepare('DELETE FROM kezelo_munkamenet WHERE szerep = ?').bind(sz),            // a régi eszközök kiesnek
+      db.prepare('DELETE FROM kezelo_link WHERE szerep = ?').bind(sz),
+    ]);
+    return J(200, { ok: true, szerep: sz }, { 'set-cookie': await ujMunkamenet(db, request, sz) });
   }
 
   // elveszett belépés: a bejegyzett e-mail-címre egyszer használható, 15 perces linket küldünk. A válasz mindig ugyanaz (címről nem árulunk el semmit).
@@ -93,6 +111,13 @@ export async function onRequest({ request, env, waitUntil }) {
     if (mr && String(mr.ertek).toLowerCase() === cim) return J(409, { hiba: 'ezt a címet a másik fiók használja' });
     await db.prepare("INSERT OR REPLACE INTO beallitas (kulcs, ertek, frissitve) VALUES (?, ?, datetime('now'))").bind(EMAIL_KULCS[sajat], cim).run();
     return J(200, { ok: true, email: maszk(cim) });
+  }
+  // új tartalék kulcs készítése (a régi érvénytelen lesz); a kód csak most látszik, a tárolóban csak a lenyomata van
+  if (d.muvelet === 'tartalek_uj') {
+    if (!sajat) return J(403, { hiba: 'ehhez saját fiókkal kell belépni' });
+    const t = veletlen(16);
+    await db.prepare("INSERT OR REPLACE INTO beallitas (kulcs, ertek, frissitve) VALUES (?, ?, datetime('now'))").bind(TART_KULCS[sajat], await sha(t)).run();
+    return J(200, { ok: true, kod: t.match(/.{4}/g).join('-') });
   }
   if (d.muvelet === 'megujit') {   // „Megújítom most”: ezen az eszközön újra 90 nap
     if (!sajat) return J(403, { hiba: 'ehhez saját fiókkal kell belépni' });

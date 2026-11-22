@@ -1,5 +1,11 @@
 # Fejlesztési napló – Akvarell bemutató
 
+## 2026-11-22 – Claude (haz-belepes-tartalek)
+- Péter: „mehet minden sorrendben.” A #31 tetején.
+- **Tartalék kulcs:** Beállítás → Belépés → Tartalék kulcs: egy egyszer használható, 8×4 jegyű kód (csak a készítéskor látszik, a tárolóban a lenyomata van, `beallitas` `kezelo_tartalek_<szerep>`; a mentésből kiszűrve). Beváltása a belépő képernyőn vagy `#tk=` linkkel; beváltáskor a fiók többi eszköze kilép (elveszett telefon esetén ez a cél), új kulcs készítésekor a régi érvénytelen. Korlát: 8/15 perc/IP, 60/óra összesen.
+- Tesztelve: `belepes_teszt.mjs` 63 eset mind rendben (11 új); gyár-szabályok. **Nem tesztelt:** a képernyők telefonon.
+- Beolvasztás sorrendben a bemutató után: #30 → #31 → #32, mindegyik Péter külön „mehet” szavára.
+
 ## 2026-11-22 – Claude (haz-belepes-email)
 - Péter: „mehet minden sorrendben… legyen készen a bekötésre.” Építve a #30 (megújítás) tetejére.
 - **E-mailes belépés-visszaállítás:** a belépő képernyőn „Nem tudok belépni”: a bejegyzett visszaállító címre egyszer használható, 15 perces belépő link megy (ugyanaz a `#be=` link, mint az új eszköznél). Cím megadása: Beállítás → Belépés → Visszaállító e-mail-cím (csak a saját fiókhoz). A válasz mindig ugyanaz, a címről nem árul el semmit; korlát: 5 kérés/óra/IP, 20/nap, 3 levél/óra/fiók. A cím a `beallitas` táblában van (`kezelo_email_<szerep>`, nincs adatbázis-átalakítás), a letölthető mentésből kiszűrve.
