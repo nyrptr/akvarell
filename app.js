@@ -200,8 +200,11 @@
     $("#lab").innerHTML = l + "</div>" + e(sz("uzemelteto")) + '<br><span class="jelmag">' + e(s("bemutato")) + "</span>";
   }
   function fejleces() {
-    var h = $(".jelenet");
-    $("#fej").classList.toggle("tomor", !h || window.scrollY > h.offsetHeight - 80);
+    var h = $(".jelenet"), t = !h || window.scrollY > h.offsetHeight - 80, c = $("#fej");
+    c.classList.toggle("tomor", t);
+    c.classList.toggle("gorg", !t && window.scrollY > 8);                      // hero fölött görgetve: sötét üveg, hogy a tartalom ne fusson a logóra
+    var h1 = h && h.querySelector("h1"), lg = $(".logo");
+    document.body.classList.toggle("kezdo", !!(h1 && lg && h1.textContent.trim() === lg.textContent.trim()));   // a nagy cím ugyanaz, mint a logó: a tetején csak az egyik látszik
   }
 
   /* ---------- nyitóoldal ---------- */
