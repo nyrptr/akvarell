@@ -223,3 +223,9 @@
 - Miért: ALAPELV 3. pont (árszabály egy forrásból), a motor ház-semlegessé tételének első lépése.
 - Tesztelt: gyar_szabalyok 0 HIBA; ar_teszt 1467 eset 0 HIBA; régi és új szerver-ár 13 440 tartózkodáson azonos (0 eltérés); utak 5/5; belepes_teszt rendben; kapu.py: 3 ismert helyi OVF-503 (api/zebegeny), egyéb hiba nincs; képernyőkép nézve.
 - NEM tesztelt: valódi Cloudflare-telepítésen (az Előnézeten ellenőrzendő). A kiemelt napok szabálya (hétvége, nyár, húsvét) még kódban van, nem a haz.json-ban: következő lépés.
+
+## 2026-11-23 · KAPOCS-chat · Próbák egy paranccsal + éles füstpróba
+- Fájlok: `tools/proba/mind.sh` (új), `tools/proba/eles_fust.sh` (új).
+- Mi: `bash tools/proba/mind.sh` egyben futtatja a generált-fájl ellenőrzést, a szabályőrt, ár-, belépés-, Access-tesztet, az utakat és a böngészős kaput (a helyi szervert maga indítja és leállítja; a 3 ismert OVF-503 megengedett). `eles_fust.sh`: beolvasztás utáni, csak olvasó ellenőrzés az éles címen (oldal, haz.js, API, admin; a haz.js egyezik a tárolóéval).
+- Miért: a kézi indítás és az Előnézet védettsége (302, nem érhető el) hibaforrás volt a szétválasztás 1. lépésénél.
+- Tesztelt: mind.sh MIND RENDBEN; eles_fust.sh az éles címen. NEM tesztelt: a PR-kapuban (GitHub Actions) futtatva.
