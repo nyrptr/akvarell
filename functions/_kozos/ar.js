@@ -10,11 +10,11 @@ export function husvet(ev) {
     h = (19 * a + b - d - g + 15) % 30, i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e2 + 2 * i - h - k) % 7, m = Math.floor((a + 11 * h + 22 * l) / 451);
   return new Date(Date.UTC(ev, Math.floor((h + l - 7 * m + 114) / 31) - 1, ((h + l - 7 * m + 114) % 31) + 1, 12));
 }
-export function kiemelt(d) {          // péntek, szombat, június–augusztus, dec. 24-től, húsvét (péntek–vasárnap), pünkösd (szombat–vasárnap)
-  const m = d.getUTCMonth(), nap = d.getUTCDate(), wd = d.getUTCDay();
-  if (wd === 5 || wd === 6 || m === 5 || m === 6 || m === 7 || (m === 11 && nap >= 24)) return true;
+export function kiemelt(d) {          // a ház szabálya: hazak/<ház>/haz.json ar.kiemelt (hétnapok, hónapok, december, húsvét, pünkösd)
+  const K = HAZ.ar.kiemelt, m = d.getUTCMonth() + 1, nap = d.getUTCDate(), wd = d.getUTCDay();
+  if (K.hetnapok.includes(wd) || K.honapok.includes(m) || (m === 12 && nap >= K.december_ettol)) return true;
   const kul = Math.round((d - husvet(d.getUTCFullYear())) / NAPMS);
-  return (kul >= -2 && kul <= 0) || kul === 48 || kul === 49;
+  return (kul >= K.husvet_tol && kul <= K.husvet_ig) || K.punkosd_napok.includes(kul);
 }
 // a = az apartman sora (ar_hetkoznap, ar_hetvege, ar3_hetkoznap, ar3_hetvege)
 export function arSzamol(a, erk, tav, felnott, gyerek) {

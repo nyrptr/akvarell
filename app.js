@@ -149,11 +149,11 @@
       h = (19 * a + b - d - g + 15) % 30, i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e2 + 2 * i - h - k) % 7, m = Math.floor((a + 11 * h + 22 * l) / 451);
     return new Date(ev, Math.floor((h + l - 7 * m + 114) / 31) - 1, ((h + l - 7 * m + 114) % 31) + 1, 12);
   }
-  function kiemelt(d) {
-    var m = d.getMonth(), nap = d.getDate(), wd = d.getDay();
-    if (wd === 5 || wd === 6 || m === 5 || m === 6 || m === 7 || (m === 11 && nap >= 24)) return true;
+  function kiemelt(d) {   // a ház szabálya: hazak/<ház>/haz.json ar.kiemelt
+    var K = HAZ.ar.kiemelt, m = d.getMonth() + 1, nap = d.getDate(), wd = d.getDay();
+    if (K.hetnapok.indexOf(wd) >= 0 || K.honapok.indexOf(m) >= 0 || (m === 12 && nap >= K.december_ettol)) return true;
     var kul = Math.round((d - husvet(d.getFullYear())) / 864e5);
-    return (kul >= -2 && kul <= 0) || kul === 48 || kul === 49;
+    return (kul >= K.husvet_tol && kul <= K.husvet_ig) || K.punkosd_napok.indexOf(kul) >= 0;
   }
   /* Hosszú hétvégék 2026 (Ernő Árak oldala): ha a tartózkodás érinti, legalább ennyi éjszaka kell */
   var HOSSZU = HAZ.ar.hosszu_hetvegek;

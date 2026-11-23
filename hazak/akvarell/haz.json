@@ -39,6 +39,25 @@
     "2026-12-27",
     4
    ]
-  ]
+  ],
+  "kiemelt": {
+   "_leiras": "Kiemelt (hétvégi) éjszaka: ezeken a hétnapokon (0=vasárnap … 6=szombat), ezekben a hónapokban (1–12), december N. napjától, a húsvéthoz képest [tol, ig] napon belül, és a pünkösdi napokon (húsvét + N nap).",
+   "hetnapok": [
+    5,
+    6
+   ],
+   "honapok": [
+    6,
+    7,
+    8
+   ],
+   "december_ettol": 24,
+   "husvet_tol": -2,
+   "husvet_ig": 0,
+   "punkosd_napok": [
+    48,
+    49
+   ]
+  }
  }
 }
