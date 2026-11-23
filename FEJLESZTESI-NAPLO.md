@@ -1,5 +1,25 @@
 # Fejlesztési napló – Akvarell bemutató
 
+## 2026-11-22 – Claude (haz-belepes-tartalek)
+- Péter: „mehet minden sorrendben.” A #31 tetején.
+- **Tartalék kulcs:** Beállítás → Belépés → Tartalék kulcs: egy egyszer használható, 8×4 jegyű kód (csak a készítéskor látszik, a tárolóban a lenyomata van, `beallitas` `kezelo_tartalek_<szerep>`; a mentésből kiszűrve). Beváltása a belépő képernyőn vagy `#tk=` linkkel; beváltáskor a fiók többi eszköze kilép (elveszett telefon esetén ez a cél), új kulcs készítésekor a régi érvénytelen. Korlát: 8/15 perc/IP, 60/óra összesen.
+- Tesztelve: `belepes_teszt.mjs` 63 eset mind rendben (11 új); gyár-szabályok. **Nem tesztelt:** a képernyők telefonon.
+- Beolvasztás sorrendben a bemutató után: #30 → #31 → #32, mindegyik Péter külön „mehet” szavára.
+
+## 2026-11-22 – Claude (haz-belepes-email)
+- Péter: „mehet minden sorrendben… legyen készen a bekötésre.” Építve a #30 (megújítás) tetejére.
+- **E-mailes belépés-visszaállítás:** a belépő képernyőn „Nem tudok belépni”: a bejegyzett visszaállító címre egyszer használható, 15 perces belépő link megy (ugyanaz a `#be=` link, mint az új eszköznél). Cím megadása: Beállítás → Belépés → Visszaállító e-mail-cím (csak a saját fiókhoz). A válasz mindig ugyanaz, a címről nem árul el semmit; korlát: 5 kérés/óra/IP, 20/nap, 3 levél/óra/fiók. A cím a `beallitas` táblában van (`kezelo_email_<szerep>`, nincs adatbázis-átalakítás), a letölthető mentésből kiszűrve.
+- **Inaktív, amíg a levélküldő nincs bekötve** (`BREVO_API_KEY`, `LEVEL_FELADO`): a képernyő akkor el sem mutatja a gombot; a címet addig is meg lehet adni.
+- Tesztelve: `belepes_teszt.mjs` 52 eset mind rendben (11 új: levél csak a bejegyzett címre, azonos válasz, egyszer használható link, korlát, mentésben nincs cím); `megujit_teszt` 9/9; gyár-szabályok. **Nem tesztelt:** valódi Brevo-küldés, a képernyők telefonon.
+- Beolvasztás a bemutató után, Péter külön „mehet” szavára.
+
+## 2026-11-22 – Claude (haz-belepes-megujitas)
+- Péter: „mi történik 90 nap után… bentről meg tudom újítani… hogy ne kelljen hozzánk fordulni.”
+- **Megújítás:** a belépés használat közben megújul: ha a munkamenetből 60 napnál kevesebb maradt, a kezelő megnyitásakor (`/admin/api/en`) újra 90 napra nyúlik (adatbázis és süti). Aki 90 napig nem nyitja meg, annak lejár. A Beállítás → Belépés alatt látszik, meddig él a belépés, és van „Megújítom most” gomb (`belepes` → `megujit`). Új belépés nem jön létre, ugyanaz a token marad.
+- Tesztelve: `tools/proba/megujit_teszt.mjs` 9/9; `belepes_teszt.mjs` mind rendben (41); gyár-szabályok. **Nem tesztelt:** képernyőn, valódi telefonon.
+- Következő (Péter: „mehet minden sorrendben”): levélküldő (Brevo-kulcs kell), e-mailes belépés-visszaállítás, tartalék kulcs.
+- **Beolvasztás a bemutató után**, Péter külön „mehet” szavára (a belépés kódját ma nem érintjük).
+
 ## 2026-11-22 – Claude (haz-slim-sav)
 - Péter: kis kijelzőn a fejléc + lebegő „Mikor jönnél?” sáv beszűkíti a felületet.
 - **Javítás:** `max-height:720px` alatt a sáv egysoros (a „Szabad napok és ár azonnal” sor rejtve, 54 px), a fejléc 56 px; a gombok 44 px-esek maradnak. Nagy kijelzőn nincs változás.

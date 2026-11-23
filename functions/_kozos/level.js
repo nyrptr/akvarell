@@ -17,6 +17,7 @@ export async function kuld(env, { to, subject, html, replyTo }) {
   });
   return { ok: r.ok, status: r.status };
 }
+export const levelezBe = (env) => !!(env.BREVO_API_KEY && env.LEVEL_FELADO) || (env.LEVEL_PROBA === 'igen' && !env.BREVO_API_KEY);
 export function keret(cim, tartalom) {
   return `<!doctype html><html><body style="margin:0;background:#f6f1e7;font:16px/1.6 Georgia,serif;color:#1d2a35"><table role="presentation" width="100%"><tr><td align="center" style="padding:24px 12px"><table role="presentation" width="100%" style="max-width:560px;background:#fff;border-radius:16px"><tr><td style="padding:22px 26px;border-bottom:1px solid #e3dac8;font-weight:700;color:#2c6a89">Akvarell Apartmanház · Zebegény</td></tr><tr><td style="padding:22px 26px"><h1 style="font-size:22px;margin:0 0 12px">${esc(cim)}</h1>${tartalom}</td></tr></table></td></tr></table></body></html>`;
 }

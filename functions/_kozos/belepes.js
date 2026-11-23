@@ -8,7 +8,7 @@
 // Felülírható a BEUZEMELO_HASH_GAZDA / BEUZEMELO_HASH_UZEMELTETO környezeti változóval (másik ház, próba).
 export const BEUZEMELO_HASH = { gazda: '15064ba30ca10203cba9cd6adb04994c9bd865386f9862f9fd0fc5686725976f', uzemelteto: 'fefaa11638c963dc84d88bb7f3a1c1137461e73ee0c2484ce550d570f6bde819' };
 export const SZEREPEK = ['gazda', 'uzemelteto'];
-export const SUTI = '__Host-akv_kezelo', NAPOK = 90, LINK_PERC = 15;
+export const SUTI = '__Host-akv_kezelo', NAPOK = 90, LINK_PERC = 15, MEGUJIT_ALATT_NAP = 60;
 const hex = (b) => [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('');
 const enc = (s) => new TextEncoder().encode(s);
 export const sha = async (s) => hex(await crypto.subtle.digest('SHA-256', enc(s)));
@@ -39,3 +39,19 @@ export async function ujMunkamenet(db, request, szerep) {
   return `${SUTI}=${t}; Path=/; Max-Age=${NAPOK * 86400}; HttpOnly; Secure; SameSite=Strict`;
 }
 export const sutiTorles = `${SUTI}=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Strict`;
+
+// A belépés használat közben megújul: ha a munkamenetből 60 napnál kevesebb maradt, a kezelő megnyitásakor újra 90 napra nyúlik
+// (a süti is). Aki rendszeresen használja, annak nem jár le; aki 90 napig nem nyitja meg, annak lejár. `kenyszer`: a „Megújítom most” gomb.
+// Visszaad { lejar, suti } (suti: új Set-Cookie, ha változott, különben null), vagy null, ha nincs érvényes saját munkamenet.
+export async function megujit(request, env, kenyszer = false) {
+  const t = sutiErtek(request); if (!t || !env.DB) return null;
+  try {
+    const h = await sha(t), most = Date.now();
+    const r = await env.DB.prepare('SELECT lejar FROM kezelo_munkamenet WHERE token_hash = ?').bind(h).first();
+    if (!r || r.lejar <= most) return null;
+    if (!kenyszer && r.lejar - most >= MEGUJIT_ALATT_NAP * 864e5) return { lejar: r.lejar, suti: null };
+    const uj = most + NAPOK * 864e5;
+    await env.DB.prepare('UPDATE kezelo_munkamenet SET lejar = ? WHERE token_hash = ?').bind(uj, h).run();
+    return { lejar: uj, suti: `${SUTI}=${t}; Path=/; Max-Age=${NAPOK * 86400}; HttpOnly; Secure; SameSite=Strict` };
+  } catch (e) { return null; }
+}
