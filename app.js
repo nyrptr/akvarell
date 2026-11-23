@@ -337,7 +337,14 @@
     $("#sav-al").textContent = F.erk && F.tav ? F.felnott + (F.gyerek ? "+" + F.gyerek : "") + " " + s("fo") + (a ? " · " + a.nev : "") : s("mikor_al");
     $("#sav-gomb").textContent = F.erk && F.tav ? s("mutasd") : s("szabad_gomb");
   }
+  // Elküldött kérés után tiszta lap: a vendég új időpontot választhat, nem ragad a régihez (Péter, 11-23, élő bemutató).
+  function ujKezdes() {
+    if (F.lepes === 4 && F.erk && F.tav) F.kuldve = { ap: F.ap, erk: F.erk, tav: F.tav };
+    F.erk = null; F.tav = null; F.ap = null; F.extrak = {}; F.lepes = 1; F.visszatero = false;
+    savFrissit();
+  }
   function lapNyit(apId) {
+    if (F.lepes === 4) ujKezdes();
     if (apId) F.ap = apId;
     if (!F.ho) { var m = new Date(); F.ho = new Date(m.getFullYear(), m.getMonth(), 1); }
     F.lepes = F.erk && F.tav ? (F.ap && szabadE(F.ap, F.erk, F.tav) ? 3 : 2) : 1;
@@ -346,8 +353,10 @@
   }
   function lapRajz() {
     var t = $("#lap-tartalom"), h = '<div class="lepesek">' + [1, 2, 3].map(function (i) { return "<i" + (F.lepes >= i ? ' class="ok"' : "") + "></i>"; }).join("") + "</div>";
+    $("#lap-vissza").hidden = !(F.lepes === 2 || F.lepes === 3);
     $("#lap-cim").textContent = F.lepes === 4 ? ap(F.ap).nev : F.lepes === 3 ? s("sajat") : F.lepes === 2 ? (rovid(F.erk) + " – " + rovid(F.tav)) : s("mikor");
     if (F.lepes === 1) {
+      if (F.kuldve && !F.erk) h += '<p class="uzenet ok kuldve-sor">' + (nyelv === "hu" ? "Elküldted: " : "Sent: ") + e(ap(F.kuldve.ap).nev) + " · " + rovid(F.kuldve.erk) + " – " + rovid(F.kuldve.tav) + "<br>" + (nyelv === "hu" ? "Ha másik időpontot szeretnél, válassz újat, és küldj új kérést." : "If you'd like other dates, pick new ones and send a new request.") + "</p>";
       h += '<div class="letszam">' + leptet("felnott", F.felnott) + leptet("gyerek", F.gyerek) + "</div>" + naptar() + '<p class="jelmag" id="lap-sugo">' + (F.erk && !F.tav ? s("valassz_tav") : s("valassz_erk")) + "</p>";
     } else if (F.lepes === 2) {
       var me = minEj(F.erk, F.tav), ejsz = Math.round((dt(F.tav) - dt(F.erk)) / 864e5);
@@ -358,6 +367,7 @@
       }).join("") + '<button type="button" class="gomb masod teljes" data-lepes="1" style="margin-top:6px">' + s("vissza") + "</button>";
     } else if (F.lepes === 3) {
       var a = ap(F.ap), r = arSzamol(a, F.erk, F.tav, F.felnott, F.gyerek);
+      h += '<div class="modosit"><button type="button" class="link" data-lepes="1">' + (nyelv === "hu" ? "Dátum módosítása" : "Change dates") + '</button><button type="button" class="link" data-lepes="2">' + (nyelv === "hu" ? "Másik apartman" : "Other apartment") + "</button></div>";
       h += '<div class="osszeg"><div class="sor2"><b>' + e(a.nev) + "</b><span>" + rovid(F.erk) + " – " + rovid(F.tav) + "</span></div>" +
         '<div class="sor2"><span>' + s("ar_ejszaka") + " · " + r.ej + " " + s("ej") + "</span><span>" + ft(r.szallas) + "</span></div>" +
         (r.gyerek ? '<div class="sor2"><span>' + s("ar_gyerek") + "</span><span>" + ft(r.gyerek) + "</span></div>" : "") +
@@ -373,7 +383,7 @@
       if (bizalom()) h += '<p class="bizalom-sor">' + bizalom().replace(/ <span[^>]*>↓<\/span>/, "") + (nyelv === "hu" ? " · személyes válasz Ernőtől" : " · a personal reply from Ernő") + "</p>";      // bizalom közvetlenül a foglalás előtt
       h += '<form id="ajanlat" novalidate><label class="mezo"><span>' + s("nev") + '</span><input id="f-nev" required autocomplete="name"></label><label class="mezo"><span>' + s("email") + '</span><input id="f-email" type="email" required autocomplete="email" inputmode="email"></label><label class="mezo"><span>' + s("tel") + '</span><input id="f-tel" type="tel" autocomplete="tel"></label><label class="mezo"><span>' + s("uzenet") + '</span><textarea id="f-uz" rows="2"></textarea></label><input id="f-web" name="weboldal" tabindex="-1" autocomplete="off" aria-hidden="true" class="rejt"><p class="jelmag">' + s("adatkez") + '</p><label class="pipa-sor"><input type="checkbox" id="f-hir"> <span>' + s("hirlevel_kerem") + '</span></label><button class="gomb teljes" type="submit">' + s("kuld") + '</button><div id="f-eredm"></div></form><button type="button" class="gomb masod teljes" data-lepes="2" style="margin-top:10px">' + s("vissza") + "</button>";
     } else {
-      h = '<div class="kesz-lap"><div class="pipa">✓</div><h2>' + s("kesz") + "</h2><p>" + s("kesz_al") + "</p>" + (F.visszatero ? '<p class="uzenet ok">' + s("kesz_vissza") + "</p>" : "") + '<p><p class="jelmag">' + e(ap(F.ap).nev) + " · " + rovid(F.erk) + " – " + rovid(F.tav) + '</p><button type="button" class="gomb" data-lap="zar">OK</button></div>';
+      h = '<div class="kesz-lap"><div class="pipa">✓</div><h2>' + s("kesz") + "</h2><p>" + s("kesz_al") + "</p>" + (F.visszatero ? '<p class="uzenet ok">' + s("kesz_vissza") + "</p>" : "") + '<p><p class="jelmag">' + e(ap(F.ap).nev) + " · " + rovid(F.erk) + " – " + rovid(F.tav) + '</p><button type="button" class="gomb" data-lap="zar">OK</button><button type="button" class="link" data-ujra>' + (nyelv === "hu" ? "Másik időpontot kérek" : "I'd like other dates") + "</button></div>";
     }
     t.innerHTML = h; savFrissit();
   }
@@ -760,6 +770,11 @@
     else if (r[0] === "adatkezeles") fo.innerHTML = hosszuOldal("adatkezeles", s("adatkezeles"));
     else { fo.innerHTML = fooldal(); if (r[0] === "zebegeny") setTimeout(function () { var z = $("#zebegeny"); if (z) z.scrollIntoView(); }, 0); }
     document.body.classList.toggle("vendegmod", r[0] === "vendeg");      // a vendégkönyvben nincs foglalási sáv
+    // Hol vagyok: aloldalon a logó előtt „←”, mellette a mostani oldal neve (Péter, 11-23: „nem tudom, hol vagyok”, „vissza kell jutnom a főoldalra”)
+    var alold = !!r[0] && r[0] !== "zebegeny", h1 = alold && $("#fo h1");
+    document.body.classList.toggle("alold", alold);
+    $("#hol").textContent = h1 ? h1.textContent.trim() : "";
+    $(".logo").setAttribute("aria-label", alold ? (nyelv === "hu" ? "Vissza a főoldalra" : "Back to the home page") : "Akvarell");
     lab(); savFrissit(); fejleces();
   }
   function atmenet(fn) { if (document.startViewTransition && !matchMedia("(prefers-reduced-motion: reduce)").matches) document.startViewTransition(fn); else fn(); }
@@ -801,11 +816,19 @@
     var hv = ev.target.closest("[data-hetvege]");
     if (hv) { var sz0 = dt(hv.dataset.hetvege); F.erk = iso(new Date(sz0.getTime() - 864e5)); F.tav = iso(new Date(sz0.getTime() + 864e5)); F.ho = new Date(sz0.getFullYear(), sz0.getMonth(), 1); F.ap = hv.dataset.ap || null; lapNyit(hv.dataset.ap); savFrissit(); return; }
     var v = ev.target.closest("[data-valaszt]"); if (v && !v.disabled) { F.ap = v.dataset.valaszt; F.lepes = 3; lapRajz(); return; }
+    if (ev.target.closest("[data-ujra]")) { ujKezdes(); lapRajz(); return; }
+    if (ev.target.closest("[data-haza]")) {
+      ev.preventDefault(); ["#lap", "#menulap"].forEach(function (q) { var d = $(q); if (d.open) d.close(); });
+      if (location.hash && location.hash !== "#/") location.hash = "#/"; else rajzol();
+      window.scrollTo(0, 0); return;
+    }
+    if (ev.target.closest("#lap-vissza")) { F.lepes = Math.max(1, F.lepes - 1); if (F.lepes === 1) F.tav = null; lapRajz(); return; }
     var ls = ev.target.closest("[data-lepes]"); if (ls) { F.lepes = +ls.dataset.lepes; if (F.lepes === 1) F.tav = null; lapRajz(); return; }
     var p = ev.target.closest("[data-pipa]");
     if (p) { var all = +p.dataset.pipa, kl = kesz(), i = kl.indexOf(all); if (i >= 0) kl.splice(i, 1); else kl.push(all); keszIr(kl); kihAllapot(); return; }
   });
   $("#lap").addEventListener("click", function (ev) { if (ev.target === this) this.close(); });
+  $("#lap").addEventListener("close", function () { if (F.lepes === 4) ujKezdes(); });
   $("#menulap").addEventListener("click", function (ev) { if (ev.target === this) this.close(); });
   document.addEventListener("change", function (ev) { if (ev.target.dataset && ev.target.dataset.allomas && ev.target.files && ev.target.files[0]) szelfiKuld(ev.target); });
   document.addEventListener("submit", function (ev) { if (ev.target.id === "ajanlat") ajanlatKuld(ev); if (ev.target.id === "uzenet") uzenetKuld(ev); if (ev.target.id === "ert-urlap") { ev.preventDefault(); ertekelesKuld(); } if (ev.target.id === "kartya-urlap") { ev.preventDefault(); kartyaKer(); } if (ev.target.id === "vk-uzenet") { ev.preventDefault(); vendegKuld("egyeb", $("#vk-sz").value); } });

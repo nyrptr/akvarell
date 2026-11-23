@@ -338,3 +338,22 @@ img.nincskep{visibility:hidden}
   .sav .gomb{min-height:44px;padding:0 16px}
   body{padding-bottom:calc(72px + var(--alj) + env(safe-area-inset-bottom))}
 }
+
+.modosit{display:flex;flex-wrap:wrap;gap:4px 16px;margin:-6px 0 6px}
+.kuldve-sor{margin:0 0 12px}
+.kesz-lap button.link{display:block;margin:6px auto 0}
+
+/* hol vagyok: aloldalon „← Akvarell / Amrita” a fejlécben (Péter, 11-23) */
+.logo .vissza-nyil{display:none;margin-right:6px;font-family:system-ui,sans-serif}
+body.alold .logo .vissza-nyil{display:inline}
+.logo .hol{display:none;font:500 14px/1.2 system-ui,-apple-system,sans-serif;margin-left:8px;opacity:.85;max-width:44vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body.alold .logo .hol:not(:empty){display:inline-block}
+body.alold .logo .hol:not(:empty)::before{content:"· ";}
+.lap .fejsor .lapvissza{min-width:44px;min-height:44px;border:0;background:none;font-size:24px;line-height:1;color:var(--tus);cursor:pointer;margin-left:-12px}
+@media (max-width:440px){
+  body.alold .logo{flex-wrap:wrap;align-content:center;min-width:0;line-height:1.15}
+  body.alold .logo .hol:not(:empty){flex-basis:100%;margin:0 0 0 22px;max-width:100%;font-size:12px}
+  body.alold .logo .hol:not(:empty)::before{content:none}
+}
+.fej .menugomb,.fej .nyelv{flex-shrink:0}
+.fej .logo{min-width:0}
