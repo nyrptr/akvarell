@@ -229,3 +229,9 @@
 - Mi: `bash tools/proba/mind.sh` egyben futtatja a generált-fájl ellenőrzést, a szabályőrt, ár-, belépés-, Access-tesztet, az utakat és a böngészős kaput (a helyi szervert maga indítja és leállítja; a 3 ismert OVF-503 megengedett). `eles_fust.sh`: beolvasztás utáni, csak olvasó ellenőrzés az éles címen (oldal, haz.js, API, admin; a haz.js egyezik a tárolóéval).
 - Miért: a kézi indítás és az Előnézet védettsége (302, nem érhető el) hibaforrás volt a szétválasztás 1. lépésénél.
 - Tesztelt: mind.sh MIND RENDBEN; eles_fust.sh az éles címen. NEM tesztelt: a PR-kapuban (GitHub Actions) futtatva.
+
+## 2026-11-23 · KAPOCS-chat · Szétválasztás 2. lépés: a kiemelt napok szabálya a ház beállításában
+- Fájlok: `hazak/akvarell/haz.json` (`ar.kiemelt`), GENERÁLT `haz.js` ×2, `functions/_kozos/ar.js`, `app.js`, `index.html` (?v=).
+- Mi: a kiemelt (hétvégi) éjszaka szabálya (péntek, szombat, június–augusztus, dec. 24-től, húsvét −2…0, pünkösd 48–49. nap) a `haz.json`-ból jön, a böngészőben és a szerveren is. A kiemelt napok nem változtak.
+- Tesztelt: régi és új szerver `kiemelt()` 2020–2040 között 7305 napon azonos (0 eltérés); régi/új ár 13 440 tartózkodáson azonos; `mind.sh`: MIND RENDBEN (szabályőr, ár 1467/0, belépés, Access, utak 5/5, kapu: csak a 3 ismert helyi OVF-503).
+- NEM tesztelt: éles telepítésen (beolvasztás után `eles_fust.sh`). A közös, importálható árfájl (az ar_teszt szöveges kivágásának kiváltása) a következő lépés.
