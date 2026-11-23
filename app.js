@@ -838,6 +838,25 @@
   });
   window.addEventListener("scroll", fejleces, { passive: true });
 
+  /* Vízszintes sávok (apartmanok, élmények, képsor): egérrel is lapozhatók legyenek (Kata, 11-23: asztali gépen nem ment).
+     Nyilak csak egerű gépen látszanak (CSS: hover:hover + pointer:fine); billentyű ←/→ fókuszban; érintésen a görgetés marad. */
+  function lapozok() {
+    document.querySelectorAll(".sor:not([data-lap]),.galeria:not([data-lap])").forEach(function (el) {
+      el.dataset.lap = "1"; el.tabIndex = 0;
+      var w = document.createElement("div"); w.className = "savlap";
+      el.parentNode.insertBefore(w, el); w.appendChild(el);
+      w.insertAdjacentHTML("beforeend", '<button type="button" class="nyil bal" data-nyil="-1" aria-label="Előző / Previous">‹</button><button type="button" class="nyil jobb" data-nyil="1" aria-label="Következő / Next">›</button>');
+      var allapot = function () { w.dataset.bal = el.scrollLeft <= 2 ? "0" : "1"; w.dataset.jobb = el.scrollLeft + el.clientWidth >= el.scrollWidth - 2 ? "0" : "1"; };
+      el.addEventListener("scroll", allapot, { passive: true }); allapot();
+      el.addEventListener("keydown", function (ev) { if (ev.key === "ArrowRight" || ev.key === "ArrowLeft") { ev.preventDefault(); el.scrollBy({ left: (ev.key === "ArrowRight" ? 1 : -1) * el.clientWidth * 0.85, behavior: "smooth" }); } });
+    });
+  }
+  document.addEventListener("click", function (ev) {
+    var b = ev.target.closest("[data-nyil]"); if (!b) return;
+    var el = b.parentNode.querySelector(".sor,.galeria"); if (el) el.scrollBy({ left: +b.dataset.nyil * el.clientWidth * 0.85, behavior: "smooth" });
+  });
+  new MutationObserver(lapozok).observe($("#fo"), { childList: true, subtree: true }); lapozok();
+
   /* iOS 26 Safari: a lebegő alsó böngészősáv a lent rögzített elemekre úszik → a sáv feljebb kerül (veledaholnapert CSAPDA 11-17) */
   (function () {
     var ua = navigator.userAgent, v = /Version\/(\d+)/.exec(ua);
