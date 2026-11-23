@@ -1,5 +1,6 @@
 // A szállás árának számítása a szerveren (ugyanaz a szabály, mint az app.js `arSzamol`-jában; a kettő együtt változik,
 // egyezésüket a tools/proba/ar_teszt.mjs ellenőrzi). A vendég böngészője által küldött ár így csak tájékoztató: a szerver számol.
+import { HAZ } from './haz.js';
 const NAPMS = 864e5;
 const d12 = (iso) => new Date(iso + 'T12:00:00Z');
 export const valosNap = (iso) => /^\d{4}-\d{2}-\d{2}$/.test(iso) && !isNaN(d12(iso)) && d12(iso).toISOString().slice(0, 10) === iso;
@@ -22,5 +23,6 @@ export function arSzamol(a, erk, tav, felnott, gyerek) {
     const hv = kiemelt(d);
     szallas += felnott >= 3 ? (hv ? a.ar3_hetvege : a.ar3_hetkoznap) : (hv ? a.ar_hetvege : a.ar_hetkoznap);
   }
-  return { ej, szallas, gyerek: gyerek * 15000 * ej, egy: ej === 1 ? 20000 : 0, kedvezmeny: ej >= 7 ? Math.round(szallas * 0.05) : 0, ifa: 750 * felnott * ej };
+  const R = HAZ.ar;   // a ház árszabálya: hazak/<ház>/haz.json
+  return { ej, szallas, gyerek: gyerek * R.gyerek_ejszakankent * ej, egy: ej === 1 ? R.egy_ejszakas_felar : 0, kedvezmeny: ej >= R.hosszu_tartozkodas.min_ejszaka ? Math.round(szallas * R.hosszu_tartozkodas.kedvezmeny_szazalek / 100) : 0, ifa: R.ifa_fo_ejszakankent * felnott * ej };
 }

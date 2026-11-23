@@ -2,10 +2,11 @@
 // Futtatás: TZ=Europe/Budapest node tools/proba/ar_teszt.mjs  → 0 HIBA
 import { readFileSync } from 'node:fs';
 import * as S from '../../functions/_kozos/ar.js';
+import { HAZ } from '../../functions/_kozos/haz.js';
 const src = readFileSync(new URL('../../app.js', import.meta.url), 'utf8');
 const resz = (nev) => { const i = src.indexOf('function ' + nev + '('); let n = 0, j = src.indexOf('{', i); for (let k = j; k < src.length; k++) { if (src[k] === '{') n++; if (src[k] === '}' && --n === 0) return src.slice(i, k + 1); } };
-const K = new Function(`var F = { extrak: {} }, nyelv = 'hu', window = {}; function visszaKed() { return 0; } function dt(k) { return new Date(k + "T12:00:00"); }
-  ${resz('husvet')} ${resz('kiemelt')} ${resz('extraOssz')} ${resz('arSzamol')} return { kiemelt, arSzamol, dt };`)();
+const K = new Function('HAZ', `var F = { extrak: {} }, nyelv = 'hu', window = {}; function visszaKed() { return 0; } function dt(k) { return new Date(k + "T12:00:00"); }
+  ${resz('husvet')} ${resz('kiemelt')} ${resz('extraOssz')} ${resz('arSzamol')} return { kiemelt, arSzamol, dt };`)(HAZ);
 let hiba = 0, db = 0;
 for (let d = new Date('2026-01-01T12:00:00Z'); d < new Date('2030-01-01T12:00:00Z'); d.setUTCDate(d.getUTCDate() + 1)) {
   const iso = d.toISOString().slice(0, 10); db++;

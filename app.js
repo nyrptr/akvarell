@@ -4,7 +4,7 @@
    Duna-vízállás, vízhőfok és időjárás a saját /api/zebegeny végponton (OVF, met.no). */
 (function () {
   "use strict";
-  var T = window.TARTALOM, LAT = 47.80, LON = 18.91;
+  var T = window.TARTALOM, HAZ = window.HAZ, LAT = 47.80, LON = 18.91;
   var nyelv = "hu";
   try { nyelv = localStorage.getItem("akv-nyelv") || ((navigator.language || "hu").slice(0, 2) === "hu" ? "hu" : "en"); } catch (e) {}
   var foglalt = {}, szelfik = [], duna = null, ido = null;
@@ -156,7 +156,7 @@
     return (kul >= -2 && kul <= 0) || kul === 48 || kul === 49;
   }
   /* Hosszú hétvégék 2026 (Ernő Árak oldala): ha a tartózkodás érinti, legalább ennyi éjszaka kell */
-  var HOSSZU = [["2026-05-01", "2026-05-03", 3], ["2026-05-23", "2026-05-25", 3], ["2026-10-23", "2026-10-25", 3], ["2026-04-03", "2026-04-06", 4], ["2026-08-20", "2026-08-23", 4], ["2026-12-24", "2026-12-27", 4]];
+  var HOSSZU = HAZ.ar.hosszu_hetvegek;
   function minEj(erk, tav) { var min = 1; HOSSZU.forEach(function (h) { if (erk <= h[1] && tav > h[0]) min = Math.max(min, h[2]); }); return min; }
   function extraOssz(ej) {
     var o = 0, L = [];
@@ -174,7 +174,7 @@
       szallas += felnott >= 3 ? (hv ? a.ar3_hetvege : a.ar3_hetkoznap) : (hv ? a.ar_hetvege : a.ar_hetkoznap);
       ej++; d.setDate(d.getDate() + 1);
     }
-    var gy = gyerek * 15000 * ej, egy = ej === 1 ? 20000 : 0, ked = ej >= 7 ? Math.round(szallas * 0.05) : 0, ifa = 750 * felnott * ej, ex = extraOssz(ej);
+    var R = HAZ.ar, gy = gyerek * R.gyerek_ejszakankent * ej, egy = ej === 1 ? R.egy_ejszakas_felar : 0, ked = ej >= R.hosszu_tartozkodas.min_ejszaka ? Math.round(szallas * R.hosszu_tartozkodas.kedvezmeny_szazalek / 100) : 0, ifa = R.ifa_fo_ejszakankent * felnott * ej, ex = extraOssz(ej);
     var vissza = Math.round(szallas * visszaKed() / 100);          // visszatérő vendég (vendégkártya); a szerver újra ellenőrzi
     return { ej: ej, szallas: szallas, gyerek: gy, egy: egy, kedvezmeny: ked, vissza: vissza, extra: ex, ifa: ifa, ossz: szallas + gy + egy - ked - vissza + ex.ossz };
   }

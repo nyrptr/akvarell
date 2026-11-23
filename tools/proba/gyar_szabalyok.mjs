@@ -49,4 +49,8 @@ const HAZNEV = /akvarell|szegf[uű]|zebegény|zebegeny|ernő|erno|amrita/i;
 if (existsSync(join(gyoker, 'motor'))) for (const f of fajlok('motor')) olv(f).split('\n').forEach((sor, i) => {
   if (HAZNEV.test(sor)) H('ház- vagy helynév a motorban (a `hazak/<ház>/`-ba való)', `${f}:${i + 1}: ${sor.trim().slice(0, 80)}`);
 });
+// 9. A ház beállításából generált fájlok frissek (haz.json → hazak/<ház>/haz.js és functions/_kozos/haz.js); kézzel szerkesztve nem maradhatnak.
+import { spawnSync } from 'node:child_process';
+const gen = spawnSync('python3', [join(gyoker, 'scripts/haz_gen.py'), '--ellenoriz'], { encoding: 'utf8' });
+if (gen.status !== 0) H('a ház generált fájlja elavult (python3 scripts/haz_gen.py)', (gen.stdout || gen.stderr || '').trim().split('\n')[0]);
 console.log(hiba, 'HIBA'); process.exit(hiba ? 1 : 0);

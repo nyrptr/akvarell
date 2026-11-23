@@ -216,3 +216,10 @@
 ## 2026-11-22 – Claude (munka-kartya-szazalek) – a kártyaoldal a valódi kedvezményt írja
 - Hiba (a videó felvételekor derült ki): a QR-ról közvetlenül megnyitott `#/kartya` oldal a beállítások megérkezése előtt rajzolódott, és nem frissült, ezért a kezelőben 5%-ra állított kedvezmény mellett is „10%”-ot ígért. 0% beállításnál szintén 10%-ot írt (`|| 10`). Javítva: a beállítások után újrarajzolja (ha még nem gépeltek), és a 0 azt jelenti: nincs ígéret. Ugyanez a `|| 10` a nyomtatható QR-kártyán (admin) is javítva.
 - Teszt: új `tools/proba/kartya_szazalek.py` (5% → „5%”, 0% → nincs „10%”, 10% → „10%”): 0 HIBA. `gyar_szabalyok.mjs`: 0 HIBA. NEM tesztelt: angol nyelvű kártyaoldal, éles Cloudflare gyorsítótár (az `/api/adat` 60 mp-ig gyorsítótárban van, ezért a kezelői változás a vendég oldalán legfeljebb ~1 percet késik).
+
+## 2026-11-23 · KAPOCS-chat · Szétválasztás 1. lépés: az árszabály egyetlen forrásból
+- Fájlok: `hazak/akvarell/haz.json` (új), `scripts/haz_gen.py` (új), GENERÁLT: `hazak/akvarell/haz.js`, `functions/_kozos/haz.js`; `app.js`, `functions/_kozos/ar.js`, `index.html`, `tools/proba/ar_teszt.mjs`, `tools/proba/gyar_szabalyok.mjs` (9. szabály).
+- Mi: a gyerekár, az egyéjszakás felár, a hosszú tartózkodás kedvezménye, az IFA és a hosszú hétvégék listája eddig két helyen volt beégetve (böngésző és szerver); mostantól a `haz.json`-ból generált fájlt olvassa mindkettő. Az ár értéke nem változott.
+- Miért: ALAPELV 3. pont (árszabály egy forrásból), a motor ház-semlegessé tételének első lépése.
+- Tesztelt: gyar_szabalyok 0 HIBA; ar_teszt 1467 eset 0 HIBA; régi és új szerver-ár 13 440 tartózkodáson azonos (0 eltérés); utak 5/5; belepes_teszt rendben; kapu.py: 3 ismert helyi OVF-503 (api/zebegeny), egyéb hiba nincs; képernyőkép nézve.
+- NEM tesztelt: valódi Cloudflare-telepítésen (az Előnézeten ellenőrzendő). A kiemelt napok szabálya (hétvége, nyár, húsvét) még kódban van, nem a haz.json-ban: következő lépés.
