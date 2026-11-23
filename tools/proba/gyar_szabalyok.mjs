@@ -43,4 +43,10 @@ const tablak = [...olv('db/schema.sql').matchAll(/CREATE TABLE IF NOT EXISTS (\w
 for (const t of tablak) if (!adm.includes(`'${t}'`) && !['gyorsitotar', 'kezelo', 'kezelo_munkamenet', 'kezelo_link'].includes(t)) H('a teljes mentésből hiányzó tábla', t);
 // a belépés táblái (jelszó-lenyomat, munkamenetek) szándékosan NEM kerülnek a letölthető mentésbe
 if (/'kezelo'|'kezelo_munkamenet'|'kezelo_link'/.test(adm)) H('a belépés adatai (fiókok, munkamenetek, linkek) nem kerülhetnek a letölthető mentésbe', 'functions/admin/api/[[ut]].js');
+// 8. Őr-szabály a motor szétválasztáshoz (2026-11-23, Péter): a `motor/` mappában nincs ház- vagy helynév; ami házhoz kötött, az `hazak/<ház>/`-ban él.
+import { existsSync } from 'node:fs';
+const HAZNEV = /akvarell|szegf[uű]|zebegény|zebegeny|ernő|erno|amrita/i;
+if (existsSync(join(gyoker, 'motor'))) for (const f of fajlok('motor')) olv(f).split('\n').forEach((sor, i) => {
+  if (HAZNEV.test(sor)) H('ház- vagy helynév a motorban (a `hazak/<ház>/`-ba való)', `${f}:${i + 1}: ${sor.trim().slice(0, 80)}`);
+});
 console.log(hiba, 'HIBA'); process.exit(hiba ? 1 : 0);
