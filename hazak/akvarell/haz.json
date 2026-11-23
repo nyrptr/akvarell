@@ -1,0 +1,44 @@
+{
+ "_leiras": "Az Akvarell ház beállítása (ALAPELV 3. pont). Az árszabály egy forrása: ezt olvassa a böngésző (hazak/akvarell/haz.js) és a szerver (functions/_kozos/haz.js); generálás: python3 scripts/haz_gen.py. Kézzel a két generált fájlt ne szerkeszd.",
+ "ar": {
+  "gyerek_ejszakankent": 15000,
+  "egy_ejszakas_felar": 20000,
+  "hosszu_tartozkodas": {
+   "min_ejszaka": 7,
+   "kedvezmeny_szazalek": 5
+  },
+  "ifa_fo_ejszakankent": 750,
+  "hosszu_hetvegek": [
+   [
+    "2026-05-01",
+    "2026-05-03",
+    3
+   ],
+   [
+    "2026-05-23",
+    "2026-05-25",
+    3
+   ],
+   [
+    "2026-10-23",
+    "2026-10-25",
+    3
+   ],
+   [
+    "2026-04-03",
+    "2026-04-06",
+    4
+   ],
+   [
+    "2026-08-20",
+    "2026-08-23",
+    4
+   ],
+   [
+    "2026-12-24",
+    "2026-12-27",
+    4
+   ]
+  ]
+ }
+}
