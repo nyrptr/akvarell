@@ -41,3 +41,4 @@ Közös gyár-szabályok: Project `claude/gyar.md` (tükör: `nyrptr/Iagent` `gy
 1. Bejegyzés a `FEJLESZTESI-NAPLO.md`-be (dátum, ki, fájlok, mi és miért, mi nem tesztelt).
 2. Állapotsor: `nyrptr/veledaholnapert` `jegyzetek` ág, `tools/allapot.py`; tanulság: `claude/tanulsagok.md`.
 3. Új fiók/kulcs/kötés: a Pult Gépház-listájába is.
+- Vízszintes görgetőhöz (`.sor`, `.galeria`) kötelező nem-érintős vezérlő (nyíl + ←/→); a `tools/proba/lapozas_proba.py` egér- és érintős profillal ellenőrzi (mind.sh része). Új CSS-osztály előtt keresd meg, nincs-e már ilyen nevű (a `.lapozo` ütközött, 11-23).

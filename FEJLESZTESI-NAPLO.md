@@ -235,3 +235,10 @@
 - Mi: a kiemelt (hétvégi) éjszaka szabálya (péntek, szombat, június–augusztus, dec. 24-től, húsvét −2…0, pünkösd 48–49. nap) a `haz.json`-ból jön, a böngészőben és a szerveren is. A kiemelt napok nem változtak.
 - Tesztelt: régi és új szerver `kiemelt()` 2020–2040 között 7305 napon azonos (0 eltérés); régi/új ár 13 440 tartózkodáson azonos; `mind.sh`: MIND RENDBEN (szabályőr, ár 1467/0, belépés, Access, utak 5/5, kapu: csak a 3 ismert helyi OVF-503).
 - NEM tesztelt: éles telepítésen (beolvasztás után `eles_fust.sh`). A közös, importálható árfájl (az ar_teszt szöveges kivágásának kiváltása) a következő lépés.
+
+## 2026-11-23 · KAPOCS-chat · Asztali gépen is lapozható képsor (Kata megfigyelése)
+- Fájlok: `app.js` (lapozok()), `style.css`, `tools/proba/lapozas_proba.py`, `tools/proba/mind.sh`, `AGENTS.md`, `index.html`/`admin/index.html` (?v=).
+- Mi: a vízszintes sávokra (apartmanok, élmények, képsor) ‹ › nyíl került egerű gépen (hover:hover + pointer:fine), ←/→ billentyű fókuszban; érintésen változatlan. A nyilak a sáv elején/végén eltűnnek.
+- Próba: új `lapozas_proba.py` (asztal 1440/1280, tablet 1024 egérrel, telefon 390 érintéssel): nyíl látszik/nem látszik, lapoz, billentyű lapoz, a sáv kitölti a szélességet. A próba bukik, ha a nyilat elrejtem (ellenőrizve).
+- Hiba menet közben: az első változat a `.lapozo` nevet használta, ami már létezett (blog előző/következő); félbevágta a sávot. Átnevezve `.savlap`-ra; a próba azóta méri a szélességet is.
+- NEM tesztelt: valódi érintős tablet és Safari/Firefox egérrel; csak Chromium.

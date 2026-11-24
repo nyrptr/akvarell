@@ -357,3 +357,14 @@ body.alold .logo .hol:not(:empty)::before{content:"· ";}
 }
 .fej .menugomb,.fej .nyelv{flex-shrink:0}
 .fej .logo{min-width:0}
+
+/* Egérrel lapozható sávok (11-23): a nyilak csak egerű gépen látszanak, érintésen a görgetés marad */
+.savlap{position:relative}
+.nyil{display:none}
+@media (hover:hover) and (pointer:fine){
+  .nyil{display:flex;position:absolute;top:calc(50% - 22px);width:44px;height:44px;border-radius:50%;align-items:center;justify-content:center;background:var(--lap);color:var(--tus);border:1px solid var(--vonal);box-shadow:0 4px 14px rgba(29,42,53,.18);font-size:28px;line-height:1;cursor:pointer;z-index:3;padding:0}
+  .nyil.bal{left:6px}.nyil.jobb{right:6px}
+  .nyil:hover{background:var(--duna2)}
+  .savlap[data-bal="0"] .nyil.bal,.savlap[data-jobb="0"] .nyil.jobb{display:none}
+  .sor:focus-visible,.galeria:focus-visible{outline:2px solid var(--duna);outline-offset:2px}
+}

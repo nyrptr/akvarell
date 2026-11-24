@@ -14,6 +14,8 @@ M=$(mktemp -d)
 WRANGLER_SEND_METRICS=false CI=1 setsid npx --yes wrangler pages dev . --port 8788 --d1 DB=proba --persist-to "$M" --binding HELYI_KEZELO=igen --binding LEVEL_PROBA=igen --binding OLDAL_URL=http://localhost:8788 >/tmp/wr-mind.log 2>&1 &
 SZ=$!
 for i in $(seq 1 90); do curl -s -o /dev/null -w "%{http_code}" http://localhost:8788/api/adat | grep -q 200 && break; sleep 2; done
+L=$(python3 tools/proba/lapozas_proba.py --url http://localhost:8788 2>&1); echo "$L" | tail -4
+echo "$L" | tail -1 | grep -q ' 0 HIBA' || bukik lapozas_proba
 K=$(python3 tools/proba/kapu.py --url http://localhost:8788 --kepek tmp/kapu 2>&1)
 pkill -f "wrangler pages dev" 2>/dev/null; kill "$SZ" 2>/dev/null
 echo "$K" | tail -4
