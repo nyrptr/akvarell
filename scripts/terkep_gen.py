@@ -6,7 +6,7 @@ Használat:
 Az állomások helye és szövege lent, az ALLOMASOK listában van. A terkep.js GENERÁLT, kézzel ne szerkeszd."""
 import json, math, sys, os, random
 import xml.etree.ElementTree as ET
-ITT = os.path.dirname(os.path.abspath(__file__)); ADAT = os.path.join(ITT, 'terkep_adat.json'); KI = os.path.join(ITT, '..', 'terkep.js')
+ITT = os.path.dirname(os.path.abspath(__file__)); ADAT = os.path.join(ITT, 'terkep_adat.json'); KI = os.path.join(ITT, '..', 'hazak', 'akvarell', 'tartalom', 'terkep.js')
 # a térkép kivágása (észak fent): nyugat, dél, kelet, észak
 NY, D, K, E = 18.9012, 47.7948, 18.9162, 47.8092
 SZ = 600; MPF_LON = 111320 * math.cos(math.radians((D + E) / 2)); MPF_LAT = 111320

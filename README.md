@@ -3,7 +3,7 @@
 Statikus oldal (HTML/CSS/JS) + Cloudflare Pages Functions + D1 (a kihívás-képek is). Buildlépés nincs. AI nélkül fut.
 
 ## Részek
-- `index.html`, `app.js`, `style.css`, `tartalom.js` – vendégoldal (HU/EN, saját szöveg; ha az adatbázis nem érhető el, a `tartalom.js` tartalma jelenik meg).
+- `index.html`, `app.js`, `style.css` – a motor vendégoldala; a ház tartalma (HU/EN szöveg, oldalak, blog, térkép) a `hazak/<ház>/tartalom/` mappában él, ez jelenik meg, ha az adatbázis nem érhető el.
 - `admin/` – kezelő telefonra (ajánlatkérések, foglalt napok, árak, szövegek, kihívás-képek, teljes mentés).
 - `functions/api/` – nyilvános végpontok: `adat` (GET), `ajanlat` (POST), `kihivas` (POST, kép).
 - `functions/admin/api/` – kezelő végpontok; Cloudflare Access + aláírt token ellenőrzése + `ADMIN_EMAILS`.
