@@ -53,4 +53,7 @@ if (existsSync(join(gyoker, 'motor'))) for (const f of fajlok('motor')) olv(f).s
 import { spawnSync } from 'node:child_process';
 const gen = spawnSync('python3', [join(gyoker, 'scripts/haz_gen.py'), '--ellenoriz'], { encoding: 'utf8' });
 if (gen.status !== 0) H('a ház generált fájlja elavult (python3 scripts/haz_gen.py)', (gen.stdout || gen.stderr || '').trim().split('\n')[0]);
+// 10. Az árszámítás magja egyetlen helyen él (motor/ar-mag.js); az app.js és a szerver nem tarthat saját másolatot (két helyen beégetett szabály volt a hibaforrás).
+if (/function (husvet|kiemelt)\(/.test(olv('app.js'))) H('az app.js saját húsvét/kiemelt-szabályt tartalmaz (a motor/ar-mag.js-ből kell hívni)', 'app.js');
+if (/function (husvet|kiemelt)\(|export function (husvet|kiemelt)\(/.test(olv('functions/_kozos/ar.js'))) H('a szerver saját húsvét/kiemelt-szabályt tartalmaz (a motor/ar-mag.js-ből kell hívni)', 'functions/_kozos/ar.js');
 console.log(hiba, 'HIBA'); process.exit(hiba ? 1 : 0);

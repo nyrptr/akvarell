@@ -144,17 +144,6 @@
   /* ---------- ár ---------- */
   /* Ernő árai (Árak oldal): hétvége és kiemelt időszak = péntek/szombat éjszaka, június 1–augusztus 31,
      húsvét (nagypéntektől húsvétvasárnapig), pünkösd (szombat, vasárnap), karácsony–szilveszter (dec. 24–31). */
-  function husvet(ev) {
-    var a = ev % 19, b = Math.floor(ev / 100), c = ev % 100, d = Math.floor(b / 4), e2 = b % 4, f2 = Math.floor((b + 8) / 25), g = Math.floor((b - f2 + 1) / 3),
-      h = (19 * a + b - d - g + 15) % 30, i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e2 + 2 * i - h - k) % 7, m = Math.floor((a + 11 * h + 22 * l) / 451);
-    return new Date(ev, Math.floor((h + l - 7 * m + 114) / 31) - 1, ((h + l - 7 * m + 114) % 31) + 1, 12);
-  }
-  function kiemelt(d) {   // a ház szabálya: hazak/<ház>/haz.json ar.kiemelt
-    var K = HAZ.ar.kiemelt, m = d.getMonth() + 1, nap = d.getDate(), wd = d.getDay();
-    if (K.hetnapok.indexOf(wd) >= 0 || K.honapok.indexOf(m) >= 0 || (m === 12 && nap >= K.december_ettol)) return true;
-    var kul = Math.round((d - husvet(d.getFullYear())) / 864e5);
-    return (kul >= K.husvet_tol && kul <= K.husvet_ig) || K.punkosd_napok.indexOf(kul) >= 0;
-  }
   /* Hosszú hétvégék 2026 (Ernő Árak oldala): ha a tartózkodás érinti, legalább ennyi éjszaka kell */
   var HOSSZU = HAZ.ar.hosszu_hetvegek;
   function minEj(erk, tav) { var min = 1; HOSSZU.forEach(function (h) { if (erk <= h[1] && tav > h[0]) min = Math.max(min, h[2]); }); return min; }
@@ -168,15 +157,9 @@
     return { ossz: o, sorok: L };
   }
   function arSzamol(a, erk, tav, felnott, gyerek) {
-    var d = dt(erk), vege = dt(tav), szallas = 0, ej = 0;
-    while (d < vege) {
-      var hv = kiemelt(d);
-      szallas += felnott >= 3 ? (hv ? a.ar3_hetvege : a.ar3_hetkoznap) : (hv ? a.ar_hetvege : a.ar_hetkoznap);
-      ej++; d.setDate(d.getDate() + 1);
-    }
-    var R = HAZ.ar, gy = gyerek * R.gyerek_ejszakankent * ej, egy = ej === 1 ? R.egy_ejszakas_felar : 0, ked = ej >= R.hosszu_tartozkodas.min_ejszaka ? Math.round(szallas * R.hosszu_tartozkodas.kedvezmeny_szazalek / 100) : 0, ifa = R.ifa_fo_ejszakankent * felnott * ej, ex = extraOssz(ej);
-    var vissza = Math.round(szallas * visszaKed() / 100);          // visszatérő vendég (vendégkártya); a szerver újra ellenőrzi
-    return { ej: ej, szallas: szallas, gyerek: gy, egy: egy, kedvezmeny: ked, vissza: vissza, extra: ex, ifa: ifa, ossz: szallas + gy + egy - ked - vissza + ex.ossz };
+    var m = ARMAG.szamol(a, erk, tav, felnott, gyerek, HAZ.ar), ex = extraOssz(m.ej);   // az alap árat a motor közös magja adja (szerver ugyanezt hívja)
+    var vissza = Math.round(m.szallas * visszaKed() / 100);          // visszatérő vendég (vendégkártya); a szerver újra ellenőrzi
+    return { ej: m.ej, szallas: m.szallas, gyerek: m.gyerek, egy: m.egy, kedvezmeny: m.kedvezmeny, vissza: vissza, extra: ex, ifa: m.ifa, ossz: m.szallas + m.gyerek + m.egy - m.kedvezmeny - vissza + ex.ossz };
   }
   function szabadE(id, erk, tav) {
     var fg = foglalt[id] || {}, d = dt(erk), v = dt(tav);

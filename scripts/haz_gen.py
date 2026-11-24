@@ -8,6 +8,14 @@ d = json.load(open(os.path.join(gy, 'hazak', haz, 'haz.json'), encoding='utf-8')
 js = json.dumps(d, ensure_ascii=False, separators=(',', ':'))
 ki = {os.path.join('hazak', haz, 'haz.js'): '/* GENERÁLT (scripts/haz_gen.py) a haz.json-ból. Kézzel ne szerkeszd. */\nwindow.HAZ = ' + js + ';\n',
       os.path.join('functions', '_kozos', 'haz.js'): '// GENERÁLT (scripts/haz_gen.py) a hazak/' + haz + '/haz.json-ból. Kézzel ne szerkeszd.\nexport const HAZ = ' + js + ';\n'}
+# a motor közös magja (ES-modul) -> böngészős másolat (window.ARMAG); ház-független, ezért ház nélkül is generálódik
+import re
+for mag in ['ar-mag']:
+    forr = open(os.path.join(gy, 'motor', mag + '.js'), encoding='utf-8').read()
+    nevek = re.findall(r'^export (?:function|const) (\w+)', forr, re.M)
+    torzs = re.sub(r'^export ', '', forr, flags=re.M)
+    ki[os.path.join('motor', mag + '.browser.js')] = ('/* GENERÁLT (scripts/haz_gen.py) a motor/' + mag + '.js-ből. Kézzel ne szerkeszd. */\n(function () {\n' + torzs +
+        'window.' + mag.replace('-', '').upper() + ' = { ' + ', '.join(nevek) + ' };\n})();\n')
 rossz = 0
 for ut, tart in ki.items():
     p = os.path.join(gy, ut)
