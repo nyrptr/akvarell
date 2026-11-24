@@ -42,6 +42,6 @@ for kulcs, fajl in OLDALAK.items():
     t = (MAPPA / f"{fajl}.txt").read_text()
     kepek = [k for k in t.split("## KÉPEK")[-1].split() if k.startswith("https://") and "-u20" not in k]   # „-u2013”: hibásan mentett fájlnév a régi oldalon (404)
     ki[kulcs] = {"forras": f"https://akvarellzebegeny.hu/{fajl}/", "blokkok": blokkok(t), "kepek": kepek}
-cel = pathlib.Path(__file__).resolve().parents[1] / "oldalak_hosszu.js"
+cel = pathlib.Path(__file__).resolve().parents[1] / "hazak" / "akvarell" / "tartalom" / "oldalak_hosszu.js"
 cel.write_text("/* GENERÁLT (scripts/regi_atvesz.py) – Ernő régi oldalának hosszú szövegei, szó szerint. Kézzel ne szerkeszd. */\nwindow.HOSSZU = " + json.dumps(ki, ensure_ascii=False, indent=0) + ";\n")
 for k, v in ki.items(): print(k, len(v["blokkok"]), "blokk,", len(v["kepek"]), "kép")

@@ -7,7 +7,7 @@ from PIL import Image
 GY = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'); KI = os.path.join(GY, 'kepek')
 ALAP = 'https://akvarellzebegeny.hu/wp-content/uploads/2024/05/'
 nevek, cimek = set(), {}
-for f in ['app.js', 'tartalom.js', 'oldalak.js', 'oldalak_hosszu.js', 'oldalak_hosszu_en.js', 'blog_alap.js', 'db/seed.sql', 'index.html']:
+for f in ['app.js'] + ['hazak/akvarell/tartalom/' + x for x in ['tartalom.js', 'oldalak.js', 'oldalak_hosszu.js', 'oldalak_hosszu_en.js', 'blog_alap.js']] + ['db/seed.sql', 'index.html']:
     t = open(os.path.join(GY, f), encoding='utf8').read()
     for m in re.finditer(r'https://akvarellzebegeny\.hu/wp-content/uploads/[0-9/]+([A-Za-z0-9_.-]+\.(?:jpe?g|png|webp))', t): cimek[m.group(1)] = m.group(0)
     nevek |= set(re.findall(r'(?<![A-Za-z0-9_.-])([A-Za-z0-9_][A-Za-z0-9_.-]*\.(?:jpe?g|png|webp))', t))

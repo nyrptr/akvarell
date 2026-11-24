@@ -21,7 +21,7 @@
 ## 3. Modulok (mind kapcsolható, a kezelőből állítható)
 | Modul | Fájl / végpont |
 | --- | --- |
-| Vendégoldal (SPA, hash-útvonal) | index.html, app.js, style.css, tartalom.js, oldalak*.js |
+| Vendégoldal (SPA, hash-útvonal) | index.html, app.js, style.css; a ház tartalma: hazak/<ház>/tartalom/ |
 | Foglalás-kérés + ár + extrák + IFA | app.js `arSzamol`, /api/ajanlat |
 | Kezelő (Cloudflare Access) | admin/, /admin/api/* |
 | Portálnaptár (iCal be/ki) + dupla foglalás elleni zár | _kozos/naptar.js, /ical/<ap>.ics |
@@ -29,7 +29,7 @@
 | Vendégkártya, házkódos QR, visszatérő kedvezmény, hírlevél | /api/kartya, _kozos/vendeg.js |
 | Pénzügyek (bevétel, kiadás, megspórolt jutalék) | /admin/api/penz |
 | Értékelések (források kattinthatóan, saját igazolt, Google élőben kulccsal) | /api/google, `ertekeles` tábla |
-| Heti blog AI nélkül + állandó cikkek | _kozos/blog.js, blog_alap.js |
+| Heti blog AI nélkül + állandó cikkek | _kozos/blog.js; hazak/<ház>/tartalom/blog_alap.js |
 | Élő helyi adat (Duna: OVF, idő: met.no, naplemente: számítás) | /api/zebegeny |
 
 ## 4. Jogi és platformszabályok (MUST, tanulságok)

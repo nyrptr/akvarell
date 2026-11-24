@@ -8,10 +8,10 @@ Közös gyár-szabályok: Project `claude/gyar.md` (tükör: `nyrptr/Iagent` `gy
 - Kezelő = `/admin/` (Cloudflare Access, e-mailes kód). Péter = szerződött biztosításközvetítő; ennek az oldalnak a készítője, nem tulajdonosa.
 
 ## FELÉPÍTÉS (egy fájl – egy felelősség)
-- Vendégoldal: `index.html`, `app.js` (útvonal, naptár, árbecslés, űrlapok), `style.css`, `tartalom.js` (beégetett HU/EN tartalom – AI és adatbázis nélkül is ez jelenik meg).
+- Vendégoldal: `index.html`, `app.js` (útvonal, naptár, árbecslés, űrlapok), `style.css`, `hazak/akvarell/tartalom/tartalom.js` (a ház beégetett HU/EN tartalma – AI és adatbázis nélkül is ez jelenik meg).
 - Kezelő: `admin/index.html`, `admin/admin.js`.
 - Szerver: `functions/` (Cloudflare Pages Functions). Nyilvános: `api/adat`, `api/ajanlat`, `api/kihivas`, `api/zebegeny` (OVF + met.no, 30 perc gyorsítótár), `kep/[id]`, `ical/[nev]` (saját foglalások iCal-ban). Külső naptár behozatala: `_kozos/naptar.js` (beallitas `ical_<apartman>`). Kezelő: `admin/api/[[ut]].js`. Közös: `_kozos/k.js` (Access-token ellenőrzés), `_kozos/telepit.js` (GENERÁLT).
-- Adatbázis: `db/schema.sql`, `db/seed.sql` (a seed a `tartalom.js`-ből: `node scripts/seed_d1.js tartalom.js db/seed.sql`). Utána: `python3 scripts/telepit_gen.py` (→ `functions/_kozos/telepit.js`; kézzel NE szerkeszd).
+- Adatbázis: `db/schema.sql`, `db/seed.sql` (a seed a `hazak/akvarell/tartalom/tartalom.js`-ből: `node scripts/seed_d1.js hazak/akvarell/tartalom/tartalom.js db/seed.sql`). Utána: `python3 scripts/telepit_gen.py` (→ `functions/_kozos/telepit.js`; kézzel NE szerkeszd).
 - Kötés: `DB` (D1 `akvarell`); a kihívás-képek is itt (BLOB, kliens oldalon 1280 px-re kicsinyítve). KV/R2 nincs. Változó: `ACCESS_AUD` és `ACCESS_TEAM` (mindkettő kötelező), `ADMIN_EMAILS`, `OLDAL_URL` (választható). Titok soha nem kerül a tárolóba.
 
 ## MUNKA
