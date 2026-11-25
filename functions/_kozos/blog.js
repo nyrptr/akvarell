@@ -2,7 +2,8 @@
 // (naplemente), saját adatbázis (szabad apartmanok és ár). Minden szám mellé forrás kerül; kitalált állítás nincs.
 // A hét témája Ernő saját élmény-oldalaiból forog (TEMAK). Az oldalon a szabad helyek mindig élőben frissülnek.
 const LAT = 47.8, LON = 18.91;
-const MET = 'https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=47.8&lon=18.91';
+import { HAZ } from './haz.js';
+const MET = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${HAZ.taj.lat}&lon=${HAZ.taj.lon}`;
 const TEMAK = [
   { id: 'komp', hu: ['Komppal Visegrádra', 'A Nagymaros–Visegrád komp egész évben, minden órában közlekedik. A túlparton a Fellegvár vár, este pedig a jakuzziból nézheted a naplementét.'], en: ['By ferry to Visegrád', 'The Nagymaros–Visegrád ferry runs every hour all year. The citadel waits on the far bank, and in the evening you can watch the sunset from the hot tub.'] },
   { id: 'kilatok', hu: ['Kilátó a falu fölött', 'A Kós Károly-kilátó néhány perc sétára van a főtértől: Zebegényre, a Dunára és a Pilisre néz.'], en: ['A lookout above the village', 'The Károly Kós lookout is a few minutes\' walk from the village square, looking over Zebegény, the Danube and the Pilis hills.'] },
@@ -35,13 +36,13 @@ export async function hetiBejegyzes(env) {
   // időjárás szombat és vasárnap délben (met.no)
   let ido = {};
   try {
-    const m = await (await fetch(MET, { headers: { 'user-agent': 'akvarell-zebegeny github.com/nyrptr/akvarell' } })).json();
+    const m = await (await fetch(MET, { headers: { 'user-agent': HAZ.azonosito + '-taj github.com/nyrptr/akvarell' } })).json();
     for (const t of m.properties.timeseries) {
       if (t.time === `${iso(szo)}T12:00:00Z` || t.time === `${iso(vas)}T12:00:00Z`) ido[t.time.slice(0, 10)] = { t: Math.round(t.data.instant.details.air_temperature), j: (t.data.next_6_hours || t.data.next_1_hours || {}).summary?.symbol_code || '' };
     }
   } catch (e) { }
   const duna = await db.prepare("SELECT ertek FROM gyorsitotar WHERE kulcs = 'duna'").first();
-  const D = duna ? JSON.parse(duna.ertek).nagymaros : null;
+  const D = duna ? JSON.parse(duna.ertek)[HAZ.taj.merce_kulcs] : null;
   // szabad apartmanok péntek–vasárnap (2 éj, 2 felnőtt, hétvégi ár + IFA nélkül)
   const aps = (await db.prepare('SELECT id, nev, ar_hetvege FROM apartman ORDER BY sorrend').all()).results;
   const fog = (await db.prepare('SELECT DISTINCT apartman_id FROM foglalt_nap WHERE nap >= ? AND nap < ?').bind(iso(pen), iso(vas)).all()).results.map(x => x.apartman_id);

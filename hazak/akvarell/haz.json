@@ -10,6 +10,16 @@
   "hero": "Bereny-apartman-nappali.jpg",
   "kilatas": "Szonyi-apartman-furdo-kilatas.jpg"
  },
+ "taj": {
+  "_leiras": "A ház környezete (táj-réteg): hová esik a ház, melyik vízmérce és időjárás-pont tartozik hozzá. A motor ezt olvassa; a táj tartalma (látnivalók, ajánlók, térkép) a hazak/<ház>/tartalom/ mappában él.",
+  "lat": 47.8,
+  "lon": 18.91,
+  "merce": "Nagymaros",
+  "merce_kulcs": "nagymaros",
+  "felvizi_merce": "Esztergom",
+  "felvizi_kulcs": "esztergom",
+  "api": "/api/taj"
+ },
  "ar": {
   "gyerek_ejszakankent": 15000,
   "egy_ejszakas_felar": 20000,

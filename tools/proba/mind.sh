@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Egy parancs, minden PR előtti próba (KAPOCS-chat, 2026-11-23: a kézi indítás hibaforrás volt).
 # Futtatás: bash tools/proba/mind.sh   → a végén "MIND RENDBEN" vagy a hibás lépés neve; a helyi szervert maga indítja és leállítja.
-# A kapu.py 3 ismert helyi hibája (api/zebegeny 503, OVF) megengedett; bármi más hiba bukás.
+# A kapu.py 3 ismert helyi hibája (api/taj 503, OVF) megengedett; bármi más hiba bukás.
 cd "$(dirname "$0")/../.." || exit 1
 ros=0; bukik() { echo "BUKÁS: $1"; ros=1; }
 python3 scripts/haz_gen.py --ellenoriz || bukik "generált ház-fájl elavult (python3 scripts/haz_gen.py)"
@@ -18,7 +18,7 @@ L=$(python3 tools/proba/lapozas_proba.py --url http://localhost:8788 2>&1); echo
 echo "$L" | tail -1 | grep -q ' 0 HIBA' || bukik lapozas_proba
 K=$(python3 tools/proba/kapu.py --url http://localhost:8788 --kepek tmp/kapu 2>&1)
 pkill -f "wrangler pages dev" 2>/dev/null; kill "$SZ" 2>/dev/null
-echo "$K" | tail -4
-HIB=$(echo "$K" | grep '^HIBA' | grep -vc 'api/zebegeny')
+echo "$K" | grep "^HIBA" | grep -vE "api/(zebegeny|taj)" | head -10; echo "$K" | tail -4
+HIB=$(echo "$K" | grep '^HIBA' | grep -vcE 'api/(zebegeny|taj)')
 [ "$HIB" = 0 ] || bukik "kapu.py ($HIB új hiba)"
 [ $ros = 0 ] && echo "MIND RENDBEN" || exit 1
