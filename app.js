@@ -482,7 +482,7 @@
   }
   function blogRend(x, y) { return x.het < y.het ? 1 : x.het > y.het ? -1 : 0; }
   function blogDatum(b) { var d = dt(b.het); return nyelv === "hu" ? d.getFullYear() + ". " + s("hor")[d.getMonth()] + " " + d.getDate() + "." : d.getDate() + " " + s("hor")[d.getMonth()] + " " + d.getFullYear(); }
-  function blogKep(b) { if (b.adat && b.adat.kep) return b.adat.kep; var t = (b.adat || {}).tema, x = (O.elmenyek || []).filter(function (y) { return y.id === t; })[0], k = x && (x.kep || (x.hosszu && H[x.hosszu] && H[x.hosszu].kepek[0])); return k || "Szonyi-apartman-furdo-kilatas.jpg"; }
+  function blogKep(b) { if (b.adat && b.adat.kep) return b.adat.kep; var t = (b.adat || {}).tema, x = (O.elmenyek || []).filter(function (y) { return y.id === t; })[0], k = x && (x.kep || (x.hosszu && H[x.hosszu] && H[x.hosszu].kepek[0])); return k || HAZ.kepek.kilatas; }
   function blogKartya(b) {
     return '<a class="kartya emel" href="#/blog/' + b.id + '"><div class="kep" style="aspect-ratio:16/9"><img class="festek" loading="lazy" src="' + e(kep(blogKep(b))) + '" alt=""><span class="szalag">' + e(blogDatum(b)) + '</span></div><div class="bel"><h3>' + e(b["cim_" + nyelv]) + '</h3><div class="also"><span class="festo">' + s("tovabb") + '</span><span class="nyil">→</span></div></div></a>';
   }
@@ -611,7 +611,7 @@
     var d = VK[tk];
     if (!d) return fejlec(s("vk_cim"), "") + '<p class="jelmag">…</p></section>';
     if (d.hiba) return fejlec(s("vk_cim"), "") + "<p>" + s("vk_nincs") + "</p>" + (O.kapcsolat && O.kapcsolat.tel ? '<a class="gomb" href="' + e(O.kapcsolat.telLink) + '">' + s("vk_hivj") + "</a>" : "") + "</section>";
-    var F2 = d.foglalas, V = d.vk, a = ap(F2.apartman_id) || { kepek: ["Szonyi-apartman-furdo-kilatas.jpg"] }, ma = d.ma || iso(new Date()), ny = nyelv;
+    var F2 = d.foglalas, V = d.vk, a = ap(F2.apartman_id) || { kepek: [HAZ.kepek.kilatas] }, ma = d.ma || iso(new Date()), ny = nyelv;
     var hatra = Math.round((dt(F2.erkezes) - dt(ma)) / 864e5), all;
     all = hatra > 0 ? hatra + " " + s("vk_napmulva") : ma === F2.erkezes ? s("vk_ma_erk") : ma < F2.tavozas ? s("vk_itt") : ma === F2.tavozas ? s("vk_ma_tav") : s("vk_vege");
     var h = '<section class="jelenet ap-hos"><img src="' + e(kep(a.kepek[0])) + '" alt=""><div class="bel"><p class="al">' + s("vk_cim") + " · " + e(F2.apnev) + "</p><h1>" + s("vk_udv") + ", " + e(F2.nyelv === "en" ? F2.nev.split(" ")[0] : F2.nev.split(" ").slice(-1)[0]) + '!</h1><div class="chipek"><span class="chip">' + rovid(F2.erkezes) + " – " + rovid(F2.tavozas) + '</span><span class="chip">' + e(all) + "</span></div></div></section>";

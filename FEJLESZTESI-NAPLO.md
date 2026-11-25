@@ -269,3 +269,7 @@
 - Fontos: a tárolókulcsok értéke változatlan (`akv-nyelv`, `akv-kartya`, `akv-kihivas2`), így a vendégek mentett kártyája, nyelve és kihívás-állása megmarad.
 - Tesztelt: `mind.sh` MIND RENDBEN; a nyitólap képernyőképe (320) azonos tartalmú (név, kép, szöveg).
 - NEM tesztelt: éles telepítésen (beolvasztás után `eles_fust.sh`). Hátra: tájadatok (Zebegény, Nagymaros, Visegrád, kihívás, blog) a táj-modulba; apartman-azonosítók a kódban (szonyi/amrita); a kezelő, a szerver és a stílus házszavai; képek a ház mappájába.
+
+## 2026-11-25 · KAPOCS-chat · Motor-leválasztás 2/c javítás: maradék beégetett képnév
+- Fájl: `app.js` (a vendégkönyv tartalék-képe `HAZ.kepek.kilatas`). A 2/c PR a szabályőr piros ellenőrzésével olvadt be (az új 13. szabály ezt a sort jelezte); az élő oldalon ez nem látszott (a tartalék kép ugyanaz), most javítva.
+- Tesztelt: szabályőr 0 HIBA, `mind.sh` MIND RENDBEN. NEM tesztelt éles telepítésen: `eles_fust.sh`.
