@@ -1,4 +1,4 @@
-/* Akvarell – „Élő akvarell”. Papír, tus, Duna; az égbolt-színek (--eg1, --eg2) a valódi zebegényi napszakból jönnek (app.js). */
+/* Vendégház-motor – „Élő vízfesték” stílus. Papír, tus, folyó; az égbolt-színek (--eg1, --eg2) a ház helyének valódi napszakából jönnek (app.js). */
 :root{
   --papir:#f6f1e7;--lap:#fffdf8;--tus:#1d2a35;--halk:#5b6670;--duna:#2c6a89;--duna2:#d9e8ee;--okker:#b47c26;--piros:#a4453b;--vonal:#e3dac8;--zold:#3c7a59;
   --eg1:#f3d9b1;--eg2:#7fa7c2;--eg-szoveg:#fff;
@@ -89,7 +89,7 @@ body.kezdo .fej:not(.gorg):not(.tomor) .logo{opacity:0;pointer-events:none}
 .teny b{display:block;font-size:17px;margin-top:8px}
 .teny span{color:var(--halk);font-size:15px}
 
-/* élő Zebegény */
+/* élő táj */
 .elo{display:grid;gap:12px;grid-template-columns:repeat(2,1fr)}
 @media (min-width:760px){.elo{grid-template-columns:repeat(4,1fr)}}
 .mero{border-radius:20px;padding:16px;color:#fff;background:linear-gradient(160deg,var(--eg2),color-mix(in oklab,var(--eg2) 50%,#0d1b28));min-height:128px;display:flex;flex-direction:column;justify-content:space-between}
@@ -239,7 +239,7 @@ details.extrak summary{min-height:52px;display:flex;align-items:center;padding:0
   *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
 }
 
-/* ---------- kvíz, holnapi ajánló, Zebegényi hét ---------- */
+/* ---------- kvíz, holnapi ajánló, heti bejegyzés ---------- */
 .valasz{display:grid;gap:10px}
 .opcio{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;min-height:56px;padding:12px 16px;border:1px solid var(--vonal);border-radius:16px;background:var(--papir);cursor:pointer;transition:border-color .2s,transform .2s}
 .opcio:active{transform:scale(.98)}
@@ -299,7 +299,7 @@ body.vendegmod{padding-bottom:24px}
 .bizalom-sor b{color:var(--duna)}
 #ertekelesek,#taj{scroll-margin-top:72px}
 
-/* 10-es kihívás: akvarell térkép – ahol jártál, kiszíneződik */
+/* kihívás: térkép – ahol jártál, kiszíneződik */
 .terkep{margin:14px 0 6px}
 .terkep svg{display:block;width:100%;height:auto;border-radius:18px;border:1px solid var(--vonal);background:#f3e9cf}
 .terkep figcaption{font-size:13px;color:var(--halk);margin-top:6px}
@@ -343,7 +343,7 @@ img.nincskep{visibility:hidden}
 .kuldve-sor{margin:0 0 12px}
 .kesz-lap button.link{display:block;margin:6px auto 0}
 
-/* hol vagyok: aloldalon „← Akvarell / Amrita” a fejlécben (Péter, 11-23) */
+/* hol vagyok: aloldalon „← ház / apartman” a fejlécben */
 .logo .vissza-nyil{display:none;margin-right:6px;font-family:system-ui,sans-serif}
 body.alold .logo .vissza-nyil{display:inline}
 .logo .hol{display:none;font:500 14px/1.2 system-ui,-apple-system,sans-serif;margin-left:8px;opacity:.85;max-width:44vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}

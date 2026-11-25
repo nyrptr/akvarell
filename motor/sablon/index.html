@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{{oldal.cim}}</title>
+<meta name="description" content="{{oldal.leiras}}">
+<meta name="theme-color" content="#f6f1e7">
+<!-- megosztási előnézet (Facebook, Messenger, WhatsApp) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{teljes_nev}}">
+<meta property="og:title" content="{{oldal.og_cim}}">
+<meta property="og:description" content="{{oldal.og_leiras}}">
+<meta property="og:image" content="{{oldal.alap_url}}/kepek/{{kepek.hero}}">
+<meta property="og:locale" content="hu_HU">
+<meta property="og:locale:alternate" content="en_GB">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,600;1,7..72,500&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="/kepek/{{kepek.hero}}">
+<link rel="stylesheet" href="style.css">
+<script type="application/ld+json">
+{{JSONLD}}
+</script>
+<script type="speculationrules">{"prefetch":[{"where":{"href_matches":"/*"},"eagerness":"moderate"}]}</script>
+</head>
+<body>
+<header class="fej" id="fej">
+  <div class="belso">
+    <a class="logo" href="#/" data-haza><span class="vissza-nyil" aria-hidden="true">←</span><span class="logo-szo">{{oldal.logo_szo}}</span><span class="hol" id="hol"></span></a>
+    <nav class="menu" id="menu"></nav>
+    <div class="nyelv" role="group" aria-label="Nyelv / Language">
+      <button type="button" data-ny="hu" aria-pressed="true">HU</button>
+      <button type="button" data-ny="en" aria-pressed="false">EN</button>
+    </div>
+  </div>
+</header>
+<main id="fo"></main>
+<footer class="lab" id="lab"></footer>
+
+<div class="sav" id="sav">
+  <button type="button" class="mi" id="sav-mi" data-lap="nyit"><b id="sav-cim">Mikor jönnél?</b><small id="sav-al">Szabad napok és ár azonnal</small></button>
+  <button type="button" class="gomb" data-lap="nyit" id="sav-gomb">Szabad?</button>
+</div>
+
+<dialog class="lap" id="lap" aria-labelledby="lap-cim">
+  <div class="fogo" aria-hidden="true"></div>
+  <div class="fejsor"><button type="button" class="lapvissza" id="lap-vissza" aria-label="Vissza" hidden>←</button><h2 id="lap-cim">Mikor jönnél?</h2><button type="button" class="zar" data-lap="zar" aria-label="Bezárom">×</button></div>
+  <div class="tartalom" id="lap-tartalom"></div>
+</dialog>
+
+<dialog class="lap menu-lap" id="menulap" aria-labelledby="menu-cim">
+  <div class="fogo" aria-hidden="true"></div>
+  <div class="fejsor"><h2 id="menu-cim">Menü</h2><button type="button" class="zar" data-menuzar aria-label="Bezárom">×</button></div>
+  <div class="tartalom"></div>
+</dialog>
+
+<script src="hazak/{{HAZ_MAPPA}}/tartalom/tartalom.js"></script>
+<script src="hazak/{{HAZ_MAPPA}}/tartalom/ui.js"></script>
+<script src="hazak/{{HAZ_MAPPA}}/tartalom/oldalak.js"></script>
+<script src="hazak/{{HAZ_MAPPA}}/tartalom/oldalak_hosszu.js"></script>
+<script src="hazak/{{HAZ_MAPPA}}/tartalom/oldalak_hosszu_en.js"></script>
+<script src="hazak/{{HAZ_MAPPA}}/tartalom/blog_alap.js"></script>
+<script src="kepek/lista.js"></script>
+<script src="hazak/{{HAZ_MAPPA}}/tartalom/terkep.js"></script>
+<script src="vendor/qrcode.js"></script>
+<script src="hazak/{{HAZ_MAPPA}}/haz.js"></script>
+<script src="motor/ar-mag.browser.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
