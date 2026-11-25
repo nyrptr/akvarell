@@ -255,3 +255,10 @@
 - Miért: Péter 11-24: „a motor kell egyedül magában, hogy rá lehessen kötni”; ez az első szelet, ami fizikailag elválasztja a ház tartalmát a motortól. Magát a szöveget még nem érinti.
 - Tesztelt: `mind.sh` MIND RENDBEN (szabályőr, ár 1468/0, belépés, Access, utak, böngészős kapu 320/390/gép: csak a 3 ismert helyi OVF-503); a seed.sql azonos az új útvonalról generálva.
 - NEM tesztelt: éles telepítésen (beolvasztás után `eles_fust.sh`). Hátra a 2. lépésből: a motor kódjában (app.js, style.css, index.html, functions, admin) maradt házszavak (nevek, színek, címek) kivitele a `haz.json`-ba; a képek (`kepek/`) a ház mappájába.
+
+## 2026-11-25 · KAPOCS-chat · Motor-leválasztás B út, 2. lépés / b: a felületi szövegek a ház tartalmába
+- Fájlok: `hazak/akvarell/tartalom/ui.js` (új: a HU/EN felületi szövegek, az `app.js`-ből kiemelve, szó szerint), `app.js` (`var S = window.UI`), `index.html` (+1 szkript, ?v=), `.github/workflows/pr-kapu.yml`, `tools/proba/gyar_szabalyok.mjs` (a ui.js is a nyilvános szövegek tiltott-szó ellenőrzésében; +12. szabály: HU és EN kulcsai azonosak).
+- Mi: ~55 sor ház-specifikus szöveg (apartmanok, „Zebegény ma”, festők, jakuzzi, kihívás, blog, kvíz, vendégkártya, árak, bemutató) az `app.js`-ből a ház mappájába került. Új háznál ezt a fájlt kell megírni.
+- Miért: Péter 11-24: a motor önállóan, rákötésre készen. Az `app.js`-ben ezzel a szöveg-blokk házmentes; a maradék házszó (cím, név, képnevek, apartman-azonosítók, tájadatok) a következő szeletekben megy a `haz.json`-ba / a táj-modulba.
+- Tesztelt: `mind.sh` MIND RENDBEN (szabályőr 0 HIBA; ár 1468/0; belépés, Access, utak, böngészős kapu 320/390/gép: csak a 3 ismert helyi OVF-503).
+- NEM tesztelt: éles telepítésen (beolvasztás után `eles_fust.sh`).

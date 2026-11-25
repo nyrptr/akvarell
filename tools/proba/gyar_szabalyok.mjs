@@ -7,7 +7,7 @@ const fajlok = (d) => readdirSync(join(gyoker, d)).flatMap(n => statSync(join(gy
 let hiba = 0; const H = (szabaly, hol) => { hiba++; console.log('HIBA', szabaly, '–', hol); };
 
 // 1. Nyilvános szövegben nincs helyőrző ([…], „Ernő adja meg”, kitöltendő, TODO). Ami még hiányzik, az nem jelenik meg.
-const NYILVANOS = ['hazak/akvarell/tartalom/tartalom.js', 'hazak/akvarell/tartalom/oldalak.js', 'hazak/akvarell/tartalom/oldalak_hosszu.js', 'hazak/akvarell/tartalom/oldalak_hosszu_en.js', 'hazak/akvarell/tartalom/blog_alap.js', 'db/seed.sql'];
+const NYILVANOS = ['hazak/akvarell/tartalom/tartalom.js', 'hazak/akvarell/tartalom/ui.js', 'hazak/akvarell/tartalom/oldalak.js', 'hazak/akvarell/tartalom/oldalak_hosszu.js', 'hazak/akvarell/tartalom/oldalak_hosszu_en.js', 'hazak/akvarell/tartalom/blog_alap.js', 'db/seed.sql'];
 const HELYORZO = /\[(?:[^\]"'\n]*?(?:kitöltendő|adja meg|to be set|szám|number|ide|TODO|xx)[^\]"'\n]*)\]|\bTODO\b|\bkitöltendő\b|Lorem ipsum/i;
 for (const f of NYILVANOS) olv(f).split('\n').forEach((sor, i) => {
   if (/^\s*(\/\/|\/\*|\*|--)/.test(sor)) return;                       // megjegyzés: nem jelenik meg
@@ -58,4 +58,8 @@ if (/function (husvet|kiemelt)\(/.test(olv('app.js'))) H('az app.js saját húsv
 if (/function (husvet|kiemelt)\(|export function (husvet|kiemelt)\(/.test(olv('functions/_kozos/ar.js'))) H('a szerver saját húsvét/kiemelt-szabályt tartalmaz (a motor/ar-mag.js-ből kell hívni)', 'functions/_kozos/ar.js');
 // 11. A motor gyökerében nincs ház-tartalom (2026-11-24): a szövegek, oldalak, blog, térkép a `hazak/<ház>/tartalom/` mappában élnek.
 for (const f of ['tartalom.js', 'oldalak.js', 'oldalak_hosszu.js', 'oldalak_hosszu_en.js', 'blog_alap.js', 'terkep.js']) if (existsSync(join(gyoker, f))) H('ház-tartalom a motor gyökerében (a `hazak/<ház>/tartalom/`-ba való)', f);
+// 12. A felületi szövegek (HU/EN) a házé: ui.js. Mindkét nyelven ugyanazok a kulcsok kellenek (különben az egyik nyelven üres hely marad).
+{ const W = {}; new Function('window', olv('hazak/akvarell/tartalom/ui.js'))(W); const hu = Object.keys(W.UI.hu), en = Object.keys(W.UI.en);
+  for (const k of hu) if (!en.includes(k)) H('a ui.js angol szövegéből hiányzik a kulcs: ' + k, 'hazak/akvarell/tartalom/ui.js');
+  for (const k of en) if (!hu.includes(k)) H('a ui.js magyar szövegéből hiányzik a kulcs: ' + k, 'hazak/akvarell/tartalom/ui.js'); }
 console.log(hiba, 'HIBA'); process.exit(hiba ? 1 : 0);
