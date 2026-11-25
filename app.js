@@ -482,7 +482,7 @@
   }
   function blogRend(x, y) { return x.het < y.het ? 1 : x.het > y.het ? -1 : 0; }
   function blogDatum(b) { var d = dt(b.het); return nyelv === "hu" ? d.getFullYear() + ". " + s("hor")[d.getMonth()] + " " + d.getDate() + "." : d.getDate() + " " + s("hor")[d.getMonth()] + " " + d.getFullYear(); }
-  function blogKep(b) { if (b.adat && b.adat.kep) return b.adat.kep; var t = (b.adat || {}).tema, x = (O.elmenyek || []).filter(function (y) { return y.id === t; })[0], k = x && (x.kep || (x.hosszu && H[x.hosszu] && H[x.hosszu].kepek[0])); return k || "Szonyi-apartman-furdo-kilatas.jpg"; }
+  function blogKep(b) { if (b.adat && b.adat.kep) return b.adat.kep; var t = (b.adat || {}).tema, x = (O.elmenyek || []).filter(function (y) { return y.id === t; })[0], k = x && (x.kep || (x.hosszu && H[x.hosszu] && H[x.hosszu].kepek[0])); return k || HAZ.kepek.kilatas; }
   function blogKartya(b) {
     return '<a class="kartya emel" href="#/blog/' + b.id + '"><div class="kep" style="aspect-ratio:16/9"><img class="festek" loading="lazy" src="' + e(kep(blogKep(b))) + '" alt=""><span class="szalag">' + e(blogDatum(b)) + '</span></div><div class="bel"><h3>' + e(b["cim_" + nyelv]) + '</h3><div class="also"><span class="festo">' + s("tovabb") + '</span><span class="nyil">→</span></div></div></a>';
   }
