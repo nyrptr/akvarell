@@ -8,7 +8,8 @@
  "regi_oldal": "https://akvarellzebegeny.hu/",
  "kepek": {
   "hero": "Bereny-apartman-nappali.jpg",
-  "kilatas": "Szonyi-apartman-furdo-kilatas.jpg"
+  "kilatas": "Szonyi-apartman-furdo-kilatas.jpg",
+  "jakuzzi": "Jakuzzi-5.jpg"
  },
  "taj": {
   "_leiras": "A ház környezete (táj-réteg): hová esik a ház, melyik vízmérce és időjárás-pont tartozik hozzá. A motor ezt olvassa; a táj tartalma (látnivalók, ajánlók, térkép) a hazak/<ház>/tartalom/ mappában él.",
@@ -18,8 +19,19 @@
   "merce_kulcs": "nagymaros",
   "felvizi_merce": "Esztergom",
   "felvizi_kulcs": "esztergom",
-  "api": "/api/taj"
+  "api": "/api/taj",
+  "idozona": "Europe/Budapest"
  },
+ "arcsoportok": [
+  {
+   "id": "szonyi",
+   "cim": "Szőnyi, Berény (Deluxe)"
+  },
+  {
+   "id": "amrita",
+   "cim": "Amrita, Kárpáthy"
+  }
+ ],
  "ar": {
   "gyerek_ejszakankent": 15000,
   "egy_ejszakas_felar": 20000,

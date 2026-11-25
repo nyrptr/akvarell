@@ -8,7 +8,7 @@ import argparse, asyncio, os, sys
 from playwright.async_api import async_playwright
 
 MERET = [("320", 320, 700), ("390", 390, 844), ("gep", 1280, 900)]
-OLDAL = ["/#/", "/#/apartman/szonyi", "/#/apartman/bereny", "/#/apartman/amrita", "/#/apartman/karpathy", "/#/kihivas", "/#/zebegeny", "/admin/"]
+OLDAL = ["/#/", "/#/apartman/szonyi", "/#/apartman/bereny", "/#/apartman/amrita", "/#/apartman/karpathy", "/#/kihivas", "/#/taj", "/#/zebegeny", "/admin/"]
 
 MERES = """() => {
   const h = [];

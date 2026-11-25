@@ -297,7 +297,7 @@ body.vendegmod{padding-bottom:24px}
 .bizalom b{color:var(--duna)}
 .bizalom-sor{font-size:14px;color:var(--halk);margin:10px 0 0}
 .bizalom-sor b{color:var(--duna)}
-#ertekelesek,#zebegeny{scroll-margin-top:72px}
+#ertekelesek,#taj{scroll-margin-top:72px}
 
 /* 10-es kihívás: akvarell térkép – ahol jártál, kiszíneződik */
 .terkep{margin:14px 0 6px}

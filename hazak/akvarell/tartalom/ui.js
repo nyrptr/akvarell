@@ -1,7 +1,8 @@
 /* A vendégoldal felületi szövegei (HU/EN): ez a HÁZ szövege, nem a motoré. A kulcsokat a motor (app.js) olvassa: window.UI[nyelv][kulcs]. Új háznál ezt a fájlt kell megírni. */
 window.UI = {
     hu: {
-      apartmanok: "Apartmanok", zebegeny: "Zebegény ma", kihivas: "10-es kihívás",
+      kih_innen: "az Akvarelltől", bizalom_valasz: " · személyes válasz Ernőtől", ert_cim: "Milyen volt nálunk?", ert_al: "Koppints egy számra (1–10). Ernő minden értékelést elolvas; ha kiteszi az oldalra, csak a keresztneveddel és az ottlét hónapjával jelenik meg.", aj_latnivalok: "Szőnyi Emlékmúzeum", aj_latnivalok_tel: " – télen csak hétvégén, 10–16 óráig.", aj_masszazs: "Esős napra: masszázs a házban (3–4 héttel előre kérd).", aj_ettermek: "Egy hosszú ebéd valamelyik dunakanyari étteremben.", aj_kajak: "Meleg, száraz nap: kajak-kenu a Dunán.", aj_ebike: "Jó idő a kerékpárútra: e-bike a Dunakanyarban.", aj_kilatok: "Száraz idő, tiszta kilátás: séta valamelyik kilátóhoz.", aj_komp: "Komppal át Visegrádra, a Fellegvárhoz.", aj_hajo: "Hajókirándulás a Dunán (a szezon áprilistól októberig tart).", aj_kihivas: "Este: jakuzzi naplementekor ({ny}).",
+      apartmanok: "Apartmanok", taj: "Zebegény ma", kihivas: "10-es kihívás",
       negy: "Négy festő, négy apartman", negy_al: "Mindegyik apartman egy festőről kapta a nevét, aki Zebegényben élt vagy alkotott. Lapozz, és nézz be.",
       furdo: "A Dunára a fürdőből is rálátsz.", furdo_al: "A Szőnyi és a Berény apartman ablakai a Dunakanyarra néznek.",
       jakuzzi: "Este a jakuzziból nézed, ahogy lemegy a nap a Duna fölött.", jakuzzi_al: "Fűthető, közös használatú kültéri jakuzzi a kertben, panorámával a Dunakanyarra.",
@@ -28,7 +29,8 @@ window.UI = {
       ok_mar: "Ők már végigjárták", utvonal: "Útvonal ide", jutalom: "Mind a tíz megvan!", bemutato: "Bemutató változat · Nyári Péter"
     },
     en: {
-      apartmanok: "Apartments", zebegeny: "Zebegény today", kihivas: "10 Challenge",
+      kih_innen: "from Akvarell", bizalom_valasz: " · a personal reply from Ernő", ert_cim: "How was your stay?", ert_al: "Tap a number (1–10). Ernő reads every review; if he publishes it, it appears with your first name and the month of your stay only.", aj_latnivalok: "The Szőnyi Memorial Museum", aj_latnivalok_tel: " – in winter open at weekends only, 10:00–16:00.", aj_masszazs: "For a rainy day: a massage in the house (ask 3–4 weeks ahead).", aj_ettermek: "A long lunch at one of the Danube Bend restaurants.", aj_kajak: "Warm and dry: kayak or canoe on the Danube.", aj_ebike: "Good weather for the cycle path: e-bikes in the Danube Bend.", aj_kilatok: "Dry weather and a clear view: walk up to a lookout.", aj_komp: "Take the ferry across to Visegrád and the citadel.", aj_hajo: "A boat trip on the Danube (the season runs April to October).", aj_kihivas: "In the evening: the hot tub at sunset ({ny}).",
+      apartmanok: "Apartments", taj: "Zebegény today", kihivas: "10 Challenge",
       negy: "Four painters, four apartments", negy_al: "Each apartment is named after a painter who lived or worked in Zebegény. Swipe and step inside.",
       furdo: "You can see the Danube even from the bathroom.", furdo_al: "The Szőnyi and Berény apartments look out over the Danube Bend.",
       jakuzzi: "In the evening, watch the sun set over the Danube from the hot tub.", jakuzzi_al: "A heated, shared outdoor hot tub in the garden, overlooking the Danube Bend.",
