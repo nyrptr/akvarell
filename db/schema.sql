@@ -1,4 +1,4 @@
--- Akvarell bemutató – Cloudflare D1 (SQLite). Kimentés: wrangler d1 export akvarell --remote --output=mentes.sql
+-- Vendégház-motor – Cloudflare D1 (SQLite). Kimentés: wrangler d1 export <adatbázis> --remote --output=mentes.sql
 CREATE TABLE IF NOT EXISTS apartman (
   id TEXT PRIMARY KEY, sorrend INTEGER NOT NULL DEFAULT 0, nev TEXT NOT NULL,
   emelet_hu TEXT, emelet_en TEXT, m2 INTEGER, fo INTEGER,
@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS kihivas (
 );
 CREATE INDEX IF NOT EXISTS ajanlat_ido ON ajanlatkeres(letrehozva);
 CREATE INDEX IF NOT EXISTS kihivas_jo ON kihivas(jovahagyva, letrehozva);
-CREATE TABLE IF NOT EXISTS beallitas (            -- pl. ical_szonyi = külső naptár (Booking, Szállás.hu, Airbnb) exportcíme
+CREATE TABLE IF NOT EXISTS beallitas (            -- pl. ical_<apartman-azonosító> = külső naptár (Booking, Szállás.hu, Airbnb) exportcíme
   kulcs TEXT PRIMARY KEY, ertek TEXT NOT NULL DEFAULT '', frissitve TEXT NOT NULL DEFAULT (datetime('now'))
 );
 CREATE TABLE IF NOT EXISTS gyorsitotar (          -- külső adat (vízállás, naptár-szinkron ideje) rövid tárolása
@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS uzenet (               -- ajándékutalvány-kérés 
   allapot TEXT NOT NULL DEFAULT 'uj' CHECK (allapot IN ('uj','kesz')),
   letrehozva TEXT NOT NULL DEFAULT (datetime('now'))
 );
-CREATE TABLE IF NOT EXISTS blog (                 -- „Zebegényi hét”: hetente gépi bejegyzés hivatalos adatokból (AI nélkül is), Ernő leveheti
+CREATE TABLE IF NOT EXISTS blog (                 -- heti gépi bejegyzés hivatalos adatokból (AI nélkül is), az üzemeltető leveheti
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   het TEXT NOT NULL UNIQUE,                       -- a hétvége szombatja (ÉÉÉÉ-HH-NN)
   cim_hu TEXT NOT NULL, cim_en TEXT NOT NULL,
@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS vendeg_szoba (         -- melyik szoba állandó QR-k
 CREATE TABLE IF NOT EXISTS proba_ajanlat (       -- próbafoglalás jelzője: ami itt van, az nem valódi (nem foglal napot, nincs pénz-sor, nem számít visszatérőnek); külön tábla, hogy a meglévő adatbázis módosítás nélkül megkapja
   ajanlat_id INTEGER PRIMARY KEY REFERENCES ajanlatkeres(id) ON DELETE CASCADE
 );
-CREATE TABLE IF NOT EXISTS ajanlat_ar (           -- a foglaláskor mutatott ár bontása (a vendég ezt látta); Ernő a Pénzügyekben javíthatja
+CREATE TABLE IF NOT EXISTS ajanlat_ar (           -- a foglaláskor mutatott ár bontása (a vendég ezt látta); az üzemeltető a Pénzügyekben javíthatja
   ajanlat_id INTEGER PRIMARY KEY REFERENCES ajanlatkeres(id) ON DELETE CASCADE,
   szallas INTEGER NOT NULL DEFAULT 0, extra INTEGER NOT NULL DEFAULT 0, kedvezmeny INTEGER NOT NULL DEFAULT 0,
   visszatero INTEGER NOT NULL DEFAULT 0, osszeg INTEGER NOT NULL DEFAULT 0, ifa INTEGER NOT NULL DEFAULT 0,
@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS penz (                 -- bevételek és kiadások (P
   letrehozva TEXT NOT NULL DEFAULT (datetime('now'))
 );
 CREATE INDEX IF NOT EXISTS penz_datum ON penz(datum);
-CREATE TABLE IF NOT EXISTS ertekeles (            -- saját, igazolt vendégértékelés: csak visszaigazolt foglalás vendégkönyvéből, Ernő teszi ki
+CREATE TABLE IF NOT EXISTS ertekeles (            -- saját, igazolt vendégértékelés: csak visszaigazolt foglalás vendégkönyvéből, az üzemeltető teszi ki
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   ajanlat_id INTEGER UNIQUE REFERENCES ajanlatkeres(id) ON DELETE SET NULL,
   nev TEXT NOT NULL, pont INTEGER NOT NULL CHECK (pont BETWEEN 1 AND 10),
@@ -127,4 +127,3 @@ CREATE TABLE IF NOT EXISTS kezelo_munkamenet (    -- belépett eszközök: a sü
 CREATE TABLE IF NOT EXISTS kezelo_link (          -- új eszköz belépő linkje: egyszer használható, 15 percig él; csak a lenyomata van itt
   token_hash TEXT PRIMARY KEY, szerep TEXT NOT NULL, lejar INTEGER NOT NULL
 );
-INSERT OR IGNORE INTO tartalom (kulcs, hu, en) VALUES ('kihivas_bev2', 'Séta Zebegényben, tíz állomással. Az Akvarelltől indulsz, és oda érsz vissza. Közben a főtéri templom, a Kálvária-domb, a Héthíd és a Duna-part. Minden állomásnál koppints a „Megvan” gombra, és ha kedved van, küldj egy szelfit. Ahol jártál, ott kiszíneződik a térkép, a tizedik állomásra kész a festmény. Nincs időre, több részletben is bejárható.', 'A walk around Zebegény with ten stops. You start at Akvarell and finish there. On the way: the church on the main square, Calvary Hill, the Seven-Arch Bridge and the Danube bank. Tap “Found it” at each stop and send a selfie if you like. The map fills with colour wherever you have been, and by the tenth stop the painting is finished. There is no time limit, and you can do it in several parts.');

@@ -291,3 +291,9 @@
 - Mi: a levelek tárgyai és szövegei, a heti bejegyzés, a naptár-fájl és a letöltési fájlnevek eddig a motor szerver-kódjában voltak; most a ház szövegfájljából jönnek. A kimenő levelek és a bejegyzések szövege változatlan.
 - Tesztelt: szabályőr 0 HIBA (16 szabály); `mind.sh` MIND RENDBEN; a módosított modulok betöltése hibátlan. Valódi levélküldés és heti bejegyzés-generálás NEM futott (nincs Brevo-kulcs a próbában).
 - NEM tesztelt éles telepítésen (beolvasztás után `eles_fust.sh`). Hátra: `telepit.js` (adatbázis alapadat: apartmanok), style.css/index.html/admin házszavai, képek a ház mappájába, hosszú hétvége minimum-éjszaka a motor magjába, Szegfű33 üres váz, motor-frissítési kapu, végül a `motor/` külön tárolóba.
+
+## 2026-11-25 · KAPOCS-chat · Motor-leválasztás B út, 2. lépés / g: az adatbázis kezdő tartalma a ház mappájába; 17. szabály
+- Fájlok: `db/seed.sql` → `hazak/akvarell/db/seed.sql` (a séma végén álló egy tartalom-sor is ide került), `db/schema.sql` (ház-semleges megjegyzések), `scripts/telepit_gen.py` (a ház mappájából olvassa a seedet), GENERÁLT `functions/_kozos/telepit.js`, `scripts/seed_d1.js` (megjegyzés), `AGENTS.md`, `README.md`, `tools/proba/gyar_szabalyok.mjs` (17. szabály: a `db/` alatt nincs házszó).
+- Mi: az apartmanok, árak és kezdő szövegek eddig a motor `db/` mappájában voltak; a séma (motor) és a kezdő tartalom (ház) szétvált. Üres adatbázisba ugyanaz töltődik be.
+- Tesztelt: szabályőr 0 HIBA (17 szabály); `mind.sh` MIND RENDBEN. Az élő adatbázis nem változik (a kezdő tartalom csak üres adatbázisba megy).
+- NEM tesztelt éles telepítésen (`eles_fust.sh` beolvasztás után). Hátra: style.css/index.html/admin házszavai, képek a ház mappájába, hosszú hétvége minimum-éjszaka a motor magjába, Szegfű33 üres váz, motor-frissítési kapu, motor külön tárolóba.

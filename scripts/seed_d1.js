@@ -1,4 +1,4 @@
-// tartalom.js → db/seed.sql (D1)
+// tartalom.js → hazak/<ház>/db/seed.sql (D1)
 const fs=require('fs'); global.window={}; eval(fs.readFileSync(process.argv[2],'utf8'));
 const T=window.TARTALOM, q=v=>v==null?'NULL':typeof v==='number'?String(v):"'"+String(v).replace(/'/g,"''")+"'";
 let o='-- generálva a tartalom.js-ből\n';
