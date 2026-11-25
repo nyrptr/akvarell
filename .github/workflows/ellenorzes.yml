@@ -18,7 +18,7 @@ jobs:
           curl -fsS "$SITE/api/adat" | python3 -c "import json,sys; d=json.load(sys.stdin); assert len(d['apartmanok'])>=1, 'nincs apartman'; print('apartman:', len(d['apartmanok']))"
           curl -fsS "$SITE/api/zebegeny" -o /dev/null || echo "::warning::Duna/időjárás most nem érhető el (külső forrás)"
           code=$(curl -s -o /dev/null -w '%{http_code}' "$SITE/admin/api/en"); case "$code" in 401|302|403) ;; *) echo "::error::A kezelő belépés nélkül $code választ ad (401, 302 vagy 403 kellene)"; exit 1;; esac
-          curl -fsS "$SITE/kepek/Bereny-apartman-nappali.jpg" -o /dev/null   # a saját képmásolat elérhető
+          curl -fsS "$SITE/hazak/akvarell/kepek/Bereny-apartman-nappali.jpg" -o /dev/null   # a saját képmásolat elérhető
           # Ernő saját oldala (tőle már nem függünk, de ha áll, neki foglalást veszít): csak figyelmeztetés
           curl -fsS -m 20 -o /dev/null https://akvarellzebegeny.hu/ || echo "::warning::Ernő oldala (akvarellzebegeny.hu) most nem érhető el – szólni neki"
           echo "rendben"

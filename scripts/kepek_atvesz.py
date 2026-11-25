@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Ernő képeinek saját másolata a kepek/ mappába, hogy az oldal ne függjön az ő tárhelyétől (2026-11-20: az akvarellzebegeny.hu 502/504-et adott, és minden kép eltűnt).
-Használat: python3 scripts/kepek_atvesz.py  → letölti, ami még nincs meg (legfeljebb 1600 px széles, JPEG 82%), és újraírja a kepek/lista.js-t.
+"""Ernő képeinek saját másolata a hazak/akvarell/kepek/ mappába, hogy az oldal ne függjön az ő tárhelyétől (2026-11-20: az akvarellzebegeny.hu 502/504-et adott, és minden kép eltűnt).
+Használat: python3 scripts/kepek_atvesz.py  → letölti, ami még nincs meg (legfeljebb 1600 px széles, JPEG 82%), és újraírja a hazak/akvarell/kepek/lista.js-t.
 A képek Ernő saját fotói az ő szálláshelyéről; csak az ő oldalán használjuk."""
 import os, re, sys, json, urllib.request, io
 from PIL import Image
-GY = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'); KI = os.path.join(GY, 'kepek')
+GY = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'); KI = os.path.join(GY, 'hazak', 'akvarell', 'kepek')
 ALAP = 'https://akvarellzebegeny.hu/wp-content/uploads/2024/05/'
 nevek, cimek = set(), {}
 for f in ['app.js'] + ['hazak/akvarell/tartalom/' + x for x in ['tartalom.js', 'oldalak.js', 'oldalak_hosszu.js', 'oldalak_hosszu_en.js', 'blog_alap.js']] + ['db/seed.sql', 'index.html']:

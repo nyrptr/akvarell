@@ -77,4 +77,7 @@ for (const f of fajlok('functions').filter(x => x.endsWith('.js') && !/_kozos\/(
 for (const f of fajlok('db')) { const m = olv(f).match(/akvarell|szegf[uű]|zebegé|zebegeny|ernő|amrita|szonyi|szőnyi|bereny|berény|karpathy|kárpáthy|dunakan|visegrád|nagymaros|pilis/i); if (m) H('házszó a db/ alatt: „' + m[0] + '”', f); }
 // 18. A nyitólap-sablonban, a kezelő kódjában és a stílusban nincs házszó (az index.html és az admin/index.html a sablonból generált: a ház adatai a haz.json „oldal” részében).
 for (const f of ['motor/sablon/index.html', 'motor/sablon/admin.html', 'admin/admin.js', 'style.css']) { const m = olv(f).match(/akvarell|szegf[uű]|zebegé|zebegeny|ernő|amrita|szonyi|szőnyi|bereny|berény|karpathy|kárpáthy|dunakan|visegrád|nagymaros|pilis|csalog/i); if (m) H('házszó: „' + m[0] + '”', f); }
+// 19. A képek a ház mappájában vannak (hazak/<ház>/kepek/), a gyökérben nincs kepek/ mappa, és a kód nem hivatkozik rá közvetlenül.
+if (existsSync(join(gyoker, 'kepek'))) H('kepek/ mappa a gyökérben (a hazak/<ház>/kepek/ alá való)', 'kepek/');
+for (const f of ['app.js', 'admin/admin.js']) if (/["'`]\/kepek\//.test(olv(f))) H('közvetlen /kepek/ hivatkozás (HAZ.kepmappa kell)', f);
 console.log(hiba, 'HIBA'); process.exit(hiba ? 1 : 0);

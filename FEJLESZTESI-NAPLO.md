@@ -303,3 +303,9 @@
 - Mi: az oldal fejléce (cím, leírás, megosztási előnézet, JSON-LD) eddig kézzel írt, házas HTML volt a motor gyökerében. A tartalom egyezik (a koordináta 47.80 → 47.8, ugyanaz az érték); a kezelő oldal most betölti a `haz.js`-t is.
 - Tesztelt: szabályőr 0 HIBA (18 szabály); generált fájlok friss (`--ellenoriz`); `mind.sh` MIND RENDBEN.
 - NEM tesztelt éles telepítésen (`eles_fust.sh`; megosztási előnézet a Facebook-hibakeresőben nem nézve). Hátra: a képek a ház mappájába, hosszú hétvége minimum-éjszaka a motor magjába, Szegfű33 üres váz, motor-frissítési kapu, motor külön tárolóba.
+
+## 2026-11-25 · KAPOCS-chat · Motor-leválasztás B út, 2. lépés / i: a képek a ház mappájába; 19. szabály
+- Fájlok: `kepek/` → `hazak/akvarell/kepek/` (28 fájl, a `lista.js`-sel), `haz.json` (+ `kepmappa`), `app.js` (a kép-útvonal a `HAZ.kepmappa`-ból), `motor/sablon/index.html`, `scripts/haz_gen.py`, `scripts/kepek_atvesz.py`, `.github/workflows/{ellenorzes,pr-kapu}.yml`, `_redirects` (új: a régi `/kepek/*` címek 301-gyel az újra, hogy a megosztott előnézetek és külső hivatkozások ne törjenek), `tools/proba/gyar_szabalyok.mjs` (19. szabály: nincs `kepek/` a gyökérben, a kód nem hivatkozik rá közvetlenül).
+- Mi: a motor gyökerében már nincs házhoz tartozó kép. Az oldal viselkedése változatlan.
+- Tesztelt: szabályőr 0 HIBA (19 szabály); `mind.sh` háromszor MIND RENDBEN. Egy korábbi futás 1 új kapu-hibát jelzett, miközben az őrszabály-fájl szintaktikailag hibás volt; javítás után nem ismétlődött (okát nem azonosítottam bizonyosan).
+- NEM tesztelt éles telepítésen: `eles_fust.sh` + a régi `/kepek/…` cím átirányítása. Hátra: hosszú hétvége minimum-éjszaka a motor magjába, Szegfű33 üres váz, motor-frissítési kapu, motor külön tárolóba.

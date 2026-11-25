@@ -23,12 +23,12 @@
   function e(x) { return String(x == null ? "" : x).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function szam(n) { return Math.round(n).toLocaleString(nyelv === "hu" ? "hu-HU" : "en-GB").replace(/[  ]/g, " "); }
   function ft(n) { return szam(n) + (nyelv === "hu" ? " Ft" : " HUF"); }
-  function kep(n) { var b = String(n).split("/").pop(), h = (window.HELYI_KEPEK || {})[b] && (!/^https?:/.test(n) || String(n).indexOf(HAZ.regi_oldal) === 0); return h ? "/kepek/" + b : /^https?:/.test(n) ? n : T.kep + n; }   // saját másolat, ha van (scripts/kepek_atvesz.py), különben a régi oldalról
+  function kep(n) { var b = String(n).split("/").pop(), h = (window.HELYI_KEPEK || {})[b] && (!/^https?:/.test(n) || String(n).indexOf(HAZ.regi_oldal) === 0); return h ? HAZ.kepmappa + b : /^https?:/.test(n) ? n : T.kep + n; }   // saját másolat, ha van (scripts/kepek_atvesz.py), különben a régi oldalról
   /* ha egy kép nem töltődik be (pl. a régi oldal nem elérhető): saját másolatra vált, ha nincs, eltűnik, és a festett háttér látszik */
   document.addEventListener("error", function (ev) {
     var i = ev.target; if (!i || i.tagName !== "IMG") return;
     var n = (i.getAttribute("src") || "").split("/").pop();
-    if (i.dataset.probalt !== "1" && /^https?:/.test(i.getAttribute("src")) && (window.HELYI_KEPEK || {})[n]) { i.dataset.probalt = "1"; i.src = "/kepek/" + n; return; }
+    if (i.dataset.probalt !== "1" && /^https?:/.test(i.getAttribute("src")) && (window.HELYI_KEPEK || {})[n]) { i.dataset.probalt = "1"; i.src = HAZ.kepmappa + n; return; }
     i.classList.add("nincskep");
   }, true);
   function ap(id) { for (var i = 0; i < T.apartmanok.length; i++) if (T.apartmanok[i].id === id) return T.apartmanok[i]; return null; }

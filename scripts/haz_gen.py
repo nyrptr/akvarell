@@ -28,7 +28,7 @@ def _ertek(k):
 def sablon(sab, cel):
     t = open(os.path.join(gy, 'motor', 'sablon', sab), encoding='utf-8').read()
     def jsonld():
-        o = dict(d['oldal']['jsonld']); kep = d['oldal']['alap_url'] + '/kepek/' + d['kepek']['hero']
+        o = dict(d['oldal']['jsonld']); kep = d['oldal']['alap_url'] + d['kepmappa'] + d['kepek']['hero']
         o = {'@context': o.pop('@context'), '@type': o.pop('@type'), 'name': d['teljes_nev'], 'image': kep, **o}
         return json.dumps(o, ensure_ascii=False, separators=(',', ':'))
     t = t.replace('{{JSONLD}}', jsonld()).replace('{{HAZ_MAPPA}}', haz)
