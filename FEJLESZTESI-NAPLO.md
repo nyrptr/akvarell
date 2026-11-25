@@ -262,3 +262,10 @@
 - Miért: Péter 11-24: a motor önállóan, rákötésre készen. Az `app.js`-ben ezzel a szöveg-blokk házmentes; a maradék házszó (cím, név, képnevek, apartman-azonosítók, tájadatok) a következő szeletekben megy a `haz.json`-ba / a táj-modulba.
 - Tesztelt: `mind.sh` MIND RENDBEN (szabályőr 0 HIBA; ár 1468/0; belépés, Access, utak, böngészős kapu 320/390/gép: csak a 3 ismert helyi OVF-503).
 - NEM tesztelt: éles telepítésen (beolvasztás után `eles_fust.sh`).
+
+## 2026-11-25 · KAPOCS-chat · Motor-leválasztás B út, 2. lépés / c: ház neve, címe, kulcsképei és tárolókulcs-előtagja a haz.json-ba
+- Fájlok: `hazak/akvarell/haz.json` (+ `azonosito`, `nev`, `teljes_nev`, `hely`, `cim`, `regi_oldal`, `kepek`), GENERÁLT `hazak/akvarell/haz.js` és `functions/_kozos/haz.js`; `app.js` (HAZ.* olvasás), `tools/proba/gyar_szabalyok.mjs` (+13. szabály: nincs beégetett házadat az app.js-ben).
+- Mi: a név (fejléc, címlap, vendégkártya), a cím (útvonalterv), a két kulcskép, a régi oldal gyökere és a böngészői tárolókulcsok előtagja a ház beállításából jön.
+- Fontos: a tárolókulcsok értéke változatlan (`akv-nyelv`, `akv-kartya`, `akv-kihivas2`), így a vendégek mentett kártyája, nyelve és kihívás-állása megmarad.
+- Tesztelt: `mind.sh` MIND RENDBEN; a nyitólap képernyőképe (320) azonos tartalmú (név, kép, szöveg).
+- NEM tesztelt: éles telepítésen (beolvasztás után `eles_fust.sh`). Hátra: tájadatok (Zebegény, Nagymaros, Visegrád, kihívás, blog) a táj-modulba; apartman-azonosítók a kódban (szonyi/amrita); a kezelő, a szerver és a stílus házszavai; képek a ház mappájába.

@@ -62,4 +62,6 @@ for (const f of ['tartalom.js', 'oldalak.js', 'oldalak_hosszu.js', 'oldalak_hoss
 { const W = {}; new Function('window', olv('hazak/akvarell/tartalom/ui.js'))(W); const hu = Object.keys(W.UI.hu), en = Object.keys(W.UI.en);
   for (const k of hu) if (!en.includes(k)) H('a ui.js angol szövegéből hiányzik a kulcs: ' + k, 'hazak/akvarell/tartalom/ui.js');
   for (const k of en) if (!hu.includes(k)) H('a ui.js magyar szövegéből hiányzik a kulcs: ' + k, 'hazak/akvarell/tartalom/ui.js'); }
+// 13. Az app.js-ben nincs beégetett házadat (név, cím, tárolókulcs-előtag, kulcskép): a haz.json-ból jön (HAZ.nev, HAZ.cim, HAZ.azonosito, HAZ.kepek).
+for (const [re, mi] of [[/Csalogány|\"akv-|Bereny-apartman-nappali|Szonyi-apartman-furdo-kilatas|akvarellzebegeny/, 'beégetett házadat az app.js-ben (a hazak/<ház>/haz.json-ba való)']]) if (re.test(olv('app.js'))) H(mi, 'app.js');
 console.log(hiba, 'HIBA'); process.exit(hiba ? 1 : 0);
