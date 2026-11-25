@@ -7,7 +7,7 @@ const fajlok = (d) => readdirSync(join(gyoker, d)).flatMap(n => statSync(join(gy
 let hiba = 0; const H = (szabaly, hol) => { hiba++; console.log('HIBA', szabaly, '–', hol); };
 
 // 1. Nyilvános szövegben nincs helyőrző ([…], „Ernő adja meg”, kitöltendő, TODO). Ami még hiányzik, az nem jelenik meg.
-const NYILVANOS = ['hazak/akvarell/tartalom/tartalom.js', 'hazak/akvarell/tartalom/ui.js', 'hazak/akvarell/tartalom/oldalak.js', 'hazak/akvarell/tartalom/oldalak_hosszu.js', 'hazak/akvarell/tartalom/oldalak_hosszu_en.js', 'hazak/akvarell/tartalom/blog_alap.js', 'db/seed.sql'];
+const NYILVANOS = ['hazak/akvarell/tartalom/tartalom.js', 'hazak/akvarell/tartalom/ui.js', 'hazak/akvarell/tartalom/oldalak.js', 'hazak/akvarell/tartalom/oldalak_hosszu.js', 'hazak/akvarell/tartalom/oldalak_hosszu_en.js', 'hazak/akvarell/tartalom/blog_alap.js', 'hazak/akvarell/db/seed.sql'];
 const HELYORZO = /\[(?:[^\]"'\n]*?(?:kitöltendő|adja meg|to be set|szám|number|ide|TODO|xx)[^\]"'\n]*)\]|\bTODO\b|\bkitöltendő\b|Lorem ipsum/i;
 for (const f of NYILVANOS) olv(f).split('\n').forEach((sor, i) => {
   if (/^\s*(\/\/|\/\*|\*|--)/.test(sor)) return;                       // megjegyzés: nem jelenik meg
@@ -73,4 +73,6 @@ for (const [f, re] of [['app.js', /47\.80|18\.91|\.nagymaros|\/api\/zebegeny/], 
 for (const f of fajlok('functions').filter(x => x.endsWith('.js') && !/_kozos\/(haz|szerver|telepit)\.js$/.test(x) && !/api\/zebegeny\.js$/.test(x))) {
   const m = olv(f).match(/akvarell|szegf[uű]|zebegé|zebegeny|ernő|amrita|szonyi|szőnyi|bereny|berény|karpathy|kárpáthy|dunakan|visegrád|nagymaros|pilis/i);
   if (m) H('házszó a szerver-kódban: „' + m[0] + '”', f); }
+// 17. A db/ mappában (a motor sémája) nincs házszó; a ház kezdő tartalma a hazak/<ház>/db/ alatt van.
+for (const f of fajlok('db')) { const m = olv(f).match(/akvarell|szegf[uű]|zebegé|zebegeny|ernő|amrita|szonyi|szőnyi|bereny|berény|karpathy|kárpáthy|dunakan|visegrád|nagymaros|pilis/i); if (m) H('házszó a db/ alatt: „' + m[0] + '”', f); }
 console.log(hiba, 'HIBA'); process.exit(hiba ? 1 : 0);

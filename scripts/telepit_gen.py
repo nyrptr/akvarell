@@ -1,11 +1,12 @@
-import json,re,sys
+import json,re,sys,os
+haz=[a for a in sys.argv[1:] if not a.startswith('--')]; haz=haz[0] if haz else 'akvarell'
 def st(p):
     s=open(p).read()
     s=re.sub(r'--[^\n]*','',s)
     return [x.strip() for x in s.split(';\n') if x.strip()]
-sema=st('db/schema.sql'); seed=st('db/seed.sql')
+sema=st('db/schema.sql'); seed=st('hazak/'+haz+'/db/seed.sql')
 open('functions/_kozos/telepit.js','w').write(
-"// GENERÁLT a db/schema.sql és db/seed.sql fájlokból (scripts/telepit_gen.py). Kézzel ne szerkeszd.\n"
+"// GENERÁLT a db/schema.sql és a hazak/<ház>/db/seed.sql fájlokból (scripts/telepit_gen.py). Kézzel ne szerkeszd.\n"
 "// Első indításkor, ha az adatbázis üres, létrehozza a táblákat és betölti a kezdő tartalmat.\n"
 f"const SEMA = {json.dumps(sema, ensure_ascii=False)};\n"
 f"const SEED = {json.dumps(seed, ensure_ascii=False)};\n"

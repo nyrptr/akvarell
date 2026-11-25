@@ -7,7 +7,7 @@ Statikus oldal (HTML/CSS/JS) + Cloudflare Pages Functions + D1 (a kihívás-kép
 - `admin/` – kezelő telefonra (ajánlatkérések, foglalt napok, árak, szövegek, kihívás-képek, teljes mentés).
 - `functions/api/` – nyilvános végpontok: `adat` (GET), `ajanlat` (POST), `kihivas` (POST, kép).
 - `functions/admin/api/` – kezelő végpontok; Cloudflare Access + aláírt token ellenőrzése + `ADMIN_EMAILS`.
-- `db/schema.sql`, `db/seed.sql` – adatbázis és kezdő tartalom.
+- `db/schema.sql` (motor), `hazak/<ház>/db/seed.sql` (a ház kezdő tartalma) – adatbázis.
 
 ## Beállítás (egyszer, Cloudflare)
 1. **D1:** Storage & Databases → D1 → Create → név: `akvarell`. A táblákat és a kezdő tartalmat az oldal az első kéréskor maga hozza létre (`functions/_kozos/telepit.js`, a `db/` fájlokból generálva: `python3 scripts/telepit_gen.py`).
