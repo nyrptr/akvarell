@@ -8,13 +8,14 @@ export function ok(feltetel, mit, reszlet) {
   else { hiba++; console.log('  HIBA', mit, reszlet === undefined ? '' : '→ ' + (typeof reszlet === 'string' ? reszlet : JSON.stringify(reszlet)).slice(0, 400)); }
 }
 export function vege(nev) { console.log(`${nev}: ${db} lépés, ${hiba} HIBA`); process.exit(hiba ? 1 : 0); }
-async function hiv(ut, m, test) {
-  const r = await fetch(B + ut, { method: m, headers: test === undefined ? {} : { 'content-type': 'application/json' }, body: test === undefined ? undefined : JSON.stringify(test) });
+async function hiv(ut, m, test, fej = {}) {
+  const r = await fetch(B + ut, { method: m, headers: { ...(test === undefined ? {} : { 'content-type': 'application/json' }), ...fej }, body: test === undefined ? undefined : JSON.stringify(test) });
   const szoveg = await r.text(); let j = null; try { j = JSON.parse(szoveg); } catch (e) { }
   return { s: r.status, j, szoveg, fej: r.headers };
 }
 export const get = (ut) => hiv(ut, 'GET');
-export const post = (ut, test) => hiv(ut, 'POST', test);
+export const post = (ut, test, fej) => hiv(ut, 'POST', test, fej);   // fej: külön fejlécek (pl. más-más kérő cím a kéréskorlát próbájához)
+export const cimrol = (n) => ({ 'cf-connecting-ip': '198.51.100.' + n });   // dokumentációs címtartomány: n-edik „látogató”
 export const kezelo = { get: (ut) => hiv('/admin/api/' + ut, 'GET'), post: (ut, test) => hiv('/admin/api/' + ut, 'POST', test) };
 export const levelek = async () => (await kezelo.get('proba/levelek')).j || [];   // LEVEL_PROBA=igen: a ki nem küldött levelek
 // nap a mai naphoz képest (ÉÉÉÉ-HH-NN, UTC dél: nyári/téli időszámítás nem tolja el)
