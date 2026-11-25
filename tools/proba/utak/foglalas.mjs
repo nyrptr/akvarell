@@ -2,6 +2,7 @@
 // Őrzi: ár a szerveren (ATNEZES 2.), bemenet-ellenőrzés (4.), dupla foglalás elleni zár, visszavonás felszabadít (5.), a válasz nem ad ki személyes adatot.
 import { ok, vege, get, post, kezelo, levelek, nap, kovNap } from './_kozos.mjs';
 import { arSzamol } from '../../../functions/_kozos/ar.js';
+import { HAZ } from '../../../functions/_kozos/haz.js';
 
 const adat = (await get('/api/adat')).j, ap = adat.apartmanok[0];
 ok(!!ap, 'van apartman a friss adatbázisban');
@@ -15,6 +16,15 @@ ok((await post('/api/ajanlat', keres('x@proba.test', 'Sok Felnőtt', { felnott: 
 ok((await post('/api/ajanlat', keres('x@proba.test', 'Múlt', { erkezes: nap(-3), tavozas: nap(-1) }))).s === 400, 'múltbeli dátum → 400');
 ok((await post('/api/ajanlat', keres('x@proba.test', 'Hosszú', { tavozas: nap(k + 40) }))).s === 400, '30 éjnél hosszabb → 400');
 ok((await post('/api/ajanlat', keres('nem-email', 'Rossz Cím'))).s === 400, 'rossz e-mail → 400');
+{ // hosszú hétvége: a minimum éjszakaszámot a szerver is kikényszeríti (nem csak a böngésző jelzi)
+  const jovo = HAZ.ar.hosszu_hetvegek.filter(h => h[0] > nap(0)).sort()[0];
+  if (!jovo) console.log('  (nincs közelgő hosszú hétvége a ház listájában: a minimum-éjszaka próba kimarad)');
+  else {
+    const [tol, , min] = jovo, ig = (n) => { const d = new Date(tol + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+    const rovid = await post('/api/ajanlat', keres('x@proba.test', 'Hosszú Hétvége', { erkezes: tol, tavozas: ig(min - 1), apartman_id: ap.id }));
+    ok(rovid.s === 400 && rovid.j && rovid.j.hiba === 'min_ej' && rovid.j.min === min, `hosszú hétvégén ${min - 1} éj → 400 (min_ej, ${min})`);
+  }
+}
 ok((await post('/api/ajanlat', keres('x@proba.test', 'Nincs Ilyen', { apartman_id: 'nincs' }))).s === 400, 'nem létező apartman → 400');
 const robot = await post('/api/ajanlat', keres('robot@proba.test', 'Robot', { weboldal: 'http://x' }));
 ok(robot.s === 200 && ((await kezelo.get('ajanlatok')).j || []).length === 0, 'robotcsapda: 200, de nem kerül be semmi');

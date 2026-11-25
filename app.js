@@ -91,7 +91,7 @@
      húsvét (nagypéntektől húsvétvasárnapig), pünkösd (szombat, vasárnap), karácsony–szilveszter (dec. 24–31). */
   /* Hosszú hétvégék 2026 (a tulajdonos Árak oldala): ha a tartózkodás érinti, legalább ennyi éjszaka kell */
   var HOSSZU = HAZ.ar.hosszu_hetvegek;
-  function minEj(erk, tav) { var min = 1; HOSSZU.forEach(function (h) { if (erk <= h[1] && tav > h[0]) min = Math.max(min, h[2]); }); return min; }
+  function minEj(erk, tav) { return ARMAG.minEj(erk, tav, HOSSZU); }   // a szerver ugyanezt hívja (motor/ar-mag.js)
   function extraOssz(ej) {
     var o = 0, L = [];
     (window.OLDALAK ? OLDALAK.extrak : []).forEach(function (x) {
