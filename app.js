@@ -1,10 +1,10 @@
 /* Akvarell – „Élő akvarell” vendégoldal. AI nélkül fut: a tartalom a tartalom.js-ben is megvan;
    friss adat és beküldés a saját /api/ végpontokon (Cloudflare Pages Functions + D1).
    Élő réteg: napszak-színek és napkelte/napnyugta helyben számolva (külső szolgáltatás nélkül),
-   Duna-vízállás, vízhőfok és időjárás a saját /api/zebegeny végponton (OVF, met.no). */
+   Duna-vízállás, vízhőfok és időjárás a saját /api/taj végponton (OVF, met.no). */
 (function () {
   "use strict";
-  var T = window.TARTALOM, HAZ = window.HAZ, AZ = HAZ.azonosito, LAT = 47.80, LON = 18.91;
+  var T = window.TARTALOM, HAZ = window.HAZ, AZ = HAZ.azonosito, LAT = HAZ.taj.lat, LON = HAZ.taj.lon, MK = HAZ.taj.merce_kulcs;
   var nyelv = "hu";
   try { nyelv = localStorage.getItem(AZ + "-nyelv") || ((navigator.language || "hu").slice(0, 2) === "hu" ? "hu" : "en"); } catch (e) {}
   var foglalt = {}, szelfik = [], duna = null, ido = null;
@@ -145,7 +145,7 @@
   function chipek() {
     var t = NAP.idok(new Date()), most = new Date(), c = [];
     c.push('<span class="chip">' + IK.nap + (most < t.nyugszik ? s("naplem") + " " + hhmm(t.nyugszik) : s("napkel") + " " + hhmm(NAP.idok(new Date(Date.now() + 864e5)).kel)) + "</span>");
-    if (duna && duna.nagymaros) c.push('<span class="chip">' + IK.hullam + "Duna " + duna.nagymaros.cm + " cm" + (duna.nagymaros.vizho != null ? " · " + Math.round(duna.nagymaros.vizho) + " °C" : "") + "</span>");
+    if (duna && duna[MK]) c.push('<span class="chip">' + IK.hullam + "Duna " + duna[MK].cm + " cm" + (duna[MK].vizho != null ? " · " + Math.round(duna[MK].vizho) + " °C" : "") + "</span>");
     if (ido) c.push('<span class="chip">' + IK.ho + Math.round(ido.t) + " °C <small>" + e(ido.mi) + "</small></span>");
     return c.join("");
   }
@@ -173,7 +173,7 @@
     return h;
   }
   function elo() {
-    var t = NAP.idok(new Date()), n = duna && duna.nagymaros;
+    var t = NAP.idok(new Date()), n = duna && duna[MK];
     function m(c, v, sz) { return '<div class="mero' + (sz ? " szeles" : "") + '"><small>' + c + "</small><b>" + v + "</b></div>"; }
     var h = n ? m(s("dunacm"), n.cm + " cm") + m(s("vizho"), n.vizho != null ? Math.round(n.vizho) + " °C" : "–") : "";
     if (ido) h += m(s("most"), Math.round(ido.t) + " °C");
@@ -821,7 +821,7 @@
     szelfikRajz(); if ($("#lap").open && F.lepes < 3) lapRajz();
   }
   function eloAdat() {
-    api("/api/zebegeny").then(function (d) {
+    api(HAZ.taj.api).then(function (d) {
       if (d._status !== 200) return;
       duna = d;
       if (d.ido && d.ido.t != null) {

@@ -64,4 +64,6 @@ for (const f of ['tartalom.js', 'oldalak.js', 'oldalak_hosszu.js', 'oldalak_hoss
   for (const k of en) if (!hu.includes(k)) H('a ui.js magyar szövegéből hiányzik a kulcs: ' + k, 'hazak/akvarell/tartalom/ui.js'); }
 // 13. Az app.js-ben nincs beégetett házadat (név, cím, tárolókulcs-előtag, kulcskép): a haz.json-ból jön (HAZ.nev, HAZ.cim, HAZ.azonosito, HAZ.kepek).
 for (const [re, mi] of [[/Csalogány|\"akv-|Bereny-apartman-nappali|Szonyi-apartman-furdo-kilatas|akvarellzebegeny/, 'beégetett házadat az app.js-ben (a hazak/<ház>/haz.json-ba való)']]) if (re.test(olv('app.js'))) H(mi, 'app.js');
+// 14. A táj (hová esik a ház, melyik vízmérce, melyik élő végpont) a haz.json "taj" részéből jön; az app.js-ben és a szerver végpontjában nincs beégetve.
+for (const [f, re] of [['app.js', /47\.80|18\.91|\.nagymaros|\/api\/zebegeny/], ['functions/api/taj.js', /lat=47|lon=18|'Nagymaros'|'Esztergom'/], ['functions/_kozos/blog.js', /lat=47|lon=18|\.nagymaros/]]) if (re.test(olv(f))) H('beégetett táj-adat (a hazak/<ház>/haz.json "taj" részébe való)', f);
 console.log(hiba, 'HIBA'); process.exit(hiba ? 1 : 0);

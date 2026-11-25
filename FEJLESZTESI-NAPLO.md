@@ -273,3 +273,9 @@
 ## 2026-11-25 · KAPOCS-chat · Motor-leválasztás 2/c javítás: maradék beégetett képnév
 - Fájl: `app.js` (a vendégkönyv tartalék-képe `HAZ.kepek.kilatas`). A 2/c PR a szabályőr piros ellenőrzésével olvadt be (az új 13. szabály ezt a sort jelezte); az élő oldalon ez nem látszott (a tartalék kép ugyanaz), most javítva.
 - Tesztelt: szabályőr 0 HIBA, `mind.sh` MIND RENDBEN. NEM tesztelt éles telepítésen: `eles_fust.sh`.
+
+## 2026-11-25 · KAPOCS-chat · Motor-leválasztás B út, 2. lépés / d: a táj-adatok a haz.json „taj” részébe; általános /api/taj végpont
+- Fájlok: `hazak/akvarell/haz.json` (+ `taj`: koordináta, vízmérce és felvízi mérce neve, a válasz kulcsai, a végpont címe), GENERÁLT `haz.js` ×2; `functions/api/taj.js` (új, általános; a régi `zebegeny.js` ebből exportál, a régi cím marad), `functions/_kozos/blog.js` (koordináta, mérce a HAZ.taj-ból), `app.js` (LAT/LON, mérce-kulcs, végpont a HAZ.taj-ból), `tools/proba/mind.sh` (/api/taj ismert helyi 503; a váratlan hibákat kiírja), `tools/proba/gyar_szabalyok.mjs` (+14. szabály: nincs beégetett táj-adat).
+- Mi: hová esik a ház (47,80 / 18,91), melyik vízmérce tartozik hozzá (Nagymaros, felvíz Esztergom), a válasz kulcsai és az élő végpont címe eddig az app.js-ben és két szerver-fájlban voltak beégetve. A szerver válasza és az oldal viselkedése változatlan.
+- Tesztelt: szabályőr 0 HIBA; `mind.sh` MIND RENDBEN háromszor egymás után. Egy korábbi futásnál a kapu 1 további hibát jelzett (a szabályőr piros állapotában), három újrafuttatásnál nem ismétlődött; nem azonosítottam okát.
+- NEM tesztelt: éles telepítésen (beolvasztás után `eles_fust.sh` + az `/api/taj` és a régi `/api/zebegeny` hívása). Hátra: a „holnapi ajánló” tájszövegei (komp, Visegrád, kajak), a kihívás-állomások, a `#/zebegeny` útvonal és kezelőszöveg, a kezelő/stílus házszavai; képek; Szegfű33 üres váz.
