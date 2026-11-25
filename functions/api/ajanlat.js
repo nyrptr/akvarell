@@ -3,7 +3,7 @@ import { J, NAP, ma } from '../_kozos/k.js';
 import { kuld, keret, esc } from '../_kozos/level.js';
 import { vendegMent, ottletek, beall, szazalek } from '../_kozos/vendeg.js';
 import { korlatok, ipLeny, lenyomat } from '../_kozos/korlat.js';
-import { arSzamol, valosNap, ejszakak } from '../_kozos/ar.js';
+import { arSzamol, valosNap, ejszakak, minEj } from '../_kozos/ar.js';
 import { SZ } from '../_kozos/szerver.js';
 export async function onRequestPost({ request, env, waitUntil }) {
   let d; try { d = await request.json(); } catch (e) { return J(400, { hiba: 'rossz kérés' }); }
@@ -13,6 +13,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
     nev: s(d.nev, 80), email: s(d.email, 120), telefon: s(d.telefon, 30) || null, uzenet: s(d.uzenet, 1000) || null, nyelv: d.nyelv === 'en' ? 'en' : 'hu' };
   if (!valosNap(a.erkezes) || !valosNap(a.tavozas) || a.tavozas <= a.erkezes || a.erkezes < ma()) return J(400, { hiba: 'dátum' });
   if (ejszakak(a.erkezes, a.tavozas) > 30 || a.erkezes > String(+ma().slice(0, 4) + 2) + ma().slice(4)) return J(400, { hiba: 'dátum' });   // legfeljebb 30 éjszaka, 2 éven belül
+  const min = minEj(a.erkezes, a.tavozas); if (ejszakak(a.erkezes, a.tavozas) < min) return J(400, { hiba: 'min_ej', min });   // hosszú hétvégén minimum éjszakaszám (a böngésző is jelzi, de a szerver dönt)
   if (![1, 2, 3].includes(a.felnott) || ![0, 1, 2].includes(a.gyerek)) return J(400, { hiba: 'létszám' });
   if (a.nev.length < 2 || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(a.email)) return J(400, { hiba: 'név vagy e-mail' });
   const db = env.DB;

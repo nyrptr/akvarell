@@ -309,3 +309,9 @@
 - Mi: a motor gyökerében már nincs házhoz tartozó kép. Az oldal viselkedése változatlan.
 - Tesztelt: szabályőr 0 HIBA (19 szabály); `mind.sh` háromszor MIND RENDBEN. Egy korábbi futás 1 új kapu-hibát jelzett, miközben az őrszabály-fájl szintaktikailag hibás volt; javítás után nem ismétlődött (okát nem azonosítottam bizonyosan).
 - NEM tesztelt éles telepítésen: `eles_fust.sh` + a régi `/kepek/…` cím átirányítása. Hátra: hosszú hétvége minimum-éjszaka a motor magjába, Szegfű33 üres váz, motor-frissítési kapu, motor külön tárolóba.
+
+## 2026-11-25 · KAPOCS-chat · Motor-leválasztás B út, 3. lépés: a hosszú hétvége minimum-éjszaka a motor magjába és a szerverre
+- Fájlok: `motor/ar-mag.js` (új `minEj`), GENERÁLT `motor/ar-mag.browser.js`, `functions/_kozos/ar.js` (`minEj` a ház listájával), `app.js` (a böngésző ugyanazt hívja), `functions/api/ajanlat.js` (új szerver-oldali ellenőrzés: hosszú hétvégén a minimum alatti kérés 400 `min_ej`), `tools/proba/ar_teszt.mjs` (böngésző és szerver egyezése a lista minden elemére és szélére), `tools/proba/utak/foglalas.mjs` (új lépés: a szerver elutasítja a minimum alatti kérést).
+- Mi: eddig a minimum éjszakaszámot csak a böngésző ellenőrizte; aki közvetlenül hívta a végpontot, megkerülhette. Most a szerver dönt, a szabály egy helyen van (motor mag), a böngésző csak jelez.
+- Tesztelt: `ar_teszt` 1489 eset 0 HIBA; `foglalas` út 39 lépés 0 HIBA; szabályőr 0 HIBA; `mind.sh` MIND RENDBEN.
+- NEM tesztelt éles telepítésen (`eles_fust.sh`). Figyelem: a ház hosszú hétvége listája (`haz.json` `ar.hosszu_hetvegek`) csak 2026-os dátumokat tartalmaz; 2027-re a tulajdonos Árak oldala szerint kell feltölteni, különben 2027-ben nincs minimum.

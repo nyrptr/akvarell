@@ -9,6 +9,15 @@ const mag = readFileSync(new URL('../../motor/ar-mag.browser.js', import.meta.ur
 const K = new Function('HAZ', `var F = { extrak: {} }, nyelv = 'hu', window = {}; function visszaKed() { return 0; } function dt(k) { return new Date(k + "T12:00:00"); }
   ${mag} var ARMAG = window.ARMAG; ${resz('extraOssz')} ${resz('arSzamol')} return { kiemelt: (d) => ARMAG.kiemelt(d.toISOString ? d : d, HAZ.ar.kiemelt), arSzamol, dt };`)(HAZ);
 let hiba = 0, db = 0;
+const ablak = {}; new Function('window', mag)(ablak); const minEjB = ablak.ARMAG.minEj;
+// hosszú hétvége minimum: a böngésző és a szerver ugyanazt adja a ház listájának minden elemére és szélére
+for (const [tol, ig, min] of HAZ.ar.hosszu_hetvegek) for (const [e, t] of [[tol, ig], [ig, tol.slice(0, 8) + String(+ig.slice(8) + 3).padStart(2, '0')], ['2020-01-01', '2020-01-02']]) { db++;
+  const sz = S.minEj(e, t), b = minEjB(e, t, HAZ.ar.hosszu_hetvegek);
+  if (sz !== b) { hiba++; console.log('HIBA minEj', e, t, sz, b); } }
+{ const [tol, ig, min] = HAZ.ar.hosszu_hetvegek[0]; db += 3;
+  if (S.minEj(tol, ig) !== min) { hiba++; console.log('HIBA minEj: a hétvégén belül', min); }
+  if (S.minEj('2020-01-01', '2020-01-02') !== 1) { hiba++; console.log('HIBA minEj: hétköznap 1 éj'); }
+  if (S.minEj(ig, tol) !== 1 && ig > tol) { hiba++; console.log('HIBA minEj: fordított'); } }
 for (let d = new Date('2026-01-01T12:00:00Z'); d < new Date('2030-01-01T12:00:00Z'); d.setUTCDate(d.getUTCDate() + 1)) {
   const iso = d.toISOString().slice(0, 10); db++;
   if (K.kiemelt(new Date(iso + 'T12:00:00Z')) !== S.kiemelt(new Date(iso + 'T12:00:00Z'))) { hiba++; console.log('HIBA kiemelt', iso); }

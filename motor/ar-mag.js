@@ -26,3 +26,7 @@ export function szamol(a, erk, tav, felnott, gyerek, R) {
   }
   return { ej, szallas, gyerek: gyerek * R.gyerek_ejszakankent * ej, egy: ej === 1 ? R.egy_ejszakas_felar : 0, kedvezmeny: ej >= R.hosszu_tartozkodas.min_ejszaka ? Math.round(szallas * R.hosszu_tartozkodas.kedvezmeny_szazalek / 100) : 0, ifa: R.ifa_fo_ejszakankent * felnott * ej };
 }
+
+// hosszú hétvége: ha a tartózkodás érinti, legalább ennyi éjszaka kell. H = a ház listája: [[tól, ig, minimum éjszaka], …] (ÉÉÉÉ-HH-NN).
+// Egy közös szabály: a böngésző (jelzés) és a szerver (elutasítás) ugyanezt hívja.
+export function minEj(erk, tav, H) { let min = 1; for (const h of H || []) if (erk <= h[1] && tav > h[0]) min = Math.max(min, h[2]); return min; }
