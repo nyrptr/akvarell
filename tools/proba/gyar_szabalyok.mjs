@@ -75,4 +75,6 @@ for (const f of fajlok('functions').filter(x => x.endsWith('.js') && !/_kozos\/(
   if (m) H('házszó a szerver-kódban: „' + m[0] + '”', f); }
 // 17. A db/ mappában (a motor sémája) nincs házszó; a ház kezdő tartalma a hazak/<ház>/db/ alatt van.
 for (const f of fajlok('db')) { const m = olv(f).match(/akvarell|szegf[uű]|zebegé|zebegeny|ernő|amrita|szonyi|szőnyi|bereny|berény|karpathy|kárpáthy|dunakan|visegrád|nagymaros|pilis/i); if (m) H('házszó a db/ alatt: „' + m[0] + '”', f); }
+// 18. A nyitólap-sablonban, a kezelő kódjában és a stílusban nincs házszó (az index.html és az admin/index.html a sablonból generált: a ház adatai a haz.json „oldal” részében).
+for (const f of ['motor/sablon/index.html', 'motor/sablon/admin.html', 'admin/admin.js', 'style.css']) { const m = olv(f).match(/akvarell|szegf[uű]|zebegé|zebegeny|ernő|amrita|szonyi|szőnyi|bereny|berény|karpathy|kárpáthy|dunakan|visegrád|nagymaros|pilis|csalog/i); if (m) H('házszó: „' + m[0] + '”', f); }
 console.log(hiba, 'HIBA'); process.exit(hiba ? 1 : 0);

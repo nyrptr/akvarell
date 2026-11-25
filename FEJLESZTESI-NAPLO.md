@@ -297,3 +297,9 @@
 - Mi: az apartmanok, árak és kezdő szövegek eddig a motor `db/` mappájában voltak; a séma (motor) és a kezdő tartalom (ház) szétvált. Üres adatbázisba ugyanaz töltődik be.
 - Tesztelt: szabályőr 0 HIBA (17 szabály); `mind.sh` MIND RENDBEN. Az élő adatbázis nem változik (a kezdő tartalom csak üres adatbázisba megy).
 - NEM tesztelt éles telepítésen (`eles_fust.sh` beolvasztás után). Hátra: style.css/index.html/admin házszavai, képek a ház mappájába, hosszú hétvége minimum-éjszaka a motor magjába, Szegfű33 üres váz, motor-frissítési kapu, motor külön tárolóba.
+
+## 2026-11-25 · KAPOCS-chat · Motor-leválasztás B út, 2. lépés / h: a nyitólap és a kezelő fejléce sablonból; kezelő és stílus házszavai; 18. szabály
+- Fájlok: `motor/sablon/index.html`, `motor/sablon/admin.html` (új sablonok), `scripts/haz_gen.py` (az `index.html` és az `admin/index.html` most GENERÁLT a sablonból és a `haz.json` új „oldal” részéből: cím, leírás, megosztási adatok, keresőgép-adatok (JSON-LD), logószó; a `?v=` hash-eket megtartja, a `tools/verzio.py` frissíti), `hazak/akvarell/haz.json` (+ `oldal`), `admin/admin.js` (a ház nevét/helyét a `HAZ`-ból veszi; „Heti bejegyzés”), `style.css` (megjegyzések), `tools/proba/gyar_szabalyok.mjs` (18. szabály: sablonok, kezelő-kód, stílus házszó-mentes).
+- Mi: az oldal fejléce (cím, leírás, megosztási előnézet, JSON-LD) eddig kézzel írt, házas HTML volt a motor gyökerében. A tartalom egyezik (a koordináta 47.80 → 47.8, ugyanaz az érték); a kezelő oldal most betölti a `haz.js`-t is.
+- Tesztelt: szabályőr 0 HIBA (18 szabály); generált fájlok friss (`--ellenoriz`); `mind.sh` MIND RENDBEN.
+- NEM tesztelt éles telepítésen (`eles_fust.sh`; megosztási előnézet a Facebook-hibakeresőben nem nézve). Hátra: a képek a ház mappájába, hosszú hétvége minimum-éjszaka a motor magjába, Szegfű33 üres váz, motor-frissítési kapu, motor külön tárolóba.
