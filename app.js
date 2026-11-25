@@ -611,7 +611,7 @@
     var d = VK[tk];
     if (!d) return fejlec(s("vk_cim"), "") + '<p class="jelmag">…</p></section>';
     if (d.hiba) return fejlec(s("vk_cim"), "") + "<p>" + s("vk_nincs") + "</p>" + (O.kapcsolat && O.kapcsolat.tel ? '<a class="gomb" href="' + e(O.kapcsolat.telLink) + '">' + s("vk_hivj") + "</a>" : "") + "</section>";
-    var F2 = d.foglalas, V = d.vk, a = ap(F2.apartman_id) || { kepek: ["Szonyi-apartman-furdo-kilatas.jpg"] }, ma = d.ma || iso(new Date()), ny = nyelv;
+    var F2 = d.foglalas, V = d.vk, a = ap(F2.apartman_id) || { kepek: [HAZ.kepek.kilatas] }, ma = d.ma || iso(new Date()), ny = nyelv;
     var hatra = Math.round((dt(F2.erkezes) - dt(ma)) / 864e5), all;
     all = hatra > 0 ? hatra + " " + s("vk_napmulva") : ma === F2.erkezes ? s("vk_ma_erk") : ma < F2.tavozas ? s("vk_itt") : ma === F2.tavozas ? s("vk_ma_tav") : s("vk_vege");
     var h = '<section class="jelenet ap-hos"><img src="' + e(kep(a.kepek[0])) + '" alt=""><div class="bel"><p class="al">' + s("vk_cim") + " · " + e(F2.apnev) + "</p><h1>" + s("vk_udv") + ", " + e(F2.nyelv === "en" ? F2.nev.split(" ")[0] : F2.nev.split(" ").slice(-1)[0]) + '!</h1><div class="chipek"><span class="chip">' + rovid(F2.erkezes) + " – " + rovid(F2.tavozas) + '</span><span class="chip">' + e(all) + "</span></div></div></section>";
