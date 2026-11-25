@@ -7,6 +7,7 @@ import { token, kuldVendegnek, utemezett } from '../../_kozos/vendegut.js';
 import { beall, ALAP, vendegMent, szobaKodok, ujSzobaKod, ujToken, szazalek } from '../../_kozos/vendeg.js';
 import { kuld, keret, esc } from '../../_kozos/level.js';
 import { megujit } from '../../_kozos/belepes.js';
+import { SZ } from '../../_kozos/szerver.js';
 const KIADAS = ['takaritas', 'etel', 'extra', 'jutalek', 'rezsi', 'karbantartas', 'marketing', 'egyeb'], BEVETEL = ['szallas', 'extra', 'egyeb'], FORRAS = ['kozvetlen', 'booking', 'szallashu', 'airbnb', 'egyeb'];
 // visszaigazolt közvetlen foglalás → automatikus bevétel-sorok (szállás, extra) és takarítási kiadás; elutasításkor törlődnek
 async function penzFoglalasbol(db, a, allapot) {
@@ -71,7 +72,7 @@ export async function onRequest({ request, env, params, waitUntil }) {
     });
   }
 
-  // Próbafoglalás (Ernő/Péter gombja): valódi utat jár be (ajánlatkérés → levél → visszaigazolás → vendégkönyv), de nem foglal valódi napot,
+  // Próbafoglalás (az üzemeltető gombja): valódi utat jár be (ajánlatkérés → levél → visszaigazolás → vendégkönyv), de nem foglal valódi napot,
   // nem kerül iCal-ba, nem lesz pénz-sor, nem számít visszatérő vendégnek, az ütemezett vendéglevél nem megy rá; a levél csak a gazda címére megy.
   if (ut === 'proba' && m === 'POST') {
     const d = await be();
@@ -202,7 +203,7 @@ export async function onRequest({ request, env, params, waitUntil }) {
   if (ut === 'vendegek.csv' && m === 'GET') {                       // csak a hírlevélre feliratkozottak, hozzájárulási idővel
     const v = (await db.prepare('SELECT nev, email, nyelv, hirlevel_ido FROM vendeg WHERE hirlevel = 1 ORDER BY hirlevel_ido').all()).results;
     const q = (x) => { const v = String(x ?? ''); return '"' + (/^[=+\-@\t\r]/.test(v) ? "'" : '') + v.replace(/"/g, '""') + '"'; };   // képletnek látszó kezdet elé aposztróf (táblázatkezelő ne futtassa)
-    return new Response('\ufeffnév,email,nyelv,hozzájárulás ideje\n' + v.map(x => [x.nev, x.email, x.nyelv, x.hirlevel_ido].map(q).join(',')).join('\n'), { headers: { 'content-type': 'text/csv; charset=utf-8', 'content-disposition': 'attachment; filename="akvarell-hirlevel.csv"' } });
+    return new Response('\ufeffnév,email,nyelv,hozzájárulás ideje\n' + v.map(x => [x.nev, x.email, x.nyelv, x.hirlevel_ido].map(q).join(',')).join('\n'), { headers: { 'content-type': 'text/csv; charset=utf-8', 'content-disposition': 'attachment; filename="' + SZ.fajl + '-hirlevel.csv"' } });
   }
   if (ut === 'beallitasok' && m === 'POST') {
     const d = await be(), k = Object.keys(ALAP).filter(x => x in d);
@@ -305,7 +306,7 @@ export async function onRequest({ request, env, params, waitUntil }) {
     const t = {}; for (const n of ['apartman', 'tartalom', 'foglalt_nap', 'ajanlatkeres', 'ajanlat_ar', 'proba_ajanlat', 'uzenet', 'beallitas', 'blog', 'vendegut', 'vendeg', 'vendeg_szoba', 'penz', 'ertekeles']) t[n] = (await db.prepare('SELECT * FROM ' + n).all()).results;
     t.beallitas = t.beallitas.filter(x => !/^kezelo_/.test(x.kulcs));   // a belépés-visszaállító e-mail-címek nem kerülnek a mentésbe
     t.kihivas = (await db.prepare('SELECT id, becenev, allomas, tipus, jovahagyva, letrehozva FROM kihivas').all()).results;   // a képek a /admin/api/kep/<id> címen
-    return J(200, t, { 'content-disposition': 'attachment; filename="akvarell-mentes.json"' });
+    return J(200, t, { 'content-disposition': 'attachment; filename="' + SZ.fajl + '-mentes.json"' });
   }
   return J(404, { hiba: 'nincs ilyen' });
 }

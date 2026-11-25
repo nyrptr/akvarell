@@ -69,4 +69,8 @@ for (const [f, re] of [['app.js', /47\.80|18\.91|\.nagymaros|\/api\/zebegeny/], 
 // 15. Az app.js-ben (a motor böngészős magjában) nincs házszó. Egyetlen kivétel: a régi #/zebegeny hivatkozás átirányítása.
 { const k = olv('app.js').split('\n').filter(l => !/r\[0\] === "zebegeny"/.test(l)).join('\n'); const m = k.match(/akvarell|szegf[uű]|zebegé|zebegeny|ernő|amrita|szonyi|szőnyi|bereny|berény|karpathy|kárpáthy|dunakan|visegrád|nagymaros|pilis/i);
   if (m) H('házszó az app.js-ben: „' + m[0] + '” (a hazak/<ház>/ mappába való)', 'app.js'); }
+// 16. A functions/ mappában nincs házszó (a ház szövegei a hazak/<ház>/ alatt). Kivétel: a generált haz.js / szerver.js, a régi /api/zebegeny cím, és a telepit.js (az adatbázis alapadata: külön lépés).
+for (const f of fajlok('functions').filter(x => x.endsWith('.js') && !/_kozos\/(haz|szerver|telepit)\.js$/.test(x) && !/api\/zebegeny\.js$/.test(x))) {
+  const m = olv(f).match(/akvarell|szegf[uű]|zebegé|zebegeny|ernő|amrita|szonyi|szőnyi|bereny|berény|karpathy|kárpáthy|dunakan|visegrád|nagymaros|pilis/i);
+  if (m) H('házszó a szerver-kódban: „' + m[0] + '”', f); }
 console.log(hiba, 'HIBA'); process.exit(hiba ? 1 : 0);

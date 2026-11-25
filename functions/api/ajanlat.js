@@ -4,6 +4,7 @@ import { kuld, keret, esc } from '../_kozos/level.js';
 import { vendegMent, ottletek, beall, szazalek } from '../_kozos/vendeg.js';
 import { korlatok, ipLeny, lenyomat } from '../_kozos/korlat.js';
 import { arSzamol, valosNap, ejszakak } from '../_kozos/ar.js';
+import { SZ } from '../_kozos/szerver.js';
 export async function onRequestPost({ request, env, waitUntil }) {
   let d; try { d = await request.json(); } catch (e) { return J(400, { hiba: 'rossz kérés' }); }
   if (d.weboldal) return J(200, { ok: true });                      // csapda a robotoknak
@@ -38,12 +39,12 @@ export async function onRequestPost({ request, env, waitUntil }) {
   await db.prepare('INSERT OR REPLACE INTO ajanlat_ar (ajanlat_id, szallas, extra, kedvezmeny, visszatero, osszeg, ifa, reszletek) VALUES (?,?,?,?,?,?,?,?)')
     .bind(id, szallas, extra, ked, visszatero ? 1 : 0, osszeg, sz.ifa, JSON.stringify({ gyerek: sz.gyerek, egy: sz.egy, hosszu: sz.kedvezmeny, ...(d.ar && latott !== szamolt ? { bongeszo_mast_mutatott: latott } : {}) })).run();
   if (d.hirlevel === true) await vendegMent(db, { email: a.email, nev: a.nev, nyelv: a.nyelv, hirlevel: true, forras: 'foglalas' });
-  // értesítés Ernőnek és visszaigazolás a vendégnek (ha a Brevo be van állítva); a válaszra nem vár
+  // értesítés az üzemeltetőnek és visszaigazolás a vendégnek (ha a Brevo be van állítva); a válaszra nem vár
   const ap = apartman;
   const sor = `${esc(ap ? ap.nev : a.apartman_id)} · ${a.erkezes} → ${a.tavozas} · ${a.felnott} felnőtt${a.gyerek ? ', ' + a.gyerek + ' gyerek' : ''}${osszeg ? ' · ' + osszeg.toLocaleString('hu-HU') + ' Ft' : ''}${visszatero ? ' · VISSZATÉRŐ VENDÉG' : ''}`;
   waitUntil(Promise.all([
     kuld(env, { to: env.ERTESITES_EMAIL, replyTo: a.email, subject: `Új foglalási kérés: ${ap ? ap.nev : ''} ${a.erkezes}`, html: keret('Új foglalási kérés', `<p>${sor}</p><p>${esc(a.nev)} · <a href="mailto:${esc(a.email)}">${esc(a.email)}</a>${a.telefon ? ' · ' + esc(a.telefon) : ''}</p>${a.uzenet ? `<p style="white-space:pre-line">${esc(a.uzenet)}</p>` : ''}<p>Visszaigazolás a kezelőben: /admin/</p>`) }),
-    kuld(env, { to: a.email, replyTo: env.ERTESITES_EMAIL, subject: a.nyelv === 'en' ? 'We have received your booking request – Akvarell' : 'Megkaptuk a foglalási kérésedet – Akvarell', html: keret(a.nyelv === 'en' ? 'Thank you for your request!' : 'Köszönjük a kérésedet!', `<p>${sor}</p><p>${a.nyelv === 'en' ? 'We will confirm by email shortly. Payment is due within 2 hours of confirmation.' : 'Hamarosan visszaigazoljuk e-mailben. A visszaigazolás után 2 órán belül kell fizetni.'}</p>`) }),
+    kuld(env, { to: a.email, replyTo: env.ERTESITES_EMAIL, subject: SZ.level.ajanlat_targy[a.nyelv === 'en' ? 'en' : 'hu'], html: keret(a.nyelv === 'en' ? 'Thank you for your request!' : 'Köszönjük a kérésedet!', `<p>${sor}</p><p>${a.nyelv === 'en' ? 'We will confirm by email shortly. Payment is due within 2 hours of confirmation.' : 'Hamarosan visszaigazoljuk e-mailben. A visszaigazolás után 2 órán belül kell fizetni.'}</p>`) }),
   ]).catch(() => { }));
   // a válasz csak a kártyával igazolt visszatérőt jelzi: e-mail-cím alapján nem áruljuk el, hogy valaki járt-e már itt (a kedvezmény így is jár, a levélben látszik)
   return J(200, { ok: true, visszatero: kartyas });

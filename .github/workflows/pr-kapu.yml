@@ -19,7 +19,7 @@ jobs:
         run: TZ=Europe/Budapest node tools/proba/ar_teszt.mjs
       - name: JavaScript szintaxis
         run: |
-          for f in app.js admin/admin.js hazak/akvarell/tartalom/tartalom.js hazak/akvarell/tartalom/ui.js hazak/akvarell/tartalom/oldalak.js hazak/akvarell/tartalom/oldalak_hosszu.js hazak/akvarell/tartalom/oldalak_hosszu_en.js hazak/akvarell/tartalom/blog_alap.js hazak/akvarell/tartalom/terkep.js kepek/lista.js; do node --check "$f"; done
+          for f in app.js admin/admin.js hazak/akvarell/tartalom/tartalom.js hazak/akvarell/tartalom/ui.js hazak/akvarell/tartalom/szerver.js hazak/akvarell/tartalom/oldalak.js hazak/akvarell/tartalom/oldalak_hosszu.js hazak/akvarell/tartalom/oldalak_hosszu_en.js hazak/akvarell/tartalom/blog_alap.js hazak/akvarell/tartalom/terkep.js kepek/lista.js; do node --check "$f"; done
           for f in $(find functions -name '*.js'); do cp "$f" /tmp/c.mjs && node --check /tmp/c.mjs || { echo "::error file=$f::szintaxishiba"; exit 1; }; done
   utak:
     # Végigjátszott próbák (docs/ALAPELV.md 5/6.): helyi szerver friss adatbázissal, a valódi utak elejétől a végéig.

@@ -4,6 +4,7 @@ import { J, kezelo, sajatEredet, oldalCim } from '../../_kozos/k.js';
 import { kuld, keret, levelezBe } from '../../_kozos/level.js';
 import { korlat, korlatok, ipLeny } from '../../_kozos/korlat.js';
 import { kodHash, sha, veletlen, egyezik, ujMunkamenet, sutiTorles, sutiErtek, SZEREPEK, LINK_PERC, megujit } from '../../_kozos/belepes.js';
+import { SZ } from '../../_kozos/szerver.js';
 
 export async function onRequest({ request, env, waitUntil }) {
   const db = env.DB, m = request.method;
@@ -82,7 +83,7 @@ export async function onRequest({ request, env, waitUntil }) {
       db.prepare('INSERT INTO kezelo_link (token_hash, szerep, lejar) VALUES (?, ?, ?)').bind(await sha(t), sz, most + LINK_PERC * 60000),
     ]);
     const href = `${oldalCim(env, request)}/admin/#be=${t}`;
-    const p = kuld(env, { to: cim, subject: 'Akvarell kezelő – belépő link', html: keret('Belépő link', `<p>Ezzel a linkkel beléphetsz az Akvarell kezelőjébe. ${LINK_PERC} percig érvényes, és egyszer használható.</p><p style="margin:22px 0"><a href="${href}" style="background:#1d2a35;color:#fff;padding:13px 22px;border-radius:999px;text-decoration:none;font:600 16px system-ui,sans-serif">Belépek a kezelőbe</a></p><p style="font-size:13px;color:#5b6670">Ha nem te kérted, hagyd figyelmen kívül ezt a levelet.</p>`) }).catch(() => ({ ok: false }));
+    const p = kuld(env, { to: cim, subject: SZ.level.kezelo_targy, html: keret('Belépő link', `<p>${SZ.level.kezelo_szoveg(LINK_PERC)}</p><p style="margin:22px 0"><a href="${href}" style="background:#1d2a35;color:#fff;padding:13px 22px;border-radius:999px;text-decoration:none;font:600 16px system-ui,sans-serif">Belépek a kezelőbe</a></p><p style="font-size:13px;color:#5b6670">Ha nem te kérted, hagyd figyelmen kívül ezt a levelet.</p>`) }).catch(() => ({ ok: false }));
     if (waitUntil) waitUntil(p); else await p;
     return valasz;
   }

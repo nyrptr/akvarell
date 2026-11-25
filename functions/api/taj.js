@@ -2,9 +2,10 @@
 // időjárás (met.no / Yr, CC BY 4.0, kereskedelmi célra is szabad, forrásmegjelöléssel). 30 percig tárolva.
 import { J } from '../_kozos/k.js';
 import { HAZ } from '../_kozos/haz.js';
+import { SZ } from '../_kozos/szerver.js';
 const TAJ = HAZ.taj;
 const MET = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${TAJ.lat}&lon=${TAJ.lon}`;
-const UA = `${HAZ.azonosito}-taj`;
+const UA = SZ.ua.split(' ')[0];
 const GEO = 'https://geoportal.vizugy.hu/arcgis/rest/services/VIR/Arviz_vizmercek/MapServer/0/query?where=1%3D1&outFields=*&returnGeometry=false&f=json';
 export async function onRequestGet({ env }) {
   const db = env.DB, most = Date.now();
@@ -21,7 +22,7 @@ export async function onRequestGet({ env }) {
     if (!ki[TAJ.merce]) throw new Error('nincs adat');
     let ido = null;
     try {
-      const m = await (await fetch(MET, { headers: { 'user-agent': UA + ' github.com/nyrptr/akvarell' } })).json();
+      const m = await (await fetch(MET, { headers: { 'user-agent': SZ.ua } })).json();
       const t = m.properties.timeseries[0].data;
       ido = { t: t.instant.details.air_temperature, jel: (t.next_1_hours || t.next_6_hours || {}).summary?.symbol_code || '' };
       // holnap délben (helyi dél ≈ 11:00 UTC télen, 10:00 nyáron – a 11:00 vagy 12:00 UTC sor, amelyik van)

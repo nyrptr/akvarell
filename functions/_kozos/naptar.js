@@ -1,5 +1,6 @@
 // iCal be- és kivitel. Kivitel: a saját foglalások (kézi, ajánlatból) – ezt olvassa be a Booking / Szállás.hu / Airbnb.
 // Behozatal: a külső naptárak foglalt napjai `forras = 'ical'` jelzéssel; minden szinkron cseréli őket.
+import { SZ } from './szerver.js';
 const nap = (d) => d.toISOString().slice(0, 10);
 
 export function ertelmez(szoveg) {
@@ -15,11 +16,11 @@ export function ertelmez(szoveg) {
 }
 
 export function kivitel(id, nev, napok) {
-  const sor = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Akvarell Zebegeny//HU', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', `X-WR-CALNAME:Akvarell – ${nev}`];
+  const sor = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//${SZ.naptar.prodid}//HU', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH', `X-WR-CALNAME:${SZ.naptar.neve} – ${nev}`];
   const most = new Date().toISOString().replace(/[-:]/g, '').slice(0, 15) + 'Z';
   for (const n of napok) {
     const k = n.replace(/-/g, ''), d = new Date(n + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() + 1);
-    sor.push('BEGIN:VEVENT', `UID:${id}-${k}@akvarell`, `DTSTAMP:${most}`, `DTSTART;VALUE=DATE:${k}`, `DTEND;VALUE=DATE:${nap(d).replace(/-/g, '')}`, 'SUMMARY:Foglalt', 'END:VEVENT');
+    sor.push('BEGIN:VEVENT', `UID:${id}-${k}@${SZ.naptar.uid}`, `DTSTAMP:${most}`, `DTSTART;VALUE=DATE:${k}`, `DTEND;VALUE=DATE:${nap(d).replace(/-/g, '')}`, 'SUMMARY:Foglalt', 'END:VEVENT');
   }
   sor.push('END:VCALENDAR');
   return sor.join('\r\n') + '\r\n';
@@ -40,7 +41,7 @@ export async function szinkron(env, kenyszer = false, csak = null) {
   for (const c of cimek) {
     const ap = c.kulcs.slice(5), r0 = regi[ap] || {}, utolso = r0.ok ? r0.ido : r0.utolso_ok;
     try {
-      const r = await fetch(c.ertek, { headers: { 'user-agent': 'akvarell-naptar' }, cf: { cacheTtl: 0 }, signal: AbortSignal.timeout(csak ? 6000 : 15000) });
+      const r = await fetch(c.ertek, { headers: { 'user-agent': SZ.naptar.ua }, cf: { cacheTtl: 0 }, signal: AbortSignal.timeout(csak ? 6000 : 15000) });
       if (!r.ok) throw new Error('HTTP ' + r.status);
       const napok = ertelmez(await r.text()).filter(n => n >= ma);
       await db.batch([
