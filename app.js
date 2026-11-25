@@ -4,14 +4,14 @@
    Duna-vízállás, vízhőfok és időjárás a saját /api/zebegeny végponton (OVF, met.no). */
 (function () {
   "use strict";
-  var T = window.TARTALOM, HAZ = window.HAZ, LAT = 47.80, LON = 18.91;
+  var T = window.TARTALOM, HAZ = window.HAZ, AZ = HAZ.azonosito, LAT = 47.80, LON = 18.91;
   var nyelv = "hu";
-  try { nyelv = localStorage.getItem("akv-nyelv") || ((navigator.language || "hu").slice(0, 2) === "hu" ? "hu" : "en"); } catch (e) {}
+  try { nyelv = localStorage.getItem(AZ + "-nyelv") || ((navigator.language || "hu").slice(0, 2) === "hu" ? "hu" : "en"); } catch (e) {}
   var foglalt = {}, szelfik = [], duna = null, ido = null;
   var F = { erk: null, tav: null, felnott: 2, gyerek: 0, ap: null, lepes: 1, ho: null, extrak: {} };
   var BE = { visszatero_kedvezmeny: "10", kozvetlen_kedvezmeny: "0", elonyok_hu: "", elonyok_en: "" };      // a kezelőből (/api/adat)
-  var KARTYA = (function () { try { return JSON.parse(localStorage.getItem("akv-kartya") || "null"); } catch (x) { return null; } })();
-  function kartyaIr(k) { KARTYA = k; try { if (k) localStorage.setItem("akv-kartya", JSON.stringify(k)); else localStorage.removeItem("akv-kartya"); } catch (x) {} }
+  var KARTYA = (function () { try { return JSON.parse(localStorage.getItem(AZ + "-kartya") || "null"); } catch (x) { return null; } })();
+  function kartyaIr(k) { KARTYA = k; try { if (k) localStorage.setItem(AZ + "-kartya", JSON.stringify(k)); else localStorage.removeItem(AZ + "-kartya"); } catch (x) {} }
   function visszaKed() { return KARTYA && KARTYA.ottlet > 0 ? Math.max(0, Math.min(50, +BE.visszatero_kedvezmeny || 0)) : 0; }
 
   var S = window.UI;   // a felületi szövegek a ház tartalmában vannak (hazak/<ház>/tartalom/ui.js)
@@ -23,7 +23,7 @@
   function e(x) { return String(x == null ? "" : x).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function szam(n) { return Math.round(n).toLocaleString(nyelv === "hu" ? "hu-HU" : "en-GB").replace(/[  ]/g, " "); }
   function ft(n) { return szam(n) + (nyelv === "hu" ? " Ft" : " HUF"); }
-  function kep(n) { var b = String(n).split("/").pop(), h = (window.HELYI_KEPEK || {})[b] && (!/^https?:/.test(n) || /^https:\/\/akvarellzebegeny\.hu\//.test(n)); return h ? "/kepek/" + b : /^https?:/.test(n) ? n : T.kep + n; }   // saját másolat, ha van (scripts/kepek_atvesz.py), különben Ernő oldaláról
+  function kep(n) { var b = String(n).split("/").pop(), h = (window.HELYI_KEPEK || {})[b] && (!/^https?:/.test(n) || String(n).indexOf(HAZ.regi_oldal) === 0); return h ? "/kepek/" + b : /^https?:/.test(n) ? n : T.kep + n; }   // saját másolat, ha van (scripts/kepek_atvesz.py), különben Ernő oldaláról
   /* ha egy kép nem töltődik be (pl. Ernő oldala nem elérhető): saját másolatra vált, ha nincs, eltűnik, és a festett háttér látszik */
   document.addEventListener("error", function (ev) {
     var i = ev.target; if (!i || i.tagName !== "IMG") return;
@@ -118,7 +118,7 @@
     $("#menu").innerHTML = m.map(function (x) { return '<a href="' + x[0] + '" class="' + x[3] + (x[2] === akt ? " most" : "") + '">' + e(x[1]) + "</a>"; }).join("") + '<button type="button" class="menugomb" data-menu aria-label="' + s("menu") + '"><span></span><span></span><span></span></button>';
   }
   function lab() {
-    var cim = "2627 Zebegény, Csalogány utca 4.", l = '<div class="linkek"><a href="https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(cim) + '" target="_blank" rel="noopener">' + e(s("utvonal")) + " ↗</a>";
+    var cim = HAZ.cim, l = '<div class="linkek"><a href="https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(cim) + '" target="_blank" rel="noopener">' + e(s("utvonal")) + " ↗</a>";
     var K = O.kapcsolat || {};
     if (K.tel) l += '<a href="' + e(K.telLink) + '">' + e(K.tel) + "</a>";
     if (K.email) l += '<a href="mailto:' + e(K.email) + '">' + e(K.email) + "</a>";
@@ -158,10 +158,10 @@
   }
   function fooldal() {
     menu("fo");
-    var h = '<section class="jelenet"><img src="' + e(kep("Bereny-apartman-nappali.jpg")) + '" alt="" fetchpriority="high"><div class="bel"><h1>Akvarell</h1><p class="al">' + e(sz("alcim")) + '</p><div class="chipek" id="chipek">' + chipek() + '</div><button type="button" class="bizalom" data-ugras="ertekelesek" id="bizalom">' + bizalom() + "</button></div></section>";
+    var h = '<section class="jelenet"><img src="' + e(kep(HAZ.kepek.hero)) + '" alt="" fetchpriority="high"><div class="bel"><h1>' + e(HAZ.nev) + '</h1><p class="al">' + e(sz("alcim")) + '</p><div class="chipek" id="chipek">' + chipek() + '</div><button type="button" class="bizalom" data-ugras="ertekelesek" id="bizalom">' + bizalom() + "</button></div></section>";
     h += '<section class="szakasz" id="apartmanok"><h2 class="emel">' + s("negy") + '</h2><p class="lead emel">' + s("negy_al") + '</p><div class="sor" id="sor">' + aps().map(kartya).join("") + '</div><div class="blokk emel" id="kviz">' + kviz() + '</div><div class="blokk emel" id="kozvetlen">' + kozvetlen() + "</div></section>";
     h += '<section class="szakasz" id="ertekelesek">' + ertekelesBlokk() + "</section>";
-    h += '<section class="jelenet kozel"><img class="festek" loading="lazy" src="' + e(kep("Szonyi-apartman-furdo-kilatas.jpg")) + '" alt=""><div class="bel"><h2>' + s("furdo") + '</h2><p class="al">' + s("furdo_al") + "</p></div></section>";
+    h += '<section class="jelenet kozel"><img class="festek" loading="lazy" src="' + e(kep(HAZ.kepek.kilatas)) + '" alt=""><div class="bel"><h2>' + s("furdo") + '</h2><p class="al">' + s("furdo_al") + "</p></div></section>";
     h += '<section class="jelenet kozel"><img class="festek" loading="lazy" src="' + e(kep("Jakuzzi-5.jpg")) + '" alt=""><div class="bel"><h2>' + s("jakuzzi") + '</h2><p class="al">' + s("jakuzzi_al") + '</p><div class="chipek"><span class="chip">' + IK.nap + s("naplem") + " " + hhmm(NAP.idok(new Date()).nyugszik) + "</span></div></div></section>";
     h += '<section class="szakasz"><h2 class="emel">' + s("elmeny_cim") + '</h2><p class="lead emel">' + s("elmeny_al") + '</p><div class="sor">' + (O.elmenyek || []).slice(0, 6).map(elmenyKartya).join("") + '</div><a class="gomb masod" href="#/elmenyek">' + s("elmenyek") + " →</a></section>";
     var ik = [IK.jakuzzi, IK.villam, IK.auto, IK.wifi];
@@ -194,8 +194,8 @@
   }
 
   /* ---------- 10-es kihívás ---------- */
-  function kesz() { try { return JSON.parse(localStorage.getItem("akv-kihivas2") || "[]"); } catch (x) { return []; } }
-  function keszIr(l) { try { localStorage.setItem("akv-kihivas2", JSON.stringify(l)); } catch (x) {} }
+  function kesz() { try { return JSON.parse(localStorage.getItem(AZ + "-kihivas2") || "[]"); } catch (x) { return []; } }
+  function keszIr(l) { try { localStorage.setItem(AZ + "-kihivas2", JSON.stringify(l)); } catch (x) {} }
   function kihivasOldal() {
     menu("kihivas");
     var hu = nyelv === "hu", TK = window.TERKEP, A = TK ? TK.allomasok : [], km = TK ? String(Math.round(TK.ossz_m / 100) / 10).replace(".", hu ? "," : ".") : "";
@@ -572,7 +572,7 @@
     if (a && a !== "h" && KB.hiba === a) return h + '<p class="uzenet hiba">' + s("kartya_nincs") + "</p></section>";
     if (KARTYA && (!a || a === "h" || KARTYA.token === a)) {
       var k = KARTYA, ked = k.ottlet > 0;
-      h += '<div class="vkartya"><small>Akvarell Apartmanház · Zebegény</small><b>' + e(k.nev) + '</b><span>' + k.ottlet + " " + s("kartya_ottlet") + "</span><em>" + (ked ? s("kartya_kov") + ": −" + vp + "%" : s("kartya_meg")) + '</em><div id="kartya-qr" class="qr" aria-hidden="true"></div></div>';
+      h += '<div class="vkartya"><small>' + e(HAZ.teljes_nev + ' · ' + HAZ.hely) + '</small><b>' + e(k.nev) + '</b><span>' + k.ottlet + " " + s("kartya_ottlet") + "</span><em>" + (ked ? s("kartya_kov") + ": −" + vp + "%" : s("kartya_meg")) + '</em><div id="kartya-qr" class="qr" aria-hidden="true"></div></div>';
       h += '<button type="button" class="gomb teljes" data-lap="nyit">' + s("kartya_foglal") + " →</button>";
       if (k.hirlevel) h += '<p class="jelmag">' + s("kartya_hir_ok") + "</p>";
       h += '<p class="jelmag">' + s("kartya_masik") + '</p><button type="button" class="link" data-kartyatorol>' + s("kartya_torol") + "</button>";
@@ -629,7 +629,7 @@
     if (d.kartya) h += '<a class="blokk kartya-link" href="#/kartya/' + e(d.kartya) + '"><b>' + s("vk_kartya") + '</b><span class="jelmag">' + s("vk_kartya_al") + "</span><span>→</span></a>";
     if (ma >= F2.tavozas && V.ertekeles_link) h += '<a class="gomb teljes" href="' + e(V.ertekeles_link) + '" target="_blank" rel="noopener">' + s("vk_ertekeles") + " ↗</a>";
     var tel = V.tel || (O.kapcsolat || {}).tel;
-    h += '<div class="gombok" style="margin-top:16px">' + (tel ? '<a class="gomb" href="tel:' + e(tel.replace(/\s/g, "")) + '">' + s("vk_hivj") + " · " + e(tel) + "</a>" : "") + '<a class="gomb masod" href="https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent("2627 Zebegény, Csalogány utca 4.") + '" target="_blank" rel="noopener">' + s("utvonal") + ' ↗</a><a class="gomb masod" href="#/hazirend">' + s("hazirend") + "</a></div>";
+    h += '<div class="gombok" style="margin-top:16px">' + (tel ? '<a class="gomb" href="tel:' + e(tel.replace(/\s/g, "")) + '">' + s("vk_hivj") + " · " + e(tel) + "</a>" : "") + '<a class="gomb masod" href="https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(HAZ.cim) + '" target="_blank" rel="noopener">' + s("utvonal") + ' ↗</a><a class="gomb masod" href="#/hazirend">' + s("hazirend") + "</a></div>";
     return h + "</section>";
   }
   async function ertekelesKuld() {
@@ -702,14 +702,14 @@
     var alold = !!r[0] && r[0] !== "zebegeny", h1 = alold && $("#fo h1");
     document.body.classList.toggle("alold", alold);
     $("#hol").textContent = h1 ? h1.textContent.trim() : "";
-    $(".logo").setAttribute("aria-label", alold ? (nyelv === "hu" ? "Vissza a főoldalra" : "Back to the home page") : "Akvarell");
+    $(".logo").setAttribute("aria-label", alold ? (nyelv === "hu" ? "Vissza a főoldalra" : "Back to the home page") : HAZ.nev);
     lab(); savFrissit(); fejleces();
   }
   function atmenet(fn) { if (document.startViewTransition && !matchMedia("(prefers-reduced-motion: reduce)").matches) document.startViewTransition(fn); else fn(); }
 
   document.addEventListener("click", function (ev) {
     var b = ev.target.closest("[data-ny]");
-    if (b) { nyelv = b.dataset.ny; try { localStorage.setItem("akv-nyelv", nyelv); } catch (x) {} rajzol(); if ($("#lap").open) lapRajz(); return; }
+    if (b) { nyelv = b.dataset.ny; try { localStorage.setItem(AZ + "-nyelv", nyelv); } catch (x) {} rajzol(); if ($("#lap").open) lapRajz(); return; }
     var k = ev.target.closest("a.kartya");
     if (k) { var img = k.querySelector("img"); if (img) img.style.viewTransitionName = "ap-kep"; return; }
     if (ev.target.closest("[data-menu]")) { menuLap(); $("#menulap").showModal(); return; }

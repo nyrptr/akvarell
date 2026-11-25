@@ -1,5 +1,15 @@
 {
  "_leiras": "Az Akvarell ház beállítása (ALAPELV 3. pont). Az árszabály egy forrása: ezt olvassa a böngésző (hazak/akvarell/haz.js) és a szerver (functions/_kozos/haz.js); generálás: python3 scripts/haz_gen.py. Kézzel a két generált fájlt ne szerkeszd.",
+ "azonosito": "akv",
+ "nev": "Akvarell",
+ "teljes_nev": "Akvarell Apartmanház",
+ "hely": "Zebegény",
+ "cim": "2627 Zebegény, Csalogány utca 4.",
+ "regi_oldal": "https://akvarellzebegeny.hu/",
+ "kepek": {
+  "hero": "Bereny-apartman-nappali.jpg",
+  "kilatas": "Szonyi-apartman-furdo-kilatas.jpg"
+ },
  "ar": {
   "gyerek_ejszakankent": 15000,
   "egy_ejszakas_felar": 20000,
