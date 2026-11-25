@@ -1,4 +1,4 @@
-// GET /api/blog – a kint lévő „Zebegényi hét” bejegyzések. Ha a következő hétvégére még nincs, a háttérben elkészül.
+// GET /api/blog – a kint lévő heti bejegyzések. Ha a következő hétvégére még nincs, a háttérben elkészül.
 import { J } from '../_kozos/k.js';
 import { hetiBejegyzes } from '../_kozos/blog.js';
 export async function onRequestGet({ env, waitUntil }) {

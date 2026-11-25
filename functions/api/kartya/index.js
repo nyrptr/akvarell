@@ -3,6 +3,7 @@ import { J, oldalCim } from '../../_kozos/k.js';
 import { korlat, korlatok, ipLeny, lenyomat } from '../../_kozos/korlat.js';
 import { kuld, keret, esc } from '../../_kozos/level.js';
 import { vendegMent, emailOk, ottletek, beall, szazalek, kodFeloldas, szobaJegyez } from '../../_kozos/vendeg.js';
+import { SZ } from '../../_kozos/szerver.js';
 export async function onRequestPost({ request, env }) {
   let d; try { d = await request.json(); } catch (e) { return J(400, { hiba: 'rossz kérés' }); }
   if (d.weboldal) return J(200, { ok: true });
@@ -18,7 +19,7 @@ export async function onRequestPost({ request, env }) {
     if (haz) { await env.DB.prepare("UPDATE vendeg SET forras = 'haz' WHERE email = ?").bind(email.toLowerCase()).run(); await szobaJegyez(env.DB, email, hk.apartman_id); }
     const en = van.nyelv === 'en', link = `${oldalCim(env, request)}/#/kartya/${van.token}`;
     // ugyanarra a címre 6 óránként legfeljebb 2 levél megy (más ne tudja levelekkel elárasztani a kártya tulajdonosát)
-    const r = !(await korlat(env.DB, 'kartya:level:' + await lenyomat(email), 2, 360)) ? { ok: true } : await kuld(env, { to: email, subject: en ? 'Your Akvarell guest card' : 'Az Akvarell vendégkártyád', html: keret(en ? 'Your guest card' : 'A vendégkártyád', `<p><a href="${esc(link)}">${en ? 'Open your card' : 'A kártyád megnyitása'}</a></p>`) }).catch(() => ({ ok: false }));
+    const r = !(await korlat(env.DB, 'kartya:level:' + await lenyomat(email), 2, 360)) ? { ok: true } : await kuld(env, { to: email, subject: SZ.level.kartya_targy[en ? 'en' : 'hu'], html: keret(en ? 'Your guest card' : 'A vendégkártyád', `<p><a href="${esc(link)}">${en ? 'Open your card' : 'A kártyád megnyitása'}</a></p>`) }).catch(() => ({ ok: false }));
     return J(200, { mar_van: true, elkuldve: !!r.ok });
   }        // a szoba QR-kódjáról jött: itt alszik / aludt
   const v = await vendegMent(env.DB, { email, nev, nyelv: d.nyelv, hirlevel: d.hirlevel === true, forras: haz ? 'haz' : 'kartya' });

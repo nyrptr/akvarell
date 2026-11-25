@@ -1,6 +1,6 @@
 // /api/vendeg/<token> – a vendég saját vendégkönyve (titkos link a visszaigazoló levélben).
 // GET: foglalás + a ház tudnivalói. A wifi-jelszó és a bejutás csak érkezés előtt 2 naptól a távozás utáni napig látszik.
-// POST: kérés Ernőnek (késői távozás, reggeli, egyéb) → uzenet tábla + e-mail.
+// POST: kérés az üzemeltetőnek (késői távozás, reggeli, egyéb) → uzenet tábla + e-mail.
 import { J } from '../../_kozos/k.js';
 import { beall, isoBp, plusz } from '../../_kozos/vendegut.js';
 import { kuld, keret, esc } from '../../_kozos/level.js';

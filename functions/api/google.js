@@ -1,4 +1,4 @@
-// GET /api/google – a Google-értékelések élőben (Places API, csak ha Ernő megadta a kulcsot és a hely azonosítóját).
+// GET /api/google – a Google-értékelések élőben (Places API, csak ha az üzemeltető megadta a kulcsot és a hely azonosítóját).
 // A Google szabálya szerint a tartalom nem tárolható (csak a hely azonosítója), és a szerzőt, linket mutatni kell: ezért nincs gyorsítótár,
 // és csak akkor kérjük le, ha a vendég megnyomja a gombot (így a havi ingyenes kereten belül marad).
 import { J } from '../_kozos/k.js';
