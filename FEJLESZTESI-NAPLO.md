@@ -356,3 +356,9 @@
 - AI-válaszban opcionális „reel” feliratsorok.
 - CSP: media-src 'self' blob: a videó-előnézethez.
 - Teszt: 9936 poszt 0 hiba; ünnepdátumok ellenőrizve (húsvét 2025–2027); napnyugta 2026-11-27 15:57; reel 16 mp MP4 a CSP alatt is lejátszható.
+
+## Fotóposzt v11 (2026-11-27)
+- Péter helyi leírása alapján négy külön vasúti téma: főbejárat (aluljáró a Duna-parti lejárattal szemben, a Főtér és a templom felé), hétlyukú völgyhíd, átjáró a Naphegy felé, vasúti híd az Újvölgy felé. Ha a téma vasúti híd, mind a négy felkínálva. Koordináta nincs hozzájuk (OSM-ben nem azonosítható), a „Ez a hely” gombbal tanulja meg.
+- „Kitevés” helyett „Közzététel” (a Facebook magyar felületén is ez a szó).
+- AI-javaslat a nyilvános oldalon is: „AI-javaslat (másolással)” gomb a 2. lépésben, a kézi híd ide került.
+- Teszt: 11232 poszt 0 hiba, önellenőrzés üres.

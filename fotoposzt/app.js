@@ -9,7 +9,7 @@ const TILT={hu:['legjobb','legszebb','legerősebb','legolcsóbb','legcsodálatos
 const ALLTILT=Object.values(TILT).flat();
 const PENZ=/(\d\s?(ft|huf|€|eur|euro)\b|€|%|kedvezm|akció|discount|offer|rabatt|angebot)/i;
 const EMO=()=>/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu;
-const SRC={minta:['Minta','tan'],claude:['AI-javaslat','ai'],ai:['AI-javaslat (másik AI)','ai'],sajat:['Tanult (saját)','tan'],tanult:['Tanult (tetszett)','tan']};
+const SRC={minta:['Minta','tan'],claude:['AI-javaslat','ai'],ai:['AI-javaslat (másolással)','ai'],sajat:['Tanult (saját)','tan'],tanult:['Tanult (tetszett)','tan']};
 
 /* tárolás az eszközön, hibatűrő */
 const store={get(k,d){try{const v=localStorage.getItem('akvposzt-'+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem('akvposzt-'+k,JSON.stringify(v))}catch(e){}}};
@@ -192,7 +192,7 @@ function ellenoriz(fixel){
  out.push($('man').checked?['ok','Emberek a képen: rendben']:['bad','Pipáld ki lent, ha nincs felismerhető ember, vagy beleegyezett']);
  if(S.lang!=='hu'&&$('nota').value.trim())out.push(['warn','A saját mondatod csak ezen a nyelven van meg']);
  $('chk').innerHTML='';for(const [c,s] of out){const li=document.createElement('li');li.className=c;const sp=document.createElement('span');sp.textContent=s;li.append(sp);$('chk').append(li)}
- const bad=out.some(o=>o[0]==='bad');$('ver').className='verdict '+(bad?'stop':'go');$('ver').textContent=bad?'Még nem tehető ki: javítsd a pirosakat.':'Kitehető. A döntés a tiéd.';S.ok=!bad}
+ const bad=out.some(o=>o[0]==='bad');$('ver').className='verdict '+(bad?'stop':'go');$('ver').textContent=bad?'Még nem tehető közzé: javítsd a pirosakat.':'Közzétehető. A döntés a tiéd.';S.ok=!bad}
 $('txt').addEventListener('input',()=>ellenoriz(false));$('txt').addEventListener('blur',()=>ellenoriz(true));
 $('kom').addEventListener('input',()=>ellenoriz(false));$('man').addEventListener('change',()=>ellenoriz(false));
 
@@ -201,7 +201,9 @@ async function copy(text,msg,el){try{await navigator.clipboard.writeText(text);r
 $('cpT').addEventListener('click',async()=>{if(!S.ok){$('st2').textContent='Előbb javítsd a pirosakat.';return}$('st2').textContent=await copy($('txt').value,'Szöveg a vágólapon.',$('txt'))});
 $('cpK').addEventListener('click',async()=>{$('st2').textContent=await copy($('kom').value,'Komment a vágólapon.',$('kom'))});
 let dl=null,sample=null;
-(async()=>{if(!window.claude)return;try{dl=await window.claude.use('downloads')}catch(e){}try{sample=await window.claude.use('sample')}catch(e){}if(sample){$('cl').hidden=false;$('cl').disabled=!img}})();
+(async()=>{if(!window.claude)return;try{dl=await window.claude.use('downloads')}catch(e){}try{sample=await window.claude.use('sample')}catch(e){}if(sample){$('cl').hidden=false;$('cl').disabled=!img}else{$('hidB').hidden=false}})();
+if(!window.claude)$('hidB').hidden=false;
+$('hidB').addEventListener('click',()=>{$('hid').open=true;$('hid').scrollIntoView({behavior:'smooth',block:'start'})});
 const kepBlob=()=>new Promise(r=>$('cv').toBlob(r,'image/jpeg',.9));
 /* ===== Képleírás (alt szöveg) ===== */
 const NSA={hu:{reggel:'reggel',nappal:'napközben',este:'este',ejjel:'éjjel'},en:{reggel:'in the morning',nappal:'in daylight',este:'in the evening',ejjel:'at night'},de:{reggel:'am Morgen',nappal:'bei Tag',este:'am Abend',ejjel:'in der Nacht'}};
@@ -319,7 +321,7 @@ SZABÁLYOK:
 - A három nyelv mondatról mondatra ugyanazt mondja.
 JÓVÁHAGYOTT MINTÁK (ilyen hangon és minőségben írj, de ne másold őket):
 ${mintak()}
-Eddig kitett posztok:
+Eddig közzétett posztok:
 ${minta}
 
 Írj HÁROM, egymástól tényleg különböző változatot, más-más szögből:
@@ -358,7 +360,7 @@ $('aiBe').addEventListener('click',()=>{if(!img){$('st3').textContent='Előbb t�
 
 /* készlet panel, mentés, visszatöltés */
 function keszlet(){const n=onell();
- const st=[['Mondat a készletben',n],['Kizárva (hibás)',KIZART.size],['Tanult (AI-javaslat)',TAN.filter(t=>t.src==='claude').length],['Tanult (másik AI)',TAN.filter(t=>t.src==='ai').length],['Tanult (saját javítás)',TAN.filter(t=>t.src==='sajat').length],['Kitett poszt',LOG.length],['Tanult tény (ellenőrizve)',TUDAS.length]];
+ const st=[['Mondat a készletben',n],['Kizárva (hibás)',KIZART.size],['Tanult (AI-javaslat)',TAN.filter(t=>t.src==='claude').length],['Tanult (másik AI)',TAN.filter(t=>t.src==='ai').length],['Tanult (saját javítás)',TAN.filter(t=>t.src==='sajat').length],['Közzétett poszt',LOG.length],['Tanult tény (ellenőrizve)',TUDAS.length]];
  $('stat').innerHTML='';for(const [a,b] of st){const s=document.createElement('span');s.textContent=a;const v=document.createElement('b');v.textContent=b;$('stat').append(s,v)}
  $('kchk').innerHTML='';const li=document.createElement('li');li.className=KHIBA.length?'warn':'ok';const sp=document.createElement('span');sp.textContent=KHIBA.length?'Kizártam a hibás mondatokat: '+KHIBA.join(' · '):'A készlet minden mondata átment az ellenőrzésen, mindhárom nyelven.';li.append(sp);$('kchk').append(li);
  $('log').innerHTML='';for(const e of LOG.slice(0,8)){const l=document.createElement('li');l.textContent=`${e.ts} · ${e.txt}`;$('log').append(l)}}
@@ -370,7 +372,9 @@ const norm=x=>String(x||'').toLowerCase().trim();
 let UT=store.get('temak',[]),HELYEK=store.get('helyek',{});
 for(const u of UT.slice()){const b=K.temak.find(t=>norm(t.nev)===norm(u.nev)||(t.alias||[]).includes(norm(u.nev)));if(b){const uh=u.hely||HELYEK[u.id];if(uh&&!HELYEK[b.id])HELYEK[b.id]=uh;delete HELYEK[u.id];UT=UT.filter(x=>x!==u);if(S.tema===u.id)S.tema=b.id}else if(u.hely&&!HELYEK[u.id])HELYEK[u.id]=u.hely}
 store.set('temak',UT);store.set('helyek',HELYEK);
-function temaValaszt(id){S.tema=id;osszegzes();for(const c of document.querySelectorAll('#temak .chip'))c.setAttribute('aria-pressed',c.dataset.t===id);$('aptw').hidden=!['apartman','terasz'].includes(id);S.cands=[];S.sel=null;$('valaszt').hidden=true;$('t3').hidden=true;$('out').hidden=true}
+const HIDAK=['foatjaro','vasut','naphegy','ujvolgy'];
+function hidSor(){const w=$('hidw');w.hidden=!HIDAK.includes(S.tema);if(w.hidden)return;const r=$('hidR');r.innerHTML='';for(const h of HIDAK){const b=document.createElement('button');b.type='button';b.className='chip';b.textContent=temaObj(h).nev;b.setAttribute('aria-pressed',S.tema===h);b.addEventListener('click',()=>{S.temaKezi=true;temaValaszt(h)});r.append(b)}}
+function temaValaszt(id){S.tema=id;osszegzes();for(const c of document.querySelectorAll('#temak .chip'))c.setAttribute('aria-pressed',c.dataset.t===id);$('aptw').hidden=!['apartman','terasz'].includes(id);hidSor();S.cands=[];S.sel=null;$('valaszt').hidden=true;$('t3').hidden=true;$('out').hidden=true}
 const temaKeres=nev=>K.temak.concat(UT).find(t=>norm(t.nev)===norm(nev)||(t.alias||[]).includes(norm(nev)));
 function temak(){const w=$('temak');w.innerHTML='';const gomb=t=>{const b=document.createElement('button');b.className='chip';b.dataset.t=t.id;b.textContent=t.nev+(HELYEK[t.id]?' •':'');b.setAttribute('aria-pressed',t.id===S.tema);b.addEventListener('click',()=>{S.temaKezi=true;temaValaszt(t.id)});return b};
  const csop=(cim,lista,plusz)=>{const c=document.createElement('div');c.className='csop';c.textContent=cim;const r=document.createElement('div');r.className='row';lista.forEach(t=>r.append(gomb(t)));if(plusz)r.append(plusz);w.append(c,r)};
