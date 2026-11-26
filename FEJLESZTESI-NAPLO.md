@@ -346,3 +346,13 @@
 - 92 kész minta-poszt (minden témához legalább 2), 44 hangulatmondat, témához kötött zárókérdések, 4 összerakási ív; 9 új, forrásolt tény.
 - Teszt: 9936 összerakott poszt, 0 hibás; önellenőrzés üres; HU/EN/DE mondatszám-egyezés mindenhol.
 - A minták AI-vázlatok, Péter jóváhagyására várnak.
+
+## Fotóposzt v10 (2026-11-27)
+- Naptár internet nélkül, a telefon órájából: ünnepek a következő 7 napban (húsvét és pünkösd kiszámolva, advent, karácsony, újév, május 1., mindenszentek, Valentin, anyák napja; a magyar nemzeti ünnepek csak magyar posztba), hosszú hétvége (hétfői/pénteki ünnep), csütörtöktől hétvége. A jókívánság kikapcsolható.
+- Évszak: ha a fotóban nincs dátum, a mai dátumból, jelölve.
+- Napkelte, napnyugta, aranyóra Zebegényre (NOAA-közelítés, budapesti idő); telihold esti fotónál egy mondattal.
+- Reel 1080×1920, a böngészőben rögzítve (MediaRecorder; MP4, ahol a böngésző tudja): lassú ráközelítés, több fotó áttűnéssel, mondatonkénti felirat a biztonsági sávban, zárókép. Három reel-keret. Zene nincs benne (Facebook zenetára).
+- Két új képkeret: Ecsetvonás, Vázlatfüzet (összesen 8). Alt szöveg három nyelven.
+- AI-válaszban opcionális „reel” feliratsorok.
+- CSP: media-src 'self' blob: a videó-előnézethez.
+- Teszt: 9936 poszt 0 hiba; ünnepdátumok ellenőrizve (húsvét 2025–2027); napnyugta 2026-11-27 15:57; reel 16 mp MP4 a CSP alatt is lejátszható.

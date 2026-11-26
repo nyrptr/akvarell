@@ -123,6 +123,8 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 <button class="btn sec full" id="ujB">Téma hozzáadása</button><div class="status" id="ujSt"></div><div class="row" id="sajatL" style="margin-top:8px"></div></div>
 <div id="aptw" hidden><label class="f" for="apt">Melyik apartman?</label>
 <select id="apt"><option value="">Nem tudom / mindegy</option><option value="amrita">Amrita (földszint, nagy terasz)</option><option value="szonyi">Szőnyi (emelet)</option><option value="bereny">Berény</option><option value="karpathy">Kárpáthy</option></select></div>
+<div class="note" id="naptarT" role="status"></div>
+<label class="man" id="alkW" hidden><input type="checkbox" id="alkCb" checked> <span id="alkL"></span></label>
 <details id="beall"><summary id="beallS">További beállítások</summary>
 <label class="f">Kitevés nyelve</label>
 <div class="row" id="langs"><button class="chip" data-l="hu" aria-pressed="true">Magyar</button><button class="chip" data-l="en" aria-pressed="false">English</button><button class="chip" data-l="de" aria-pressed="false">Deutsch</button></div>
@@ -188,6 +190,17 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 <button class="btn sec wide" id="kitettem">Kitettem a Facebookra</button>
 </div>
 <div class="status" id="st2" role="status"></div>
+<h2>Képleírás (alt szöveg)</h2>
+<p class="note">A Facebookon a fotónál a „Helyettesítő szöveg” mezőbe. A gyengénlátók képernyőolvasója ezt olvassa fel.</p>
+<div class="row"><input id="alt" type="text" aria-label="Képleírás" style="flex:1"><button class="chip" id="cpA">Másolás</button></div>
+<h2>Reel (rövid videó a fotóból)</h2>
+<p class="note">A telefonon készül, internet és AI nélkül: lassú ráközelítés, a szöveg mondatonként, a végén az Akvarell felirat. Zenét a Facebookon adj hozzá a saját zenetárából: az jogtiszta.</p>
+<div class="row" id="reelw"></div>
+<div class="row" style="margin-top:8px"><label class="chip" for="reelF" style="display:inline-flex;align-items:center;cursor:pointer">+ További fotók a reelbe<input id="reelF" type="file" accept="image/*" multiple hidden></label><button class="chip" id="reelFDel" hidden>Továbbiak törlése</button></div>
+<button class="btn full" id="reelB" style="margin-top:8px">Reel készítése</button>
+<div class="status" id="reelSt" role="status"></div>
+<video id="reelV" controls playsinline muted hidden style="width:100%;max-width:360px;border-radius:12px;margin-top:8px;display:block"></video>
+<div class="acts" id="reelA" hidden><button class="btn" id="reelSh">Videó megosztása</button><button class="btn sec" id="reelDl">Videó mentése</button></div>
 <h2>Kitevés (te csinálod, 1 perc)</h2>
 <ol class="how">
 <li>Szöveg másolása, majd „Kép megosztása” → Facebook (vagy mentsd a képet).</li>
