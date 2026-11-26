@@ -29,7 +29,7 @@ function javit(t,k){const f=[];let x=t;const ure=/https?:\/\/\S+|www\.\S+/gi;
 /* készlet önellenőrzése: hibás mondat kizárva */
 const KIZART=new Set(),KHIBA=[];
 function onell(){KIZART.clear();KHIBA.length=0;
- const all=[...K.nyito,...K.teny,...K.zaro,...K.komment,...Object.entries(K.hangulat).map(([id,v])=>({id:'hg-'+id,...v})),{id:'tudtad',...K.tudtad},...(K.mintak||[]).map((m,i)=>({id:m.id||'mm-'+i,hu:m.hu,en:m.en,de:m.de})),...TAN.map(p=>({id:p.id,...Object.fromEntries(L.map(l=>[l,p[l]?p[l].post:'']))}))];
+ const all=[...K.nyito,...(K.szin||[]),...K.teny,...K.zaro,...K.komment,...Object.entries(K.hangulat).map(([id,v])=>({id:'hg-'+id,...v})),{id:'tudtad',...K.tudtad},...(K.mintak||[]).map((m,i)=>({id:m.id||'mm-'+i,hu:m.hu,en:m.en,de:m.de})),...TAN.map(p=>({id:p.id,...Object.fromEntries(L.map(l=>[l,p[l]?p[l].post:'']))}))];
  for(const s of all)for(const l of L){if(!s[l])continue;const h=hibak(s[l]);if(h.length){KIZART.add(s.id);KHIBA.push(`${s.id} (${l}): ${h.join(', ')}`)}}
  return all.length}
 
@@ -50,22 +50,26 @@ function jeloltek(){
  const ns=nsAkt(),ev=evAkt(),a=apt(),out=[];
  for(const p of huz(TAN.filter(p=>p.tema===S.tema&&p[S.lang]),1))out.push({ids:[p.id],src:p.src==='sajat'?'sajat':'tanult',tanultPoszt:true,parts:per(l=>p[l]?p[l].post:''),kom:per(l=>p[l]?p[l].kom:'')});
  (K.mintak||[]).forEach((m,i)=>m.id=m.id||'mm-'+i);
- for(const m of huz((K.mintak||[]).filter(m=>m.tema===S.tema),2))out.push({ids:[m.id],src:'minta',parts:per(l=>m[l]),kom:per(l=>(K.komment.find(k=>k.id==='m1')||{})[l]||'')});
+ for(const m of huz((K.mintak||[]).filter(m=>m.tema===S.tema),out.length?1:2))out.push({ids:[m.id],src:'minta',parts:per(l=>m[l]),kom:per(l=>(K.komment.find(k=>k.id==='m1')||{})[l]||'')});
  const ut=UT.find(t=>t.id===S.tema);const sajatNy=ut?[{id:'u-op-'+ut.id,hu:ut.nev+', Zebegény.',en:(ut.en||ut.nev)+', Zebegény.',de:(ut.de||ut.nev)+', Zebegény.'},{id:'u-op2-'+ut.id,hu:'Ma ide vitt az utunk: '+ut.nev+'.',en:'Today our walk led us here: '+(ut.en||ut.nev)+'.',de:'Heute hat uns der Weg hierher geführt: '+(ut.de||ut.nev)+'.'}]:[];
  const ny=huz(K.nyito.filter(s=>s.t===S.tema).concat(sajatNy),3);
  const ten=huz(K.teny.filter(s=>(a&&s.apt===a)||(!s.apt&&tTema(s,S.tema))),3);
- const zar=K.zaro.filter(s=>(!s.evszak||s.evszak===ev)&&(!s.haz||HAZT.includes(S.tema))&&!KIZART.has(s.id));
+ const zar=K.zaro.filter(s=>(!s.evszak||s.evszak===ev)&&(!s.haz||HAZT.includes(S.tema))&&(!s.tt||s.tt===S.tema)&&!KIZART.has(s.id));
+ const sz=huz((K.szin||[]).filter(s=>s.t===S.tema),2);
  const hg=K.hangulat[ns]?{id:'hg-'+ns,...K.hangulat[ns]}:null,td={id:'tudtad',...K.tudtad},tm=tavMondat();
  const km=()=>K.komment.find(m=>a&&m.apt===a)||K.komment.find(m=>!m.apt&&m.t===S.tema)||huz(K.komment.filter(m=>!m.apt&&!m.t),1)[0];
- const zarVesz=(kerdes)=>{const used=out.flatMap(c=>c.ids);const pool=zar.filter(z=>!used.includes(z.id)&&(kerdes==null||!!z.kerdes===kerdes));return huz(pool.length?pool:zar,1)[0]};
- // három ív: A) pillanat + hely + tény + zárás, B) hely + Tudtad? + tény + kérdés, C) hely + két tény + jókívánság
+ const zarVesz=(kerdes)=>{const used=out.flatMap(c=>c.ids);let pool=zar.filter(z=>!used.includes(z.id)&&(kerdes==null||!!z.kerdes===kerdes));
+  const sajt=pool.filter(z=>z.tt===S.tema);if(sajt.length&&Math.random()<.6)pool=sajt;return huz(pool.length?pool:zar,1)[0]};
+ // négy ív, sorrendjük keverve: A) pillanat + hely + hangulat + tény, B) hely + Tudtad? + tény + kérdés,
+ // C) hely + két tény + hangulat + jókívánság, D) hangulat + hely + tény + kérdés
  const ivek=[
-  ()=>[hg,ny[0],ten[0],tm,zarVesz(null)],
+  ()=>[hg,ny[0],sz[0],ten[0],tm,zarVesz(null)],
   ()=>[ny[1]||ny[0],ten[1]||ten[0]?td:null,ten[1]||ten[0],tm,zarVesz(true)],
-  ()=>[ny[2]||ny[1]||ny[0],ten[0],ten[1],tm,zarVesz(false)]];
+  ()=>[ny[2]||ny[1]||ny[0],ten[0],ten[1],sz[1]||sz[0],tm,zarVesz(false)],
+  ()=>[sz[1]||sz[0],ny[0],ten[2]||ten[0],tm,zarVesz(true)]].sort(()=>Math.random()-.5);
  for(const iv of ivek){if(out.length>=3)break;let seg=iv().filter(Boolean).filter((x,i,arr)=>arr.indexOf(x)===i);
   const txt=l=>seg.map(x=>x[l]).join(' ');
-  while(Math.max(...L.map(l=>txt(l).length))>400&&seg.length>2){const ix=seg.findIndex(x=>x.id&&x.id.startsWith('x-'));if(ix<0)break;seg.splice(ix,1)}
+  while(Math.max(...L.map(l=>txt(l).length))>400&&seg.length>2){let ix=seg.findIndex(x=>x.id&&x.id.startsWith('sz-'));if(ix<0)ix=seg.findIndex(x=>x.id&&x.id.startsWith('x-'));if(ix<0)break;seg.splice(ix,1)}
   const k=km();const kulcs=txt('hu');if(out.some(c=>c.parts.hu===kulcs))continue;
   out.push({ids:seg.map(x=>x.id).concat(k.id),parts:per(l=>txt(l)),kom:per(l=>k[l])})}
  return out.slice(0,3)}
@@ -270,8 +274,17 @@ function helyPanel(){const w=$('helyw');w.hidden=false;const t=$('helyT');t.text
  $('hazB').hidden=false;$('helyTema').hidden=false;S.hazOk=false;$('hazB').textContent=HAZ?'A ház helyének áthelyezése ide':'Ez a fotó a háznál készült: legyen ez a ház helye';$('helyKom').parentElement.hidden=false;$('helyTav').parentElement.hidden=!HAZ;
  const a=document.createElement('a');a.href=osm(S.gps);a.target='_blank';a.rel='noopener';a.textContent='Megnyitás térképen (OpenStreetMap)';
  const d=tavKm();t.append(document.createTextNode('A fotó helye: '),a,document.createTextNode(d==null?' · A ház helye még nincs beállítva.':` · kb. ${d<1?Math.round(d*1000/50)*50+' m':d.toFixed(1).replace('.',',')+' km'} a háztól`));
- const kozel=K.temak.concat(UT).filter(u=>HELYEK[u.id]).map(u=>[u,tav(S.gps,HELYEK[u.id])]).sort((x,y)=>x[1]-y[1])[0];
- if(kozel&&kozel[1]<.3){S.helyFelismert=true}if(kozel&&kozel[1]<.3&&S.tema!==kozel[0].id){temaValaszt(kozel[0].id);$('st1').textContent=`Felismertem: ${kozel[0].nev} közelében készült, ezt a témát választottam.`}}
+ const pont=id=>HELYEK[id]||(K.helyek||{})[id];
+ const sor=K.temak.concat(UT).filter(u=>pont(u.id)).map(u=>[u,tav(S.gps,pont(u.id)),!!HELYEK[u.id]]).sort((x,y)=>x[1]-y[1]);
+ const [e1,e2]=sor;let auto=null;
+ if(e1&&e1[2]&&e1[1]<.3)auto=e1; /* saját, megtanult hely */
+ else if(e1&&e1[1]<.06&&(!e2||e2[1]>=2*e1[1]))auto=e1; /* beépített OSM-hely, egyértelmű */
+ const att=document.createElement('small');att.textContent=' · Helyadatok: © OpenStreetMap közreműködők';t.append(att);
+ if(auto){S.helyFelismert=true;if(S.tema!==auto[0].id){temaValaszt(auto[0].id);$('st1').textContent=`A helyadat alapján: ${auto[0].nev} (kb. ${Math.round(auto[1]*1000/10)*10} m). Ezt a témát választottam.`}return}
+ const jav=sor.filter(x=>x[1]<.4).slice(0,3);if(!jav.length)return;$('st1').textContent='Több látnivaló is közel van a fotó helyéhez: koppints a megfelelőre.';
+ const b=document.createElement('div');b.className='helyjav';b.append(document.createTextNode('A közelben: '));
+ for(const [u,d] of jav){const g=document.createElement('button');g.type='button';g.className='chip';g.textContent=`${u.nev} · ${Math.round(d*1000/10)*10} m`;g.addEventListener('click',()=>{S.helyFelismert=true;temaValaszt(u.id);$('st1').textContent=`Téma: ${u.nev}.`});b.append(g)}
+ t.append(b)}
 $('helyTema').addEventListener('click',()=>{if(!S.gps)return;HELYEK[S.tema]=S.gps;store.set('helyek',HELYEK);temak();const t=K.temak.concat(UT).find(x=>x.id===S.tema);$('st1').textContent=`Megjegyeztem: ez a hely = ${t?t.nev:S.tema}. Ha a közelében fotózol, magától ezt választom.`});
 $('hazB').addEventListener('click',()=>{if(!S.gps)return;if(HAZ&&!S.hazOk){S.hazOk=true;$('hazB').textContent='Biztosan ide teszed a ház helyét? Koppints újra.';return}S.hazOk=false;HAZ=S.gps;store.set('haz',HAZ);helyPanel();$('st1').textContent='Megjegyeztem a ház helyét. Innentől a távolságot is ki tudom írni.'});
 let img=null;
@@ -397,5 +410,5 @@ async function felismer(){if(!img||OSZT_HIBA||!$('felisCb').checked)return;const
   if(!S.temaKezi&&!S.helyFelismert&&biztos){temaValaszt(pont[0][0]);$('st1').textContent=`A képfelismerő alapján ezt a témát választottam: ${temaObj(pont[0][0]).nev}. Ha nem jó, koppints másikra.`}}
  catch(e){OSZT_HIBA=true;$('felisT').textContent='A képfelismerés itt nem indult el ('+(e&&e.message?e.message.slice(0,60):'hiba')+'); kézzel válassz témát.'}}
 keszlet();
-window.__test={temaPontok,TERKEP,tavMondat,UT:()=>UT,K,hibak,javit,jeloltek,S,onell,KIZART,KHIBA,exif,beolvas,keres};
+window.__test={helyPanel,temaPontok,TERKEP,tavMondat,UT:()=>UT,K,hibak,javit,jeloltek,S,onell,KIZART,KHIBA,exif,beolvas,keres};
 }

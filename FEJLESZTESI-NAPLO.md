@@ -339,3 +339,10 @@
 - Mi: az ötletbemutató új videója az `/erno` helyen, csak a munkaág előnézeti címén (`munka-erno-video-v5.akvarell.pages.dev/erno/`), a `main`-be nem megy. Péter kérése: ideiglenes, utána leszedjük.
 - Miért: Ernő Claude-fiók nélkül is meg tudja nyitni linkről.
 - Mi nem tesztelt: a PR-kapu nem futott (nincs PR); csak az előnézeti oldal megnyitása.
+
+## Fotóposzt v9 (2026-11-27)
+- 12 beépített helykoordináta OpenStreetMap-ből (© OpenStreetMap közreműködők, ODbL); GPS-es fotónál a helyadat választ témát: automatikusan csak ha 60 m-en belül egyértelmű, különben 2-3 közeli javaslat.
+- Új témák: hajóállomás, Sziklaszentély, Sváb Gyűjtemény (23 téma).
+- 92 kész minta-poszt (minden témához legalább 2), 44 hangulatmondat, témához kötött zárókérdések, 4 összerakási ív; 9 új, forrásolt tény.
+- Teszt: 9936 összerakott poszt, 0 hibás; önellenőrzés üres; HU/EN/DE mondatszám-egyezés mindenhol.
+- A minták AI-vázlatok, Péter jóváhagyására várnak.
