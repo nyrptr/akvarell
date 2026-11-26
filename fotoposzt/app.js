@@ -13,7 +13,7 @@ const SRC={claude:['AI-javaslat','ai'],ai:['AI-javaslat (másik AI)','ai'],sajat
 
 /* tárolás az eszközön, hibatűrő */
 const store={get(k,d){try{const v=localStorage.getItem('akvposzt-'+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem('akvposzt-'+k,JSON.stringify(v))}catch(e){}}};
-let ST=store.get('stat',{}),TAN=store.get('tanult',[]),LOG=store.get('log',[]);
+let TUDAS=store.get('tudas',[]),ST=store.get('stat',{}),TAN=store.get('tanult',[]),LOG=store.get('log',[]);
 
 /* ellenőrzés egy szövegre */
 function hibak(t){t=t||'';const lc=t.toLowerCase(),h=[];
@@ -61,7 +61,7 @@ function link(){const d=new Date(),p=n=>String(n).padStart(2,'0');S.ts=`F-${d.ge
 
 function rajzol(szamol){const box=$('cands');box.innerHTML='';
  S.cands.forEach((c,ix)=>{const b=document.createElement('div');b.className='cand';b.setAttribute('aria-pressed',S.sel===ix);
-  const [nev,cls]=SRC[c.src]||['Készletből',''];const tag=document.createElement('span');tag.className='tag '+cls;tag.textContent=nev;
+  const [nev,cls]=SRC[c.src]||['Készletből',''];const tag=document.createElement('span');tag.className='tag '+cls;tag.textContent=nev+(c.ujT&&c.ujT.length?` · ${c.ujT.length} új tény, ellenőrizd`:'');
   const hu=document.createElement('span');hu.className='hu';hu.textContent=c.parts.hu||'(magyarul nincs meg)';b.append(tag,hu);
   if(S.lang!=='hu'){const o=document.createElement('span');o.className='out';const i=document.createElement('i');i.textContent='Ez megy ki ('+LN[S.lang]+'):';o.append(i,document.createTextNode(c.parts[S.lang]||'(ezen a nyelven nincs meg)'));b.append(o)}
   const lk=document.createElement('div');lk.className='likes';
@@ -72,7 +72,8 @@ function rajzol(szamol){const box=$('cands');box.innerHTML='';
   if(c.uj){b.classList.add('villan');c.uj=false}box.append(b)});
  if(szamol){for(const c of S.cands)for(const id of c.ids){ST[id]=ST[id]||{m:0,v:0,k:0};ST[id].m++}store.set('stat',ST)}}
 function friss(msg){const d=new Date();$('fresh').textContent='Frissítve '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+' · '+msg}
-function tanul(c){if((c.src==='claude'||c.src==='ai')&&!c.mentett){const id=c.src+'-'+Date.now();TAN.push({id,src:c.src,tema:S.tema,...per(l=>c.parts[l]?{post:c.parts[l],kom:c.kom[l]||''}:null)});c.ids=[id];c.mentett=true;store.set('tanult',TAN);return true}return false}
+function tenyTanul(c){if(!c||!c.ujT)return 0;let n=0;c.ujT.forEach((t,i)=>{if(c.ujOk[i]&&!TUDAS.includes(t)){TUDAS.push(t);n++}});if(n)store.set('tudas',TUDAS);return n}
+function tanul(c){tenyTanul(c);if((c.src==='claude'||c.src==='ai')&&!c.mentett){const id=c.src+'-'+Date.now();TAN.push({id,src:c.src,tema:S.tema,...per(l=>c.parts[l]?{post:c.parts[l],kom:c.kom[l]||''}:null)});c.ids=[id];c.mentett=true;store.set('tanult',TAN);return true}return false}
 function tetszik(ix){const c=S.cands[ix];if(c.tetszik)return;c.tetszik=true;for(const id of c.ids){ST[id]=ST[id]||{m:0,v:0,k:0};ST[id].v+=2}store.set('stat',ST);
  const t=tanul(c);rajzol(false);friss(t?'az AI-javaslat bekerült a készletbe, mindhárom nyelven':'megjegyeztem, ez a fajta többször jön');keszlet()}
 function nemez(ix){const c=S.cands[ix];for(const id of c.ids){ST[id]=ST[id]||{m:0,v:0,k:0};ST[id].m+=3}store.set('stat',ST);
@@ -96,6 +97,8 @@ function ellenoriz(fixel){
  out.push(PENZ.test(t+' '+k)?['bad','Ár/kedvezmény: a tulajdonos dönti el']:['ok','Nincs ár, kedvezmény']);
  out.push(h.includes('hashtag')||h.includes('emoji')?['bad','Hashtag vagy emoji maradt']:['ok','Nincs hashtag, emoji']);
  out.push(/https:\/\/akvarellzebegeny\.hu\/\S*utm_source=facebook/.test(k)?['ok','Első komment: mért foglalási link']:['bad','Hiányzik a mért foglalási link a kommentből']);
+ const cc=S.cands[S.sel];if(cc&&cc.ujT&&cc.ujT.length){$('ujtw').hidden=false;if(!$('ujt').dataset.k||$('ujt').dataset.k!==String(S.sel)+cc.ujT.join('|')){$('ujt').dataset.k=String(S.sel)+cc.ujT.join('|');$('ujt').innerHTML='';cc.ujT.forEach((t,i)=>{const li=document.createElement('li');const l=document.createElement('label');l.className='man';l.style.margin='0';const cb=document.createElement('input');cb.type='checkbox';cb.checked=cc.ujOk[i];cb.addEventListener('change',()=>{cc.ujOk[i]=cb.checked;ellenoriz(false)});l.append(cb,document.createTextNode(t));li.append(l);$('ujt').append(li)})}
+  const nincs=cc.ujOk.filter(x=>!x).length;out.push(nincs?['bad',`${nincs} új tény még nincs ellenőrizve (lent)`]:['ok','Az AI új tényei ellenőrizve'])}else{$('ujtw').hidden=true;$('ujt').dataset.k=''}
  out.push($('man').checked?['ok','Emberek a képen: rendben']:['bad','Pipáld ki lent, ha nincs felismerhető ember, vagy beleegyezett']);
  if(S.lang!=='hu'&&$('nota').value.trim())out.push(['warn','A saját mondatod csak ezen a nyelven van meg']);
  $('chk').innerHTML='';for(const [c,s] of out){const li=document.createElement('li');li.className=c;const sp=document.createElement('span');sp.textContent=s;li.append(sp);$('chk').append(li)}
@@ -124,7 +127,7 @@ $('kitettem').addEventListener('click',()=>{
  const c=S.cands[S.sel];if(!c)return;if(c.kitett){$('st2').textContent='Ezt már rögzítettem.';return}
  for(const id of c.ids){ST[id]=ST[id]||{m:0,v:0,k:0};ST[id].k++}
  const t=$('txt').value.trim(),kom=$('kom').value.replace(/\s*https?:\/\/\S+/g,'').trim();let uj='';
- if(tanul(c))uj='Az AI-változat bekerült a készletbe, mindhárom nyelven. ';
+ const nt=tenyTanul(c);if(tanul(c))uj='Az AI-változat bekerült a készletbe, mindhárom nyelven. ';if(nt)uj+=nt+' ellenőrzött tény bekerült a tudásba. ';
  if(t!==S.base){TAN.push({id:'s-'+Date.now(),src:'sajat',tema:S.tema,...per(l=>l===S.lang?{post:t,kom}:null)});uj+='A javított szöveged is bekerült ('+LN[S.lang]+'). '}
  c.kitett=true;LOG.unshift({ts:S.ts,lang:S.lang,tema:S.tema,ids:c.ids,txt:t.slice(0,90)});LOG=LOG.slice(0,30);
  store.set('stat',ST);store.set('tanult',TAN);store.set('log',LOG);$('fbsub').textContent='Kitéve · '+S.ts;
@@ -135,32 +138,35 @@ function keres(){const minta=LOG.slice(0,3).map(e=>'- '+e.txt).join('\n')||'- (m
  const tema=(K.temak.concat(UT).find(t=>t.id===S.tema)||{nev:''}).nev;
  return `Az Akvarell Apartmanház (Zebegény, Dunakanyar) Facebook-oldalára írsz rövid posztot a mellékelt fotóhoz, a házigazda hangján.
 
-Tudás (csak ezekre és a képre támaszkodj, mást ne állíts):
+Ellenőrzött tudás:
 - A ház teraszáról: Duna, Pilis, Visegrádi-hegység.
 ${K.teny.map(t=>'- '+t.hu).join('\n')}
+${TUDAS.map(t=>'- '+t).join('\n')}
 - Zebegény: Szőnyi István itt festett.
 - Foglalás: akvarellzebegeny.hu
 
 A kép témája (a gazda választotta${HELYEK[S.tema]&&S.gps&&tav(S.gps,HELYEK[S.tema])<.3?', a fotó helye alapján is':''}): ${tema}${apt()?', apartman: '+apt():''}.${$('nota').value.trim()?'\nA gazda megjegyzése (építsd be, a nyelvnek megfelelően fordítva): '+$('nota').value.trim():''}
 
 Hogyan írj:
-- Ne írd le tárgyszerűen, mi van a képen (az a képleírás dolga). Egy konkrét részletből indulj, és tegyél hozzá EGY illő tényt a fenti tudásból.
+- Ha felismered a helyet vagy az épületet (Zebegényben és környékén), nevezd meg, és használd, amit BIZTOSAN tudsz róla (ki tervezte, mikor, mi különleges benne). Minden olyan tényt, ami nincs a fenti ellenőrzött tudásban, sorold fel magyarul az uj_tenyek mezőben, egyenként; amiben nem vagy biztos, azt ne írd bele.
+- Ne írd le tárgyszerűen, mi van a képen (az a képleírás dolga). Egy konkrét részletből indulj, és adj hozzá tudást.
 - Ha egyik tény sem illik a képhez, ne erőltesd: inkább maradjon rövidebb. A ház tényeit csak akkor említsd, ha a kép a házról szól.
 - Ha emberek vannak a képen, róluk ne írj, és eseményt se találj ki.
 - Nincs kitalált esemény, ár, kedvezmény, dátum; nincs felsőfok és reklámszó (legjobb, legszebb, tökéletes, egyedülálló, csodálatos; best, perfect, unique, stunning, amazing, free; beste, perfekt, einzigartig, traumhaft, kostenlos).
-- Nyugodt, meleg, konkrét hang, tegezve (németül du). 1–3 rövid mondat, max. 240 karakter. Nincs link, hashtag, emoji.
+- Nyugodt, meleg, konkrét hang, tegezve (németül du). 1–3 rövid mondat, max. 300 karakter. Nincs link, hashtag, emoji.
 - A három nyelv mondatról mondatra ugyanazt mondja. A komment egy rövid mondat, link nélkül.
 Eddig kitett posztok (hangnem-minta):
 ${minta}
 
 Válaszolj CSAK ezzel a JSON-nal:
-{"hu":{"post":"…","komment":"…"},"en":{"post":"…","komment":"…"},"de":{"post":"…","komment":"…"}}`}
+{"hu":{"post":"…","komment":"…"},"en":{"post":"…","komment":"…"},"de":{"post":"…","komment":"…"},"uj_tenyek":["…"]}`}
 
 function beolvas(j,src){
  if(!j||!L.every(l=>j[l]&&typeof j[l].post==='string'))return 'Nem a kért szerkezet jött vissza (hu/en/de, post, komment).';
  const parts={},kom={},hib=[];for(const l of L){parts[l]=javit(String(j[l].post),'').t;kom[l]=String(j[l].komment||'').replace(/https?:\/\/\S+/g,'').trim();const h=hibak(parts[l]).concat(hibak(kom[l]));if(h.length)hib.push(l+': '+h.join(', '))}
  if(hib.length)return 'Nem engedem be, ezeket kell javítani: '+hib.join(' · ');
- S.cands=[{ids:[src],src,parts,kom,uj:true},...S.cands.filter(c=>c.src!==src)].slice(0,3);if(S.cands.length<3)S.cands=S.cands.concat(jeloltek()).slice(0,3);S.sel=null;$('valaszt').hidden=false;rajzol(false);valaszt(0);return ''}
+ const ujT=Array.isArray(j.uj_tenyek)?j.uj_tenyek.map(String).map(x=>x.trim()).filter(x=>x&&!TUDAS.includes(x)).slice(0,6):[];
+ S.cands=[{ids:[src],src,parts,kom,uj:true,ujT,ujOk:ujT.map(()=>false)},...S.cands.filter(c=>c.src!==src)].slice(0,3);if(S.cands.length<3)S.cands=S.cands.concat(jeloltek()).slice(0,3);S.sel=null;$('valaszt').hidden=false;rajzol(false);valaszt(0);return ''}
 
 $('cl').addEventListener('click',async()=>{if(!sample||!S.small)return;$('cl').disabled=true;$('cl').classList.add('dolgozik');$('cl').textContent='Írja… (10–30 mp)';$('st').textContent='Az AI nézi a képet, és három nyelven ír. Addig a lenti változatok közül is választhatsz.';$('st').classList.add('busy');
  try{const lim=await sample.limits?.().catch(()=>null);if(lim&&!lim.images)throw {message:'itt nincs képfelismerés'};
@@ -174,12 +180,12 @@ $('aiBe').addEventListener('click',()=>{if(!img){$('st3').textContent='Előbb t�
 
 /* készlet panel, mentés, visszatöltés */
 function keszlet(){const n=onell();
- const st=[['Mondat a készletben',n],['Kizárva (hibás)',KIZART.size],['Tanult (AI-javaslat)',TAN.filter(t=>t.src==='claude').length],['Tanult (másik AI)',TAN.filter(t=>t.src==='ai').length],['Tanult (saját javítás)',TAN.filter(t=>t.src==='sajat').length],['Kitett poszt',LOG.length]];
+ const st=[['Mondat a készletben',n],['Kizárva (hibás)',KIZART.size],['Tanult (AI-javaslat)',TAN.filter(t=>t.src==='claude').length],['Tanult (másik AI)',TAN.filter(t=>t.src==='ai').length],['Tanult (saját javítás)',TAN.filter(t=>t.src==='sajat').length],['Kitett poszt',LOG.length],['Tanult tény (ellenőrizve)',TUDAS.length]];
  $('stat').innerHTML='';for(const [a,b] of st){const s=document.createElement('span');s.textContent=a;const v=document.createElement('b');v.textContent=b;$('stat').append(s,v)}
  $('kchk').innerHTML='';const li=document.createElement('li');li.className=KHIBA.length?'warn':'ok';const sp=document.createElement('span');sp.textContent=KHIBA.length?'Kizártam a hibás mondatokat: '+KHIBA.join(' · '):'A készlet minden mondata átment az ellenőrzésen, mindhárom nyelven.';li.append(sp);$('kchk').append(li);
  $('log').innerHTML='';for(const e of LOG.slice(0,8)){const l=document.createElement('li');l.textContent=`${e.ts} · ${e.txt}`;$('log').append(l)}}
-$('exp').addEventListener('click',async()=>{$('st4').textContent=await copy(JSON.stringify({v:1,stat:ST,tanult:TAN,log:LOG}),'Másolva. Tedd el, vagy töltsd vissza másik telefonon.',null)});
-$('impB').addEventListener('click',()=>{try{const j=JSON.parse($('imp').value);if(j.v!==1)throw 0;ST=j.stat||{};TAN=j.tanult||[];LOG=j.log||[];store.set('stat',ST);store.set('tanult',TAN);store.set('log',LOG);keszlet();$('st4').textContent='Visszatöltve.'}catch(e){$('st4').textContent='Ez nem egy mentett készlet.'}});
+$('exp').addEventListener('click',async()=>{$('st4').textContent=await copy(JSON.stringify({v:1,stat:ST,tanult:TAN,log:LOG,tudas:TUDAS,temak:UT,helyek:HELYEK,haz:HAZ}),'Másolva. Tedd el, vagy töltsd vissza másik telefonon.',null)});
+$('impB').addEventListener('click',()=>{try{const j=JSON.parse($('imp').value);if(j.v!==1)throw 0;ST=j.stat||{};TAN=j.tanult||[];LOG=j.log||[];TUDAS=j.tudas||TUDAS;UT=j.temak||UT;HELYEK=j.helyek||HELYEK;HAZ=j.haz||HAZ;for(const [k,v] of Object.entries({stat:ST,tanult:TAN,log:LOG,tudas:TUDAS,temak:UT,helyek:HELYEK,haz:HAZ}))store.set(k,v);temak();keszlet();$('st4').textContent='Visszatöltve.'}catch(e){$('st4').textContent='Ez nem egy mentett készlet.'}});
 
 /* téma és nyelv */
 let UT=store.get('temak',[]),HELYEK=store.get('helyek',{});
