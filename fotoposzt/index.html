@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Akvarell fotóposzt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,600&family=Figtree:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+/* VOICE: nyugodt, kézműves szerszám a szállásadó zsebében
+   IDEA: akvarell-papír tömb: lefotózod, a lapon kész poszt lesz, három nyelven
+   PICTURE: maga a fotó, a választható változatok és a Facebook-előnézet
+   COLOUR and TYPE: mély zöld (Duna-part), papírfehér, terrakotta jelzés; Figtree
+   LAYOUT: egy hasáb: fotó, beállítás, változatok, előnézet, ellenőrzés, kitevés, készlet */
+:root{color-scheme:light dark;--bg:light-dark(#f7f4ee,#18211c);--card:light-dark(#ffffff,#222d26);--ink:light-dark(#1f2a23,#eef0ea);--mute:light-dark(#5d675f,#a9b3ab);--deep:light-dark(#2f4237,#9cc3a9);--acc:light-dark(#b8553a,#e08a6b);--line:light-dark(#dcd6ca,#35423a);--ok:light-dark(#2f6b45,#7fd39b);--bad:light-dark(#b3261e,#ff8a80);--warn:light-dark(#8a5a00,#f2c46d)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Figtree,system-ui,sans-serif;overflow-x:clip}
+.wrap{max-width:560px;margin:0 auto;padding:18px max(4vw,14px) 60px}
+header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.logo{width:40px;height:40px;border-radius:50%;background:var(--deep);color:var(--bg);display:grid;place-items:center;font-weight:800;font-size:20px;flex:none}
+h1{font-size:22px;line-height:1.1;margin:0}
+.sub{color:var(--mute);font-size:14px;margin:0}
+h2{font-size:17px;margin:24px 0 8px}
+.drop{display:block;position:relative;border:2px dashed var(--line);border-radius:16px;background:var(--card);min-height:220px;cursor:pointer;overflow:hidden}
+.drop:focus-within{outline:3px solid var(--acc);outline-offset:2px}
+.drop input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.drop .hint{position:absolute;inset:0;display:grid;place-content:center;text-align:center;gap:6px;padding:20px;color:var(--mute)}
+.drop .hint b{font-size:20px;color:var(--deep)}
+.drop img{display:block;width:100%;max-height:340px;object-fit:cover}
+.drop.has .hint{display:none}
+.meta{font-size:14px;color:var(--mute);margin-top:6px}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+.chip{min-height:44px;padding:0 14px;border-radius:22px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:600 15px Figtree,sans-serif;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--deep);color:var(--bg);border-color:var(--deep)}
+label.f{display:block;font-weight:600;font-size:14px;margin:14px 0 6px}
+select,input[type=text],textarea{width:100%;font:16px/1.45 Figtree,sans-serif;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px}
+textarea{resize:vertical}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 16px;border-radius:12px;border:0;background:var(--acc);color:#fff;font:700 16px Figtree,sans-serif;cursor:pointer;text-align:center}
+.btn.sec{background:var(--card);color:var(--deep);border:1px solid var(--line)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.full{width:100%;margin-top:12px}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin-top:14px}
+.two .btn{margin:0}.two:has(#cl[hidden]){grid-template-columns:1fr}
+.status{font-size:14px;color:var(--mute);min-height:20px;margin-top:8px}
+.cands{display:grid;gap:10px}
+.cand{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;cursor:pointer;text-align:left;font:inherit;color:inherit;width:100%}
+.cand[aria-pressed=true]{border:2px solid var(--acc);padding:11px}
+.cand .tag{font-size:12px;font-weight:700;color:var(--acc);display:block;margin-bottom:4px}
+.cand .hu{display:block}
+.cand .out{display:block;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);color:var(--deep)}
+.cand .out i{font-style:normal;font-size:12px;font-weight:700;display:block;color:var(--mute)}
+.fb{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.fbh{display:flex;gap:10px;align-items:center;padding:12px}
+.fbh .logo{width:36px;height:36px;font-size:16px}
+.fbh small{display:block;color:var(--mute);font-size:13px}
+.fb textarea{border:0;border-radius:0;background:transparent;padding:4px 12px 10px}
+.fb .pimg{display:block;width:100%;height:auto;background:#000}
+.cm{border-top:1px solid var(--line);padding:10px 12px;font-size:14px}
+.cm textarea{font-size:15px;padding:8px 10px;margin-top:4px}
+ul.chk{list-style:none;padding:0;margin:0;display:grid;gap:6px}
+ul.chk li{display:grid;grid-template-columns:22px 1fr;gap:6px;font-size:15px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.ok::before{content:"✓";color:var(--ok);font-weight:800}
+.bad::before{content:"✗";color:var(--bad);font-weight:800}
+.warn::before{content:"!";color:var(--warn);font-weight:800}
+.fix::before{content:"↺";color:var(--deep);font-weight:800}
+.man{display:flex;gap:10px;align-items:center;margin-top:8px;font-size:15px}
+.man input{width:24px;height:24px;flex:none}
+.verdict{margin-top:10px;padding:10px 12px;border-radius:10px;font-weight:700}
+.verdict.go{background:light-dark(#e3f1e7,#1f3a29);color:var(--ok)}
+.verdict.stop{background:light-dark(#fbe6e4,#3e1f1d);color:var(--bad)}
+.acts{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;margin-top:12px}
+.acts .wide{grid-column:1/-1}
+ol.how{padding-left:20px;margin:6px 0;font-size:15px}
+.note{font-size:13px;color:var(--mute)}
+details{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px 12px 12px;margin-top:12px}
+summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:pointer}
+.stat{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;font-size:14px;margin:6px 0}
+.stat b{text-align:right;white-space:nowrap}
+.log{font-size:13px;color:var(--mute);margin:6px 0;padding-left:18px}
+@media (prefers-reduced-motion:no-preference){.busy{animation:p 1.2s ease-in-out infinite}@keyframes p{50%{opacity:.5}}}
+.mini{display:flex;gap:12px;align-items:center;margin-top:10px}.mini img{width:120px;border-radius:8px;border:1px solid var(--line);flex:none}
+.tag{display:inline-block!important;padding:2px 8px;border-radius:10px;color:#fff!important;background:var(--deep)}.tag.ai{background:var(--acc)}.tag.tan{background:#6b5a2e}
+.cand{cursor:default}.cand .hu,.cand .out{cursor:pointer}
+.likes{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.likes button{min-height:40px;padding:0 12px;border-radius:20px;border:1px solid var(--line);background:var(--card);color:var(--deep);font:600 14px Figtree,sans-serif;cursor:pointer}
+.likes .pick{background:var(--acc);color:#fff;border-color:var(--acc)}.likes button[aria-pressed=true]{background:var(--deep);color:var(--bg)}
+.fresh{font-size:14px;font-weight:700;color:var(--ok);margin:4px 0 8px;min-height:20px}
+.btn.dolgozik{background:repeating-linear-gradient(45deg,var(--acc),var(--acc) 10px,light-dark(#cf6f53,#c06a50) 10px,light-dark(#cf6f53,#c06a50) 20px);color:#fff}
+.hely{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:8px;font-size:14px}.hely a{word-break:break-all}
+.hely label{display:flex;gap:8px;align-items:center;min-height:36px}.hely input[type=checkbox]{width:20px;height:20px}
+@media (prefers-reduced-motion:no-preference){.villan{animation:v 1.4s ease-out}@keyframes v{0%{box-shadow:0 0 0 4px var(--acc)}100%{box-shadow:0 0 0 0 transparent}}.btn.dolgozik{background-size:200% 100%;animation:cs 1s linear infinite}@keyframes cs{to{background-position:28px 0}}}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><div class="logo" aria-hidden="true">A</div><div><h1>Fotóból poszt</h1><p class="sub">Akvarell Apartmanház, Zebegény · AI nélkül is működik</p></div></header>
+
+<label class="drop" id="drop"><input id="file" type="file" accept="image/*" aria-label="Fotó készítése vagy kiválasztása"><img id="prev" alt="" hidden><span class="hint"><b>Fotózz vagy válassz képet</b><span>Telefonon a „Fotó készítése” is megjelenik.</span></span></label>
+<div class="meta" id="meta"></div>
+<div class="hely" id="helyw" hidden><div id="helyT"></div>
+<button class="chip" id="hazB" style="margin-top:6px">Ez a fotó a háznál készült: legyen ez a ház helye</button>
+<button class="chip" id="helyTema" style="margin-top:6px">Ez a hely: az épp kiválasztott téma</button>
+<label><input type="checkbox" id="helyKom"> Hely térképlinkje az első kommentbe (OpenStreetMap)</label>
+<label><input type="checkbox" id="helyTav"> Távolság a háztól a szövegbe</label></div>
+
+<label class="f">Miről szól a kép?</label>
+<div class="row" id="temak"></div>
+<div class="hely" id="ujtemaw" hidden><label class="f" for="ujNev" style="margin-top:0">Új téma neve magyarul</label><input id="ujNev" type="text" placeholder="pl. Sárkánydomb">
+<label class="f" for="ujEn">angolul (ha más, pl. Street)</label><input id="ujEn" type="text"><label class="f" for="ujDe">németül (ha más)</label><input id="ujDe" type="text">
+<label id="ujHelyL"><input type="checkbox" id="ujHely" checked> Jegyezd meg a helyét is (ahol ez a fotó készült)</label>
+<button class="btn sec full" id="ujB">Téma hozzáadása</button><div class="status" id="ujSt"></div><div class="row" id="sajatL" style="margin-top:8px"></div></div>
+<div id="aptw" hidden><label class="f" for="apt">Melyik apartman?</label>
+<select id="apt"><option value="">Nem tudom / mindegy</option><option value="amrita">Amrita (földszint, nagy terasz)</option><option value="szonyi">Szőnyi (emelet)</option><option value="bereny">Berény</option><option value="karpathy">Kárpáthy</option></select></div>
+
+<label class="f">Kitevés nyelve</label>
+<div class="row" id="langs"><button class="chip" data-l="hu" aria-pressed="true">Magyar</button><button class="chip" data-l="en" aria-pressed="false">English</button><button class="chip" data-l="de" aria-pressed="false">Deutsch</button></div>
+
+<label class="f">Kép stílusa</label>
+<div class="row" id="stilus"><button class="chip" data-s="tiszta" aria-pressed="false">Tiszta</button><button class="chip" data-s="felirat" aria-pressed="true">Felirat</button><button class="chip" data-s="keret" aria-pressed="false">Akvarell keret</button></div>
+<div class="row" style="margin-top:8px"><label class="chip" for="logo" style="display:inline-flex;align-items:center;cursor:pointer">Saját logó feltöltése<input id="logo" type="file" accept="image/png,image/jpeg,image/webp" hidden></label><button class="chip" id="logoDel" hidden>Logó törlése</button></div>
+<p class="note" id="logoSt">Logó nélkül a felirat szövege kerül a képre.</p>
+<div class="mini" id="miniw" hidden><img id="mini" alt="A kész kép kicsiben"><span class="note" id="miniT">Így néz ki a kép a posztban.</span></div>
+<label class="f" for="nota">Saját első mondat (nem kötelező, a kitevés nyelvén)</label>
+<input id="nota" type="text" placeholder="pl. Ma reggel köd ült a Dunán.">
+
+<div class="two" id="gombok"><button class="btn" id="go" disabled>Változatok (AI nélkül)</button><button class="btn sec" id="cl" disabled hidden>AI-javaslat (fotó alapján)</button></div>
+<div class="status" id="st" role="status"></div>
+
+<section id="valaszt" hidden>
+<h2>Válassz egyet</h2>
+<p class="note">Magyarul látod, alatta az, ami kimegy. A három nyelv mondatról mondatra ugyanaz.</p>
+<div class="fresh" id="fresh" role="status"></div><div class="cands" id="cands"></div>
+<button class="btn sec full" id="more">Három másik</button>
+</section>
+
+<section id="out" hidden>
+<h2>Előnézet (szerkeszthető)</h2>
+<div class="fb">
+<div class="fbh"><div class="logo" aria-hidden="true">A</div><div><b>Akvarell Apartmanház</b><small id="fbsub">Piszkozat · nem ment ki</small></div></div>
+<textarea id="txt" rows="4" aria-label="Poszt szövege"></textarea>
+<canvas id="cv" width="1080" height="1350" hidden></canvas><img id="pimg" class="pimg" alt="A poszt képe">
+<div class="cm"><b>Első komment</b><textarea id="kom" rows="3" aria-label="Első komment"></textarea></div>
+</div>
+
+<h2>Ellenőrzés (program)</h2>
+<ul class="chk" id="chk"></ul>
+<label class="man"><input type="checkbox" id="man"> A képen nincs felismerhető ember, vagy aki rajta van, beleegyezett.</label>
+<div class="verdict" id="ver"></div>
+
+<div class="acts">
+<button class="btn" id="cpT">Szöveg másolása</button>
+<button class="btn" id="svI">Kép megosztása</button>
+<button class="btn sec" id="cpK">Komment másolása</button>
+<button class="btn sec" id="dlI">Kép mentése</button>
+<button class="btn sec wide" id="kitettem">Kitettem a Facebookra</button>
+</div>
+<div class="status" id="st2" role="status"></div>
+
+<h2>Kitevés (te csinálod, 1 perc)</h2>
+<ol class="how">
+<li>Szöveg másolása, majd „Kép megosztása” → Facebook (vagy mentsd a képet).</li>
+<li>Vagy: <a href="https://business.facebook.com/latest/composer" target="_blank" rel="noopener">Meta Business Suite → Bejegyzés létrehozása</a>, fotó, beillesztés, közzététel.</li>
+<li>A poszt alá első kommentként illeszd be a linket.</li>
+<li>Végül itt: „Kitettem a Facebookra”. Ebből tanul a rendszer.</li>
+</ol>
+<p class="note">A Facebook szabálya szerint egy app nem töltheti ki helyetted a posztot: a szöveget te illeszted be és te teszed ki.</p>
+</section>
+
+<details id="hid">
+<summary>Másik AI (ChatGPT, Gemini): kézi híd</summary>
+<p class="note">Külön opció, a saját előfizetéseddel. 1. Másold a kérést. 2. Illeszd be az AI-ba a fotóval. 3. A válaszát másold ide. A program ellenőrzi mindhárom nyelven; ha kiteszed, a készlet megtanulja.</p>
+<button class="btn sec full" id="cpP">Kérés másolása</button>
+<label class="f" for="aiv">Az AI válasza</label>
+<textarea id="aiv" rows="4" placeholder="Ide illeszd az AI teljes válaszát"></textarea>
+<button class="btn sec full" id="aiBe">Beolvasás</button>
+<div class="status" id="st3" role="status"></div>
+</details>
+
+<details id="kesz">
+<summary>Készlet és tanulás</summary>
+<div class="stat" id="stat"></div>
+<ul class="chk" id="kchk"></ul>
+<h2>Utolsó kitett posztok</h2>
+<ol class="log" id="log"></ol>
+<button class="btn sec full" id="exp">Készlet és tanulás másolása (mentés)</button>
+<label class="f" for="imp">Visszatöltés másik eszközről</label>
+<textarea id="imp" rows="3" placeholder="Ide illeszd a mentett szöveget"></textarea>
+<button class="btn sec full" id="impB">Visszatöltés</button>
+<div class="status" id="st4" role="status"></div>
+<p class="note">A tanulás most ezen az eszközön tárolódik; az Akvarell motorba kötve közös lesz minden telefonon. A mondatkészlet AI-vázlat, Péter jóváhagyásáig tervezet.</p>
+</details>
+</div>
+
+<script id="keszlet" type="application/json">
+{"temak":[
+ {"id":"kilatas","nev":"Kilátás"},{"id":"duna","nev":"Duna"},{"id":"terasz","nev":"Terasz"},{"id":"apartman","nev":"Apartman"},
+ {"id":"jacuzzi","nev":"Jacuzzi"},{"id":"haz","nev":"Ház, kert"},{"id":"falu","nev":"Zebegény"},{"id":"sarkanydomb","nev":"Sárkánydomb"},{"id":"templom","nev":"Templom"}],
+"nyito":[
+ {"id":"k1","t":"kilatas","hu":"Ez a kilátás fogad a teraszon: a Duna, mögötte a Pilis és a Visegrádi-hegység.","en":"This is the view from the terrace: the Danube, with the Pilis and the Visegrád Hills behind it.","de":"Diesen Blick hast du von der Terrasse: die Donau, dahinter der Pilis und das Visegráder Gebirge."},
+ {"id":"k2","t":"kilatas","hu":"Zebegény a Dunakanyarban: víz, hegyek, csend.","en":"Zebegény on the Danube Bend: water, hills and quiet.","de":"Zebegény am Donauknie: Wasser, Berge und Ruhe."},
+ {"id":"k3","t":"kilatas","hu":"Megálltunk egy percre a teraszon, hogy ezt megmutassuk.","en":"We stopped on the terrace for a minute to show you this.","de":"Wir sind kurz auf der Terrasse stehen geblieben, um dir das zu zeigen."},
+ {"id":"d1","t":"duna","hu":"A Duna, Zebegényből nézve.","en":"The Danube, seen from Zebegény.","de":"Die Donau, von Zebegény aus gesehen."},
+ {"id":"d2","t":"duna","hu":"A folyó minden órában más színt mutat.","en":"The river looks different every hour.","de":"Der Fluss sieht zu jeder Stunde anders aus."},
+ {"id":"d3","t":"duna","hu":"Ilyenkor érdemes kiülni, és csak nézni a folyót.","en":"A good moment to sit down and just watch the river.","de":"Ein guter Moment, um sich hinzusetzen und einfach dem Fluss zuzusehen."},
+ {"id":"t1","t":"terasz","hu":"Terasz, csend, Duna.","en":"Terrace, quiet, the Danube.","de":"Terrasse, Ruhe, Donau."},
+ {"id":"t2","t":"terasz","hu":"A terasz várja, hogy valaki kiüljön.","en":"The terrace is waiting for someone to sit out.","de":"Die Terrasse wartet darauf, dass sich jemand hinsetzt."},
+ {"id":"a1","t":"apartman","hu":"Bepillantás az egyik apartmanunkba.","en":"A look inside one of our apartments.","de":"Ein Blick in eines unserer Apartments."},
+ {"id":"a2","t":"apartman","hu":"Itt kezdődik és itt ér véget a nap.","en":"This is where the day starts and ends.","de":"Hier beginnt und endet der Tag."},
+ {"id":"j1","t":"jacuzzi","hu":"A kültéri jacuzzi a Dunakanyarra néz.","en":"Our outdoor jacuzzi looks out over the Danube Bend.","de":"Unser Whirlpool im Freien blickt auf das Donauknie."},
+ {"id":"j2","t":"jacuzzi","hu":"Meleg víz és kilátás a hegyekre.","en":"Warm water and a view of the hills.","de":"Warmes Wasser und Blick auf die Berge."},
+ {"id":"h1","t":"haz","hu":"Az Akvarell Apartmanház Zebegényben.","en":"The Akvarell Apartmanház in Zebegény.","de":"Das Akvarell Apartmanház in Zebegény."},
+ {"id":"h2","t":"haz","hu":"Megérkezés Zebegénybe.","en":"Arriving in Zebegény.","de":"Ankommen in Zebegény."},
+ {"id":"f1","t":"falu","hu":"Zebegény, ahol Szőnyi István festett.","en":"Zebegény, where István Szőnyi painted.","de":"Zebegény, wo István Szőnyi malte."},
+ {"id":"f2","t":"falu","hu":"Egy séta Zebegényben.","en":"A walk through Zebegény.","de":"Ein Spaziergang durch Zebegény."},
+ {"id":"sd1","t":"sarkanydomb","hu":"Sárkánydomb, Zebegény.","en":"Kite Hill, Zebegény.","de":"Drachenhügel, Zebegény."},
+ {"id":"sd2","t":"sarkanydomb","hu":"Fent a Sárkánydombon.","en":"Up on Kite Hill.","de":"Oben auf dem Drachenhügel."},
+ {"id":"sd3","t":"sarkanydomb","hu":"A Sárkánydombról is a Dunakanyarra látsz.","en":"From Kite Hill, too, you look out over the Danube Bend.","de":"Auch vom Drachenhügel blickst du auf das Donauknie."},
+ {"id":"tp1","t":"templom","hu":"A Havas Boldogasszony-templom Zebegény főterén.","en":"The Church of Our Lady of the Snows on Zebegény's main square.","de":"Die Kirche Maria Schnee am Hauptplatz von Zebegény."},
+ {"id":"tp2","t":"templom","hu":"Zebegény temploma.","en":"Zebegény's church.","de":"Die Kirche von Zebegény."},
+ {"id":"f3","t":"falu","hu":"Zebegény utcáin.","en":"On the streets of Zebegény.","de":"In den Straßen von Zebegény."}],
+"napszak":{
+ "reggel":{"hu":"Reggeli fény.","en":"Morning light.","de":"Morgenlicht."},
+ "este":{"hu":"Esti fény.","en":"Evening light.","de":"Abendlicht."},
+ "ejjel":{"hu":"Éjszaka.","en":"At night.","de":"Nachts."}},
+"teny":[
+ {"id":"x-amrita","apt":"amrita","hu":"Az Amrita apartman a földszinten van, nagy terasszal; Amrita Sher-Gil festőről kapta a nevét, aki több nyarat töltött Zebegényben.","en":"The Amrita apartment is on the ground floor with a large terrace; it is named after the painter Amrita Sher-Gil, who spent several summers in Zebegény.","de":"Das Amrita-Apartment liegt im Erdgeschoss und hat eine große Terrasse; es ist nach der Malerin Amrita Sher-Gil benannt, die mehrere Sommer in Zebegény verbrachte."},
+ {"id":"x-szonyi","apt":"szonyi","hu":"A Szőnyi apartman az emeleten van, és Szőnyi István nevét viseli, aki Zebegényben festett.","en":"The Szőnyi apartment is upstairs and carries the name of István Szőnyi, who painted in Zebegény.","de":"Das Szőnyi-Apartment liegt im Obergeschoss und trägt den Namen von István Szőnyi, der in Zebegény malte."},
+ {"id":"x-bereny","apt":"bereny","hu":"A Berény apartman egy Zebegényhez kötődő festő nevét viseli.","en":"The Berény apartment carries the name of a painter connected to Zebegény.","de":"Das Berény-Apartment trägt den Namen eines Malers, der mit Zebegény verbunden ist."},
+ {"id":"x-karpathy","apt":"karpathy","hu":"A Kárpáthy apartman egy Zebegényhez kötődő festő nevét viseli.","en":"The Kárpáthy apartment carries the name of a painter connected to Zebegény.","de":"Das Kárpáthy-Apartment trägt den Namen eines Malers, der mit Zebegény verbunden ist."},
+ {"id":"x-negy","t":"haz","hu":"Négy apartman, mindegyik egy Zebegényhez kötődő festő nevét viseli.","en":"Four apartments, each named after a painter connected to Zebegény.","de":"Vier Apartments, jedes trägt den Namen eines Malers, der mit Zebegény verbunden ist."},
+ {"id":"x-sd1","t":"sarkanydomb","hu":"A faluból nagyjából 15 perc séta felfelé.","en":"It is about a 15-minute walk uphill from the village.","de":"Vom Dorf aus sind es etwa 15 Minuten zu Fuß bergauf."},
+ {"id":"x-sd2","t":"sarkanydomb","hu":"Itt rendezték a zebegényi sárkányeregető fesztivált.","en":"Zebegény's kite festival used to be held here.","de":"Hier fand früher das Drachenfest von Zebegény statt."},
+ {"id":"x-tp","t":"templom","hu":"A templomot Kós Károly és Jánszky Béla tervezte.","en":"The church was designed by Károly Kós and Béla Jánszky.","de":"Die Kirche wurde von Károly Kós und Béla Jánszky entworfen."},
+ {"id":"x-jacuzzi","t":"jacuzzi","hu":"Egy jacuzzi van az egész házra: időpontot foglalsz, és akkor csak a tiéd.","en":"There is one jacuzzi for the whole house: book a time slot and it is yours alone.","de":"Es gibt einen Whirlpool für das ganze Haus: Du buchst ein Zeitfenster, und dann gehört er dir allein."}],
+"zaro":[
+ {"id":"c1","hu":"Melyik évszakban jönnél?","en":"Which season would you come in?","de":"In welcher Jahreszeit würdest du kommen?"},
+ {"id":"c2","hu":"Szabad éjszakák és foglalás: az első kommentben.","en":"Available nights and booking: in the first comment.","de":"Freie Nächte und Buchung: im ersten Kommentar."},
+ {"id":"c3","hu":"Neked mi jut eszedbe erről a képről?","en":"What does this picture remind you of?","de":"Woran erinnert dich dieses Bild?"},
+ {"id":"c4","hu":"Nyugodt napot kívánunk, bárhol is vagy.","en":"Wherever you are, have a calm day.","de":"Wo auch immer du bist: einen ruhigen Tag."},
+ {"id":"s-tel","evszak":"tel","hu":"Télen is érdemes eljönni.","en":"Worth the trip in winter too.","de":"Auch im Winter eine Reise wert."},
+ {"id":"s-tavasz","evszak":"tavasz","hu":"Tavasszal itt minden zöldbe fordul.","en":"In spring everything here turns green.","de":"Im Frühling wird hier alles grün."},
+ {"id":"s-nyar","evszak":"nyar","haz":true,"hu":"Nyáron hosszúak az esték a teraszon.","en":"Summer evenings on the terrace are long.","de":"Im Sommer sind die Abende auf der Terrasse lang."},
+ {"id":"s-osz","evszak":"osz","hu":"Ősszel színesek a hegyek a Duna fölött.","en":"In autumn the hills above the Danube change colour.","de":"Im Herbst färben sich die Berge über der Donau."}],
+"komment":[
+ {"id":"m1","hu":"Négy apartman Zebegényben, foglalás itt:","en":"Four apartments in Zebegény, book here:","de":"Vier Apartments in Zebegény, hier buchen:"},
+ {"id":"m2","hu":"Szabad éjszakák:","en":"Available nights:","de":"Freie Nächte:"},
+ {"id":"m-amrita","apt":"amrita","hu":"Az Amrita apartman:","en":"The Amrita apartment:","de":"Das Amrita-Apartment:"},
+ {"id":"m-szonyi","apt":"szonyi","hu":"A Szőnyi apartman:","en":"The Szőnyi apartment:","de":"Das Szőnyi-Apartment:"},
+ {"id":"m-jacuzzi","t":"jacuzzi","hu":"A ház és a jacuzzi:","en":"The house and the jacuzzi:","de":"Das Haus und der Whirlpool:"}],
+"url":{"":"https://akvarellzebegeny.hu/","amrita":"https://akvarellzebegeny.hu/amrita-apartman-zebegeny/","szonyi":"https://akvarellzebegeny.hu/szonyi-apartman-zebegeny/"}}
+</script>
+
+<script src="app.js"></script>
+</body>
+</html>

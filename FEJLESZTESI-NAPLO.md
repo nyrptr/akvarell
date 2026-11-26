@@ -1,5 +1,13 @@
 # Fejlesztési napló – Akvarell bemutató
 
+## 2026-11-26 – Claude (munka-fotoposzt)
+- Péter: „készíts az Akvarell vendégháznak egy olyan alkalmazást, ami … egy fényképből kész Facebook posztot csinál”, majd: AI nélkül is, három nyelven párhuzamosan, választható változatok, tanuljon; „föl kell tenni, hogy megnézzük, hogy megy online”.
+- **Új, önálló oldal:** `fotoposzt/index.html` + `fotoposzt/app.js` (a CSP miatt külön fájl, inline szkript nincs). A vendégoldalhoz, adatbázishoz, `functions/`-höz nem nyúl; noindex.
+- Működés: fotó → EXIF idő/évszak/hely → téma (beépített 9 + saját) → 3 változat a háromnyelvű mondatkészletből (AI-vázlat, Péter jóváhagyásáig tervezet) → programos ellenőrzés (felsőfok/reklámszó HU-EN-DE, link, ár, hashtag, emoji, hossz, mért foglalási link a kommentben, emberek a képen kézi pipa) → szöveg/komment másolása, kép (4:5, Tiszta/Felirat/Akvarell keret, saját logó) → Péter teszi ki. Tanulás: mutatás/választás/Tetszik/Nem ez/kitevés súlyoz; az eszközön (localStorage), mentés-visszatöltés gombbal. Térkép: OpenStreetMap-link (külső adat nem töltődik be).
+- AI: a Claude-os változatban (claude.ai artifact) „AI-javaslat” gomb; itt nincs AI-hívás, csak a kézi híd (másik AI válaszának beillesztése, ugyanazzal az ellenőrzéssel).
+- Tesztelve: gyár-szabályok 0 HIBA; Playwright 390 px, a tároló CSP-jével: 2640 legenerált poszt × 3 nyelv 0 szabálysértés és 0 mondatszám-eltérés; teljes út AI nélkül, kép letöltése, kézi híd; 0 JS-hiba. **Nem tesztelt:** telefonos megosztás menü (Web Share) valódi iPhone-on ezen az oldalon; a mondatkészlet anyanyelvi átnézése (EN/DE).
+- Nincs PR: csak előnézet (munka-fotoposzt.akvarell.pages.dev/fotoposzt/). Beolvasztás Péter „mehet” szavára.
+
 ## 2026-11-22 – Claude (haz-belepes-tartalek)
 - Péter: „mehet minden sorrendben.” A #31 tetején.
 - **Tartalék kulcs:** Beállítás → Belépés → Tartalék kulcs: egy egyszer használható, 8×4 jegyű kód (csak a készítéskor látszik, a tárolóban a lenyomata van, `beallitas` `kezelo_tartalek_<szerep>`; a mentésből kiszűrve). Beváltása a belépő képernyőn vagy `#tk=` linkkel; beváltáskor a fiók többi eszköze kilép (elveszett telefon esetén ez a cél), új kulcs készítésekor a régi érvénytelen. Korlát: 8/15 perc/IP, 60/óra összesen.
