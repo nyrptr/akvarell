@@ -29,6 +29,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
+      - name: Böngésző a kezelő-úthoz (playwright + chromium, a tárolón kívülre)
+        run: |
+          npm install --no-save --no-audit --no-fund --prefix "$RUNNER_TEMP/pw" playwright
+          "$RUNNER_TEMP/pw/node_modules/.bin/playwright" install --with-deps chromium
+          echo "PLAYWRIGHT_HELY=$RUNNER_TEMP/pw/node_modules/" >> "$GITHUB_ENV"
       - name: Végigjátszott utak
         run: node tools/proba/utak/fut.mjs
       - name: A kezelő saját belépése (beüzemelés, belépés, kilépés, jelszócsere, korlát)
