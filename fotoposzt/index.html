@@ -98,7 +98,7 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 .osz{margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-weight:600}
 .stilusok{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .stb{border:1px solid var(--line);border-radius:12px;background:var(--card);padding:6px;cursor:pointer;font:600 13px Figtree,sans-serif;color:var(--ink);display:grid;gap:4px;justify-items:center}
-.stb img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:6px;background:var(--line)}
+.stb img{width:100%;object-fit:cover;border-radius:6px;background:var(--line)}
 .stb[aria-pressed=true]{border:2px solid var(--acc);padding:5px}
 .nagy{margin-top:12px}.nagy img{width:100%;border-radius:10px;border:1px solid var(--line)}
 [hidden]{display:none!important}
@@ -112,6 +112,7 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 <section class="lepes" data-l="1">
 <label class="drop" id="drop"><input id="file" type="file" accept="image/*" aria-label="Fotó készítése vagy kiválasztása"><img id="prev" alt="" hidden><span class="hint"><b>Fotózz vagy válassz képet</b><span>Telefonon a „Fotó készítése” is megjelenik.</span></span></label>
 <div class="meta" id="meta"></div>
+<div class="note" id="felisT"></div><div class="row" id="felisJ"></div>
 <div class="osz" id="osz" hidden></div>
 <div class="status" id="st1" role="status"></div>
 <label class="f">Miről szól a kép?</label>
@@ -129,6 +130,7 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 <div class="row" id="nsw"><button class="chip" data-v="" aria-pressed="true">A fotóból</button><button class="chip" data-v="reggel">Reggel</button><button class="chip" data-v="nappal">Nappal</button><button class="chip" data-v="este">Este</button><button class="chip" data-v="ejjel">Éjjel</button></div>
 <label class="f">Évszak</label>
 <div class="row" id="evw"><button class="chip" data-v="" aria-pressed="true">A fotóból</button><button class="chip" data-v="tavasz">Tavasz</button><button class="chip" data-v="nyar">Nyár</button><button class="chip" data-v="osz">Ősz</button><button class="chip" data-v="tel">Tél</button></div>
+<label class="man"><input type="checkbox" id="felisCb" checked> Képfelismerés a telefonon (AI nélkül, ingyenes; első használatkor kb. 20 MB letöltés)</label>
 <label class="f" for="nota">Saját első mondat (nem kötelező, a kitevés nyelvén)</label>
 <input id="nota" type="text" placeholder="pl. Ma reggel köd ült a Dunán.">
 <div class="hely" id="helyw" hidden><div id="helyT"></div>
@@ -153,7 +155,10 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 </section>
 
 <section class="lepes" data-l="3" hidden>
-<h2 style="margin-top:4px">Válassz kinézetet</h2>
+<h2 style="margin-top:4px">Formátum</h2>
+<div class="row" id="formw"><button class="chip" data-v="feed" aria-pressed="true">Feed 4:5 (ajánlott)</button><button class="chip" data-v="negyzet" aria-pressed="false">Négyzet 1:1</button><button class="chip" data-v="story" aria-pressed="false">Story 9:16</button></div>
+<p class="note">A felirat és a logó mindig a biztonsági sávon belül marad, így nem vágja le a Facebook, és a Story gombjai sem takarják.</p>
+<h2>Válassz kinézetet</h2>
 <div class="stilusok" id="stilusok"></div>
 <div class="nagy" id="miniw" hidden><img id="mini" alt="A kész kép"><p class="note" id="miniT"></p></div>
 <div class="row" style="margin-top:8px"><label class="chip" for="logo" style="display:inline-flex;align-items:center;cursor:pointer">Saját logó feltöltése<input id="logo" type="file" accept="image/png,image/jpeg,image/webp" hidden></label><button class="chip" id="logoDel" hidden>Logó törlése</button></div>
@@ -219,116 +224,1398 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 </div>
 
 <script id="keszlet" type="application/json">
-{"temak":[
- {"id":"kilatas","nev":"Kilátás","en":"The view","de":"Der Blick","haz":1,"cim":{"hu":"Akvarell Apartmanház","en":"Akvarell Apartmanház","de":"Akvarell Apartmanház"}},
- {"id":"terasz","nev":"Terasz","en":"Terrace","de":"Terrasse","haz":1,"cim":{"hu":"Akvarell Apartmanház","en":"Akvarell Apartmanház","de":"Akvarell Apartmanház"}},
- {"id":"apartman","nev":"Apartman","en":"Apartment","de":"Apartment","haz":1,"cim":{"hu":"Akvarell Apartmanház","en":"Akvarell Apartmanház","de":"Akvarell Apartmanház"}},
- {"id":"jacuzzi","nev":"Jacuzzi","en":"Jacuzzi","de":"Whirlpool","haz":1,"cim":{"hu":"Akvarell Apartmanház","en":"Akvarell Apartmanház","de":"Akvarell Apartmanház"}},
- {"id":"haz","nev":"Ház, kert","en":"House, garden","de":"Haus, Garten","haz":1,"cim":{"hu":"Akvarell Apartmanház","en":"Akvarell Apartmanház","de":"Akvarell Apartmanház"}},
- {"id":"duna","nev":"Duna","en":"Danube","de":"Donau","cim":{"hu":"A Duna Zebegénynél","en":"The Danube at Zebegény","de":"Die Donau bei Zebegény"}},
- {"id":"falu","nev":"Zebegény","en":"Zebegény","de":"Zebegény","alias":["falu","utca"],"cim":{"hu":"Zebegény","en":"Zebegény","de":"Zebegény"}},
- {"id":"templom","nev":"Templom","en":"Church","de":"Kirche","alias":["havas boldogasszony","havas boldogasszony-templom"],"cim":{"hu":"Havas Boldogasszony-templom","en":"Church of Our Lady of the Snows","de":"Kirche Maria Schnee"}},
- {"id":"szonyi","nev":"Szőnyi Múzeum","en":"Szőnyi Museum","de":"Szőnyi-Museum","alias":["szőnyi","szőnyi múzeum","szőnyi istván emlékmúzeum","szőnyi emlékmúzeum"],"cim":{"hu":"Szőnyi István Emlékmúzeum","en":"István Szőnyi Memorial Museum","de":"István-Szőnyi-Gedenkmuseum"}},
- {"id":"hajozas","nev":"Hajózási múzeum","en":"Sailing museum","de":"Schifffahrtsmuseum","alias":["hajózástörténeti múzeum","hajózás","hajós múzeum"],"cim":{"hu":"Hajózástörténeti Múzeum","en":"Sailing History Museum","de":"Schifffahrtsmuseum"}},
- {"id":"kalvaria","nev":"Kálvária-domb","en":"Calvary Hill","de":"Kalvarienberg","alias":["kálvária","kálvária-hegy"],"cim":{"hu":"Kálvária-domb","en":"Calvary Hill","de":"Kalvarienberg"}},
- {"id":"kilato","nev":"Kós-kilátó","en":"Kós Lookout","de":"Kós-Turm","alias":["kilátó","kós károly-kilátó","kós károly kilátó"],"cim":{"hu":"Kós Károly-kilátó","en":"Károly Kós Lookout Tower","de":"Károly-Kós-Aussichtsturm"}},
- {"id":"orszagzaszlo","nev":"Országzászló","en":"Flag Memorial","de":"Flaggendenkmal","alias":["országzászló-emlékmű","hősi emlékmű"],"cim":{"hu":"Országzászló-emlékmű","en":"National Flag Memorial","de":"Nationalflaggen-Denkmal"}},
- {"id":"strand","nev":"Strand","en":"Beach","de":"Strand","alias":["szabadstrand","duna-part","duna part"],"cim":{"hu":"Duna-parti strand","en":"Danube beach","de":"Donaustrand"}},
- {"id":"dory","nev":"Dőry-kastély","en":"Dőry Mansion","de":"Dőry-Schloss","alias":["dőry","kastély"],"cim":{"hu":"Dőry-kastély","en":"Dőry Mansion","de":"Dőry-Schloss"}},
- {"id":"sarkanydomb","nev":"Sárkánydomb","en":"Kite Hill","de":"Drachenhügel","alias":["sárkány domb"],"cim":{"hu":"Sárkánydomb","en":"Kite Hill","de":"Drachenhügel"}},
- {"id":"sziget","nev":"Sziget","en":"Island","de":"Insel","alias":["zebegényi-sziget"],"cim":{"hu":"Zebegényi-sziget","en":"Zebegény Island","de":"Insel bei Zebegény"}}],
-"nyito":[
- {"id":"k1","t":"kilatas","hu":"Ez a kilátás fogad a teraszon: a Duna, mögötte a Pilis és a Visegrádi-hegység.","en":"This is the view from the terrace: the Danube, with the Pilis and the Visegrád Hills behind it.","de":"Diesen Blick hast du von der Terrasse: die Donau, dahinter der Pilis und das Visegráder Gebirge."},
- {"id":"k2","t":"kilatas","hu":"Zebegény a Dunakanyarban: víz, hegyek, csend.","en":"Zebegény on the Danube Bend: water, hills and quiet.","de":"Zebegény am Donauknie: Wasser, Berge und Ruhe."},
- {"id":"k3","t":"kilatas","hu":"Megálltunk egy percre a teraszon, hogy ezt megmutassuk.","en":"We stopped on the terrace for a minute to show you this.","de":"Wir sind kurz auf der Terrasse stehen geblieben, um dir das zu zeigen."},
- {"id":"d1","t":"duna","hu":"A Duna, Zebegényből nézve.","en":"The Danube, seen from Zebegény.","de":"Die Donau, von Zebegény aus gesehen."},
- {"id":"d2","t":"duna","hu":"A folyó minden órában más színt mutat.","en":"The river looks different every hour.","de":"Der Fluss sieht zu jeder Stunde anders aus."},
- {"id":"d3","t":"duna","hu":"Ilyenkor érdemes kiülni, és csak nézni a folyót.","en":"A good moment to sit down and just watch the river.","de":"Ein guter Moment, um sich hinzusetzen und einfach dem Fluss zuzusehen."},
- {"id":"t1","t":"terasz","hu":"Terasz, csend, Duna.","en":"Terrace, quiet, the Danube.","de":"Terrasse, Ruhe, Donau."},
- {"id":"t2","t":"terasz","hu":"A terasz várja, hogy valaki kiüljön.","en":"The terrace is waiting for someone to sit out.","de":"Die Terrasse wartet darauf, dass sich jemand hinsetzt."},
- {"id":"a1","t":"apartman","hu":"Bepillantás az egyik apartmanunkba.","en":"A look inside one of our apartments.","de":"Ein Blick in eines unserer Apartments."},
- {"id":"a2","t":"apartman","hu":"Itt kezdődik és itt ér véget a nap.","en":"This is where the day starts and ends.","de":"Hier beginnt und endet der Tag."},
- {"id":"j1","t":"jacuzzi","hu":"A kültéri jacuzzi a Dunakanyarra néz.","en":"Our outdoor jacuzzi looks out over the Danube Bend.","de":"Unser Whirlpool im Freien blickt auf das Donauknie."},
- {"id":"j2","t":"jacuzzi","hu":"Meleg víz és kilátás a hegyekre.","en":"Warm water and a view of the hills.","de":"Warmes Wasser und Blick auf die Berge."},
- {"id":"h1","t":"haz","hu":"Az Akvarell Apartmanház Zebegényben.","en":"The Akvarell Apartmanház in Zebegény.","de":"Das Akvarell Apartmanház in Zebegény."},
- {"id":"h2","t":"haz","hu":"Megérkezés Zebegénybe.","en":"Arriving in Zebegény.","de":"Ankommen in Zebegény."},
- {"id":"f1","t":"falu","hu":"Egy séta Zebegényben.","en":"A walk through Zebegény.","de":"Ein Spaziergang durch Zebegény."},
- {"id":"f2","t":"falu","hu":"Zebegény utcáin.","en":"On the streets of Zebegény.","de":"In den Straßen von Zebegény."},
- {"id":"tp1","t":"templom","hu":"A Havas Boldogasszony-templom Zebegény főterén.","en":"The Church of Our Lady of the Snows on Zebegény's main square.","de":"Die Kirche Maria Schnee am Hauptplatz von Zebegény."},
- {"id":"tp3","t":"templom","hu":"Szecessziós templom a falu főterén.","en":"An Art Nouveau church on the village square.","de":"Eine Jugendstilkirche am Dorfplatz."},
- {"id":"sz1","t":"szonyi","hu":"Szőnyi István egykori háza, Zebegényben.","en":"The former home of István Szőnyi, in Zebegény.","de":"Das ehemalige Haus von István Szőnyi, in Zebegény."},
- {"id":"sz2","t":"szonyi","hu":"Egy kert, ahol a hétköznapokból festmény lett.","en":"A garden where everyday life became painting.","de":"Ein Garten, in dem der Alltag zum Bild wurde."},
- {"id":"hj1","t":"hajozas","hu":"A Hajózástörténeti Múzeum Zebegényben.","en":"The Sailing History Museum in Zebegény.","de":"Das Schifffahrtsmuseum in Zebegény."},
- {"id":"hj2","t":"hajozas","hu":"Hajók, modellek, történetek a Duna mellől.","en":"Ships, models and stories from the Danube.","de":"Schiffe, Modelle und Geschichten von der Donau."},
- {"id":"kv1","t":"kalvaria","hu":"Fent a Kálvária-dombon.","en":"Up on Calvary Hill.","de":"Oben auf dem Kalvarienberg."},
- {"id":"kv2","t":"kalvaria","hu":"A Kálvária-kápolna, Zebegény fölött.","en":"The Calvary Chapel above Zebegény.","de":"Die Kalvarienkapelle über Zebegény."},
- {"id":"ki1","t":"kilato","hu":"A Kós Károly-kilátó tetején.","en":"At the top of the Károly Kós Lookout Tower.","de":"Oben auf dem Károly-Kós-Aussichtsturm."},
- {"id":"ki2","t":"kilato","hu":"Még néhány lépcsőfok, és alattad a Dunakanyar.","en":"A few more steps and the Danube Bend is below you.","de":"Noch ein paar Stufen, und das Donauknie liegt unter dir."},
- {"id":"o1","t":"orszagzaszlo","hu":"Az Országzászló-emlékmű a Kálvária-hegyen.","en":"The National Flag Memorial on Calvary Hill.","de":"Das Nationalflaggen-Denkmal auf dem Kalvarienberg."},
- {"id":"o2","t":"orszagzaszlo","hu":"Csendes hely a falu fölött.","en":"A quiet place above the village.","de":"Ein stiller Ort über dem Dorf."},
- {"id":"st1","t":"strand","hu":"A zebegényi Duna-part.","en":"The Danube shore at Zebegény.","de":"Das Donauufer in Zebegény."},
- {"id":"st2","t":"strand","hu":"Víz, part, és a hegyek a túloldalon.","en":"Water, shore and the hills on the other side.","de":"Wasser, Ufer und die Berge auf der anderen Seite."},
- {"id":"dk1","t":"dory","hu":"A Dőry-kastély a Duna mellett.","en":"Dőry Mansion by the Danube.","de":"Das Dőry-Schloss an der Donau."},
- {"id":"dk2","t":"dory","hu":"Egy ház, amely több mint száz éve nézi a folyót.","en":"A house that has been watching the river for over a hundred years.","de":"Ein Haus, das seit über hundert Jahren auf den Fluss blickt."},
- {"id":"sd1","t":"sarkanydomb","hu":"Sárkánydomb, Zebegény.","en":"Kite Hill, Zebegény.","de":"Drachenhügel, Zebegény."},
- {"id":"sd2","t":"sarkanydomb","hu":"Fent a Sárkánydombon.","en":"Up on Kite Hill.","de":"Oben auf dem Drachenhügel."},
- {"id":"sd3","t":"sarkanydomb","hu":"A Sárkánydombról is a Dunakanyarra látsz.","en":"From Kite Hill, too, you look out over the Danube Bend.","de":"Auch vom Drachenhügel blickst du auf das Donauknie."},
- {"id":"sg1","t":"sziget","hu":"A zebegényi sziget.","en":"The island at Zebegény.","de":"Die Insel bei Zebegény."},
- {"id":"sg2","t":"sziget","hu":"Szemben a sziget, mögötte a hegyek.","en":"The island across the water, the hills behind it.","de":"Gegenüber die Insel, dahinter die Berge."}],
-"hangulat":{
- "reggel":{"hu":"Reggel még csend van, csak a Duna mozog.","en":"Mornings here are quiet, only the Danube is moving.","de":"Morgens ist es hier still, nur die Donau bewegt sich."},
- "nappal":{"hu":"Egy séta közben megálltunk itt.","en":"We stopped here during a walk.","de":"Bei einem Spaziergang sind wir hier stehen geblieben."},
- "este":{"hu":"Este lassan elcsendesedik a falu.","en":"In the evening the village slowly goes quiet.","de":"Abends wird das Dorf langsam still."},
- "ejjel":{"hu":"Éjszaka egészen más arcát mutatja Zebegény.","en":"At night Zebegény shows a different face.","de":"Nachts zeigt Zebegény ein ganz anderes Gesicht."}},
-"tudtad":{"hu":"Tudtad?","en":"Did you know?","de":"Wusstest du?"},
-"teny":[
- {"id":"x-amrita","apt":"amrita","hu":"Az Amrita apartman a földszinten van, nagy terasszal; Amrita Sher-Gil festőről kapta a nevét, aki több nyarat töltött Zebegényben.","en":"The Amrita apartment is on the ground floor with a large terrace; it is named after the painter Amrita Sher-Gil, who spent several summers in Zebegény.","de":"Das Amrita-Apartment liegt im Erdgeschoss und hat eine große Terrasse; es ist nach der Malerin Amrita Sher-Gil benannt, die mehrere Sommer in Zebegény verbrachte."},
- {"id":"x-szonyi","apt":"szonyi","hu":"A Szőnyi apartman az emeleten van, és Szőnyi István nevét viseli, aki Zebegényben festett.","en":"The Szőnyi apartment is upstairs and carries the name of István Szőnyi, who painted in Zebegény.","de":"Das Szőnyi-Apartment liegt im Obergeschoss und trägt den Namen von István Szőnyi, der in Zebegény malte."},
- {"id":"x-bereny","apt":"bereny","hu":"A Berény apartman egy Zebegényhez kötődő festő nevét viseli.","en":"The Berény apartment carries the name of a painter connected to Zebegény.","de":"Das Berény-Apartment trägt den Namen eines Malers, der mit Zebegény verbunden ist."},
- {"id":"x-karpathy","apt":"karpathy","hu":"A Kárpáthy apartman egy Zebegényhez kötődő festő nevét viseli.","en":"The Kárpáthy apartment carries the name of a painter connected to Zebegény.","de":"Das Kárpáthy-Apartment trägt den Namen eines Malers, der mit Zebegény verbunden ist."},
- {"id":"x-negy","t":["haz","kilatas"],"hu":"Négy apartman, mindegyik egy Zebegényhez kötődő festő nevét viseli.","en":"Four apartments, each named after a painter connected to Zebegény.","de":"Vier Apartments, jedes trägt den Namen eines Malers, der mit Zebegény verbunden ist."},
- {"id":"x-jacuzzi","t":["jacuzzi"],"hu":"Egy jacuzzi van az egész házra: időpontot foglalsz, és akkor csak a tiéd.","en":"There is one jacuzzi for the whole house: book a time slot and it is yours alone.","de":"Es gibt einen Whirlpool für das ganze Haus: Du buchst ein Zeitfenster, und dann gehört er dir allein."},
- {"id":"x-legenda","t":["falu","duna","kilatas"],"forras":"welovebudapest.com, 2024","hu":"A legenda szerint a falu neve onnan ered, hogy az érkező hajósok a hegyeknek futó Dunát látva azt hitték, itt kezdődik a tenger: „See beginn”.","en":"Legend has it that arriving boatmen, seeing the Danube run into the hills, thought the sea began here – „See beginn” – and that is how the village got its name.","de":"Der Legende nach glaubten ankommende Schiffer beim Anblick der Donau, die auf die Berge zuläuft, hier beginne das Meer – „See beginn“ – daher der Name des Dorfes."},
- {"id":"x-szonyi1924","t":["falu","szonyi"],"forras":"Szőnyi István Emlékmúzeum","hu":"Szőnyi István 1924-től haláláig itt élt és festett.","en":"István Szőnyi lived and painted here from 1924 until his death.","de":"István Szőnyi lebte und malte hier von 1924 bis zu seinem Tod."},
- {"id":"x-sz1","t":["szonyi"],"forras":"Szőnyi István Emlékmúzeum","hu":"Egykori lakóháza és műterme 1967 óta emlékmúzeum.","en":"His former home and studio have been a memorial museum since 1967.","de":"Sein ehemaliges Wohnhaus und Atelier ist seit 1967 ein Gedenkmuseum."},
- {"id":"x-sz2","t":["szonyi"],"forras":"programturizmus.hu","hu":"A múzeumban látható a Kerti pad, a Reggel és az Este Zebegényben is.","en":"The museum shows works such as Garden Bench, Morning and Evening in Zebegény.","de":"Im Museum sind unter anderem Gartenbank, Morgen und Abend in Zebegény zu sehen."},
- {"id":"x-sz3","t":["szonyi"],"forras":"Wikimedia Commons","hu":"A kertben Kunvári Lilla bronz mellszobra áll a mesterről.","en":"In the garden stands a bronze bust of the master by Lilla Kunvári.","de":"Im Garten steht eine Bronzebüste des Meisters von Lilla Kunvári."},
- {"id":"x-tp","t":["templom"],"forras":"Kós-monográfia, BFL","hu":"Kós Károly és Jánszky Béla tervezte 1908–1909-ben.","en":"Károly Kós and Béla Jánszky designed it in 1908–1909.","de":"Károly Kós und Béla Jánszky entwarfen sie 1908–1909."},
- {"id":"x-tp2","t":["templom"],"forras":"Kós-monográfia, BFL","hu":"Belsejét Körösfői-Kriesch Aladár, a gödöllői művésztelep mestere festette ki a tanítványaival.","en":"Its interior was painted by Aladár Körösfői-Kriesch of the Gödöllő Artists' Colony and his students.","de":"Ihr Inneres bemalte Aladár Körösfői-Kriesch von der Künstlerkolonie Gödöllő mit seinen Schülern."},
- {"id":"x-h1","t":["hajozas"],"forras":"welovebudapest.com, 2024","hu":"Farkas Vince hajóskapitány saját készítésű tárgyain és gyűjteményén át mutatja be a hajózás történetét.","en":"Through the handmade pieces and collection of captain Vince Farkas, it tells the story of shipping.","de":"Mit den selbstgebauten Stücken und der Sammlung von Kapitän Vince Farkas erzählt es die Geschichte der Schifffahrt."},
- {"id":"x-h2","t":["hajozas"],"forras":"museum.hu","hu":"A kiállítás 1984 nyarán nyílt meg, a kapitány saját házában.","en":"The exhibition opened in the summer of 1984, in the captain's own house.","de":"Die Ausstellung wurde im Sommer 1984 im eigenen Haus des Kapitäns eröffnet."},
- {"id":"x-k1","t":["kalvaria"],"forras":"Hungaricana (Vác útikönyv)","hu":"A klasszicista kápolna 1853-ban épült, az odavezető úton kilenc stációház áll.","en":"The Classicist chapel was built in 1853, with nine Stations of the Cross along the path up.","de":"Die klassizistische Kapelle wurde 1853 erbaut, am Weg hinauf stehen neun Kreuzwegstationen."},
- {"id":"x-k2","t":["kalvaria"],"forras":"kozterkep.hu","hu":"A stációk domborműveit 1984-ben öntötték újra.","en":"The reliefs of the stations were recast in 1984.","de":"Die Reliefs der Stationen wurden 1984 neu gegossen."},
- {"id":"x-ki1","t":["kilato","kalvaria"],"forras":"programturizmus.hu","hu":"A vörösfenyő kilátót 2015 nyarán avatták fel.","en":"The larch-wood lookout tower opened in the summer of 2015.","de":"Der Aussichtsturm aus Lärchenholz wurde im Sommer 2015 eingeweiht."},
- {"id":"x-ki2","t":["kilato"],"forras":"programturizmus.hu","hu":"Alsó része székely kaput formáz, tisztelegve Kós Károly erdélyi származása előtt.","en":"Its lower part is shaped like a Székely gate, a tribute to Károly Kós's Transylvanian roots.","de":"Sein unterer Teil hat die Form eines Szekler Tores, eine Hommage an die siebenbürgische Herkunft von Károly Kós."},
- {"id":"x-ki3","t":["kilato"],"forras":"welovebudapest.com, 2024","hu":"Fentről Zebegényt és a szemközti Dömöst, a Pilist és Pilismarótot látod madártávlatból.","en":"From the top you see Zebegény and, across the river, Dömös, the Pilis and Pilismarót from above.","de":"Von oben siehst du Zebegény und gegenüber Dömös, den Pilis und Pilismarót aus der Vogelperspektive."},
- {"id":"x-o1","t":["orszagzaszlo"],"forras":"Maróti Géza és Zebegény, PMMI 2003","hu":"Maróti Géza tervezte, közadakozásból épült 1935 és 1938 között.","en":"Designed by Géza Maróti, it was built by public subscription between 1935 and 1938.","de":"Entworfen von Géza Maróti, wurde es zwischen 1935 und 1938 aus Spenden errichtet."},
- {"id":"x-o2","t":["orszagzaszlo"],"forras":"Maróti Géza és Zebegény, PMMI 2003","hu":"A politikai helyzet miatt sosem fejezték be teljesen.","en":"Because of the political situation, it was never fully completed.","de":"Wegen der politischen Lage wurde es nie ganz fertiggestellt."},
- {"id":"x-s1","t":["strand"],"forras":"NNGYK fürdővízprofil","hu":"A Duna-parti szabadstrand 2015 óta engedélyezett fürdőhely.","en":"The public Danube beach has been an official bathing site since 2015.","de":"Der öffentliche Donaustrand ist seit 2015 eine offizielle Badestelle."},
- {"id":"x-s2","t":["strand"],"forras":"Duna Múzeum képeslapgyűjtemény","hu":"Régi képeslapok szerint már 1939-ben is fürdőztek itt.","en":"Old postcards show people bathing here as early as 1939.","de":"Alte Postkarten zeigen, dass hier schon 1939 gebadet wurde."},
- {"id":"x-d1","t":["dory"],"forras":"Wikipedia","hu":"A kastély a Duna-parton áll.","en":"The mansion stands on the Danube shore.","de":"Das Schloss steht am Donauufer."},
- {"id":"x-d2","t":["dory"],"forras":"Wikivoyage","hu":"1917-ben épült, eklektikus stílusban.","en":"It was built in 1917 in an eclectic style.","de":"Es wurde 1917 im eklektischen Stil erbaut."},
- {"id":"x-sd1","t":["sarkanydomb"],"hu":"A faluból nagyjából 15 perc séta felfelé.","en":"It is about a 15-minute walk uphill from the village.","de":"Vom Dorf aus sind es etwa 15 Minuten zu Fuß bergauf."},
- {"id":"x-sd2","t":["sarkanydomb"],"hu":"Itt rendezték a zebegényi sárkányeregető fesztivált.","en":"Zebegény's kite festival used to be held here.","de":"Hier fand früher das Drachenfest von Zebegény statt."}],
-"zaro":[
- {"id":"z1","hu":"Melyik évszakban jönnél?","en":"Which season would you come in?","de":"In welcher Jahreszeit würdest du kommen?","kerdes":1},
- {"id":"z2","hu":"Neked melyik zebegényi hely a kedvenced?","en":"Which place in Zebegény is your favourite?","de":"Welcher Ort in Zebegény ist dein liebster?","kerdes":1},
- {"id":"z3","hu":"Ha legközelebb erre jársz, nézd meg te is.","en":"If you're ever nearby, come and see it yourself.","de":"Wenn du einmal in der Nähe bist, schau es dir selbst an."},
- {"id":"z4","hu":"Érdemes itt egy percre megállni.","en":"It's worth stopping here for a minute.","de":"Hier lohnt es sich, kurz stehen zu bleiben."},
- {"id":"z5","hu":"Szép napot innen, a Dunakanyarból.","en":"Have a good day, from here on the Danube Bend.","de":"Einen schönen Tag, von hier am Donauknie."},
- {"id":"z6","hu":"Neked mi jut eszedbe erről a képről?","en":"What does this picture remind you of?","de":"Woran erinnert dich dieses Bild?","kerdes":1},
- {"id":"z7","hu":"Nyugodt napot kívánunk, bárhol is vagy.","en":"Wherever you are, have a calm day.","de":"Wo auch immer du bist: einen ruhigen Tag."},
- {"id":"s-tel","evszak":"tel","hu":"Télen is érdemes eljönni.","en":"Worth the trip in winter too.","de":"Auch im Winter eine Reise wert."},
- {"id":"s-tavasz","evszak":"tavasz","hu":"Tavasszal itt minden zöldbe fordul.","en":"In spring everything here turns green.","de":"Im Frühling wird hier alles grün."},
- {"id":"s-nyar","evszak":"nyar","haz":1,"hu":"Nyáron hosszúak az esték a teraszon.","en":"Summer evenings on the terrace are long.","de":"Im Sommer sind die Abende auf der Terrasse lang."},
- {"id":"s-osz","evszak":"osz","hu":"Ősszel színesek a hegyek a Duna fölött.","en":"In autumn the hills above the Danube change colour.","de":"Im Herbst färben sich die Berge über der Donau."}],
-"komment":[
- {"id":"m1","hu":"Ha egyszer élőben is megnéznéd, nálunk megszállhatsz:","en":"If you'd like to see it in person one day, you can stay with us:","de":"Falls du es einmal selbst sehen möchtest, kannst du bei uns wohnen:"},
- {"id":"m2","hu":"A házunk Zebegényben, négy apartmannal:","en":"Our house in Zebegény, with four apartments:","de":"Unser Haus in Zebegény, mit vier Apartments:"},
- {"id":"m-amrita","apt":"amrita","hu":"Az Amrita apartman:","en":"The Amrita apartment:","de":"Das Amrita-Apartment:"},
- {"id":"m-szonyi","apt":"szonyi","hu":"A Szőnyi apartman:","en":"The Szőnyi apartment:","de":"Das Szőnyi-Apartment:"},
- {"id":"m-jacuzzi","t":"jacuzzi","hu":"A ház és a jacuzzi:","en":"The house and the jacuzzi:","de":"Das Haus und der Whirlpool:"}],
-"url":{"":"https://akvarellzebegeny.hu/","amrita":"https://akvarellzebegeny.hu/amrita-apartman-zebegeny/","szonyi":"https://akvarellzebegeny.hu/szonyi-apartman-zebegeny/"}}
+{
+"temak": [
+{
+"id": "kilatas",
+"nev": "Kilátás",
+"en": "The view",
+"de": "Der Blick",
+"haz": 1,
+"cim": {
+"hu": "Akvarell Apartmanház",
+"en": "Akvarell Apartmanház",
+"de": "Akvarell Apartmanház"
+}
+},
+{
+"id": "terasz",
+"nev": "Terasz",
+"en": "Terrace",
+"de": "Terrasse",
+"haz": 1,
+"cim": {
+"hu": "Akvarell Apartmanház",
+"en": "Akvarell Apartmanház",
+"de": "Akvarell Apartmanház"
+}
+},
+{
+"id": "apartman",
+"nev": "Apartman",
+"en": "Apartment",
+"de": "Apartment",
+"haz": 1,
+"cim": {
+"hu": "Akvarell Apartmanház",
+"en": "Akvarell Apartmanház",
+"de": "Akvarell Apartmanház"
+}
+},
+{
+"id": "jacuzzi",
+"nev": "Jacuzzi",
+"en": "Jacuzzi",
+"de": "Whirlpool",
+"haz": 1,
+"cim": {
+"hu": "Akvarell Apartmanház",
+"en": "Akvarell Apartmanház",
+"de": "Akvarell Apartmanház"
+}
+},
+{
+"id": "haz",
+"nev": "Ház, kert",
+"en": "House, garden",
+"de": "Haus, Garten",
+"haz": 1,
+"cim": {
+"hu": "Akvarell Apartmanház",
+"en": "Akvarell Apartmanház",
+"de": "Akvarell Apartmanház"
+}
+},
+{
+"id": "duna",
+"nev": "Duna",
+"en": "Danube",
+"de": "Donau",
+"cim": {
+"hu": "A Duna Zebegénynél",
+"en": "The Danube at Zebegény",
+"de": "Die Donau bei Zebegény"
+}
+},
+{
+"id": "falu",
+"nev": "Zebegény",
+"en": "Zebegény",
+"de": "Zebegény",
+"alias": [
+"falu",
+"utca"
+],
+"cim": {
+"hu": "Zebegény",
+"en": "Zebegény",
+"de": "Zebegény"
+}
+},
+{
+"id": "templom",
+"nev": "Templom",
+"en": "Church",
+"de": "Kirche",
+"alias": [
+"havas boldogasszony",
+"havas boldogasszony-templom"
+],
+"cim": {
+"hu": "Havas Boldogasszony-templom",
+"en": "Church of Our Lady of the Snows",
+"de": "Kirche Maria Schnee"
+}
+},
+{
+"id": "szonyi",
+"nev": "Szőnyi Múzeum",
+"en": "Szőnyi Museum",
+"de": "Szőnyi-Museum",
+"alias": [
+"szőnyi",
+"szőnyi múzeum",
+"szőnyi istván emlékmúzeum",
+"szőnyi emlékmúzeum"
+],
+"cim": {
+"hu": "Szőnyi István Emlékmúzeum",
+"en": "István Szőnyi Memorial Museum",
+"de": "István-Szőnyi-Gedenkmuseum"
+}
+},
+{
+"id": "hajozas",
+"nev": "Hajózási múzeum",
+"en": "Sailing museum",
+"de": "Schifffahrtsmuseum",
+"alias": [
+"hajózástörténeti múzeum",
+"hajózás",
+"hajós múzeum"
+],
+"cim": {
+"hu": "Hajózástörténeti Múzeum",
+"en": "Sailing History Museum",
+"de": "Schifffahrtsmuseum"
+}
+},
+{
+"id": "kalvaria",
+"nev": "Kálvária-domb",
+"en": "Calvary Hill",
+"de": "Kalvarienberg",
+"alias": [
+"kálvária",
+"kálvária-hegy"
+],
+"cim": {
+"hu": "Kálvária-domb",
+"en": "Calvary Hill",
+"de": "Kalvarienberg"
+}
+},
+{
+"id": "kilato",
+"nev": "Kós-kilátó",
+"en": "Kós Lookout",
+"de": "Kós-Turm",
+"alias": [
+"kilátó",
+"kós károly-kilátó",
+"kós károly kilátó"
+],
+"cim": {
+"hu": "Kós Károly-kilátó",
+"en": "Károly Kós Lookout Tower",
+"de": "Károly-Kós-Aussichtsturm"
+}
+},
+{
+"id": "orszagzaszlo",
+"nev": "Országzászló",
+"en": "Flag Memorial",
+"de": "Flaggendenkmal",
+"alias": [
+"országzászló-emlékmű",
+"hősi emlékmű"
+],
+"cim": {
+"hu": "Országzászló-emlékmű",
+"en": "National Flag Memorial",
+"de": "Nationalflaggen-Denkmal"
+}
+},
+{
+"id": "strand",
+"nev": "Strand",
+"en": "Beach",
+"de": "Strand",
+"alias": [
+"szabadstrand",
+"duna-part",
+"duna part"
+],
+"cim": {
+"hu": "Duna-parti strand",
+"en": "Danube beach",
+"de": "Donaustrand"
+}
+},
+{
+"id": "dory",
+"nev": "Dőry-kastély",
+"en": "Dőry Mansion",
+"de": "Dőry-Schloss",
+"alias": [
+"dőry",
+"kastély"
+],
+"cim": {
+"hu": "Dőry-kastély",
+"en": "Dőry Mansion",
+"de": "Dőry-Schloss"
+}
+},
+{
+"id": "sarkanydomb",
+"nev": "Sárkánydomb",
+"en": "Kite Hill",
+"de": "Drachenhügel",
+"alias": [
+"sárkány domb"
+],
+"cim": {
+"hu": "Sárkánydomb",
+"en": "Kite Hill",
+"de": "Drachenhügel"
+}
+},
+{
+"id": "sziget",
+"nev": "Sziget",
+"en": "Island",
+"de": "Insel",
+"alias": [
+"zebegényi-sziget"
+],
+"cim": {
+"hu": "Zebegényi-sziget",
+"en": "Zebegény Island",
+"de": "Insel bei Zebegény"
+}
+},
+{
+"id": "vasut",
+"nev": "Vasúti híd",
+"en": "Railway bridge",
+"de": "Eisenbahnbrücke",
+"alias": [
+"völgyhíd",
+"viadukt",
+"vasút",
+"híd",
+"vasúti völgyhíd"
+],
+"cim": {
+"hu": "Vasúti völgyhíd",
+"en": "Railway viaduct",
+"de": "Eisenbahnviadukt"
+}
+},
+{
+"id": "maroti",
+"nev": "Maróti-villa",
+"en": "Maróti Villa",
+"de": "Maróti-Villa",
+"alias": [
+"maróti",
+"maróti géza"
+],
+"cim": {
+"hu": "Maróti-villa",
+"en": "Maróti Villa",
+"de": "Maróti-Villa"
+}
+},
+{
+"id": "tura",
+"nev": "Túra, Börzsöny",
+"en": "Hike",
+"de": "Wanderung",
+"alias": [
+"túra",
+"hegyes-tető",
+"börzsöny",
+"erdő",
+"kirándulás"
+],
+"cim": {
+"hu": "Börzsöny, Zebegény",
+"en": "Börzsöny hills, Zebegény",
+"de": "Börzsöny, Zebegény"
+}
+}
+],
+"nyito": [
+{
+"id": "k1",
+"t": "kilatas",
+"hu": "Ez a kilátás fogad a teraszon: a Duna, mögötte a Pilis és a Visegrádi-hegység.",
+"en": "This is the view from the terrace: the Danube, with the Pilis and the Visegrád Hills behind it.",
+"de": "Diesen Blick hast du von der Terrasse: die Donau, dahinter der Pilis und das Visegráder Gebirge."
+},
+{
+"id": "k2",
+"t": "kilatas",
+"hu": "Zebegény a Dunakanyarban: víz, hegyek, csend.",
+"en": "Zebegény on the Danube Bend: water, hills and quiet.",
+"de": "Zebegény am Donauknie: Wasser, Berge und Ruhe."
+},
+{
+"id": "k3",
+"t": "kilatas",
+"hu": "Megálltunk egy percre a teraszon, hogy ezt megmutassuk.",
+"en": "We stopped on the terrace for a minute to show you this.",
+"de": "Wir sind kurz auf der Terrasse stehen geblieben, um dir das zu zeigen."
+},
+{
+"id": "d1",
+"t": "duna",
+"hu": "A Duna, Zebegényből nézve.",
+"en": "The Danube, seen from Zebegény.",
+"de": "Die Donau, von Zebegény aus gesehen."
+},
+{
+"id": "d2",
+"t": "duna",
+"hu": "A folyó minden órában más színt mutat.",
+"en": "The river looks different every hour.",
+"de": "Der Fluss sieht zu jeder Stunde anders aus."
+},
+{
+"id": "d3",
+"t": "duna",
+"hu": "Ilyenkor érdemes kiülni, és csak nézni a folyót.",
+"en": "A good moment to sit down and just watch the river.",
+"de": "Ein guter Moment, um sich hinzusetzen und einfach dem Fluss zuzusehen."
+},
+{
+"id": "t1",
+"t": "terasz",
+"hu": "Terasz, csend, Duna.",
+"en": "Terrace, quiet, the Danube.",
+"de": "Terrasse, Ruhe, Donau."
+},
+{
+"id": "t2",
+"t": "terasz",
+"hu": "A terasz várja, hogy valaki kiüljön.",
+"en": "The terrace is waiting for someone to sit out.",
+"de": "Die Terrasse wartet darauf, dass sich jemand hinsetzt."
+},
+{
+"id": "a1",
+"t": "apartman",
+"hu": "Bepillantás az egyik apartmanunkba.",
+"en": "A look inside one of our apartments.",
+"de": "Ein Blick in eines unserer Apartments."
+},
+{
+"id": "a2",
+"t": "apartman",
+"hu": "Itt kezdődik és itt ér véget a nap.",
+"en": "This is where the day starts and ends.",
+"de": "Hier beginnt und endet der Tag."
+},
+{
+"id": "j1",
+"t": "jacuzzi",
+"hu": "A kültéri jacuzzi a Dunakanyarra néz.",
+"en": "Our outdoor jacuzzi looks out over the Danube Bend.",
+"de": "Unser Whirlpool im Freien blickt auf das Donauknie."
+},
+{
+"id": "j2",
+"t": "jacuzzi",
+"hu": "Meleg víz és kilátás a hegyekre.",
+"en": "Warm water and a view of the hills.",
+"de": "Warmes Wasser und Blick auf die Berge."
+},
+{
+"id": "h1",
+"t": "haz",
+"hu": "Az Akvarell Apartmanház Zebegényben.",
+"en": "The Akvarell Apartmanház in Zebegény.",
+"de": "Das Akvarell Apartmanház in Zebegény."
+},
+{
+"id": "h2",
+"t": "haz",
+"hu": "Megérkezés Zebegénybe.",
+"en": "Arriving in Zebegény.",
+"de": "Ankommen in Zebegény."
+},
+{
+"id": "f1",
+"t": "falu",
+"hu": "Egy séta Zebegényben.",
+"en": "A walk through Zebegény.",
+"de": "Ein Spaziergang durch Zebegény."
+},
+{
+"id": "f2",
+"t": "falu",
+"hu": "Zebegény utcáin.",
+"en": "On the streets of Zebegény.",
+"de": "In den Straßen von Zebegény."
+},
+{
+"id": "tp1",
+"t": "templom",
+"hu": "A Havas Boldogasszony-templom Zebegény főterén.",
+"en": "The Church of Our Lady of the Snows on Zebegény's main square.",
+"de": "Die Kirche Maria Schnee am Hauptplatz von Zebegény."
+},
+{
+"id": "tp3",
+"t": "templom",
+"hu": "Szecessziós templom a falu főterén.",
+"en": "An Art Nouveau church on the village square.",
+"de": "Eine Jugendstilkirche am Dorfplatz."
+},
+{
+"id": "sz1",
+"t": "szonyi",
+"hu": "Szőnyi István egykori háza, Zebegényben.",
+"en": "The former home of István Szőnyi, in Zebegény.",
+"de": "Das ehemalige Haus von István Szőnyi, in Zebegény."
+},
+{
+"id": "sz2",
+"t": "szonyi",
+"hu": "Egy kert, ahol a hétköznapokból festmény lett.",
+"en": "A garden where everyday life became painting.",
+"de": "Ein Garten, in dem der Alltag zum Bild wurde."
+},
+{
+"id": "hj1",
+"t": "hajozas",
+"hu": "A Hajózástörténeti Múzeum Zebegényben.",
+"en": "The Sailing History Museum in Zebegény.",
+"de": "Das Schifffahrtsmuseum in Zebegény."
+},
+{
+"id": "hj2",
+"t": "hajozas",
+"hu": "Hajók, modellek, történetek a Duna mellől.",
+"en": "Ships, models and stories from the Danube.",
+"de": "Schiffe, Modelle und Geschichten von der Donau."
+},
+{
+"id": "kv1",
+"t": "kalvaria",
+"hu": "Fent a Kálvária-dombon.",
+"en": "Up on Calvary Hill.",
+"de": "Oben auf dem Kalvarienberg."
+},
+{
+"id": "kv2",
+"t": "kalvaria",
+"hu": "A Kálvária-kápolna, Zebegény fölött.",
+"en": "The Calvary Chapel above Zebegény.",
+"de": "Die Kalvarienkapelle über Zebegény."
+},
+{
+"id": "ki1",
+"t": "kilato",
+"hu": "A Kós Károly-kilátó tetején.",
+"en": "At the top of the Károly Kós Lookout Tower.",
+"de": "Oben auf dem Károly-Kós-Aussichtsturm."
+},
+{
+"id": "ki2",
+"t": "kilato",
+"hu": "Még néhány lépcsőfok, és alattad a Dunakanyar.",
+"en": "A few more steps and the Danube Bend is below you.",
+"de": "Noch ein paar Stufen, und das Donauknie liegt unter dir."
+},
+{
+"id": "o1",
+"t": "orszagzaszlo",
+"hu": "Az Országzászló-emlékmű a Kálvária-hegyen.",
+"en": "The National Flag Memorial on Calvary Hill.",
+"de": "Das Nationalflaggen-Denkmal auf dem Kalvarienberg."
+},
+{
+"id": "o2",
+"t": "orszagzaszlo",
+"hu": "Csendes hely a falu fölött.",
+"en": "A quiet place above the village.",
+"de": "Ein stiller Ort über dem Dorf."
+},
+{
+"id": "st1",
+"t": "strand",
+"hu": "A zebegényi Duna-part.",
+"en": "The Danube shore at Zebegény.",
+"de": "Das Donauufer in Zebegény."
+},
+{
+"id": "st2",
+"t": "strand",
+"hu": "Víz, part, és a hegyek a túloldalon.",
+"en": "Water, shore and the hills on the other side.",
+"de": "Wasser, Ufer und die Berge auf der anderen Seite."
+},
+{
+"id": "dk1",
+"t": "dory",
+"hu": "A Dőry-kastély a Duna mellett.",
+"en": "Dőry Mansion by the Danube.",
+"de": "Das Dőry-Schloss an der Donau."
+},
+{
+"id": "dk2",
+"t": "dory",
+"hu": "Egy ház, amely több mint száz éve nézi a folyót.",
+"en": "A house that has been watching the river for over a hundred years.",
+"de": "Ein Haus, das seit über hundert Jahren auf den Fluss blickt."
+},
+{
+"id": "sd1",
+"t": "sarkanydomb",
+"hu": "Sárkánydomb, Zebegény.",
+"en": "Kite Hill, Zebegény.",
+"de": "Drachenhügel, Zebegény."
+},
+{
+"id": "sd2",
+"t": "sarkanydomb",
+"hu": "Fent a Sárkánydombon.",
+"en": "Up on Kite Hill.",
+"de": "Oben auf dem Drachenhügel."
+},
+{
+"id": "sd3",
+"t": "sarkanydomb",
+"hu": "A Sárkánydombról is a Dunakanyarra látsz.",
+"en": "From Kite Hill, too, you look out over the Danube Bend.",
+"de": "Auch vom Drachenhügel blickst du auf das Donauknie."
+},
+{
+"id": "sg1",
+"t": "sziget",
+"hu": "A zebegényi sziget.",
+"en": "The island at Zebegény.",
+"de": "Die Insel bei Zebegény."
+},
+{
+"id": "sg2",
+"t": "sziget",
+"hu": "Szemben a sziget, mögötte a hegyek.",
+"en": "The island across the water, the hills behind it.",
+"de": "Gegenüber die Insel, dahinter die Berge."
+},
+{
+"id": "vs1",
+"t": "vasut",
+"hu": "A zebegényi vasúti völgyhíd.",
+"en": "The railway viaduct in Zebegény.",
+"de": "Der Eisenbahnviadukt in Zebegény."
+},
+{
+"id": "vs2",
+"t": "vasut",
+"hu": "Ívek a falu fölött.",
+"en": "Arches above the village.",
+"de": "Bögen über dem Dorf."
+},
+{
+"id": "mr1",
+"t": "maroti",
+"hu": "A Maróti-villa Zebegényben.",
+"en": "The Maróti Villa in Zebegény.",
+"de": "Die Maróti-Villa in Zebegény."
+},
+{
+"id": "mr2",
+"t": "maroti",
+"hu": "Egy ház, amely a saját történetét is elmeséli.",
+"en": "A house that tells its own story.",
+"de": "Ein Haus, das seine eigene Geschichte erzählt."
+},
+{
+"id": "tr1",
+"t": "tura",
+"hu": "Erdő, ösvény, Börzsöny.",
+"en": "Forest, path, Börzsöny hills.",
+"de": "Wald, Pfad, Börzsöny."
+},
+{
+"id": "tr2",
+"t": "tura",
+"hu": "Zebegény fölött, az erdőben.",
+"en": "Above Zebegény, in the forest.",
+"de": "Über Zebegény, im Wald."
+}
+],
+"hangulat": {
+"reggel": {
+"hu": "Reggel még csend van, csak a Duna mozog.",
+"en": "Mornings here are quiet, only the Danube is moving.",
+"de": "Morgens ist es hier still, nur die Donau bewegt sich."
+},
+"nappal": {
+"hu": "Egy séta közben megálltunk itt.",
+"en": "We stopped here during a walk.",
+"de": "Bei einem Spaziergang sind wir hier stehen geblieben."
+},
+"este": {
+"hu": "Este lassan elcsendesedik a falu.",
+"en": "In the evening the village slowly goes quiet.",
+"de": "Abends wird das Dorf langsam still."
+},
+"ejjel": {
+"hu": "Éjszaka egészen más arcát mutatja Zebegény.",
+"en": "At night Zebegény shows a different face.",
+"de": "Nachts zeigt Zebegény ein ganz anderes Gesicht."
+}
+},
+"tudtad": {
+"hu": "Tudtad?",
+"en": "Did you know?",
+"de": "Wusstest du?"
+},
+"teny": [
+{
+"id": "x-amrita",
+"apt": "amrita",
+"hu": "Az Amrita apartman a földszinten van, nagy terasszal; Amrita Sher-Gil festőről kapta a nevét, aki több nyarat töltött Zebegényben.",
+"en": "The Amrita apartment is on the ground floor with a large terrace; it is named after the painter Amrita Sher-Gil, who spent several summers in Zebegény.",
+"de": "Das Amrita-Apartment liegt im Erdgeschoss und hat eine große Terrasse; es ist nach der Malerin Amrita Sher-Gil benannt, die mehrere Sommer in Zebegény verbrachte."
+},
+{
+"id": "x-szonyi",
+"apt": "szonyi",
+"hu": "A Szőnyi apartman az emeleten van, és Szőnyi István nevét viseli, aki Zebegényben festett.",
+"en": "The Szőnyi apartment is upstairs and carries the name of István Szőnyi, who painted in Zebegény.",
+"de": "Das Szőnyi-Apartment liegt im Obergeschoss und trägt den Namen von István Szőnyi, der in Zebegény malte."
+},
+{
+"id": "x-bereny",
+"apt": "bereny",
+"hu": "A Berény apartman egy Zebegényhez kötődő festő nevét viseli.",
+"en": "The Berény apartment carries the name of a painter connected to Zebegény.",
+"de": "Das Berény-Apartment trägt den Namen eines Malers, der mit Zebegény verbunden ist."
+},
+{
+"id": "x-karpathy",
+"apt": "karpathy",
+"hu": "A Kárpáthy apartman egy Zebegényhez kötődő festő nevét viseli.",
+"en": "The Kárpáthy apartment carries the name of a painter connected to Zebegény.",
+"de": "Das Kárpáthy-Apartment trägt den Namen eines Malers, der mit Zebegény verbunden ist."
+},
+{
+"id": "x-negy",
+"t": [
+"haz",
+"kilatas"
+],
+"hu": "Négy apartman, mindegyik egy Zebegényhez kötődő festő nevét viseli.",
+"en": "Four apartments, each named after a painter connected to Zebegény.",
+"de": "Vier Apartments, jedes trägt den Namen eines Malers, der mit Zebegény verbunden ist."
+},
+{
+"id": "x-jacuzzi",
+"t": [
+"jacuzzi"
+],
+"hu": "Egy jacuzzi van az egész házra: időpontot foglalsz, és akkor csak a tiéd.",
+"en": "There is one jacuzzi for the whole house: book a time slot and it is yours alone.",
+"de": "Es gibt einen Whirlpool für das ganze Haus: Du buchst ein Zeitfenster, und dann gehört er dir allein."
+},
+{
+"id": "x-legenda",
+"t": [
+"falu",
+"duna",
+"kilatas"
+],
+"forras": "welovebudapest.com, 2024",
+"hu": "A legenda szerint a falu neve onnan ered, hogy az érkező hajósok a hegyeknek futó Dunát látva azt hitték, itt kezdődik a tenger: „See beginn”.",
+"en": "Legend has it that arriving boatmen, seeing the Danube run into the hills, thought the sea began here – „See beginn” – and that is how the village got its name.",
+"de": "Der Legende nach glaubten ankommende Schiffer beim Anblick der Donau, die auf die Berge zuläuft, hier beginne das Meer – „See beginn“ – daher der Name des Dorfes."
+},
+{
+"id": "x-szonyi1924",
+"t": [
+"falu",
+"szonyi"
+],
+"forras": "Szőnyi István Emlékmúzeum",
+"hu": "Szőnyi István 1924-től haláláig itt élt és festett.",
+"en": "István Szőnyi lived and painted here from 1924 until his death.",
+"de": "István Szőnyi lebte und malte hier von 1924 bis zu seinem Tod."
+},
+{
+"id": "x-sz1",
+"t": [
+"szonyi"
+],
+"forras": "Szőnyi István Emlékmúzeum",
+"hu": "Egykori lakóháza és műterme 1967 óta emlékmúzeum.",
+"en": "His former home and studio have been a memorial museum since 1967.",
+"de": "Sein ehemaliges Wohnhaus und Atelier ist seit 1967 ein Gedenkmuseum."
+},
+{
+"id": "x-sz2",
+"t": [
+"szonyi"
+],
+"forras": "programturizmus.hu",
+"hu": "A múzeumban látható a Kerti pad, a Reggel és az Este Zebegényben is.",
+"en": "The museum shows works such as Garden Bench, Morning and Evening in Zebegény.",
+"de": "Im Museum sind unter anderem Gartenbank, Morgen und Abend in Zebegény zu sehen."
+},
+{
+"id": "x-sz3",
+"t": [
+"szonyi"
+],
+"forras": "Wikimedia Commons",
+"hu": "A kertben Kunvári Lilla bronz mellszobra áll a mesterről.",
+"en": "In the garden stands a bronze bust of the master by Lilla Kunvári.",
+"de": "Im Garten steht eine Bronzebüste des Meisters von Lilla Kunvári."
+},
+{
+"id": "x-tp",
+"t": [
+"templom"
+],
+"forras": "Kós-monográfia, BFL",
+"hu": "Kós Károly és Jánszky Béla tervezte 1908–1909-ben.",
+"en": "Károly Kós and Béla Jánszky designed it in 1908–1909.",
+"de": "Károly Kós und Béla Jánszky entwarfen sie 1908–1909."
+},
+{
+"id": "x-tp2",
+"t": [
+"templom"
+],
+"forras": "Kós-monográfia, BFL",
+"hu": "Belsejét Körösfői-Kriesch Aladár, a gödöllői művésztelep mestere festette ki a tanítványaival.",
+"en": "Its interior was painted by Aladár Körösfői-Kriesch of the Gödöllő Artists' Colony and his students.",
+"de": "Ihr Inneres bemalte Aladár Körösfői-Kriesch von der Künstlerkolonie Gödöllő mit seinen Schülern."
+},
+{
+"id": "x-h1",
+"t": [
+"hajozas"
+],
+"forras": "welovebudapest.com, 2024",
+"hu": "Farkas Vince hajóskapitány saját készítésű tárgyain és gyűjteményén át mutatja be a hajózás történetét.",
+"en": "Through the handmade pieces and collection of captain Vince Farkas, it tells the story of shipping.",
+"de": "Mit den selbstgebauten Stücken und der Sammlung von Kapitän Vince Farkas erzählt es die Geschichte der Schifffahrt."
+},
+{
+"id": "x-h2",
+"t": [
+"hajozas"
+],
+"forras": "museum.hu",
+"hu": "A kiállítás 1984 nyarán nyílt meg, a kapitány saját házában.",
+"en": "The exhibition opened in the summer of 1984, in the captain's own house.",
+"de": "Die Ausstellung wurde im Sommer 1984 im eigenen Haus des Kapitäns eröffnet."
+},
+{
+"id": "x-k1",
+"t": [
+"kalvaria"
+],
+"forras": "Hungaricana (Vác útikönyv)",
+"hu": "A klasszicista kápolna 1853-ban épült, az odavezető úton kilenc stációház áll.",
+"en": "The Classicist chapel was built in 1853, with nine Stations of the Cross along the path up.",
+"de": "Die klassizistische Kapelle wurde 1853 erbaut, am Weg hinauf stehen neun Kreuzwegstationen."
+},
+{
+"id": "x-k2",
+"t": [
+"kalvaria"
+],
+"forras": "kozterkep.hu",
+"hu": "A stációk domborműveit 1984-ben öntötték újra.",
+"en": "The reliefs of the stations were recast in 1984.",
+"de": "Die Reliefs der Stationen wurden 1984 neu gegossen."
+},
+{
+"id": "x-ki1",
+"t": [
+"kilato",
+"kalvaria"
+],
+"forras": "programturizmus.hu",
+"hu": "A vörösfenyő kilátót 2015 nyarán avatták fel.",
+"en": "The larch-wood lookout tower opened in the summer of 2015.",
+"de": "Der Aussichtsturm aus Lärchenholz wurde im Sommer 2015 eingeweiht."
+},
+{
+"id": "x-ki2",
+"t": [
+"kilato"
+],
+"forras": "programturizmus.hu",
+"hu": "Alsó része székely kaput formáz, tisztelegve Kós Károly erdélyi származása előtt.",
+"en": "Its lower part is shaped like a Székely gate, a tribute to Károly Kós's Transylvanian roots.",
+"de": "Sein unterer Teil hat die Form eines Szekler Tores, eine Hommage an die siebenbürgische Herkunft von Károly Kós."
+},
+{
+"id": "x-ki3",
+"t": [
+"kilato"
+],
+"forras": "welovebudapest.com, 2024",
+"hu": "Fentről Zebegényt és a szemközti Dömöst, a Pilist és Pilismarótot látod madártávlatból.",
+"en": "From the top you see Zebegény and, across the river, Dömös, the Pilis and Pilismarót from above.",
+"de": "Von oben siehst du Zebegény und gegenüber Dömös, den Pilis und Pilismarót aus der Vogelperspektive."
+},
+{
+"id": "x-o1",
+"t": [
+"orszagzaszlo"
+],
+"forras": "Maróti Géza és Zebegény, PMMI 2003",
+"hu": "Maróti Géza tervezte, közadakozásból épült 1935 és 1938 között.",
+"en": "Designed by Géza Maróti, it was built by public subscription between 1935 and 1938.",
+"de": "Entworfen von Géza Maróti, wurde es zwischen 1935 und 1938 aus Spenden errichtet."
+},
+{
+"id": "x-o2",
+"t": [
+"orszagzaszlo"
+],
+"forras": "Maróti Géza és Zebegény, PMMI 2003",
+"hu": "A politikai helyzet miatt sosem fejezték be teljesen.",
+"en": "Because of the political situation, it was never fully completed.",
+"de": "Wegen der politischen Lage wurde es nie ganz fertiggestellt."
+},
+{
+"id": "x-s1",
+"t": [
+"strand"
+],
+"forras": "NNGYK fürdővízprofil",
+"hu": "A Duna-parti szabadstrand 2015 óta engedélyezett fürdőhely.",
+"en": "The public Danube beach has been an official bathing site since 2015.",
+"de": "Der öffentliche Donaustrand ist seit 2015 eine offizielle Badestelle."
+},
+{
+"id": "x-s2",
+"t": [
+"strand"
+],
+"forras": "Duna Múzeum képeslapgyűjtemény",
+"hu": "Régi képeslapok szerint már 1939-ben is fürdőztek itt.",
+"en": "Old postcards show people bathing here as early as 1939.",
+"de": "Alte Postkarten zeigen, dass hier schon 1939 gebadet wurde."
+},
+{
+"id": "x-d1",
+"t": [
+"dory"
+],
+"forras": "Wikipedia",
+"hu": "A kastély a Duna-parton áll.",
+"en": "The mansion stands on the Danube shore.",
+"de": "Das Schloss steht am Donauufer."
+},
+{
+"id": "x-d2",
+"t": [
+"dory"
+],
+"forras": "Wikivoyage",
+"hu": "1917-ben épült, eklektikus stílusban.",
+"en": "It was built in 1917 in an eclectic style.",
+"de": "Es wurde 1917 im eklektischen Stil erbaut."
+},
+{
+"id": "x-sd1",
+"t": [
+"sarkanydomb"
+],
+"hu": "A faluból nagyjából 15 perc séta felfelé.",
+"en": "It is about a 15-minute walk uphill from the village.",
+"de": "Vom Dorf aus sind es etwa 15 Minuten zu Fuß bergauf."
+},
+{
+"id": "x-sd2",
+"t": [
+"sarkanydomb"
+],
+"hu": "Itt rendezték a zebegényi sárkányeregető fesztivált.",
+"en": "Zebegény's kite festival used to be held here.",
+"de": "Hier fand früher das Drachenfest von Zebegény statt."
+},
+{
+"id": "x-falu1295",
+"t": [
+"falu"
+],
+"forras": "Wikipedia",
+"hu": "A falu nevét már egy 1295-ös oklevél említi, egy bencés monostor kapcsán.",
+"en": "The village's name already appears in a document from 1295, in connection with a Benedictine monastery.",
+"de": "Der Name des Dorfes erscheint bereits in einer Urkunde von 1295, im Zusammenhang mit einem Benediktinerkloster."
+},
+{
+"id": "x-falunep",
+"t": [
+"falu"
+],
+"forras": "Wikipedia; welovebudapest.com",
+"hu": "Az 1800-as években német, magyar és szlovák családok éltek itt egymás mellett.",
+"en": "In the 1800s, German, Hungarian and Slovak families lived side by side here.",
+"de": "In den 1800er-Jahren lebten hier deutsche, ungarische und slowakische Familien nebeneinander."
+},
+{
+"id": "x-szvi",
+"t": [
+"szonyi"
+],
+"forras": "Wikipedia",
+"hu": "Szőnyi István és családja a holokauszt idején zsidókat mentett, ezért 1984-ben a Világ Igaza címet kapták.",
+"en": "During the Holocaust, István Szőnyi and his family rescued Jews, and in 1984 they were recognised as Righteous Among the Nations.",
+"de": "István Szőnyi und seine Familie retteten während des Holocaust Juden und wurden 1984 als Gerechte unter den Völkern geehrt."
+},
+{
+"id": "x-v1",
+"t": [
+"vasut"
+],
+"forras": "Hungaricana képeslapok",
+"hu": "A vasúti völgyhíd már egy 1910-es képeslapon is szerepel.",
+"en": "The railway viaduct already appears on a postcard from 1910.",
+"de": "Der Eisenbahnviadukt ist schon auf einer Postkarte von 1910 zu sehen."
+},
+{
+"id": "x-v2",
+"t": [
+"vasut",
+"falu"
+],
+"forras": "welovebudapest.com; Hungaricana",
+"hu": "A vasút kötötte össze Zebegényt Budapesttel, és utána sok fővárosi épített ide nyaralót.",
+"en": "The railway linked Zebegény with Budapest, and many people from the capital then built summer houses here.",
+"de": "Die Bahn verband Zebegény mit Budapest, danach bauten viele Hauptstädter hier Sommerhäuser."
+},
+{
+"id": "x-m1",
+"t": [
+"maroti"
+],
+"forras": "Maróti Géza és Zebegény, PMMI 2003",
+"hu": "Maróti Géza iparművész a század elejétől Zebegényben töltötte a szabadidejét, és 1912-ben villát kezdett építeni itt.",
+"en": "From the early 1900s the designer Géza Maróti spent his leisure time in Zebegény, and in 1912 he began building a villa here.",
+"de": "Der Kunstgewerbler Géza Maróti verbrachte ab den frühen 1900er-Jahren seine Freizeit in Zebegény und begann 1912 hier eine Villa zu bauen."
+},
+{
+"id": "x-m2",
+"t": [
+"maroti"
+],
+"forras": "Maróti Géza és Zebegény, PMMI 2003",
+"hu": "A Duna felőli kőfalon felirat őrzi, hogy ő és a felesége építette, 1913-ban.",
+"en": "An inscription on the stone wall facing the Danube says that he and his wife built it in 1913.",
+"de": "Eine Inschrift an der Steinmauer zur Donau hin besagt, dass er und seine Frau sie 1913 erbaut haben."
+},
+{
+"id": "x-t1",
+"t": [
+"tura"
+],
+"forras": "welovebudapest.com",
+"hu": "Zebegény központjából az erdőn át a Hegyes-tetőig is el lehet sétálni, onnan nagy panoráma nyílik.",
+"en": "From the centre of Zebegény you can walk through the forest up to Hegyes-tető, where a wide panorama opens up.",
+"de": "Vom Zentrum Zebegénys kannst du durch den Wald bis zum Hegyes-tető wandern, von dort öffnet sich ein weites Panorama."
+},
+{
+"id": "x-t2",
+"t": [
+"tura",
+"kilato"
+],
+"forras": "komoot",
+"hu": "A Kós Károly-kilátótól Törökmező felé vezető körtúra nagyjából 15,5 kilométer.",
+"en": "The loop from the Károly Kós Lookout Tower towards Törökmező is about 15.5 kilometres.",
+"de": "Die Rundwanderung vom Károly-Kós-Aussichtsturm Richtung Törökmező ist etwa 15,5 Kilometer lang."
+},
+{
+"id": "x-d3",
+"t": [
+"dory"
+],
+"forras": "OSZK képeslap",
+"hu": "Már egy 1930-as képeslapon is ott áll a Duna-parton.",
+"en": "It already appears on the Danube shore on a postcard from 1930.",
+"de": "Schon auf einer Postkarte von 1930 steht es am Donauufer."
+},
+{
+"id": "x-kkv",
+"t": [
+"kalvaria",
+"kilato"
+],
+"forras": "welovebudapest.com",
+"hu": "A Kálvária-dombon áll a 2015-ben átadott kilátó is.",
+"en": "The lookout tower opened in 2015 also stands on Calvary Hill.",
+"de": "Auf dem Kalvarienberg steht auch der 2015 eröffnete Aussichtsturm."
+}
+],
+"zaro": [
+{
+"id": "z1",
+"hu": "Melyik évszakban jönnél?",
+"en": "Which season would you come in?",
+"de": "In welcher Jahreszeit würdest du kommen?",
+"kerdes": 1
+},
+{
+"id": "z2",
+"hu": "Neked melyik zebegényi hely a kedvenced?",
+"en": "Which place in Zebegény is your favourite?",
+"de": "Welcher Ort in Zebegény ist dein liebster?",
+"kerdes": 1
+},
+{
+"id": "z3",
+"hu": "Ha legközelebb erre jársz, nézd meg te is.",
+"en": "If you're ever nearby, come and see it yourself.",
+"de": "Wenn du einmal in der Nähe bist, schau es dir selbst an."
+},
+{
+"id": "z4",
+"hu": "Érdemes itt egy percre megállni.",
+"en": "It's worth stopping here for a minute.",
+"de": "Hier lohnt es sich, kurz stehen zu bleiben."
+},
+{
+"id": "z5",
+"hu": "Szép napot innen, a Dunakanyarból.",
+"en": "Have a good day, from here on the Danube Bend.",
+"de": "Einen schönen Tag, von hier am Donauknie."
+},
+{
+"id": "z6",
+"hu": "Neked mi jut eszedbe erről a képről?",
+"en": "What does this picture remind you of?",
+"de": "Woran erinnert dich dieses Bild?",
+"kerdes": 1
+},
+{
+"id": "z7",
+"hu": "Nyugodt napot kívánunk, bárhol is vagy.",
+"en": "Wherever you are, have a calm day.",
+"de": "Wo auch immer du bist: einen ruhigen Tag."
+},
+{
+"id": "s-tel",
+"evszak": "tel",
+"hu": "Télen is érdemes eljönni.",
+"en": "Worth the trip in winter too.",
+"de": "Auch im Winter eine Reise wert."
+},
+{
+"id": "s-tavasz",
+"evszak": "tavasz",
+"hu": "Tavasszal itt minden zöldbe fordul.",
+"en": "In spring everything here turns green.",
+"de": "Im Frühling wird hier alles grün."
+},
+{
+"id": "s-nyar",
+"evszak": "nyar",
+"haz": 1,
+"hu": "Nyáron hosszúak az esték a teraszon.",
+"en": "Summer evenings on the terrace are long.",
+"de": "Im Sommer sind die Abende auf der Terrasse lang."
+},
+{
+"id": "s-osz",
+"evszak": "osz",
+"hu": "Ősszel színesek a hegyek a Duna fölött.",
+"en": "In autumn the hills above the Danube change colour.",
+"de": "Im Herbst färben sich die Berge über der Donau."
+}
+],
+"komment": [
+{
+"id": "m1",
+"hu": "Ha egyszer élőben is megnéznéd, nálunk megszállhatsz:",
+"en": "If you'd like to see it in person one day, you can stay with us:",
+"de": "Falls du es einmal selbst sehen möchtest, kannst du bei uns wohnen:"
+},
+{
+"id": "m2",
+"hu": "A házunk Zebegényben, négy apartmannal:",
+"en": "Our house in Zebegény, with four apartments:",
+"de": "Unser Haus in Zebegény, mit vier Apartments:"
+},
+{
+"id": "m-amrita",
+"apt": "amrita",
+"hu": "Az Amrita apartman:",
+"en": "The Amrita apartment:",
+"de": "Das Amrita-Apartment:"
+},
+{
+"id": "m-szonyi",
+"apt": "szonyi",
+"hu": "A Szőnyi apartman:",
+"en": "The Szőnyi apartment:",
+"de": "Das Szőnyi-Apartment:"
+},
+{
+"id": "m-jacuzzi",
+"t": "jacuzzi",
+"hu": "A ház és a jacuzzi:",
+"en": "The house and the jacuzzi:",
+"de": "Das Haus und der Whirlpool:"
+}
+],
+"url": {
+"": "https://akvarellzebegeny.hu/",
+"amrita": "https://akvarellzebegeny.hu/amrita-apartman-zebegeny/",
+"szonyi": "https://akvarellzebegeny.hu/szonyi-apartman-zebegeny/"
+},
+"mintak": [
+{
+"tema": "kilatas",
+"hu": "Innen, a teraszról nézve minden reggel más a Duna. Szemben a Pilis és a Visegrádi-hegység, köztük kanyarodik a folyó. Neked melyik napszak lenne a kedvenced?",
+"en": "From the terrace, the Danube looks different every morning. Across the water lie the Pilis and the Visegrád Hills, with the river bending between them. Which time of day would be your favourite?",
+"de": "Von der Terrasse aus sieht die Donau jeden Morgen anders aus. Gegenüber liegen der Pilis und das Visegráder Gebirge, dazwischen biegt der Fluss. Welche Tageszeit wäre deine liebste?",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "kilatas",
+"hu": "A legenda szerint a hajósok itt azt hitték, kezdődik a tenger: „See beginn”. Ha kiállsz a teraszra, és végignézel a Dunán, egy kicsit érteni fogod, miért. Szép napot innen, Zebegényből.",
+"en": "Legend has it that boatmen thought the sea began here: „See beginn”. Step out onto the terrace, look along the Danube, and you will understand a little why. Have a good day from Zebegény.",
+"de": "Der Legende nach glaubten Schiffer, hier beginne das Meer: „See beginn“. Tritt auf die Terrasse, schau die Donau entlang, und du verstehst ein wenig, warum. Einen schönen Tag aus Zebegény.",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "terasz",
+"hu": "A teraszon az idő lassabban megy. A Duna csendben teszi a dolgát, a hegyek pedig nem sietnek sehová. Kivel ülnél itt ki?",
+"en": "On the terrace, time moves more slowly. The Danube quietly goes about its business, and the hills are in no hurry. Who would you sit out here with?",
+"de": "Auf der Terrasse vergeht die Zeit langsamer. Die Donau geht still ihren Weg, und die Berge haben es nicht eilig. Mit wem würdest du hier sitzen?",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "terasz",
+"hu": "Ha valaki megkérdezi, mi a jó a Dunakanyarban, ezt a képet mutatnánk. A teraszról nézve a víz, a Pilis és a Visegrádi-hegység olyan, mint egy nagy festmény. Szép napot!",
+"en": "If anyone asks what is good about the Danube Bend, we would show them this picture. From the terrace, the water, the Pilis and the Visegrád Hills look like one big painting. Have a good day!",
+"de": "Wenn uns jemand fragt, was am Donauknie schön ist, würden wir ihm dieses Bild zeigen. Von der Terrasse aus sehen Wasser, Pilis und Visegráder Gebirge aus wie ein großes Gemälde. Einen schönen Tag!",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "apartman",
+"hu": "Minden apartmanunk egy festő nevét viseli, aki kötődött Zebegényhez. Nem véletlen: ez a falu évtizedeken át vonzotta a művészeket. Melyik festő szobájában aludnál?",
+"en": "Each of our apartments carries the name of a painter connected to Zebegény. It is no accident: for decades this village drew artists. In which painter's room would you sleep?",
+"de": "Jedes unserer Apartments trägt den Namen eines Malers, der mit Zebegény verbunden ist. Kein Zufall: Jahrzehntelang zog dieses Dorf Künstler an. In wessen Zimmer würdest du schlafen?",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "apartman",
+"hu": "Amrita Sher-Gil több nyarat töltött Zebegényben; a földszinti, nagy teraszos apartmanunk az ő nevét viseli. Jó pihenést mindenkinek, aki ma nálunk ébred.",
+"en": "Amrita Sher-Gil spent several summers in Zebegény; our ground-floor apartment with the large terrace carries her name. A restful day to everyone waking up with us today.",
+"de": "Amrita Sher-Gil verbrachte mehrere Sommer in Zebegény; unser Apartment im Erdgeschoss mit der großen Terrasse trägt ihren Namen. Einen erholsamen Tag allen, die heute bei uns aufwachen.",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "jacuzzi",
+"hu": "Meleg víz, friss levegő, előtted a Dunakanyar. A jacuzzi az egész házé, de amikor a te időpontod jön, csak a tiéd. Mikor ülnél bele: napfelkeltekor vagy csillagok alatt?",
+"en": "Warm water, fresh air and the Danube Bend in front of you. The jacuzzi belongs to the whole house, but when your time slot comes, it is yours alone. When would you get in: at sunrise or under the stars?",
+"de": "Warmes Wasser, frische Luft und vor dir das Donauknie. Der Whirlpool gehört dem ganzen Haus, aber wenn dein Zeitfenster kommt, gehört er nur dir. Wann würdest du hineingehen: bei Sonnenaufgang oder unter den Sternen?",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "jacuzzi",
+"hu": "Van, amikor nem kell program. Elég egy kis meleg víz és a kilátás a hegyekre. Szép estét innen, Zebegényből.",
+"en": "Sometimes you don't need a plan. A little warm water and a view of the hills are enough. Have a lovely evening from Zebegény.",
+"de": "Manchmal braucht es kein Programm. Ein wenig warmes Wasser und der Blick auf die Berge genügen. Einen schönen Abend aus Zebegény.",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "haz",
+"hu": "Négy apartman, négy festő neve, egy ház a Dunakanyarban. Zebegényben Szőnyi István 1924-től haláláig élt és festett. Ha egyszer erre jársz, nézd meg te is, mit látott itt.",
+"en": "Four apartments, four painters' names, one house on the Danube Bend. István Szőnyi lived and painted in Zebegény from 1924 until his death. If you ever come this way, see for yourself what he saw here.",
+"de": "Vier Apartments, vier Malernamen, ein Haus am Donauknie. István Szőnyi lebte und malte von 1924 bis zu seinem Tod in Zebegény. Wenn du einmal hier vorbeikommst, sieh selbst, was er hier gesehen hat.",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "haz",
+"hu": "Csalogány út, Zebegény: itt áll a házunk. A teraszról a Duna, a Pilis és a Visegrádi-hegység látszik. Szép napot mindenkinek!",
+"en": "Csalogány út, Zebegény: this is where our house stands. From its terrace you can see the Danube, the Pilis and the Visegrád Hills. Have a good day, everyone!",
+"de": "Csalogány út, Zebegény: hier steht unser Haus. Von der Terrasse siehst du die Donau, den Pilis und das Visegráder Gebirge. Einen schönen Tag euch allen!",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "duna",
+"hu": "A Duna Zebegénynél nem siet. Reggel ezüst, délután zöldes, este néha egészen arany. Te melyik színét szeretnéd látni?",
+"en": "The Danube at Zebegény is in no hurry. In the morning it is silver, in the afternoon greenish, in the evening sometimes almost golden. Which of its colours would you like to see?",
+"de": "Die Donau bei Zebegény hat es nicht eilig. Morgens ist sie silbern, nachmittags grünlich, abends manchmal fast golden. Welche ihrer Farben möchtest du sehen?",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "duna",
+"hu": "Azt mesélik, a hajósok itt hitték, hogy kezdődik a tenger: innen kapta a nevét Zebegény. Nézd meg a képet, és mondd meg: te is annak láttad volna?",
+"en": "They say boatmen believed the sea began here, and that is how Zebegény got its name. Look at the picture and tell us: would you have thought so too?",
+"de": "Man erzählt, Schiffer hätten geglaubt, hier beginne das Meer, und so sei Zebegény zu seinem Namen gekommen. Schau dir das Bild an und sag uns: Hättest du es auch geglaubt?",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "falu",
+"hu": "Zebegény nevét már egy 1295-ös oklevél említi, egy bencés monostor kapcsán. Az utcák azóta sokat változtak, a csend kevésbé. Sétálj egyet velünk a faluban.",
+"en": "Zebegény's name already appears in a document from 1295, in connection with a Benedictine monastery. The streets have changed a lot since then, the quiet less so. Take a walk through the village with us.",
+"de": "Zebegény wird bereits in einer Urkunde von 1295 erwähnt, im Zusammenhang mit einem Benediktinerkloster. Die Straßen haben sich seitdem stark verändert, die Ruhe weniger. Mach mit uns einen Spaziergang durchs Dorf.",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "falu",
+"hu": "Az 1800-as években német, magyar és szlovák családok éltek itt egymás mellett. Ha végigsétálsz az utcákon, a régi házak sokat mesélnek. Neked mi tűnik fel elsőre egy faluban?",
+"en": "In the 1800s, German, Hungarian and Slovak families lived side by side here. Walk along the streets and the old houses have a lot to tell. What do you notice first in a village?",
+"de": "In den 1800er-Jahren lebten hier deutsche, ungarische und slowakische Familien nebeneinander. Wenn du durch die Straßen gehst, erzählen die alten Häuser viel. Was fällt dir in einem Dorf als Erstes auf?",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "templom",
+"hu": "Kós Károly és Jánszky Béla 1908–1909-ben tervezte ezt a templomot, amikor mindketten fiatal építészek voltak. Belsejét Körösfői-Kriesch Aladár festette ki a tanítványaival. Ha a főtéren jársz, nézd meg közelebbről is.",
+"en": "Károly Kós and Béla Jánszky designed this church in 1908–1909, when both were young architects. Its interior was painted by Aladár Körösfői-Kriesch and his students. If you pass the main square, take a closer look.",
+"de": "Károly Kós und Béla Jánszky entwarfen diese Kirche 1908–1909, als beide junge Architekten waren. Ihr Inneres bemalte Aladár Körösfői-Kriesch mit seinen Schülern. Wenn du am Hauptplatz vorbeikommst, schau sie dir aus der Nähe an.",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "templom",
+"hu": "Fehér falak, meredek tető, kőkapu: a Havas Boldogasszony-templom a falu szíve. Szecessziós, mégis olyan, mintha mindig is itt állt volna. Szép napot innen, a főtérről.",
+"en": "White walls, a steep roof, a stone gateway: the Church of Our Lady of the Snows is the heart of the village. Art Nouveau, yet it looks as if it had always stood here. Have a good day from the main square.",
+"de": "Weiße Mauern, ein steiles Dach, ein Steintor: Die Kirche Maria Schnee ist das Herz des Dorfes. Jugendstil, und doch wirkt sie, als hätte sie schon immer hier gestanden. Einen schönen Tag vom Hauptplatz.",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "szonyi",
+"hu": "Ebben a kertben festett Szőnyi István, aki 1924-től haláláig Zebegényben élt. Egykori háza és műterme 1967 óta emlékmúzeum, a Kerti pad is itt látható. Nálad melyik hétköznapi pillanatból lenne festmény?",
+"en": "István Szőnyi, who lived in Zebegény from 1924 until his death, painted in this garden. His former home and studio have been a memorial museum since 1967, and Garden Bench can be seen here too. Which everyday moment of yours would make a painting?",
+"de": "In diesem Garten malte István Szőnyi, der von 1924 bis zu seinem Tod in Zebegény lebte. Sein ehemaliges Wohnhaus und Atelier ist seit 1967 ein Gedenkmuseum, auch die Gartenbank ist hier zu sehen. Welcher Alltagsmoment von dir würde ein Bild ergeben?",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "szonyi",
+"hu": "Tudtad? Szőnyi István és családja a holokauszt idején zsidókat mentett, ezért 1984-ben a Világ Igaza címet kapták. Zebegényi házában ma múzeum őrzi az emlékét.",
+"en": "Did you know? During the Holocaust, István Szőnyi and his family rescued Jews, and in 1984 they were recognised as Righteous Among the Nations. Today his house in Zebegény is a museum that keeps his memory.",
+"de": "Wusstest du? István Szőnyi und seine Familie retteten während des Holocaust Juden und wurden 1984 als Gerechte unter den Völkern geehrt. Heute bewahrt ein Museum in seinem Haus in Zebegény sein Andenken.",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "hajozas",
+"hu": "Egy hajóskapitány, aki a saját házában mutatja meg a hajózás történetét: Farkas Vince gyűjteménye 1984 nyarán nyílt meg Zebegényben. Modellek, tárgyak és rengeteg történet a Dunáról. Te melyik hajóra szállnál fel?",
+"en": "A ship's captain who shows the history of shipping in his own house: Vince Farkas's collection opened in Zebegény in the summer of 1984. Models, objects and plenty of stories from the Danube. Which ship would you board?",
+"de": "Ein Kapitän, der die Geschichte der Schifffahrt in seinem eigenen Haus zeigt: Die Sammlung von Vince Farkas wurde im Sommer 1984 in Zebegény eröffnet. Modelle, Gegenstände und viele Geschichten von der Donau. Auf welches Schiff würdest du steigen?",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "hajozas",
+"hu": "Zebegényben a Duna nemcsak a kilátás része, hanem a falu története is. A Hajózástörténeti Múzeum az őskortól napjainkig meséli el, hogyan jártak az emberek a vízen. Esős napra is jó program.",
+"en": "In Zebegény the Danube is not just part of the view, it is part of the village's story. The Sailing History Museum tells how people have travelled on water, from prehistoric times to today. A good plan for a rainy day, too.",
+"de": "In Zebegény ist die Donau nicht nur Teil der Aussicht, sondern auch der Dorfgeschichte. Das Schifffahrtsmuseum erzählt, wie Menschen von der Urzeit bis heute auf dem Wasser unterwegs waren. Auch für einen Regentag eine gute Idee.",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "kalvaria",
+"hu": "Kilenc stáció vezet fel a domboldalon a klasszicista kápolnáig, amely 1853-ban épült. Fent megáll az ember, és visszanéz a falura meg a Dunára. Érdemes lassan menni.",
+"en": "Nine Stations of the Cross lead up the hillside to the Classicist chapel, built in 1853. At the top you stop and look back at the village and the Danube. It is worth taking it slowly.",
+"de": "Neun Kreuzwegstationen führen den Hang hinauf zur klassizistischen Kapelle von 1853. Oben bleibt man stehen und blickt zurück auf das Dorf und die Donau. Es lohnt sich, langsam zu gehen.",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "kalvaria",
+"hu": "A Kálvária-dombról az egész Dunakanyar kinyílik. Ha még feljebb mennél, ott a Kós Károly-kilátó is. Melyik irányba indulnál?",
+"en": "From Calvary Hill the whole Danube Bend opens up. If you want to go higher, the Károly Kós Lookout Tower is there too. Which way would you head?",
+"de": "Vom Kalvarienberg öffnet sich das ganze Donauknie. Wer noch höher hinaus will, findet dort auch den Károly-Kós-Aussichtsturm. In welche Richtung würdest du gehen?",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "kilato",
+"hu": "A kilátó alsó része székely kaput formáz, Kós Károly erdélyi gyökerei előtt tisztelegve. Fent: alattad Zebegény, szemben Dömös, a Pilis és Pilismarót. Kicsit szédítő, és nagyon szép.",
+"en": "The lower part of the tower is shaped like a Székely gate, a tribute to Károly Kós's Transylvanian roots. At the top: Zebegény below you, Dömös, the Pilis and Pilismarót across the river. A little dizzying, and very beautiful.",
+"de": "Der untere Teil des Turms hat die Form eines Szekler Tores, eine Hommage an die siebenbürgischen Wurzeln von Károly Kós. Oben: Zebegény unter dir, gegenüber Dömös, der Pilis und Pilismarót. Ein bisschen schwindelerregend und sehr schön.",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "kilato",
+"hu": "2015 nyarán avatták fel ezt a vörösfenyő kilátót a Kálvária-dombon. Néhány lépcsősor, és madártávlatból látod a falut. Fent hagyj magadnak egy percet.",
+"en": "This larch-wood lookout tower on Calvary Hill opened in the summer of 2015. A few flights of stairs and you see the village from above. Give yourself a minute up there.",
+"de": "Dieser Aussichtsturm aus Lärchenholz auf dem Kalvarienberg wurde im Sommer 2015 eingeweiht. Ein paar Treppen, und du siehst das Dorf von oben. Gönn dir dort oben eine Minute.",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "orszagzaszlo",
+"hu": "Az Országzászló-emlékművet Maróti Géza tervezte, és közadakozásból épült 1935 és 1938 között. A politikai helyzet miatt sosem fejezték be teljesen. Csendes hely, ahol érdemes megállni egy percre.",
+"en": "The National Flag Memorial was designed by Géza Maróti and built by public subscription between 1935 and 1938. Because of the political situation, it was never fully completed. A quiet place where it is worth stopping for a minute.",
+"de": "Das Nationalflaggen-Denkmal entwarf Géza Maróti, errichtet wurde es zwischen 1935 und 1938 aus Spenden. Wegen der politischen Lage wurde es nie ganz fertiggestellt. Ein stiller Ort, an dem es sich lohnt, kurz stehen zu bleiben.",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "orszagzaszlo",
+"hu": "A Kálvária-hegyen, a falu fölötti csendben áll Maróti Géza emlékműve. Innen is messzire ellátsz a Dunakanyarban. Szép napot innen fentről.",
+"en": "Géza Maróti's memorial stands in the quiet above the village, on Calvary Hill. From here, too, you can see far across the Danube Bend. Have a good day from up here.",
+"de": "Auf dem Kalvarienberg, in der Stille über dem Dorf, steht das Denkmal von Géza Maróti. Auch von hier blickst du weit über das Donauknie. Einen schönen Tag von hier oben.",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "strand",
+"hu": "Zebegényben a Duna-parton már 1939-ben is fürdőztek, ezt régi képeslapok őrzik. A szabadstrand 2015 óta engedélyezett fürdőhely. Te mikor csobbantál utoljára folyóban?",
+"en": "People were already bathing on the Danube shore in Zebegény in 1939, as old postcards show. The public beach has been an official bathing site since 2015. When did you last swim in a river?",
+"de": "Schon 1939 badeten Menschen am Donauufer in Zebegény, das zeigen alte Postkarten. Der öffentliche Strand ist seit 2015 eine offizielle Badestelle. Wann bist du zuletzt in einem Fluss geschwommen?",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "strand",
+"hu": "Víz, part, és a túloldalon a hegyek. A zebegényi Duna-parton az idő is lassabban folyik. Szép napot a partról.",
+"en": "Water, shore and the hills on the other side. On the Danube shore in Zebegény even time flows more slowly. Have a good day from the riverside.",
+"de": "Wasser, Ufer und die Berge auf der anderen Seite. Am Donauufer in Zebegény fließt sogar die Zeit langsamer. Einen schönen Tag vom Ufer.",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "dory",
+"hu": "A Dőry-kastély 1917 óta áll a Duna-parton, és már egy 1930-as képeslapon is ott látszik. Több mint száz éve nézi a folyót. Vajon mi mindent látott?",
+"en": "Dőry Mansion has stood on the Danube shore since 1917 and already appears on a postcard from 1930. It has been watching the river for over a hundred years. What might it have seen?",
+"de": "Das Dőry-Schloss steht seit 1917 am Donauufer und ist schon auf einer Postkarte von 1930 zu sehen. Seit über hundert Jahren blickt es auf den Fluss. Was es wohl alles gesehen hat?",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "dory",
+"hu": "Eklektikus stílus, Duna-part, 1917. A Dőry-kastély a falu egyik ismerős képe a víz felől. Szép napot a partról.",
+"en": "Eclectic style, Danube shore, 1917. Dőry Mansion is one of the village's familiar sights from the water. Have a good day from the riverside.",
+"de": "Eklektischer Stil, Donauufer, 1917. Das Dőry-Schloss ist eines der vertrauten Bilder des Dorfes vom Wasser aus. Einen schönen Tag vom Ufer.",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "sarkanydomb",
+"hu": "Itt rendezték régen a zebegényi sárkányeregető fesztivált, papírsárkányokkal a Dunakanyar fölött. A faluból nagyjából 15 perc séta felfelé. Te eregettél már sárkányt?",
+"en": "Zebegény's kite festival used to be held here, with paper kites above the Danube Bend. It is about a 15-minute walk uphill from the village. Have you ever flown a kite?",
+"de": "Hier fand früher das Drachenfest von Zebegény statt, mit Papierdrachen über dem Donauknie. Vom Dorf aus sind es etwa 15 Minuten zu Fuß bergauf. Hast du schon einmal einen Drachen steigen lassen?",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "sarkanydomb",
+"hu": "A Sárkánydombról is a Dunakanyarra látsz. Fent a szél mindig talál magának egy kis játékot. Szép napot innen fentről.",
+"en": "From Kite Hill, too, you look out over the Danube Bend. Up here, the wind always finds something to play with. Have a good day from up here.",
+"de": "Auch vom Drachenhügel blickst du auf das Donauknie. Hier oben findet der Wind immer etwas zum Spielen. Einen schönen Tag von hier oben.",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "sziget",
+"hu": "Szemben a sziget, mögötte a hegyek. Van valami nyugtató abban, amikor a folyó egy kicsit két ágra válik. Neked mi jut eszedbe erről a képről?",
+"en": "The island across the water, the hills behind it. There is something calming about a river splitting in two for a while. What does this picture remind you of?",
+"de": "Gegenüber die Insel, dahinter die Berge. Es hat etwas Beruhigendes, wenn sich ein Fluss für eine Weile teilt. Woran erinnert dich dieses Bild?",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "vasut",
+"hu": "A vasúti völgyhíd már egy 1910-es képeslapon is szerepel. A vasút kötötte össze Zebegényt Budapesttel, és hozta ide a nyaralókat. Ma is kényelmes vonattal érkezni.",
+"en": "The railway viaduct already appears on a postcard from 1910. The railway linked Zebegény with Budapest and brought the summer guests here. Arriving by train is still easy today.",
+"de": "Der Eisenbahnviadukt ist schon auf einer Postkarte von 1910 zu sehen. Die Bahn verband Zebegény mit Budapest und brachte die Sommergäste hierher. Auch heute kommt man bequem mit dem Zug an.",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "vasut",
+"hu": "A vonat a Dunával párhuzamosan fut, a híd ívei alatt pedig megy tovább a falu élete. Megszámoltad már, hány íve van?",
+"en": "The train runs alongside the Danube, and under the bridge's arches village life goes on. Have you ever counted how many arches it has?",
+"de": "Der Zug fährt an der Donau entlang, und unter den Bögen der Brücke geht das Dorfleben weiter. Hast du schon einmal gezählt, wie viele Bögen sie hat?",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "maroti",
+"hu": "Maróti Géza iparművész a század elejétől Zebegényben töltötte a szabadidejét, aztán 1912-ben villát kezdett építeni itt. A Duna felőli kőfalon ma is felirat őrzi: ő és a felesége építette, 1913-ban. Szép, ha egy ház a saját történetét is elmeséli.",
+"en": "From the early 1900s the designer Géza Maróti spent his leisure time in Zebegény, and in 1912 he began building a villa here. An inscription on the stone wall facing the Danube still says that he and his wife built it in 1913. It is lovely when a house tells its own story.",
+"de": "Der Kunstgewerbler Géza Maróti verbrachte ab den frühen 1900er-Jahren seine Freizeit in Zebegény und begann 1912 hier eine Villa zu bauen. Eine Inschrift an der Steinmauer zur Donau hin erzählt noch heute, dass er und seine Frau sie 1913 erbaut haben. Schön, wenn ein Haus seine eigene Geschichte erzählt.",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "tura",
+"hu": "Zebegény központjából az erdőn át a Hegyes-tetőig is elsétálhatsz, onnan nagy panoráma nyílik. Útközben csak a fák és a saját lépteid. Ki jönne velünk legközelebb?",
+"en": "From the centre of Zebegény you can walk through the forest up to Hegyes-tető, where a wide panorama opens. On the way, just the trees and your own footsteps. Who would come with us next time?",
+"de": "Vom Zentrum Zebegénys kannst du durch den Wald bis zum Hegyes-tető wandern, wo sich ein weites Panorama öffnet. Unterwegs nur die Bäume und deine eigenen Schritte. Wer kommt beim nächsten Mal mit?",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"tema": "tura",
+"hu": "Kós Károly-kilátó, aztán az erdő Törökmező felé, és vissza: nagyjából 15,5 kilométer. Egy egész napos kör a Börzsönyben, a végén jólesik a pihenés. Te mennyit sétálnál egy nap alatt?",
+"en": "The Károly Kós Lookout Tower, then the forest towards Törökmező and back: about 15.5 kilometres. A full day's loop in the Börzsöny hills, and a well-earned rest at the end. How far would you walk in a day?",
+"de": "Der Károly-Kós-Aussichtsturm, dann der Wald Richtung Törökmező und zurück: etwa 15,5 Kilometer. Eine Tagesrunde im Börzsöny, und am Ende tut die Pause gut. Wie weit würdest du an einem Tag wandern?",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+}
+]
+}
 </script>
 
 <script src="app.js"></script>

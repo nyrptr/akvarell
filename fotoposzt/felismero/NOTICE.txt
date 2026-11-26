@@ -1,0 +1,4 @@
+Képfelismerő (AI nélküli, a böngészőben fut, ingyenes):
+- MediaPipe Tasks Vision 1.2.3 (vision_bundle.mjs, vision_wasm_internal.*) – Google, Apache License 2.0
+- EfficientNet-Lite0 int8 képosztályozó modell (effnet_int8.tflite) – Google MediaPipe Models, Apache License 2.0
+Forrás: npm @mediapipe/tasks-vision; storage.googleapis.com/mediapipe-models/image_classifier/efficientnet_lite0/int8/1/
