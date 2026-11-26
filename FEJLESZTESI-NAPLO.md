@@ -315,3 +315,10 @@
 - Mi: eddig a minimum éjszakaszámot csak a böngésző ellenőrizte; aki közvetlenül hívta a végpontot, megkerülhette. Most a szerver dönt, a szabály egy helyen van (motor mag), a böngésző csak jelez.
 - Tesztelt: `ar_teszt` 1489 eset 0 HIBA; `foglalas` út 39 lépés 0 HIBA; szabályőr 0 HIBA; `mind.sh` MIND RENDBEN.
 - NEM tesztelt éles telepítésen (`eles_fust.sh`). Figyelem: a ház hosszú hétvége listája (`haz.json` `ar.hosszu_hetvegek`) csak 2026-os dátumokat tartalmaz; 2027-re a tulajdonos Árak oldala szerint kell feltölteni, különben 2027-ben nincs minimum.
+
+## 2026-11-26 – MOTOR-utak 0002+0003 beolvasztása (MAIN/KAPOCS, Péter: „Mehet”)
+- Fájlok: `tools/proba/utak/blog.mjs`, `kezelo.mjs`, `_kozos.mjs`, `.github/workflows/pr-kapu.yml`.
+- Mi: heti bejegyzés út (19 lépés, a próbák `nap()` segédje a ház napját használja) és kezelő út böngészővel, 390×844, érintéssel (26 lépés); a PR-kapu `utak` feladata telepíti a Playwrightot és a Chromiumot.
+- Írta: MOTOR-chat (csomag a `nyrptr/veledaholnapert` en-ugynok-mag `kapcsolat/csatolmany/motor-utak/`), alkalmazta és beolvasztotta: MAIN.
+- Helyben: gyar_szabalyok 0 HIBA, utak/fut.mjs 10 út 0 hibás. A PR-kapu az új telepítő lépéssel: lásd a PR ellenőrzéseit.
+
