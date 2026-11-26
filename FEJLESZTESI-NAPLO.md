@@ -322,3 +322,9 @@
 - Írta: MOTOR-chat (csomag a `nyrptr/veledaholnapert` en-ugynok-mag `kapcsolat/csatolmany/motor-utak/`), alkalmazta és beolvasztotta: MAIN.
 - Helyben: gyar_szabalyok 0 HIBA, utak/fut.mjs 10 út 0 hibás. A PR-kapu az új telepítő lépéssel: lásd a PR ellenőrzéseit.
 
+
+## 2026-11-26 · AKVARELL MARKETING chat · ötletbemutató videó a `/erno` oldalon (munka-erno-video-v5)
+- Fájlok: `erno/video.mp4` (cserélve, 7:59, telefonos méret), `erno/borito.jpg`, `erno/index.html` (záró üzenet, az „új oldal" gombok kivéve), `erno/lap.js` (megjegyzés).
+- Mi: az ötletbemutató új videója az `/erno` helyen, csak a munkaág előnézeti címén (`munka-erno-video-v5.akvarell.pages.dev/erno/`), a `main`-be nem megy. Péter kérése: ideiglenes, utána leszedjük.
+- Miért: Ernő Claude-fiók nélkül is meg tudja nyitni linkről.
+- Mi nem tesztelt: a PR-kapu nem futott (nincs PR); csak az előnézeti oldal megnyitása.
