@@ -329,7 +329,7 @@ ${minta}
 2. „történet”: egy érdekes tény vagy kis történet a helyről;
 3. „személyes”: a házigazda szemszöge, egy kérdéssel vagy jókívánsággal a végén.
 A „reel” 3–4 rövid feliratsor egy rövid videóhoz (soronként legfeljebb 7 szó), mindhárom nyelven ugyanannyi sor, ugyanazzal a tartalommal.
-Válaszolj CSAK ezzel a JSON-nal:
+Válaszolj CSAK ezzel a JSON-nal, egyetlen json kódblokkban, egyenes idézőjelekkel ("), magyarázat nélkül:
 {"valtozatok":[{"szog":"pillanat","hu":{"post":"…","komment":"…","reel":["…","…","…"]},"en":{"post":"…","komment":"…","reel":["…","…","…"]},"de":{"post":"…","komment":"…","reel":["…","…","…"]},"uj_tenyek":["…"]},{"szog":"történet",…},{"szog":"személyes",…}]}`}
 function mintak(){const sajat=TAN.filter(t=>t.src!=='sajat'&&t.hu).map(t=>({tema:t.tema,hu:t.hu.post}));const all=(K.mintak||[]).concat(sajat);
  const elol=all.filter(m=>m.tema===S.tema).concat(all.filter(m=>m.tema!==S.tema));return elol.slice(0,5).map(m=>'- '+m.hu).join('\n')||'- (még nincs)'}
@@ -353,9 +353,18 @@ $('cl').addEventListener('click',async()=>{if(!sample||!S.small)return;$('cl').d
   const j=await sample.json(keres(),{images:[S.small],modelTier:'complex',cache:false});const e=beolvas(j,'claude');$('st').textContent=e||'';if(!e)friss(S.cands.filter(c=>c.src==='claude').length+' AI-javaslat, ellenőrizve'+(S.aiKiszurt?` (${S.aiKiszurt} kiszűrve)`:''))}
  catch(e){$('st').textContent=e?.code==='rate_limited'?'Most sok a kérés, próbáld pár perc múlva; addig a „Változatok” AI nélkül is megy.':e?.code==='not_granted'?'Az AI-hoz engedély kell; addig a „Változatok” AI nélkül megy.':'Az AI most nem írt ('+(e?.message||'hiba')+'). A „Változatok” AI nélkül is megy.'}
  finally{$('cl').disabled=false;$('cl').classList.remove('dolgozik');$('cl').textContent='AI-javaslat (fotó alapján)';$('st').classList.remove('busy')}});
+
+/* AI-válasz javítása beolvasás előtt: kódblokk, \[ \], „okos” idézőjelek, hiányzó [], vessző a zárójel előtt */
+function javitJSON(t){let x=String(t||'').replace(/```(?:json)?/gi,'');const m=x.match(/\{[\s\S]*\}/);if(!m)return null;x=m[0];
+ try{return JSON.parse(x)}catch(e){}
+ x=x.replace(/\\([\[\]])/g,'$1').replace(/([{\[,:]\s*)[“”„]/g,'$1"').replace(/[“”„](\s*[:,}\]])/g,'"$1').replace(/ /g,' ');
+ x=x.replace(/("uj_tenyek"\s*:\s*)(?=[,}\]])/g,'$1[]');
+ x=x.replace(/("reel"\s*:\s*)("(?:[^"\\]|\\.)*"(?:\s*,\s*"(?:[^"\\]|\\.)*")+)(?=\s*[}\]]|\s*,\s*"[a-z_]+"\s*:)/g,'$1[$2]');
+ x=x.replace(/,(\s*[}\]])/g,'$1');
+ try{return JSON.parse(x)}catch(e){return null}}
 $('cpP').addEventListener('click',async()=>{$('st3').textContent=await copy(keres(),'Kérés a vágólapon. Illeszd be az AI-ba a fotóval együtt.',null)});
 $('aiBe').addEventListener('click',()=>{if(!img){$('st3').textContent='Előbb töltsd be a fotót fent.';return}
- let j=null;try{j=JSON.parse($('aiv').value.match(/\{[\s\S]*\}/)[0])}catch(e){}
+ let j=javitJSON($('aiv').value);
  const e=beolvas(j,'ai');$('st3').textContent=e||'Beolvasva, átment az ellenőrzésen. Fent az első változat.';if(!e)friss('AI-javaslatok (másik AI)')});
 
 /* készlet panel, mentés, visszatöltés */
@@ -578,5 +587,5 @@ async function felismer(){if(!img||OSZT_HIBA||!$('felisCb').checked)return;const
 keszlet();
 try{naptarFriss()}catch(e){}
 $('alkCb').addEventListener('change',()=>{if(S.cands.length&&!S.cands.some(c=>c.src==='claude'||c.src==='ai'))S.cands=[];if(S.sel!=null){S.csendes=true;valaszt(S.sel);S.csendes=false}});
-window.__test={ALK,TELIHOLD,alkMondat,naptarFriss,alkalom,napido,holdKor,unnepek,husvet,reelKocka,altFriss,helyPanel,temaPontok,TERKEP,tavMondat,UT:()=>UT,K,hibak,javit,jeloltek,S,onell,KIZART,KHIBA,exif,beolvas,keres};
+window.__test={javitJSON,ALK,TELIHOLD,alkMondat,naptarFriss,alkalom,napido,holdKor,unnepek,husvet,reelKocka,altFriss,helyPanel,temaPontok,TERKEP,tavMondat,UT:()=>UT,K,hibak,javit,jeloltek,S,onell,KIZART,KHIBA,exif,beolvas,keres};
 }

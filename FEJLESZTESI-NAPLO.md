@@ -362,3 +362,7 @@
 - „Kitevés” helyett „Közzététel” (a Facebook magyar felületén is ez a szó).
 - AI-javaslat a nyilvános oldalon is: „AI-javaslat (másolással)” gomb a 2. lépésben, a kézi híd ide került.
 - Teszt: 11232 poszt 0 hiba, önellenőrzés üres.
+
+## Fotóposzt v11.1 (2026-11-27)
+- Péter valós próbája: a ChatGPT-ből kimásolt válasz nem volt érvényes JSON („okos” idézőjelek, \[ \], zárójel nélküli reel-lista, üres uj_tenyek). A beolvasás most ezeket megjavítja; Péter válasza mindhárom változattal és reel-sorokkal beolvasódik.
+- A kérés kéri: egyetlen json kódblokk, egyenes idézőjelek.
