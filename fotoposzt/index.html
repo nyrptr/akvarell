@@ -126,16 +126,31 @@ body{padding-bottom:84px}.rejt{position:absolute;left:-9999px}
 .sor2{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:15px}.sor2 span:first-child{color:var(--mute)}
 .fazis{font:700 13px Figtree,sans-serif;color:var(--deep);margin:14px 0 4px;text-transform:none}
 .ell{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.ell span{font:600 13px Figtree,sans-serif;padding:4px 10px;border-radius:12px;border:1px solid var(--line)}.ell .jo{color:var(--ok);border-color:var(--ok)}.ell .rossz{color:var(--bad);border-color:var(--bad)}
-#klipV{width:100%;max-width:360px;border-radius:12px;display:block;margin:8px auto}.lepsor button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;line-height:1.1;padding:4px 2px;white-space:nowrap}.lepsor button small{font:600 11px Figtree,sans-serif;opacity:.85}.lepsor button span{font:700 15px Figtree,sans-serif}html{scroll-padding-bottom:96px}body.poszt-mod .fulsav{display:none}body.poszt-mod{padding-bottom:24px}</style>
+#klipV{width:100%;max-width:360px;border-radius:12px;display:block;margin:8px auto}.lepsor button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;line-height:1.1;padding:4px 2px;white-space:nowrap}.lepsor button small{font:600 11px Figtree,sans-serif;opacity:.85}.lepsor button span{font:700 15px Figtree,sans-serif}html{scroll-padding-bottom:96px}body.poszt-mod .fulsav{display:none}body.poszt-mod{padding-bottom:24px}
+/* Tiszta felület (Péter végigjárása 11-27): technikai rész a Műhelyben, frissítés-sáv csak Ma/Műhely, kampányfejléc, saját lejátszó */
+.muhelyB{margin-left:auto;display:flex;flex-direction:column;align-items:center;gap:0;min-width:56px;min-height:48px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:600 12px Figtree,sans-serif;cursor:pointer}
+.muhelyB[aria-pressed=true]{background:var(--deep);color:#fff;border-color:var(--deep)}
+#kesz{display:none}body.muhely #kesz{display:block}
+body[data-mod]:not([data-mod=ma]):not(.muhely) #frissSav{display:none}
+body:not(.muhely) .cand .tag:not(.ai){display:none}
+.posztKamp{border:1px solid var(--line);border-left:0;border-radius:12px;background:var(--card);padding:10px 12px;margin:0 0 10px;font:500 14px/1.4 Figtree,sans-serif}
+.posztKamp b{display:block;font-size:15px}.posztKamp small{display:block;color:var(--mute)}
+#reszl summary{display:block;cursor:pointer;padding:10px 0;min-height:44px;font:600 14px/1.4 Figtree,sans-serif}body:not(.muhely) #felisOk{display:none!important}#reszlS{color:var(--mute);font-weight:500}
+.likes button:not(.pick){background:none;border:0;text-decoration:underline;color:var(--mute);min-height:44px;padding:0 10px}
+.lejatszo{position:relative;display:block;max-width:360px;margin:8px auto 0}
+.lejatszo video{width:100%;display:block;border-radius:12px;cursor:pointer}
+.lejatszoB{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:48px;margin-top:6px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:700 15px Figtree,sans-serif;cursor:pointer}
+</style>
 </head>
 <body>
 <div class="wrap">
-<header><div class="logo" aria-hidden="true" id="fejLogo">A</div><div><h1 id="fejCim">Fotóból poszt</h1><p class="sub" id="fejAl">Akvarell Apartmanház, Zebegény</p></div></header>
+<header><div class="logo" aria-hidden="true" id="fejLogo">A</div><div><h1 id="fejCim">Fotóból poszt</h1><p class="sub" id="fejAl">Akvarell Apartmanház, Zebegény</p></div><button type="button" class="muhelyB" id="muhelyB" aria-pressed="false" aria-label="Műhely: frissítés, tanítás, mentés"><svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg><span>Műhely</span></button></header>
 <div class="note" id="ujValt" role="status" hidden>Új változat érkezett. <button class="btn sec" id="ujValtB">Frissítés most</button></div>
 <div id="frissSav" hidden role="status"></div>
 <nav class="fulsav" id="modok" aria-label="Fő menü"><button type="button" data-mod="ma" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></svg><span>Ma</span></button><button type="button" data-mod="terv" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg><span>Kampányok</span></button><button type="button" data-mod="kep" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/></svg><span>Képtár</span></button><button type="button" data-mod="ered" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20V10M12 20V4M19 20v-7"/></svg><span>Eredmény</span></button></nav>
 <button type="button" class="vissza" id="posztVissza" hidden>‹ Vissza</button>
 <nav class="lepsor" id="lepsor" aria-label="Lépések"><button data-n="1" aria-current="step"><small>1. lépés</small><span>Fotó</span></button><button data-n="2"><small>2. lépés</small><span>Szöveg</span></button><button data-n="3"><small>3. lépés</small><span>Kép</span></button><button data-n="4"><small>4. lépés</small><span>Kiküldés</span></button></nav>
+<div class="posztKamp" id="posztKamp" hidden></div>
 <div id="miniFoto" hidden><span></span></div>
 
 <section id="ma" aria-labelledby="maC">
@@ -186,14 +201,16 @@ body{padding-bottom:84px}.rejt{position:absolute;left:-9999px}
 <div class="kartya" id="alapw" hidden>
 <div class="kl">Mi van a képen? <span class="kl3">Többet is választhatsz</span></div><div class="row" id="temaSor"></div><button class="chip tval" id="temaB" hidden>Kilátás</button>
 <div class="note" id="temaMag"></div>
+<details id="reszl"><summary>Nyelv és idő: <span id="reszlS">magyar · a fotóból</span></summary>
 <div class="kl">A poszt nyelve</div>
 <div class="row" id="langs"><button class="chip" data-l="hu" aria-pressed="true">Magyar</button><button class="chip" data-l="en" aria-pressed="false">English</button><button class="chip" data-l="de" aria-pressed="false">Deutsch</button></div>
 <div class="kl">Napszak</div>
 <div class="row" id="nsw"><button class="chip" data-v="" aria-pressed="true">A fotóból</button><button class="chip" data-v="reggel">Reggel</button><button class="chip" data-v="nappal">Nappal</button><button class="chip" data-v="este">Este</button><button class="chip" data-v="ejjel">Éjjel</button></div>
 <div class="kl">Évszak</div>
 <div class="row" id="evw"><button class="chip" data-v="" aria-pressed="true">A fotóból</button><button class="chip" data-v="tavasz">Tavasz</button><button class="chip" data-v="nyar">Nyár</button><button class="chip" data-v="osz">Ősz</button><button class="chip" data-v="tel">Tél</button></div>
+</details>
 </div>
-<details id="temaD"><summary>Miről szól a kép? Válassz témát</summary>
+<details id="temaD"><summary>Más téma keresése vagy új téma</summary>
 <input id="temaKer" type="search" placeholder="Keresés: pl. híd, templom, strand" aria-label="Téma keresése" style="margin-top:8px">
 <div id="temak"></div>
 <div class="hely" id="ujtemaw" hidden><label class="f" for="ujNev" style="margin-top:0">Új téma neve magyarul</label><input id="ujNev" type="text" placeholder="pl. Malom-patak">
@@ -229,10 +246,9 @@ body{padding-bottom:84px}.rejt{position:absolute;left:-9999px}
 
 <section id="valaszt" hidden>
 <h2>Válassz egyet</h2>
-<p class="note">Magyarul látod, alatta az, ami kimegy. A három nyelv mondatról mondatra ugyanaz.</p>
+<p class="note">Koppints arra, amelyik tetszik.</p>
 <div class="fresh" id="fresh" role="status"></div><div class="cands" id="cands"></div>
 <button class="btn sec full" id="more">Három másik</button>
-<p class="note">Az „Ezt választom” csak kipróbálás, nem tanít. Tanulni a Tetszik, a Nem ez és a közzététel alapján tanul.</p>
 </section>
 <div id="aiw"><h2>Nem tetszik egyik sem?</h2><p class="note">Kérj AI-javaslatot: a program ugyanígy ellenőrzi.</p>
 <div class="two" id="gombok"><button class="btn" id="go" disabled hidden>Változatok (AI nélkül)</button><button class="btn sec" id="cl" disabled hidden>AI-javaslat (fotó alapján)</button><button class="btn sec" id="hidB" hidden>Kérés másolása a Claude appba</button></div><p class="note" id="aiLinkP" hidden><a id="aiLink" href="#" target="_blank" rel="noopener">Közvetlen AI-javaslat: nyisd meg a claude.ai-os változatot</a></p>
@@ -274,25 +290,26 @@ body{padding-bottom:84px}.rejt{position:absolute;left:-9999px}
 <button class="btn full" id="reelB" style="margin-top:8px">Reel készítése</button>
 <div class="status" id="reelSt" role="status"></div>
 <p class="note" id="zeneT">Zene: Musopen-felvételek, közkincs (Public domain / CC0), Wikimedia Commons; díj nélkül használható. A Facebook zenefelismerője ritkán így is jelezhet: akkor a Facebook saját zenetárából válassz.</p>
-<video id="reelV" controls playsinline hidden style="width:100%;max-width:360px;border-radius:12px;margin-top:8px;display:block"></video>
+<video id="reelV" playsinline hidden style="width:100%;max-width:360px;border-radius:12px;margin-top:8px;display:block"></video>
 <div class="acts" id="reelA" hidden><button class="btn" id="reelSh">Videó megosztása</button><button class="btn sec" id="reelDl">Videó mentése</button></div></div>
 <button class="btn full" id="t4">Tovább: közzététel</button>
 </section>
 
 <section class="lepes" data-l="4" hidden>
-<div id="demoKiW"><p class="bemutato" role="note">BEMUTATÓ: nincs Facebook-bekötés. A gomb úgy tesz, mintha kiment volna – az Eredmény fülön megjelenik.</p><button class="btn full" id="demoKi" type="button">Kiküldés (bemutató)</button><div class="status" id="demoKiSt" role="status"></div></div>
+</div>
 <section id="out" hidden>
 <h2 style="margin-top:4px">Előnézet (szerkeszthető)</h2>
 <div class="fb">
 <div class="fbh"><div class="logo" aria-hidden="true">A</div><div><b>Akvarell Apartmanház</b><small id="fbsub">Piszkozat · nem ment ki</small></div></div>
 <textarea id="txt" rows="5" aria-label="Poszt szövege"></textarea>
-<canvas id="cv" width="1080" height="1350" hidden></canvas><img id="pimg" class="pimg" alt="A poszt képe"><video id="pvid" class="pimg" controls playsinline hidden></video>
+<canvas id="cv" width="1080" height="1350" hidden></canvas><img id="pimg" class="pimg" alt="A poszt képe"><video id="pvid" class="pimg" playsinline hidden></video>
 <div class="cm"><b>Első komment</b><textarea id="kom" rows="3" aria-label="Első komment"></textarea></div>
 </div>
 <details id="chkD"><summary id="chkS">Ellenőrzés</summary><ul class="chk" id="chk"></ul></details>
 <div id="ujtw" hidden><h2>Új tények az AI-tól: ellenőrizd</h2><p class="note">Pipáld ki, ami biztosan igaz. Ami nem igaz, azt töröld a szövegből, és pipáld ki, hogy nem szerepel benne. A kipipált tény bekerül a tudásba.</p><ul class="chk" id="ujt"></ul></div>
 <label class="man"><input type="checkbox" id="man"> A képen nincs felismerhető ember, vagy aki rajta van, beleegyezett.</label>
 <div class="verdict" id="ver"></div>
+<div id="demoKiW"><p class="bemutato" role="note">BEMUTATÓ: nincs Facebook-bekötés. A gomb úgy tesz, mintha kiment volna – az Eredmény fülön megjelenik.</p><button class="btn full" id="demoKi" type="button">Kiküldés (bemutató)</button><div class="status" id="demoKiSt" role="status"></div>
 <div class="acts">
 <button class="btn" id="cpT">Szöveg másolása</button>
 <button class="btn" id="svI">Kép megosztása</button>

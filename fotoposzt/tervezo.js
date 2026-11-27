@@ -94,6 +94,8 @@
     if (k) return 'kint';
     return t < most - 864e5 ? 'elmaradt' : 'esedekes';
   }
+  // Kijelzés: az „esedékes” csak ma/holnap; a későbbi „tervezve” (Péter végigjárása 11-27: mind a 13 esedékes volt).
+  const CIMKE = (p, sz) => sz === 'esedekes' && new Date(p.datum).getTime() > Date.now() + 864e5 ? 'tervezve' : ({ kint: '✓ kint', esedekes: 'esedékes', elmaradt: 'elmaradt' })[sz];
   function rajzol(terv) {
     const el = $('tervLista'); el.textContent = '';
     if (!terv) { el.hidden = true; return; }
@@ -112,10 +114,10 @@
       const b = document.createElement('button'); b.type = 'button'; b.className = 'tervsor';
       b.innerHTML = '<b></b><span></span><small></small>';
       b.children[0].textContent = `${p.datum.slice(5).replace('-', '.')} ${p.nap} ${p.ido}`;
-      const sz = statusz(p); b.dataset.st = sz; b.children[0].textContent += ' · ' + ({ kint: '✓ kint', esedekes: 'esedékes', elmaradt: 'elmaradt' })[sz];
+      const sz = statusz(p); b.dataset.st = sz; b.children[0].textContent += ' · ' + CIMKE(p, sz);
       b.children[1].textContent = p.temaNev + (p.cta ? ' · hívás a foglalásra' : '');
       b.children[2].textContent = `Vevőút: ${p.lepes}` + (p.csere ? ' · képtartalék (az eredeti témához fotó kell)' : '');
-      b.addEventListener('click', () => { try { modValt('poszt'); lep(1); if (p.tema && !(window.__terv.demoBetolt && DEMO_VAN(p.tema))) temaValaszt(p.tema); else if (p.tema) window.__terv.demoBetolt(p.tema); } catch (e) {} });
+      b.addEventListener('click', () => { try { if (window.__zseb && window.__zseb.kampFej) window.__zseb.kampFej(terv, p); modValt('poszt'); lep(1); if (p.tema && !(window.__terv.demoBetolt && DEMO_VAN(p.tema))) temaValaszt(p.tema); else if (p.tema) window.__terv.demoBetolt(p.tema); } catch (e) {} });
       el.append(b);
     });
     const fh = document.createElement('h3'); fh.textContent = 'Fotók, amiket kérünk'; el.append(fh);
@@ -132,7 +134,7 @@
     $('lepsor').hidden = !poszt;
     if ($('posztVissza')) $('posztVissza').hidden = !poszt;
     if ($('kesz')) $('kesz').hidden = !poszt;
-    document.body.classList.toggle('poszt-mod', poszt);
+    document.body.classList.toggle('poszt-mod', poszt); document.body.dataset.mod = mod;
     for (const s of document.querySelectorAll('.lepes')) s.hidden = !poszt ? true : +s.dataset.l !== ((window.__test && window.__test.S && window.__test.S.lep) || 1);
     const fo = poszt ? (window.__elozoMod || 'ma') : mod;
     for (const b of document.querySelectorAll('#modok button')) b.setAttribute('aria-pressed', String(b.dataset.mod === fo));
@@ -224,7 +226,7 @@
       const j = javaslatok(m)[0]; if (j) { const jp = document.createElement('p'); jp.className = 'javaslat'; jp.textContent = 'Javaslat: ' + j; c.append(jp); }
       const d = document.createElement('details'); const sm = document.createElement('summary'); sm.textContent = 'Részletek'; d.append(sm);
       m.forEach((p, i) => { const r = document.createElement('div'); r.className = 'tervsor';
-        r.innerHTML = '<b></b><span></span>'; r.children[0].textContent = `${p.datum.slice(5).replace('-', '.')} ${p.temaNev} · ` + ({ kint: '✓ kint', esedekes: 'esedékes', elmaradt: 'elmaradt' })[st[i]];
+        r.innerHTML = '<b></b><span></span>'; r.children[0].textContent = `${p.datum.slice(5).replace('-', '.')} ${p.temaNev} · ` + CIMKE(p, st[i]);
         r.children[1].textContent = `${p.eleres} elérés · ${p.reakcio} reakció` + (p.cta ? ` · ${p.kattintas} kattintás` : ''); d.append(r); });
       c.append(d); el.append(c);
     }
@@ -259,11 +261,16 @@
   const kint = { get() { try { return JSON.parse(localStorage.getItem(KINT) || '[]'); } catch (e) { return []; } },
                  add(x) { try { const l = kint.get(); l.unshift(x); localStorage.setItem(KINT, JSON.stringify(l.slice(0, 50))); } catch (e) {} } };
   if ($('demoKi')) $('demoKi').addEventListener('click', () => {
+    // Ugyanaz a kapu, mint az élesnél: amíg piros van (pl. a hozzájárulás-pipa), nem megy ki (Péter végigjárása 11-27).
+    const S0 = (window.__test || {}).S || {};
+    if (!S0.ok) { $('demoKiSt').textContent = 'Még nem mehet ki: ' + (($('ver') || {}).textContent || 'javítsd a pirosakat.'); if ($('man') && !$('man').checked) $('man').focus(); return; }
     const tid = ((document.querySelector('#temak .chip[aria-pressed=true]') || {}).dataset || {}).t || '';
     const t = (K.temak || []).find(x => x.id === tid) || {};
     const szoveg = ($('kom') && $('kom').value) || '';
     kint.add({ datum: new Date().toISOString().slice(0, 10), tema: tid, temaNev: t.nev || 'poszt', cta: /https?:\/\//.test(szoveg), lepes: 'kiment', kint: true });
-    $('demoKiSt').textContent = 'Kiment (bemutató). Nézd meg az Eredmény fülön.';
+    $('demoKiSt').textContent = 'Kiment (bemutató). Visszaviszlek a Ma fülre.';
+    if ($('fbsub')) $('fbsub').textContent = 'Kint (bemutató) · most';
+    setTimeout(() => { try { modValt('ma'); } catch (e) {} }, 1400);
   });
   window.__terv.kint = kint;
   window.__terv.szimulal = szimulal; window.__terv.javaslatok = javaslatok;

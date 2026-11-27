@@ -8,7 +8,7 @@ async def main():
   async with async_playwright() as p:
     b=await p.chromium.launch();pg=await b.new_page(viewport={'width':390,'height':844})
     pg.on('pageerror',lambda e:errs.append(str(e)))
-    await pg.goto(URL);await pg.wait_for_timeout(1500)
+    await pg.goto(URL);await pg.wait_for_timeout(1500);await pg.evaluate("()=>document.body.classList.add('muhely')")  # tanítás a Műhelyben (11-27)
     # lépésgomb: az aktív gomb szövege látszik (szín ≠ háttér)
     c=await pg.evaluate("(()=>{const b=document.querySelector('#lepsor [aria-current=step]');const s=getComputedStyle(b);return [b.textContent,s.color,s.backgroundColor,s.webkitTextFillColor]})()")
     r['lepesgomb']=c

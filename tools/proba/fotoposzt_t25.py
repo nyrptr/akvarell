@@ -9,7 +9,7 @@ async def main():
   async with async_playwright() as p:
     b=await p.chromium.launch();pg=await b.new_page(viewport={'width':390,'height':844})
     pg.on('pageerror',lambda e:errs.append(str(e)))
-    await pg.goto(URL);await pg.wait_for_timeout(1200)
+    await pg.goto(URL);await pg.wait_for_timeout(1200);await pg.evaluate("()=>document.body.classList.add('muhely')")  # tanítás a Műhelyben (11-27)
     await pg.set_input_files('#file',X);await pg.wait_for_timeout(9000)
     await pg.evaluate("document.querySelector('#temak .chip[data-t=templom]')?.click()");await pg.wait_for_timeout(300)
     r['tema1']=await pg.evaluate("window.__test.S.tema")

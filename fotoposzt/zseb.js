@@ -171,7 +171,7 @@
         const c = el('div', 'kartya kiem');
         const mikor = kov.datum === most ? 'Ma' : hd(kov.datum) + ' ' + kov.nap;
         c.append(el('span', 'cimke', kov.fazis || 'Következő'), el('h3', null, `${mikor} ${kov.ido} – ${kov.temaNev}`), el('p', 'note', `${k.nev} · ${kov.cta ? 'foglalási linkkel' : 'hangulat, link nélkül'}`));
-        c.append(gomb('Elkészítem', 'btn full', () => { T.modValt('poszt'); try { lep(1); } catch (e) {} if (T.demoBetolt) T.demoBetolt(kov.tema); }));
+        c.append(gomb('Elkészítem', 'btn full', () => { kampFej(k, kov); T.modValt('poszt'); try { lep(1); } catch (e) {} if (T.demoBetolt) T.demoBetolt(kov.tema); }));
         fo.append(c);
       }
       const fk = (k.foto || []).find(f => f.tipus !== 'lehetőség');
@@ -249,7 +249,7 @@
         gomb('Újra fotózom', 'btn sec full', () => $('kepFile').click()));
     }; img.src = URL.createObjectURL(f);
   }
-  window.__zseb = { ellenoriz, javaslatok, epit, briefNyit, fotoEll };
+  window.__zseb = { ellenoriz, javaslatok, epit, briefNyit, fotoEll , kampFej };
 
   // ── Videó mód: klipek ellenőrzése és reel a klipekből (vászon + MediaRecorder, a telefonon)
   function segedKlip(i) {
@@ -307,7 +307,100 @@
   for (const b of document.querySelectorAll('#kepMod .chip')) b.addEventListener('click', () => { kepMod = b.dataset.km; kepRajz(); });
 
   function rajzMind() { try { maRajz(); } catch (e) {} try { kampJavRajz(); } catch (e) {} }
-  $('maUjPoszt').addEventListener('click', () => { T.modValt('poszt'); try { lep(1); } catch (e) {} });
+
+  // ── Tiszta felület (Péter végigjárása 11-27)
+  // Kampányfejléc a posztkészítés tetején: melyik kampány, fázis, fő üzenet, nyelvek, ráadás.
+  const NYN = { hu: 'magyar', en: 'angol', de: 'német' }, RAD = { kesoi: 'késői kijelentkezés', udv: 'üdvözlő ajándék', kedv: 'kedvezmény', semmi: 'nincs' };
+  function kampFej(k, p) {
+    const d = $('posztKamp'); if (!d) return;
+    if (!k || !p) { d.hidden = true; d.textContent = ''; return; }
+    d.textContent = '';
+    d.append(el('b', null, `${k.nev} · ${p.fazis || ''}`), el('span', null, `${hd(p.datum)} ${p.nap || ''} ${p.ido || ''} – ${p.temaNev}`));
+    const sor = [];
+    if (k.uzenet) sor.push('Fő üzenet: ' + k.uzenet);
+    if (k.nyelvek && k.nyelvek.length) sor.push('Nyelvek: ' + k.nyelvek.map(x => NYN[x] || x).join(', '));
+    if (k.radas) sor.push('Ráadás: ' + (RAD[k.radas] || k.radas));
+    sor.push(p.cta ? 'Foglalásra hív' : 'Hangulatposzt, még nem kér foglalást');
+    d.append(el('small', null, sor.join(' · '))); d.hidden = false;
+  }
+  // Nyelv–napszak–évszak összecsukva; a sor mutatja, mi van beállítva.
+  function reszlFriss() {
+    const v = id => ((document.querySelector('#' + id + ' .chip[aria-pressed=true]') || {}).textContent || '').trim().toLowerCase();
+    if ($('reszlS')) $('reszlS').textContent = [v('langs'), v('nsw') === 'a fotóból' ? 'napszak a fotóból' : v('nsw'), v('evw') === 'a fotóból' ? 'évszak a fotóból' : v('evw')].filter(Boolean).join(' · ');
+  }
+  for (const id of ['langs', 'nsw', 'evw']) if ($(id)) $(id).addEventListener('click', () => setTimeout(reszlFriss, 0));
+  reszlFriss();
+  // Műhely: frissítés, készlet, tanítás, mentés – a fő útból kivéve.
+  if ($('muhelyB')) $('muhelyB').addEventListener('click', () => {
+    const be = !document.body.classList.contains('muhely'); document.body.classList.toggle('muhely', be);
+    $('muhelyB').setAttribute('aria-pressed', String(be));
+    if (be) { const k = $('kesz'); if (k) { k.open = true; k.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }
+  });
+  // Saját lejátszó: a telefon vezérlői nem takarják a videót; koppintás = indít/megállít.
+  function lejatszo(v) {
+    if (!v || v.dataset.saj) return; v.dataset.saj = '1'; v.removeAttribute('controls');
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'lejatszoB'; b.textContent = '▶ Lejátszás';
+    const fr = () => { b.textContent = v.paused ? '▶ Lejátszás' : '❚❚ Megállítás'; b.hidden = v.hidden; };
+    const kap = () => { if (v.paused) v.play().catch(() => {}); else v.pause(); };
+    v.addEventListener('click', kap); b.addEventListener('click', kap);
+    for (const e of ['play', 'pause', 'ended', 'loadeddata']) v.addEventListener(e, fr);
+    new MutationObserver(fr).observe(v, { attributes: true, attributeFilter: ['hidden'] });
+    v.after(b); fr();
+  }
+  for (const id of ['reelV', 'pvid', 'klipV']) lejatszo($(id));
+
+  // ── Tesztnapló (csak a Claude-artifactban; Péter 11-27: „élőben követni”, az első használat a legértékesebb)
+  // Minden tesztelő a saját dokumentumába ír (naplo/<azonosító>); olvasni csak a tulajdonos tudja. Nevet nem tárolunk, csak azonosítót.
+  (async function tesztNaplo() {
+    if (!window.claude || typeof window.claude.use !== 'function') return;
+    let db = null, user = null;
+    try { [db, user] = await Promise.all([window.claude.use('db'), window.claude.use('user')]); } catch (e) { return; }
+    if (!db || !user) return;
+    const uid = await user.id(); if (!uid) return;
+    const ref = db.doc('naplo/' + uid);
+    let doc = {}; try { const snap = await ref.get(); doc = (snap && (snap.data ? snap.data() : snap)) || {}; } catch (e) { doc = {}; }
+    const korok = Array.isArray(doc.korok) ? doc.korok.slice(-4) : [];
+    const kor = { kezd: new Date().toISOString(), sorsz: (doc.osszKor || 0) + 1, esem: [] };
+    korok.push(kor);
+    const t0 = Date.now(), ido = () => Math.round((Date.now() - t0) / 1000);
+    const hol = () => { const m = document.body.dataset.mod || 'ma'; if (m !== 'poszt') return m; const l = document.querySelector('#lepsor [aria-current=step]'); return 'poszt-' + (l ? l.dataset.n : '?'); };
+    let utolso = Date.now(), kepernyo = hol(), irasFolyik = false, piszkos = true, varakozo = null;
+    const ir = async () => {
+      if (irasFolyik || !piszkos) return; irasFolyik = true; piszkos = false;
+      try { await ref.set({ osszKor: kor.sorsz, utolso: new Date().toISOString(), korok }); } catch (e) {}
+      irasFolyik = false; if (piszkos) utemez();
+    };
+    const utemez = () => { if (!varakozo) varakozo = setTimeout(() => { varakozo = null; ir(); }, 6000); };
+    const rogz = (e, x) => { if (kor.esem.length >= 600) return; kor.esem.push([ido(), e, hol(), x || '']); piszkos = true; utemez(); };
+    rogz('indul', kor.sorsz === 1 ? 'első használat' : kor.sorsz + '. alkalom');
+    document.addEventListener('click', (ev) => {
+      const b = ev.target.closest('button,summary,a,label,.cand .hu,input[type=checkbox]'); if (!b) return;
+      if (b.closest('#jegyzetP')) return;
+      const nev = (b.getAttribute('aria-label') || b.textContent || b.id || b.tagName).trim().replace(/\s+/g, ' ').slice(0, 40);
+      rogz(b.closest('#posztVissza') || /^‹/.test(nev) ? 'vissza' : 'koppint', nev); utolso = Date.now();
+    }, true);
+    setInterval(() => {
+      const most = hol(); if (most !== kepernyo) { kepernyo = most; rogz('képernyő', most); utolso = Date.now(); }
+      if (Date.now() - utolso > 15000 && document.visibilityState === 'visible') { rogz('áll', Math.round((Date.now() - utolso) / 1000) + ' mp'); utolso = Date.now(); }
+    }, 1000);
+    window.addEventListener('error', (e) => rogz('hiba', String(e.message || '').slice(0, 80)));
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') { rogz('kilép', ''); ir(); } });
+    // Jegyzet: a tesztelő saját szavai, a képernyővel együtt (iPhone-on a billentyűzet mikrofonjával diktálható).
+    const fej = document.querySelector('header'); if (!fej) return;
+    const jb = document.createElement('button'); jb.type = 'button'; jb.className = 'muhelyB'; jb.id = 'jegyzetB'; jb.setAttribute('aria-label', 'Jegyzet a fejlesztőnek');
+    jb.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H8l-4 4z"/></svg><span>Jegyzet</span>';
+    const mb = $('muhelyB'); if (mb) { mb.style.marginLeft = '0'; mb.before(jb); jb.style.marginLeft = 'auto'; } else fej.append(jb);
+    const pan = el('div', 'kartya'); pan.id = 'jegyzetP'; pan.hidden = true;
+    const ta = document.createElement('textarea'); ta.rows = 3; ta.setAttribute('aria-label', 'Mi zavar, mit nem értesz?'); ta.placeholder = 'Mi zavar, mit nem értesz? (diktálhatod is)';
+    const allj = el('p', 'note'); const kuld = gomb('Elküldöm', 'btn full', () => {
+      const t = ta.value.trim(); if (!t) { allj.textContent = 'Írj vagy mondj valamit előbb.'; return; }
+      rogz('jegyzet', t.slice(0, 600)); ta.value = ''; allj.textContent = 'Megkaptam, köszönöm. Folytasd nyugodtan.'; ir(); setTimeout(() => { pan.hidden = true; allj.textContent = ''; }, 1500);
+    });
+    pan.append(el('p', 'note', 'Tesztváltozat: a koppintásaidat és a jegyzeteidet a fejlesztő látja, hogy egyszerűbb legyen.'), ta, kuld, allj);
+    fej.after(pan);
+    jb.addEventListener('click', () => { pan.hidden = !pan.hidden; if (!pan.hidden) { allj.textContent = 'Itt vagy most: ' + hol(); ta.focus(); } });
+  })();
+  $('maUjPoszt').addEventListener('click', () => { kampFej(null); T.modValt('poszt'); try { lep(1); } catch (e) {} });
   document.addEventListener('zseb-mod', (e) => { if (e.detail === 'ma' || e.detail === 'terv') rajzMind(); if (e.detail === 'kep') kepRajz(); });
   rajzMind(); kepRajz();
 })();
