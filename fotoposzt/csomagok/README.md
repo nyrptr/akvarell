@@ -1,4 +1,18 @@
-# Tudáscsomagok
+# Tudáscsomagok – három réteg (Péter jóváhagyta 2026-11-27)
+
+```mermaid
+flowchart TD
+  M[Motor: app.js – minden ügyfélnek ugyanaz] --> SZ[Szakmacsomag: szakma/<id>.json – célok, vevőút, fotólista, tiltólista, közös mondatok]
+  SZ --> U[Ügyfélcsomag: ugyfel/<név>.json – cég, témák, helyek, saját mondatok, linkek]
+  U --> K[Futó készlet = szakma + ügyfél; az ügyfél felülír]
+```
+- Betöltés: `fotoposzt/?csomag=<név>` → `ugyfel/<név>.json` + `szakma/<szakma_id>.json` (betolto.js). Régi egyrétegű `csomagok/<név>.json` is megy.
+- Összefésülés: tömb `id` szerint, szótár kulcsonként; **az ügyfél nyer**. A `szakma_meta` a futó készletben `szakma` néven érhető el (a Tervező ebből dolgozik).
+- A lapba ágyazott Akvarell-készlet GENERÁLT: `python3 tools/fotoposzt_csomag.py epit`; ellenőrzés: `--ellenoriz` és `node tools/proba/fotoposzt_t27.mjs` (a kapu része). Kézzel ne szerkeszd az index.html keszletét.
+- Szakmák: `szallas` (Akvarell), `autokereskedes` (váz, ügyfél nélkül – az ágazatfüggetlenség próbája).
+- Új ügyfél: `ugyfel/<név>.json` `{"szakma_id": "...", "ceg": {...}, "temak": [...], ...}`; új szakma: `szakma/<id>.json` `szakma_meta` kötelező mezőkkel (id, nev, celok, fotolista, cta, tilos), ügyféladat (`ceg`) nem lehet benne.
+
+## A régi egyrétegű leírás (a mezők jelentése változatlan)
 
 Egy csomag = egy ügyfél tudása (`<név>.json`). Betöltés: `fotoposzt/?csomag=<név>` (név: kisbetű, szám, kötőjel; max 40).
 Ha nincs `?csomag=`, a lapba ágyazott alapcsomag (Akvarell) fut. Hibás vagy hiányzó csomagnál is az alapcsomag fut, figyelmeztetéssel.

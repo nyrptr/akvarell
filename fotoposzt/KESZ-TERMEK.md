@@ -1,5 +1,5 @@
 # Zsebmarketing – a kész termék térképe (mi kell a kezünkben)
-Állapot: 2026-11-27 · ZSEBMARKETING · **AI-javaslat (Claude), Péter jóváhagyására vár** · független ellenőr: külön ügynök kutatása (lent, „Ellenőr”).
+Állapot: 2026-11-27 · ZSEBMARKETING · **AI-javaslat (Claude); Péter jóváhagyta 2026-11-27: „a kész termék térkép mehet”** · független ellenőr: külön ügynök kutatása (lent, „Ellenőr”).
 Te mondtad (11-27): „Mire van szükségünk, minek kell a kezünkben lenni egy olyan kész terméknek, aminek ez a neve, hogy zsebmarketing… ilyen termék nincsen… azonnal kapunk tesztelőket… Minden szinten.”
 
 Vázlat: hét réteg. Egy termék akkor „kész”, ha mind a hétben van legalább a minimum (MVP), és van mérése, hogy működik-e.
@@ -84,9 +84,9 @@ Ami a vázlatból hiányzott, és bekerül (AI-javaslat):
 | Kontroll | Aktiválás = első poszt kint az első héten; lemorzsolódás-cél havi < 2% (kkv-SaaS jellemző 3–7%) | előre leírt pilot-siker/bukás kritérium |
 
 ### A 3 alábecsült kockázat
-1. **Meta az egyetlen kapu** – ellenőrzés, App Review hetekig tarthat; addig a partner-hozzáférés kézi és nem skálázható.
+1. **Meta – pontosítva Péter kérdésére (11-27).** Te mondtad: „ez egy sajátja lesz mindenkinek, az ő meta adatain… ugyanaz, mint hogyha egy marketinges dolgozna a felületen.” Ez így igaz a **kézi útra**: partner-hozzáférés ügyfelenként, a fiók az ügyfélé, egy ügyfél tiltása a többit nem érinti. Közös kapu csak a **gépi útnál** van: az automatikus közzététel és mérés egy **Meta-alkalmazáson** (a mi fejlesztői appunk) megy át, és ha azt a Meta felfüggeszti, egyszerre áll le minden ügyfélnél a gépi rész. Ellenszer (beépítve): a mag **Meta-kapcsolat nélkül is működik** – a telefon a kész posztot megosztással viszi a Facebookra/Instagramra, ahogy most; a gépi közzététel és mérés csak ráadás, kiesésnél a kézi út marad.
 2. **Az emberi szolgáltatás ára** – bekötés, támogatás, hirdetés egy emberre; az árnak fedeznie kell.
-3. **Felelősség a tartalomért** – képmás, zene, megtévesztő állítás; jóváhagyási lépés + szerződés nélkül ránk szállhat.
+3. **Felelősség a tartalomért** – ugyanaz, mint egy marketinges felelőssége (Péter, 11-27: „le kell zárnunk, hogy ne kerülhessen ki olyan”). Zár: a motor csak jóváhagyott mondatkészletből épít; tiltólista szakmánként (`szakma_meta.tilos`); ügyfél-jóváhagyás közzététel előtt; képmás-jelölés a képtárban.
 
 ## Sorrend (AI-javaslat)
 1. Háromrétegű motor + Tervező (jóváhagyva) – benne már: jóváhagyási lépés, képtár-hozzájárulás jelölés.

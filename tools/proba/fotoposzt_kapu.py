@@ -31,6 +31,10 @@ async def main():
     import subprocess as _sp, pathlib as _pl
     _r=_sp.run(['python3',str(_pl.Path(__file__).resolve().parent.parent/'fotoposzt_pwa.py'),'--ellenoriz'],capture_output=True,text=True)
     if _r.returncode: hibak.append('PWA: '+_r.stdout.strip())
+    _r=_sp.run(['python3',str(_pl.Path(__file__).resolve().parent.parent/'fotoposzt_csomag.py'),'--ellenoriz'],capture_output=True,text=True)
+    if _r.returncode: hibak.append('Csomag: '+_r.stdout.strip())
+    _r=_sp.run(['node','tools/proba/fotoposzt_t27.mjs'],capture_output=True,text=True,cwd=str(_pl.Path(__file__).resolve().parent.parent.parent))
+    if _r.returncode: hibak.append('Háromréteg: '+_r.stdout.strip())
     for x in sorted(set(hibak)): print('HIBA', x)
     print(f'{len(set(hibak))} HIBA')
 asyncio.run(main())

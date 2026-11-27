@@ -457,3 +457,10 @@
 - Gyár: 20. és 21. szabály (CSS nem rejtheti el, amit a program mutat; a választás nem tanít). Az új szabály egy régi esetet is talált (#osz) – rendbe téve.
 - Tesztek: gyar_szabalyok 0 HIBA; fotoposzt_kapu alap + próbacsomag 0 HIBA; t7 13 392 / 0 hibás; t17, t20, t22, új t23 hibátlan. t13, t16, t18, t21 régi feliratokra várnak (v12–v14 korabeli tesztek), nem a mostani változás hibái.
 - Nem tesztelt: valódi iPhone-on a nézési irány (EXIF) olvasása; Safari-ban a feliratmozgások.
+
+## 2026-11-27 – ZSEBMARKETING: háromrétegű motor (motor / szakmacsomag / ügyfélcsomag)
+- Péter: „Mehet a háromrétegű motor… a Tervezővel együtt”, „a kész termék térkép mehet”.
+- Új: `fotoposzt/csomagok/szakma/szallas.json` (szállásadó: célok, vevőút, fotólista, tiltólista, 6 közös záró, 1 komment, „Tudtad?”), `szakma/autokereskedes.json` (váz), `ugyfel/akvarell.json` (minden Akvarell-specifikus). `tools/fotoposzt_csomag.py` (szetvalaszt / epit / --ellenoriz); `betolto.js` két lépésben tölt és fésül; az index.html keszlet generált (+ `szakma` kulcs, tartalom egyébként azonos – kanonikus összevetéssel igazolva).
+- Tesztek: `tools/proba/fotoposzt_t27.mjs` (JS = Python fésülés = beágyazott készlet; felülírás id szerint) 0 HIBA; `fotoposzt_t28.py` (böngésző: ?csomag=akvarell, hibás név) 0 HIBA; fotoposzt_kapu 0 HIBA (benne a csomag-ellenőrzés); t24–t26 0 HIBA.
+- Nem tesztelt: a claude.ai-os artifact nincs újraépítve (a motor viselkedése nem változott); a Tervező kódja a következő lépés.
+- KESZ-TERMEK.md: Meta-kockázat pontosítva (kézi út ügyfelenként, közös kapu csak a gépi appnál; a mag Meta nélkül is megy), tartalom-zár.

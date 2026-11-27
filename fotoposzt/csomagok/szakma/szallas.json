@@ -1,0 +1,96 @@
+{
+ "szakma_meta": {
+  "id": "szallas",
+  "nev": "Szállásadó",
+  "celok": [
+   "foglalás",
+   "üzenet / érdeklődés",
+   "weboldal-látogatás"
+  ],
+  "vevout": [
+   "meglát",
+   "elképzeli magát ott",
+   "megnézi a szállást",
+   "ír vagy foglal",
+   "eljön",
+   "visszajön / ajánl"
+  ],
+  "temak_alap": [
+   "kilátás",
+   "szoba",
+   "terasz / kert",
+   "reggeli / étel",
+   "környék",
+   "évszak"
+  ],
+  "fotolista": [
+   "a ház kívülről nappal",
+   "minden szoba világosban",
+   "kilátás az ablakból",
+   "reggeli / terített asztal",
+   "a legközelebbi látnivaló",
+   "ugyanaz a nézet négy évszakban"
+  ],
+  "cta": "foglalás",
+  "tilos": [
+   "kommentkérés",
+   "garantált",
+   "csak ma",
+   "a legjobb"
+  ]
+ },
+ "tudtad": {
+  "hu": "Tudtad?",
+  "en": "Did you know?",
+  "de": "Wusstest du?"
+ },
+ "zaro": [
+  {
+   "id": "z1",
+   "hu": "Melyik évszakban jönnél?",
+   "en": "Which season would you come in?",
+   "de": "In welcher Jahreszeit würdest du kommen?",
+   "kerdes": 1
+  },
+  {
+   "id": "z3",
+   "hu": "Ha legközelebb erre jársz, nézd meg te is.",
+   "en": "If you're ever nearby, come and see it yourself.",
+   "de": "Wenn du einmal in der Nähe bist, schau es dir selbst an."
+  },
+  {
+   "id": "z4",
+   "hu": "Érdemes itt egy percre megállni.",
+   "en": "It's worth stopping here for a minute.",
+   "de": "Hier lohnt es sich, kurz stehen zu bleiben."
+  },
+  {
+   "id": "z6",
+   "hu": "Neked mi jut eszedbe erről a képről?",
+   "en": "What does this picture remind you of?",
+   "de": "Woran erinnert dich dieses Bild?",
+   "kerdes": 1
+  },
+  {
+   "id": "z7",
+   "hu": "Nyugodt napot kívánunk, bárhol is vagy.",
+   "en": "Wherever you are, have a calm day.",
+   "de": "Wo auch immer du bist: einen ruhigen Tag."
+  },
+  {
+   "id": "s-tel",
+   "evszak": "tel",
+   "hu": "Télen is érdemes eljönni.",
+   "en": "Worth the trip in winter too.",
+   "de": "Auch im Winter eine Reise wert."
+  }
+ ],
+ "komment": [
+  {
+   "id": "m1",
+   "hu": "Ha egyszer élőben is megnéznéd, nálunk megszállhatsz:",
+   "en": "If you'd like to see it in person one day, you can stay with us:",
+   "de": "Falls du es einmal selbst sehen möchtest, kannst du bei uns wohnen:"
+  }
+ ]
+}
