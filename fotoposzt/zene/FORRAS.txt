@@ -1,6 +1,6 @@
 Zene a reelekhez – közkincs felvételek (Wikimedia Commons, Musopen)
-- reggel.m4a: Grieg: Peer Gynt, Reggel – „Musopen - Morning.ogg”, licenc: Public domain
+- reggel.mp3: Grieg: Peer Gynt, Reggel – „Musopen - Morning.ogg”, licenc: Public domain
   https://commons.wikimedia.org/wiki/File:Musopen_-_Morning.ogg
-- vidam.m4a: Mendelssohn: 4. (Olasz) szimfónia, I. tétel – „Mendelssohn - Symphony No. 4 in A major, Op. 90 'Italian' - I. Allegro vivace (Musopen Symphony).flac”, licenc: Public domain
+- vidam.mp3: Mendelssohn: 4. (Olasz) szimfónia, I. tétel – „Mendelssohn - Symphony No. 4 in A major, Op. 90 'Italian' - I. Allegro vivace (Musopen Symphony).flac”, licenc: Public domain
   https://commons.wikimedia.org/wiki/File:Mendelssohn_-_Symphony_No._4_in_A_major,_Op._90_%27Italian%27_-_I._Allegro_vivace_(Musopen_Symphony).flac
-A szerzemények és a felvételek is közkincsek; 25 mp-es részlet, AAC-re alakítva.
+A szerzemények és a felvételek is közkincsek; 25 mp-es részlet, MP3-ra alakítva.

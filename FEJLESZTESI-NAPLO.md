@@ -387,5 +387,5 @@
 - 2. lépés: elöl a saját (AI nélküli) szövegek, alattuk „Nem tetszik egyik sem?” – AI-javaslat másolással.
 - 3. lépés: a formátum (Feed, Négyzet, Story, Reel) nagy gombokban.
 - 4. lépés: az ellenőrzés lenyílóban („minden rendben ✓”, csak hibánál nyílik ki); közzétételi útmutató és képleírás a „Segítség” alatt; készlet/mentés külön „Extra” panelben.
-- Reel zenével: két közkincs (Public domain) Musopen-felvétel a Wikimedia Commonsról (Grieg: Reggel; Mendelssohn: Olasz szimfónia I.), 25 mp, be- és kiúsztatva. Forrás: fotoposzt/zene/FORRAS.txt.
+- Reel zenével: két közkincs (Public domain) Musopen-felvétel a Wikimedia Commonsról (Grieg: Reggel; Mendelssohn: Olasz szimfónia I.), 25 mp, MP3, be- és kiúsztatva. Forrás: fotoposzt/zene/FORRAS.txt.
 - Teszt: 13392 poszt 0 hiba; reel zenével (H.264 + hang) a CSP alatt is.
