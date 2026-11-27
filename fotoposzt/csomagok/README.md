@@ -22,6 +22,7 @@ Kötelező: `ceg.hely`, `temak` (tömb).
 | prompt_ki | Az Akvarell Apartmanház (Zebegény, Dunakanyar) | AI-prompt első mondata |
 | persona | Te vagy a ház két kedves házigazdája. | AI-prompt hangja |
 | kampany | akv-foto | `utm_campaign` a foglalási linkben |
+| ai_link | https://claude.ai/artifact/… | a Cloudflare-oldalon link a közvetlen AI-s változatra (ha nincs, nem látszik) |
 
 A foglalási link a `url` mezőből jön (`""` = alap, apartmanonként külön kulcs).
 A felismerő referenciaképei (`felismero/helyek-emb.json`) még közösek; csomagonkénti felismerő a következő lépés.

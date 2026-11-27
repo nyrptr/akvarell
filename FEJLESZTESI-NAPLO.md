@@ -1,5 +1,14 @@
 # Fejlesztési napló – Akvarell bemutató
 
+## 2026-11-27 – Claude (ZSEBMARKETING) – javítócsomag (Péter: „Mehet a javítócsomag, futhat a helyi képernyős teszt”)
+- Felismerő tanulás: új „Igen, ez van a képen – jegyezd meg” gomb (`#felisOk`); a megerősítés az eredeti fotó beágyazásából tanít (`sajatTanul`). A puszta választás továbbra sem tanít (gyár 21.).
+- Mentés/visszatöltés: a felismerési minta (`sajatemb`) is megy → átvihető másik eszközre és a csomagba.
+- Képernyőkép-figyelmeztetés: PNG vagy ≥1,9 magas/széles arány EXIF-dátum nélkül → „Ez képernyőképnek látszik…”.
+- Lépésgomb: az aktív gomb színe kifejezett (nem `light-dark()`), `-webkit-text-fill-color`-ral – iPhone-on üres volt.
+- Cloudflare-oldal: „Kérés másolása a Claude appba” felirat; közvetlen AI-link a csomag `ceg.ai_link` mezőjéből (README frissítve).
+- Teszt: `tools/proba/fotoposzt_t24.py` 0 HIBA (lépésgomb színe, AI-link, képernyőkép-figyelmeztetés PNG-n és nem JPG-n, megerősítés tanít 1 mintát és letiltódik, mentésben `sajatemb`, 0 JS-hiba); `mind.sh` MIND RENDBEN (a 3 ismert api/taj 503 megengedett); képernyőkép átnézve.
+- Nem tesztelt: valódi iPhone Safari (a lépésgomb hibája ott volt); az aluljáró-referencia – Péter eredeti fotójára vár; a t23 (Péter aluljárós fotója nincs meg ebben a munkamenetben).
+
 ## 2026-11-27 – Claude (ZSEBMARKETING) – a claude.ai-os változat átvétele
 - Péter: „vedd is át a Claude-os felületet, meg az egészet is”. `tools/fotoposzt_artifact.py`: az artifact index.html-je a munkaágból áll elő; a 069e87a-ból bájtra azonos a v17 artifacttal (sha256 13aa2d86…), a helyek-emb.json is. Innentől a ZSEBMARKETING tölti fel mindkét változatot ugyanabból a commitból.
 - Nem tesztelt: a .tflite → base64-JSON átalakítás (nem változott, nem kellett).

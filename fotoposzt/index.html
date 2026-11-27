@@ -97,7 +97,7 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 @media (prefers-reduced-motion:no-preference){.villan{animation:v 1.4s ease-out}@keyframes v{0%{box-shadow:0 0 0 4px var(--acc)}100%{box-shadow:0 0 0 0 transparent}}.btn.dolgozik{background-size:200% 100%;animation:cs 1s linear infinite}@keyframes cs{to{background-position:28px 0}}}
 .lepsor{position:sticky;top:0;z-index:5;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;background:var(--bg);padding:8px 0;margin:0 0 10px}
 .lepsor button{min-height:44px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--mute);font:700 14px Figtree,sans-serif;cursor:pointer}
-.lepsor button[aria-current=step]{background:var(--deep);color:var(--bg);border-color:var(--deep)}.lepsor button.kesz{color:var(--deep)}
+.lepsor button[aria-current=step]{background:#2f4237;color:#fff;-webkit-text-fill-color:#fff;border-color:#2f4237}@media (prefers-color-scheme:dark){.lepsor button[aria-current=step]{background:#9cc3a9;color:#18211c;-webkit-text-fill-color:#18211c;border-color:#9cc3a9}}.lepsor button.kesz{color:var(--deep)}
 .csop{font-size:12px;font-weight:700;color:var(--mute);margin:10px 0 6px;text-transform:none}
 .osz{margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-weight:600}
 .stilusok{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
@@ -118,7 +118,7 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 <div class="meta" id="meta"></div>
 <div id="fotokw" hidden><div class="fotok" id="fotok"></div><p class="note" id="fotokT"></p></div>
 <label class="chip" for="fileAdd" id="fileAddL" hidden style="display:inline-flex;align-items:center;cursor:pointer;margin-top:6px">+ Még fotó<input id="fileAdd" type="file" accept="image/*" multiple hidden></label>
-<div class="note" id="felisT" hidden></div><div class="row" id="felisJ" hidden></div>
+<div class="note" id="felisT" hidden></div><div class="row" id="felisJ" hidden></div><button class="btn sec full" id="felisOk" hidden>Igen, ez van a képen – jegyezd meg</button><div class="status" id="felisSt" role="status"></div>
 <div class="osz" id="osz" hidden></div>
 <div class="status" id="st1" role="status"></div>
 <div class="kartya" id="alapw" hidden>
@@ -173,7 +173,7 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 <p class="note">Az „Ezt választom” csak kipróbálás, nem tanít. Tanulni a Tetszik, a Nem ez és a közzététel alapján tanul.</p>
 </section>
 <div id="aiw"><h2>Nem tetszik egyik sem?</h2><p class="note">Kérj AI-javaslatot: a program ugyanígy ellenőrzi.</p>
-<div class="two" id="gombok"><button class="btn" id="go" disabled hidden>Változatok (AI nélkül)</button><button class="btn sec" id="cl" disabled hidden>AI-javaslat (fotó alapján)</button><button class="btn sec" id="hidB" hidden>Kérj új szöveget az AI-tól</button></div>
+<div class="two" id="gombok"><button class="btn" id="go" disabled hidden>Változatok (AI nélkül)</button><button class="btn sec" id="cl" disabled hidden>AI-javaslat (fotó alapján)</button><button class="btn sec" id="hidB" hidden>Kérés másolása a Claude appba</button></div><p class="note" id="aiLinkP" hidden><a id="aiLink" href="#" target="_blank" rel="noopener">Közvetlen AI-javaslat: nyisd meg a claude.ai-os változatot</a></p>
 <div class="status" id="st" role="status"></div>
 <details id="hid">
 <summary>AI-javaslat másolással (Claude app, ChatGPT, Gemini)</summary>
@@ -297,7 +297,8 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 ],
 "prompt_ki": "Az Akvarell Apartmanház (Zebegény, Dunakanyar)",
 "persona": "Te vagy a ház két kedves házigazdája.",
-"kampany": "akv-foto"
+"kampany": "akv-foto",
+"ai_link": "https://claude.ai/artifact/E61KqgEQha2p2hZJUtEKhs"
 },
 "temak": [
 {
