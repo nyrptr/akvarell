@@ -474,3 +474,6 @@
 
 ## 2026-11-27 – ZSEBMARKETING: Eredmény (BEMUTATÓ) mód + claude.ai-os kiadás
 - Péter: „szimulált működést hozzunk létre a teszteléshez… a metás összekötéssel várjunk”. Új harmadik mód: Eredmény – szimulált (determinisztikus, jelölten nem valós) elérés/reakció/kattintás a terv soraira; a javaslatot ugyanaz a program-szabály adja, ami élesben fut (legjobb téma, elmaradó téma < 70% átlag, linkkattintás). t29 kiegészítve, 0 HIBA; t24, t28, kapu 0 HIBA. Artifact (69f9b8bb…) újra kiadva app.js + tervezo.js beágyazással.
+
+## 2026-11-27 – ZSEBMARKETING: teljes szimuláció a teszthez (bemutató képtár + szimulált kiküldés)
+- Péter: „Le tudod szimulálni, hogy legyenek már fotók?… minden legyen leszimulálva.” `fotoposzt/bemutato/` – 7 téma kész fotóval (az Akvarell saját képei a `hazak/akvarell/kepek/`-ből, emberek nélkül, templomnál a festmény levágva), `lista.json`. 1. lépésben BEMUTATÓ képtár (koppintás → fotó a fájlmezőbe, a felismerő és a téma ugyanúgy fut); terv-sorra koppintva magától jön a téma fotója; 4. lépésben „Kiküldés (bemutató)” → az Eredmény fülön „✓ kiment”. Minden jelölten BEMUTATÓ. t29 kiegészítve 0 HIBA; kapu, t24, t25, t27, t28 0 HIBA. Artifact újra kiadva a bemutato/ mappával.

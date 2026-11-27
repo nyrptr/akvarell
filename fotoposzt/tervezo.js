@@ -75,6 +75,7 @@
     }
   };
   const allapot = { cel: null, kinek: null, heti: null };
+  const DEMO_VAN = (t) => !!(typeof DEMO !== 'undefined' && DEMO[t]);
   const gombFriss = () => { $('tervKeszit').disabled = !(allapot.cel && allapot.kinek && allapot.heti); };
 
   function rajzol(terv) {
@@ -91,7 +92,7 @@
       b.children[0].textContent = `${p.datum.slice(5).replace('-', '.')} ${p.nap} ${p.ido}`;
       b.children[1].textContent = p.temaNev + (p.cta ? ' · hívás a foglalásra' : '');
       b.children[2].textContent = `Vevőút: ${p.lepes}` + (p.csere ? ' · képtartalék (az eredeti témához fotó kell)' : '');
-      b.addEventListener('click', () => { try { modValt('poszt'); if (p.tema) temaValaszt(p.tema); lep(1); } catch (e) {} });
+      b.addEventListener('click', () => { try { modValt('poszt'); lep(1); if (p.tema && !(window.__terv.demoBetolt && DEMO_VAN(p.tema))) temaValaszt(p.tema); else if (p.tema) window.__terv.demoBetolt(p.tema); } catch (e) {} });
       el.append(b);
     });
     const fh = document.createElement('h3'); fh.textContent = 'Fotók, amiket kérünk'; el.append(fh);
@@ -147,15 +148,49 @@
   }
   function eredmenyRajzol() {
     const el = $('eredLista'); if (!el) return; el.textContent = '';
-    const m = szimulal(tar.get());
+    const m = [...szimulal(kint.get().length ? { helyek: kint.get() } : null).filter(() => kint.get().length), ...szimulal(tar.get())];
     const jl = document.createElement('div'); jl.className = 'javaslat';
     const jh = document.createElement('h3'); jh.textContent = 'Javaslat'; jl.append(jh);
     for (const j of javaslatok(m)) { const p = document.createElement('p'); p.textContent = j; jl.append(p); }
     el.append(jl);
     for (const p of m) { const d = document.createElement('div'); d.className = 'tervsor';
-      d.innerHTML = '<b></b><span></span>'; d.children[0].textContent = (p.datum ? p.datum.slice(5).replace('-', '.') + ' ' : '') + p.temaNev;
+      d.innerHTML = '<b></b><span></span>'; d.children[0].textContent = (p.kint ? '✓ kiment · ' : '') + (p.datum ? p.datum.slice(5).replace('-', '.') + ' ' : '') + p.temaNev;
       d.children[1].textContent = `${p.eleres} elérés · ${p.reakcio} reakció` + (p.cta ? ` · ${p.kattintas} kattintás` : ''); el.append(d); }
   }
+
+  // ── BEMUTATÓ képtár: a teszthez témánként egy kész fotó (bemutato/lista.json), egy koppintással betölthető.
+  let DEMO = {};
+  fetch('bemutato/lista.json').then(r => r.ok ? r.json() : {}).then(j => { DEMO = (j && j.kepek) || {}; demoGombok(); }).catch(() => {});
+  async function demoBetolt(tema) {
+    const d = DEMO[tema]; if (!d) return false;
+    try {
+      const b = await (await fetch('bemutato/' + d.fajl)).blob();
+      const f = new File([b], 'bemutato-' + d.fajl, { type: 'image/jpeg', lastModified: Date.now() });
+      const dt = new DataTransfer(); dt.items.add(f); const inp = $('file'); inp.files = dt.files;
+      inp.dispatchEvent(new Event('change', { bubbles: true })); setTimeout(() => { try { temaValaszt(tema); } catch (e) {} }, 400);
+      return true;
+    } catch (e) { return false; }
+  }
+  function demoGombok() {
+    const el = $('demoKepek'); if (!el) return; el.textContent = '';
+    const temak = (K.temak || []).filter(t => DEMO[t.id]);
+    $('demoW').hidden = !temak.length;
+    for (const t of temak) { const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = t.nev;
+      b.addEventListener('click', () => demoBetolt(t.id)); el.append(b); }
+  }
+  window.__terv.demoBetolt = demoBetolt;
+  // Szimulált kiküldés: a poszt témája és ideje a „kint” listába; az Eredmény ezeket is mutatja.
+  const KINT = 'akvposzt-kint';
+  const kint = { get() { try { return JSON.parse(localStorage.getItem(KINT) || '[]'); } catch (e) { return []; } },
+                 add(x) { try { const l = kint.get(); l.unshift(x); localStorage.setItem(KINT, JSON.stringify(l.slice(0, 50))); } catch (e) {} } };
+  if ($('demoKi')) $('demoKi').addEventListener('click', () => {
+    const tid = ((document.querySelector('#temak .chip[aria-pressed=true]') || {}).dataset || {}).t || '';
+    const t = (K.temak || []).find(x => x.id === tid) || {};
+    const szoveg = ($('kom') && $('kom').value) || '';
+    kint.add({ datum: new Date().toISOString().slice(0, 10), tema: tid, temaNev: t.nev || 'poszt', cta: /https?:\/\//.test(szoveg), lepes: 'kiment', kint: true });
+    $('demoKiSt').textContent = 'Kiment (bemutató). Nézd meg az Eredmény fülön.';
+  });
+  window.__terv.kint = kint;
   window.__terv.szimulal = szimulal; window.__terv.javaslatok = javaslatok;
   indit();
 })();

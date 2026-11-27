@@ -12,5 +12,6 @@ assert h.count(tag)==1,'a betolto.js-tag pontosan egyszer kell'
 t=(src/'tervezo.js').read_text(encoding='utf8')
 h=h.replace(tag,'<script>\n'+a+'</script>\n<script>\n'+t+'</script>')
 (out/'index.html').write_text(h,encoding='utf8')
+shutil.copytree(src/'bemutato',out/'bemutato',dirs_exist_ok=True)
 (out/'felismero').mkdir(exist_ok=True); shutil.copy(src/'felismero'/'helyek-emb.json',out/'felismero'/'helyek-emb.json')
 print('index.html',hashlib.sha256(h.encode()).hexdigest()[:8],len(h.encode()))

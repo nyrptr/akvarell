@@ -1,0 +1,33 @@
+{
+ "megjegyzes": "BEMUTATÓ képtár a teszthez: az Akvarell saját fotói (hazak/akvarell/kepek), emberek nélkül; élesben az ügyfél saját fotói jönnek.",
+ "kepek": {
+  "kilatas": {
+   "fajl": "kilatas.jpg",
+   "forras": "Akvarell-Zebegeny-webnagy-90-scaled.jpg"
+  },
+  "terasz": {
+   "fajl": "terasz.jpg",
+   "forras": "Karpathy-terasz.jpg"
+  },
+  "jacuzzi": {
+   "fajl": "jacuzzi.jpg",
+   "forras": "Jakuzzi.jpg"
+  },
+  "haz": {
+   "fajl": "haz.jpg",
+   "forras": "Jakuzzi-2.jpg"
+  },
+  "apartman": {
+   "fajl": "apartman.jpg",
+   "forras": "Karpathy-apartman-nappali.jpg"
+  },
+  "templom": {
+   "fajl": "templom.jpg",
+   "forras": "templom-4fc7cce1-10474514.jpg"
+  },
+  "duna": {
+   "fajl": "duna.jpg",
+   "forras": "akvarell_apartmanhaz_zebegeny_szallas_galeria_006-1.jpg"
+  }
+ }
+}
