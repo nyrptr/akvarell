@@ -222,10 +222,11 @@ function altFriss(){const l=S.lang,ns=nsAkt(),h=cim(S.tema,l),z=/Zebegény/.test
 $('cpA').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('alt').value);$('st2').textContent='Képleírás másolva.'}catch(e){$('alt').select();$('st2').textContent='Jelöld ki és másold.'}});
 
 /* ===== Reel: 1080×1920, a telefonon rögzítve ===== */
-const REELST=[['akvarell','Akvarell keret'],['tiszta','Tiszta'],['sav','Sáv alul']];
+const REELST=[['akvarell','Akvarell keret'],['tiszta','Tiszta'],['sav','Sáv alul'],['polaroid','Polaroid'],['kepeslap','Képeslap'],['film','Filmszalag'],['ecset','Ecsetvonás']];
 const ZENE=[['','Nincs zene'],['reggel','Reggeli: Grieg, Reggel'],['nyugodt','Csendes zongora: Bach, Ária'],['este','Esti vonósok: Borodin, Notturno'],['vidam','Vidám: Mendelssohn, Olasz szimfónia']];
-const ANIM=[['zoom','Lassú ráközelítés'],['beuszo','Beúszó'],['beugro','Beugró'],['attunes','Áttűnés']];
-S.reelSt=store.get('reelst','akvarell');S.anim=store.get('anim','zoom');S.zene=store.get('zene','reggel');
+const ANIM=[['vegyes','Vegyes (mindig más)'],['zoom','Lassú ráközelítés'],['pasztazas','Pásztázás'],['attunes','Áttűnés'],['beuszo','Beúszó'],['csuszas','Felcsúszó'],['beugro','Beugró'],['forgo','Forgó'],['redony','Függöny'],['csikok','Csíkok'],['kor','Kör'],['folt','Akvarellfolt'],['villanas','Fényvillanás']];
+const VEGYES=['attunes','beuszo','folt','csuszas','kor','redony','beugro','csikok','forgo','villanas'];
+S.reelSt=store.get('reelst','akvarell');S.anim=store.get('anim','vegyes');S.zene=store.get('zene','reggel');
 (function(){const w=$('zenew');for(const [id,nev] of ZENE){const b=document.createElement('button');b.className='chip';b.textContent=nev;b.setAttribute('aria-pressed',S.zene===id);b.addEventListener('click',()=>{S.zene=id;store.set('zene',id);for(const x of w.children)x.setAttribute('aria-pressed',x===b);zeneProba()});w.append(b)}})();
 const ZBUF={};let ACTX=null,ZPROBA=null;
 async function zeneBuf(id){if(ZBUF[id])return ZBUF[id];const r=await fetch(new URL('zene/'+id+'.mp3',location.href).href);if(!r.ok)throw new Error('zene nem tölthető');ZBUF[id]=await ACTX.decodeAudioData(await r.arrayBuffer());return ZBUF[id]}
@@ -244,21 +245,40 @@ function kepZ(g,im,x,y,w,h,z,dx,dy){const r=im.width/im.height,tr=w/h;let sw=im.
 const REEL={W:1080,H:1920,top:270,bot:672,side:65,veg:2.8};
 function reelKocka(g,t,T,kepek,sorok,st){const {W,H,top,side}=REEL,alja=H-REEL.bot,kepT=T-REEL.veg,n=kepek.length,per=kepT/n,r=rnd(1180),SERIF='italic 600 PX "Cormorant Garamond", Georgia, serif',SANS='600 PX Figtree, sans-serif';
  g.save();g.globalAlpha=1;g.textAlign='center';g.textBaseline='alphabetic';
- const an=S.anim||'zoom',TR=Math.min(.6,per*.3),ki=q=>1-Math.pow(1-q,3),back=q=>1+2.70158*Math.pow(q-1,3)+1.70158*Math.pow(q-1,2);
+ const an0=S.anim||'zoom',TR=Math.min(.7,per*.32),ki=q=>1-Math.pow(1-q,3),back=q=>1+2.70158*Math.pow(q-1,3)+1.70158*Math.pow(q-1,2);
  const foto=(x,y,w,h)=>{const tt=Math.min(t,kepT-.001),i=Math.min(n-1,Math.floor(tt/per)),u=(tt-i*per)/per,ts=tt-i*per;
-  const egy=(j,k,al,ox,sc)=>{g.save();g.globalAlpha=al;g.beginPath();g.rect(x,y,w,h);g.clip();if(ox||sc!==1){g.translate(x+w/2+ox*w,y+h/2);g.scale(sc,sc);g.translate(-(x+w/2),-(y+h/2))}
-   if(an==='zoom')kepZ(g,kepek[j],x,y,w,h,1.03+.12*k,(j%2?-1:1)*(k-.5)*.5,-.15*(k-.5));else kepZ(g,kepek[j],x,y,w,h,1.02+.05*k,0,0);g.restore()};
-  if(i>0&&ts<TR){const q=ts/TR;egy(i-1,1,1,0,1);
-   if(an==='beuszo')egy(i,u,1,1-ki(q),1);else if(an==='beugro'){g.fillStyle='rgba(20,30,25,'+(.35*q)+')';g.fillRect(x,y,w,h);egy(i,u,Math.min(1,q*2.5),0,.6+.4*back(q))}else egy(i,u,q,0,1)}
-  else egy(i,u,1,0,1)};
+  const an=an0==='vegyes'?VEGYES[(i+3)%VEGYES.length]:an0;
+  const mozg=(j,k)=>an0==='pasztazas'?[1.18,(j%2?1:-1)*(k-.5)*1.6,0]:(an0==='zoom'||an0==='vegyes')?[1.03+.12*k,(j%2?-1:1)*(k-.5)*.5,-.15*(k-.5)]:[1.02+.05*k,0,0];
+  const egy=(j,k,o={})=>{g.save();g.globalAlpha=o.al==null?1:o.al;g.beginPath();g.rect(x,y,w,h);g.clip();if(o.clip){g.beginPath();o.clip();g.clip()}
+   if(o.ox||o.oy||o.sc||o.rot){g.translate(x+w/2+(o.ox||0)*w,y+h/2+(o.oy||0)*h);if(o.rot)g.rotate(o.rot);if(o.sc)g.scale(o.sc,o.sc);g.translate(-(x+w/2),-(y+h/2))}
+   const [z,dx,dy]=mozg(j,k);kepZ(g,kepek[j],x,y,w,h,z,dx,dy);g.restore()};
+  if(!(i>0&&ts<TR)){egy(i,u);return}
+  const q=ts/TR,e=ki(q),cx=x+w/2,cy=y+h/2,R0=Math.hypot(w,h)/2;egy(i-1,1);
+  switch(an){
+   case 'beuszo':egy(i,u,{ox:1-e});break;
+   case 'csuszas':egy(i,u,{oy:1-e});break;
+   case 'beugro':g.fillStyle='rgba(20,30,25,'+(.35*q)+')';g.fillRect(x,y,w,h);egy(i,u,{al:Math.min(1,q*2.5),sc:.6+.4*back(q)});break;
+   case 'forgo':egy(i,u,{al:Math.min(1,q*2),rot:(1-e)*-.12,sc:.8+.2*e});break;
+   case 'redony':egy(i,u,{clip:()=>g.rect(x,y,w*e,h)});break;
+   case 'csikok':egy(i,u,{clip:()=>{const N=6;for(let k=0;k<N;k++){const ek=ki(Math.max(0,Math.min(1,q*1.6-k*.1)));g.rect(x+k*w/N,y,w/N+1,h*ek)}}});break;
+   case 'kor':egy(i,u,{clip:()=>g.arc(cx,cy,R0*e+1,0,6.2832)});break;
+   case 'folt':egy(i,u,{clip:()=>{const rr=rnd(77+i);for(let k=0;k<7;k++){const a=k*.9,d=R0*.35*(k?1:0)*rr(),r=R0*(.25+.35*rr())*e*1.6;g.moveTo(cx+Math.cos(a)*d+r,cy+Math.sin(a)*d);g.arc(cx+Math.cos(a)*d,cy+Math.sin(a)*d,r,0,6.2832)}}});break;
+   case 'villanas':{const f=q<.5?q*2:2-q*2;if(q>=.5)egy(i,u);g.fillStyle='rgba(255,252,244,'+f+')';g.fillRect(x,y,w,h);break}
+   default:egy(i,u,{al:q})}};
  let clipT=null;
- if(st==='akvarell'){g.fillStyle='#F4EEE3';g.fillRect(0,0,W,H);papir(g,W,H,r);folt(g,140,top-60,190,110,'#B8553A',.16,r);folt(g,W-110,alja+260,170,90,'#3F5646',.12,r);
+ if(st==='polaroid'||st==='kepeslap'){g.fillStyle=st==='polaroid'?'#E9E4DA':'#F2ECDF';g.fillRect(0,0,W,H);papir(g,W,H,r);const X=70,Y=top-40,PW=W-140,PH=alja-Y+40;
+  g.save();g.translate(W/2,(Y+PH/2));g.rotate(st==='polaroid'?-.015:0);g.shadowColor='rgba(0,0,0,.25)';g.shadowBlur=24;g.shadowOffsetY=8;g.fillStyle='#FFFDF8';g.fillRect(-PW/2-22,-PH/2-22,PW+44,PH+(st==='polaroid'?150:44));g.shadowColor='transparent';g.translate(-W/2,-(Y+PH/2));foto(X,Y,PW,PH);g.restore();
+  if(st==='kepeslap'){g.save();g.translate(W-170,top+40);g.rotate(.06);g.fillStyle='#FFFDF8';g.fillRect(0,0,110,130);g.strokeStyle='#B8553A';g.setLineDash([6,5]);g.lineWidth=3;g.strokeRect(8,8,94,114);g.setLineDash([]);g.fillStyle='#3F5646';g.font=SANS.replace('PX','18px');g.textAlign='center';g.fillText('ZEBEGÉNY',55,72);g.restore()}}
+ else if(st==='film'){g.fillStyle='#141414';g.fillRect(0,0,W,H);const X=86,Y=0,PW=W-172,PH=H;foto(X,Y,PW,PH);g.fillStyle='#F4EEE3';for(let yy=20;yy<H;yy+=64){g.fillRect(26,yy,34,40);g.fillRect(W-60,yy,34,40)}}
+ else if(st==='ecset'){g.fillStyle='#F6F0E5';g.fillRect(0,0,W,H);papir(g,W,H,r);folt(g,180,top-40,260,140,'#9FB7A8',.3,r);folt(g,W-160,alja+200,240,130,'#E0A48C',.28,r);
+  const X=60,Y=top-90,PW=W-120,PH=H-120-Y;g.save();g.beginPath();for(let k=0;k<=320;k++){const q=k/80;const jj=14*Math.sin(q*13+1)+8*Math.sin(q*37+2)+5*Math.sin(q*71);const [px,py]=q<1?[X+PW*q,Y+jj]:q<2?[X+PW+jj,Y+PH*(q-1)]:q<3?[X+PW*(3-q),Y+PH+jj]:[X+jj,Y+PH*(4-q)];k?g.lineTo(px,py):g.moveTo(px,py)}g.closePath();g.clip();foto(X,Y,PW,PH);g.restore()}
+ else if(st==='akvarell'){g.fillStyle='#F4EEE3';g.fillRect(0,0,W,H);papir(g,W,H,r);folt(g,140,top-60,190,110,'#B8553A',.16,r);folt(g,W-110,alja+260,170,90,'#3F5646',.12,r);
   const X=48,Y=top-120,PW=W-96,PH=H-60-Y;g.save();g.beginPath();const ph=[1.3,2.1,4.4],j=q=>4*Math.sin(q*9+ph[0])+2.5*Math.sin(q*23+ph[1])+1.4*Math.sin(q*51+ph[2]);
   const pt=q=>q<1?[X+PW*q,Y+j(q)]:q<2?[X+PW+j(q),Y+PH*(q-1)]:q<3?[X+PW*(3-q),Y+PH+j(q)]:[X+j(q),Y+PH*(4-q)];for(let i=0;i<=240;i++){const [x,y]=pt(i/60);i?g.lineTo(x,y):g.moveTo(x,y)}g.closePath();g.clip();foto(X,Y,PW,PH);g.restore()}
  else foto(0,0,W,H);
  if(st==='sav'){const gr=g.createLinearGradient(0,alja-520,0,H);gr.addColorStop(0,'rgba(20,30,25,0)');gr.addColorStop(.35,'rgba(20,30,25,.6)');gr.addColorStop(1,'rgba(20,30,25,.8)');g.fillStyle=gr;g.fillRect(0,alja-520,W,H-alja+520)}
  /* felső kis felirat a biztonsági sávon belül */
- if(t<kepT){if(st==='akvarell'){g.save();g.translate(W/2,top+10);g.scale(.62,.62);felirat(g,0,0,'center',rnd(5));g.restore()}
+ if(t<kepT){if(['akvarell','polaroid','kepeslap','ecset'].includes(st)){g.save();g.translate(W/2,top+10);g.scale(.62,.62);felirat(g,0,0,'center',rnd(5));g.restore()}
   else{g.fillStyle='rgba(255,255,255,.92)';g.shadowColor='rgba(0,0,0,.45)';g.shadowBlur=12;g.font=SERIF.replace('PX','58px');g.fillText('Akvarell',W/2,top+20);g.font=SANS.replace('PX','20px');if('letterSpacing' in g)g.letterSpacing='3px';g.fillText('APARTMANHÁZ · ZEBEGÉNY',W/2,top+52);if('letterSpacing' in g)g.letterSpacing='0px';g.shadowBlur=0}}
  /* feliratok mondatonként */
  if(t<kepT&&sorok.length){const ns=sorok.length,ps=kepT/ns,i=Math.min(ns-1,Math.floor(t/ps)),u=(t-i*ps)/ps,a=Math.max(0,Math.min(1,u/.12,(1-u)/.1));
@@ -271,9 +291,21 @@ function reelKocka(g,t,T,kepek,sorok,st){const {W,H,top,side}=REEL,alja=H-REEL.b
   folt(g,W*.3,H*.36,260,140,'#9FB7A8',.22,rnd(8));folt(g,W*.72,H*.58,220,120,'#E0A48C',.22,rnd(9));
   felirat(g,W/2,H*.47,'center',rnd(5));g.fillStyle='#2F4237';g.font=SERIF.replace('PX','52px');g.fillText(cim(S.tema,S.lang),W/2,H*.47+150);g.globalAlpha=1}
  g.restore()}
-let ELO=null;function reelElo(){if(S.form!=='reel'||!img)return;let cv=$('reelElo');if(!cv){cv=document.createElement('canvas');cv.id='reelElo';cv.width=540;cv.height=960;cv.style.cssText='width:100%;max-width:300px;border-radius:12px;display:block;margin:8px 0';$('reelB').before(cv)}
+let ELO=null;function reelElo(){if(S.form!=='reel'||!img)return;let cv=$('reelElo');if(!cv){cv=document.createElement('canvas');cv.id='reelElo';cv.width=540;cv.height=960;cv.style.cssText='width:100%;max-width:300px;border-radius:12px;display:block;margin:8px 0';$('reelEloHely').append(cv)}
  const c2=document.createElement('canvas');c2.width=REEL.W;c2.height=REEL.H;const g2=c2.getContext('2d'),g=cv.getContext('2d');const kepek=[img,...EXTRA.map(e=>e.img)],sorok=reelSorok(),T=Math.min(22,Math.max(8,sorok.length*3.4+REEL.veg,kepek.length*2.6+REEL.veg));
  if(ELO)cancelAnimationFrame(ELO);const t0=performance.now();const lep=()=>{if(S.form!=='reel'||S.lep!==3){ELO=null;return}const t=((performance.now()-t0)/1000)%T;reelKocka(g2,t,T,kepek,sorok,S.reelSt);g.drawImage(c2,0,0,540,960);ELO=requestAnimationFrame(lep)};ELO=requestAnimationFrame(lep)}
+
+const SABLON=[['nyugodt','Nyugodt reggel','akvarell · lassú · Grieg',{st:'akvarell',an:'zoom',z:'reggel'}],['este','Esti hangulat','ecset · áttűnés · Borodin',{st:'ecset',an:'attunes',z:'este'}],['vidam','Vidám nap','tiszta · vegyes · Mendelssohn',{st:'tiszta',an:'vegyes',z:'vidam'}],['lap','Képeslap','képeslap · beúszó · Bach',{st:'kepeslap',an:'beuszo',z:'nyugodt'}],['mozi','Mozi','filmszalag · villanás · Mendelssohn',{st:'film',an:'villanas',z:'vidam'}],['muvesz','Művész','ecset · akvarellfolt · Bach',{st:'ecset',an:'folt',z:'nyugodt'}],['emlek','Emlékkönyv','polaroid · forgó · Grieg',{st:'polaroid',an:'forgo',z:'reggel'}]];
+function reelBeall(o){if(o.st)S.reelSt=o.st;if(o.an)S.anim=o.an;if(o.z!=null&&ZENE.some(x=>x[0]===o.z))S.zene=o.z;store.set('reelst',S.reelSt);store.set('anim',S.anim);store.set('zene',S.zene);
+ for(const [w,v] of [['reelw',S.reelSt],['animw',S.anim],['zenew',S.zene]])for(const b of $(w).children)b.setAttribute('aria-pressed',b.dataset.v===v);
+ for(const b of $('sablonw').children){const sb=SABLON.find(x=>x[0]===b.dataset.v)[3];b.setAttribute('aria-pressed',sb.st===S.reelSt&&sb.an===S.anim&&sb.z===S.zene)}
+ const nv=(L,v)=>(L.find(x=>x[0]===v)||['',''])[1];$('reelOsz').textContent=`Most: ${nv(REELST,S.reelSt)} · ${nv(ANIM,S.anim)} · ${S.zene?nv(ZENE,S.zene):'zene nélkül'}`;reelElo()}
+(function(){const w=$('sablonw');for(const [id,nev,al,o] of SABLON){const b=document.createElement('button');b.type='button';b.className='sabl chip';b.dataset.v=id;b.innerHTML=`${nev}<small>${al}</small>`;b.addEventListener('click',()=>{reelBeall(o);if(o.z)zeneProba()});w.append(b)}
+ for(const [w,L] of [['reelw',REELST],['animw',ANIM],['zenew',ZENE]])[...$(w).children].forEach((b,k)=>b.dataset.v=L[k][0]);
+ for(const f of document.querySelectorAll('.ful[data-f]'))f.addEventListener('click',()=>{for(const g of document.querySelectorAll('.ful[data-f]')){g.setAttribute('aria-selected',g===f);$(g.dataset.f).hidden=g!==f}});
+ $('kever').addEventListener('click',()=>{const r=L=>L[Math.floor(Math.random()*L.length)][0];reelBeall({st:r(REELST),an:r(ANIM),z:r(ZENE.filter(x=>x[0]))})});
+ for(const w of ['reelw','animw','zenew'])$(w).addEventListener('click',()=>setTimeout(()=>reelBeall({}),0));
+ reelBeall({})})();
 function reelSorok(){const c=S.cands&&S.cands[S.sel];if(c&&c.reel&&c.reel[S.lang]&&c.reel[S.lang].length)return c.reel[S.lang];
  return mondatok($('txt').value).filter(x=>x.length<=120).slice(0,4)}
 async function reelKeszit(){if(!img){$('reelSt').textContent='Előbb a fotó.';return}

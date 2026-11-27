@@ -389,3 +389,10 @@
 - 4. lépés: az ellenőrzés lenyílóban („minden rendben ✓”, csak hibánál nyílik ki); közzétételi útmutató és képleírás a „Segítség” alatt; készlet/mentés külön „Extra” panelben.
 - Reel zenével: két közkincs (Public domain) Musopen-felvétel a Wikimedia Commonsról (Grieg, Bach, Borodin, Mendelssohn), 25 mp, MP3, be- és kiúsztatva. Forrás: fotoposzt/zene/FORRAS.txt.
 - Teszt: 13392 poszt 0 hiba; reel zenével (H.264 + hang) a CSP alatt is.
+
+## Fotóposzt v15 (2026-11-27)
+- Reel-szerkesztő a mobil videószerkesztők mintájára: előnézet felül, alatta vízszintesen görgethető sablonok (Nyugodt reggel, Esti hangulat, Vidám nap, Képeslap, Mozi, Művész, Emlékkönyv), fülek (Keret | Mozgás | Zene) egy-egy görgethető sorral, „Kever” gomb véletlen kombinációhoz, egysoros összegzés.
+- 7 reel-keret (+ polaroid, képeslap, filmszalag, ecsetvonás), 13 mozgás (+ vegyes, pásztázás, felcsúszó, forgó, függöny, csíkok, kör, akvarellfolt, fényvillanás). Alapértelmezés: vegyes.
+- Zeneminta HTML-hanggal (iPhone némítókapcsoló), hangsáv-ellenőrzés a kész videóban.
+- Gyár: fotoposzt_kapu 0 HIBA, 13392 poszt 0 hiba.
+- Péter iránya (AI-javaslat a megvalósításra): a motor ne Akvarell-specifikus legyen. Következő lépés: a tudáscsomag (témák, tények, minták, helyek, beágyazások, márka/logó/színek) külön csomagfájlba kerül, a motor ?csomag= alapján tölti; az Akvarell az első csomag.
