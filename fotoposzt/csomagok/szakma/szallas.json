@@ -37,6 +37,13 @@
    "garantált",
    "csak ma",
    "a legjobb"
+  ],
+  "celcsoportok": [
+   "párok",
+   "családok",
+   "baráti társaság",
+   "kirándulók",
+   "külföldi vendégek"
   ]
  },
  "tudtad": {

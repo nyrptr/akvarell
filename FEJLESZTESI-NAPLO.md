@@ -464,3 +464,10 @@
 - Tesztek: `tools/proba/fotoposzt_t27.mjs` (JS = Python fésülés = beágyazott készlet; felülírás id szerint) 0 HIBA; `fotoposzt_t28.py` (böngésző: ?csomag=akvarell, hibás név) 0 HIBA; fotoposzt_kapu 0 HIBA (benne a csomag-ellenőrzés); t24–t26 0 HIBA.
 - Nem tesztelt: a claude.ai-os artifact nincs újraépítve (a motor viselkedése nem változott); a Tervező kódja a következő lépés.
 - KESZ-TERMEK.md: Meta-kockázat pontosítva (kézi út ügyfelenként, közös kapu csak a gépi appnál; a mag Meta nélkül is megy), tartalom-zár.
+
+## 2026-11-27 – ZSEBMARKETING: Tervező 1. változat + Meta-döntés rögzítve
+- Péter: „Mehet: telefon-központú modell a hat kiegészítéssel” → KESZ-TERMEK.md DÖNTÉS szakasz (a Meta-bekötés a Tervező után ebből épül).
+- Új: `fotoposzt/tervezo.js` – Poszt/Terv mód; három kérdés (cél, kinek, heti hány) a szakmacsomagból (`szakma.celok`, `celcsoportok` – új mező); 4 hetes posztnaptár (hétvége 10:00, hétköznap 19:00 – AI-javaslat, a mérés felülírja); ház- és környék-témák váltakoznak; vevőút-lépés soronként; hívás (foglalási link) csak a „megnézi” / „ír vagy foglal” lépésnél; képtartalék: témához nincs anyag az évszakban → olyan téma, amihez van, az eredeti fotókérésbe kerül; fotólista a szakmából, időjárás csak „ha arra jársz” lehetőségként; mentés localStorage-ba; sorra koppintás → Poszt mód azzal a témával. AI nem fut.
+- `betolto.js` az app.js után tölti; `sw.js` alapkészlet + `fotoposzt_pwa.py` hash tartalmazza; `fotoposzt_artifact.py` beágyazza.
+- Teszt: `tools/proba/fotoposzt_t29.py` (390 és 1280 px; kérdés nélkül tiltott gomb; heti 2 = 8 sor; hívás aránya és helye; fotókérés; lehetőség; kicsúszás; 44 px; naptar() tél/heti 5 = 20 sor, képtartalék csak anyaggal rendelkező témára; újratöltés után megmarad; koppintás → Poszt) 0 HIBA; mind.sh része. t24–t28, kapu 0 HIBA.
+- Nem tesztelt: valódi telefon; a claude.ai-os artifact nincs újra kiadva; helyzetkép most csak évszak (időjárás/hírek a következő körben a meglévő `/api/taj`-ból).

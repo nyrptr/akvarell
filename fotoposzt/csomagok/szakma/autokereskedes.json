@@ -1,13 +1,56 @@
 {
  "szakma_meta": {
-  "id": "autokereskedes", "nev": "Autókereskedő",
-  "celok": ["érdeklődő üzenet", "próbaút-időpont", "telefonhívás"],
-  "vevout": ["meglát", "elképzeli magát benne", "megnézi az adatokat", "ír vagy hív", "eljön próbautra", "visszajön / ajánl"],
-  "temak_alap": ["új érkezés", "körbejárás", "belső tér", "részlet", "átadás", "telephely"],
-  "fotolista": ["az autó szemből, oldalról, hátulról, 45 fokban", "műszerfal és ülések", "csomagtartó", "kerék és gumi", "kilométeróra", "átadás a vevőnek (hozzájárulással)"],
-  "cta": "érdeklődés", "tilos": ["kommentkérés", "garantált", "csak ma", "a legjobb", "hitel-ajánlat"]
+  "id": "autokereskedes",
+  "nev": "Autókereskedő",
+  "celok": [
+   "érdeklődő üzenet",
+   "próbaút-időpont",
+   "telefonhívás"
+  ],
+  "vevout": [
+   "meglát",
+   "elképzeli magát benne",
+   "megnézi az adatokat",
+   "ír vagy hív",
+   "eljön próbautra",
+   "visszajön / ajánl"
+  ],
+  "temak_alap": [
+   "új érkezés",
+   "körbejárás",
+   "belső tér",
+   "részlet",
+   "átadás",
+   "telephely"
+  ],
+  "fotolista": [
+   "az autó szemből, oldalról, hátulról, 45 fokban",
+   "műszerfal és ülések",
+   "csomagtartó",
+   "kerék és gumi",
+   "kilométeróra",
+   "átadás a vevőnek (hozzájárulással)"
+  ],
+  "cta": "érdeklődés",
+  "tilos": [
+   "kommentkérés",
+   "garantált",
+   "csak ma",
+   "a legjobb",
+   "hitel-ajánlat"
+  ],
+  "celcsoportok": [
+   "első autót vevők",
+   "családosok",
+   "vállalkozók",
+   "cserélni akarók"
+  ]
  },
- "tudtad": {"hu": "Tudtad?", "en": "Did you know?", "de": "Wusstest du?"},
+ "tudtad": {
+  "hu": "Tudtad?",
+  "en": "Did you know?",
+  "de": "Wusstest du?"
+ },
  "zaro": [],
  "komment": []
 }

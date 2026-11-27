@@ -4,7 +4,9 @@
 // Régi egyrétegű csomag (csomagok/<név>.json) is betölthető. Hiba esetén a lapba ágyazott (Akvarell) készlet fut.
 (() => {
   const nev = new URLSearchParams(location.search).get('csomag');
-  const indit = () => { const s = document.createElement('script'); s.src = 'app.js'; document.body.append(s); };
+  const indit = () => { const s = document.createElement('script'); s.src = 'app.js';
+    s.onload = () => { const t = document.createElement('script'); t.src = 'tervezo.js'; document.body.append(t); };
+    document.body.append(s); };
   const hiba = (szoveg) => {
     const p = document.createElement('p');
     p.className = 'note'; p.setAttribute('role', 'alert');
