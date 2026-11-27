@@ -5,9 +5,16 @@
   const $ = (id) => document.getElementById(id);
   const K = JSON.parse($('keszlet').textContent);
   const SZ = K.szakma || {};
-  const T_KULCS = 'akvposzt-terv';
-  const tar = { get() { try { return JSON.parse(localStorage.getItem(T_KULCS) || 'null'); } catch (e) { return null; } },
-                set(v) { try { localStorage.setItem(T_KULCS, JSON.stringify(v)); } catch (e) {} } };
+  // Kampányok (11-27): a terv kampány – neve, célja; több is lehet, egy az aktív. A régi egy-tervet átveszi.
+  const KAMP = 'akvposzt-kampanyok', T_KULCS = 'akvposzt-terv';
+  const kamp = {
+    get() { let v = null; try { v = JSON.parse(localStorage.getItem(KAMP) || 'null'); } catch (e) {}
+      if (!v) { v = { lista: [], aktiv: null }; try { const r = JSON.parse(localStorage.getItem(T_KULCS) || 'null'); if (r) { r.id = 'k1'; r.nev = r.nev || 'Első kampány'; v.lista.push(r); v.aktiv = 'k1'; } } catch (e) {} }
+      return v; },
+    set(v) { try { localStorage.setItem(KAMP, JSON.stringify(v)); } catch (e) {} } };
+  const tar = { get() { const v = kamp.get(); return v.lista.find(k => k.id === v.aktiv) || null; },
+                set(t) { const v = kamp.get(); t.id = 'k' + Date.now(); v.lista.unshift(t); v.aktiv = t.id; kamp.set(v); },
+                valaszt(id) { const v = kamp.get(); v.aktiv = id; kamp.set(v); } };
 
   const EVSZAK = ['tel', 'tel', 'tavasz', 'tavasz', 'tavasz', 'nyar', 'nyar', 'nyar', 'osz', 'osz', 'osz', 'tel'];
   const EVSZAK_NEV = { tel: 'tél', tavasz: 'tavasz', nyar: 'nyár', osz: 'ősz' };
@@ -62,7 +69,9 @@
     // Fotólista a szakmából: teljesíthető, nem időjárásfüggő kérések; időjárás csak lehetőségként.
     for (const f of (SZ.fotolista || []).slice(0, 4)) foto.set('sz-' + f, { mit: f, tipus: 'kérés' });
     foto.set('lehetoseg', { mit: 'Ha köd, hó vagy különleges fény jön: egy kép ugyanarról a nézetről (nem kötelező)', tipus: 'lehetőség' });
-    return { beall, keszult: new Date().toISOString().slice(0, 10), helyek, foto: [...foto.values()] };
+    const ev0 = helyek.length ? EVSZAK_NEV[helyek[0].evszak] : '';
+    const nev = `${ev0.charAt(0).toUpperCase() + ev0.slice(1)} · ${beall.cel} · ${helyek.length ? helyek[0].datum.slice(5).replace('-', '.') + '-tól' : ''}`;
+    return { nev, beall, keszult: new Date().toISOString().slice(0, 10), helyek, foto: [...foto.values()] };
   }
 
   const chipek = (hova, lista, kulcs) => {
@@ -78,11 +87,23 @@
   const DEMO_VAN = (t) => !!(typeof DEMO !== 'undefined' && DEMO[t]);
   const gombFriss = () => { $('tervKeszit').disabled = !(allapot.cel && allapot.kinek && allapot.heti); };
 
+  // Teljesült-e: van-e kint poszt ugyanarról a témáról ±3 napon belül; ha nincs és elmúlt a nap: elmaradt.
+  function statusz(p, ma) {
+    const t = new Date(p.datum).getTime(), most = ma ? new Date(ma).getTime() : Date.now();
+    const k = (typeof kint !== 'undefined' ? kint.get() : []).some(x => x.tema === p.tema && Math.abs(new Date(x.datum).getTime() - t) <= 3 * 864e5);
+    if (k) return 'kint';
+    return t < most - 864e5 ? 'elmaradt' : 'esedekes';
+  }
   function rajzol(terv) {
     const el = $('tervLista'); el.textContent = '';
     if (!terv) { el.hidden = true; return; }
     el.hidden = false;
-    const h = document.createElement('h3'); h.textContent = `4 hetes terv · cél: ${terv.beall.cel} · ${terv.beall.kinek} · heti ${terv.beall.heti}`; el.append(h);
+    const v = kamp.get();
+    if (v.lista.length > 1) { const w = document.createElement('div'); w.className = 'row'; w.id = 'kampValaszt';
+      for (const k of v.lista) { const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = k.nev || 'Kampány';
+        b.setAttribute('aria-pressed', String(k.id === v.aktiv)); b.addEventListener('click', () => { tar.valaszt(k.id); rajzol(tar.get()); }); w.append(b); }
+      el.append(w); }
+    const h = document.createElement('h3'); h.textContent = `${terv.nev || 'Kampány'} · ${terv.beall.kinek} · heti ${terv.beall.heti}`; el.append(h);
     let het = -1;
     terv.helyek.forEach((p, i) => {
       const w = Math.floor((new Date(p.datum) - new Date(terv.helyek[0].datum)) / 6048e5);
@@ -90,6 +111,7 @@
       const b = document.createElement('button'); b.type = 'button'; b.className = 'tervsor';
       b.innerHTML = '<b></b><span></span><small></small>';
       b.children[0].textContent = `${p.datum.slice(5).replace('-', '.')} ${p.nap} ${p.ido}`;
+      const sz = statusz(p); b.dataset.st = sz; b.children[0].textContent += ' · ' + ({ kint: '✓ kint', esedekes: 'esedékes', elmaradt: 'elmaradt' })[sz];
       b.children[1].textContent = p.temaNev + (p.cta ? ' · hívás a foglalásra' : '');
       b.children[2].textContent = `Vevőút: ${p.lepes}` + (p.csere ? ' · képtartalék (az eredeti témához fotó kell)' : '');
       b.addEventListener('click', () => { try { modValt('poszt'); lep(1); if (p.tema && !(window.__terv.demoBetolt && DEMO_VAN(p.tema))) temaValaszt(p.tema); else if (p.tema) window.__terv.demoBetolt(p.tema); } catch (e) {} });
@@ -116,15 +138,26 @@
     chipek('tervKinek', SZ.celcsoportok || ['mindenki'], 'kinek');
     chipek('tervHeti', ['2', '3', '5'], 'heti');
     $('tervKeszit').addEventListener('click', () => {
-      const t = naptar({ cel: allapot.cel, kinek: allapot.kinek, heti: +allapot.heti }); tar.set(t); rajzol(t);
-      $('tervSt').textContent = 'Kész a terv. Egy sorra koppintva elkészítheted azt a posztot.';
+      const t = naptar({ cel: allapot.cel, kinek: allapot.kinek, heti: +allapot.heti }); tar.set(t); rajzol(tar.get());
+      $('tervSt').textContent = 'Új kampány kész. Egy sorra koppintva elkészítheted azt a posztot. A korábbi kampányaid fent választhatók.';
     });
     for (const b of document.querySelectorAll('#modok button')) b.addEventListener('click', () => modValt(b.dataset.mod));
     const t = tar.get(); if (t) { Object.assign(allapot, { cel: t.beall.cel, kinek: t.beall.kinek, heti: String(t.beall.heti) });
       chipek('tervCel', SZ.celok || [], 'cel'); chipek('tervKinek', SZ.celcsoportok || [], 'kinek'); chipek('tervHeti', ['2', '3', '5'], 'heti'); rajzol(t); }
     gombFriss();
   }
-  window.__terv = { naptar, temaSor, vanAnyag, evszak, modValt };
+  // Ügyfél-arculat (ügyfélcsomag ceg.arculat): márkaszín, név, jelmondat – a motor nem változik.
+  function arculat() {
+    const c = K.ceg || {}, a = c.arculat; if (!a) return;
+    const sotet = matchMedia('(prefers-color-scheme: dark)');
+    const fest = () => { document.documentElement.style.setProperty('--deep', sotet.matches ? (a.fo_sotet || a.fo) : a.fo); };
+    fest(); try { sotet.addEventListener('change', fest); } catch (e) {}
+    if ($('fejCim')) $('fejCim').textContent = c.nev || $('fejCim').textContent;
+    if ($('fejAl') && a.jelmondat) $('fejAl').textContent = a.jelmondat;
+    if ($('fejLogo') && c.logobetu) $('fejLogo').textContent = c.logobetu;
+  }
+  arculat();
+  window.__terv = { naptar, temaSor, vanAnyag, evszak, modValt, statusz, kamp };
   // ── Eredmény (BEMUTATÓ): szimulált mérés a teszthez, amíg nincs Meta-bekötés. Minden szám jelölten nem valós.
   // A javaslatokat ugyanaz a program-szabály adja, ami élesben a valódi számokra fut (AI nélkül).
   function mag(s) { let h = 2166136261; for (const c of s) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return () => ((h = Math.imul(h ^ (h >>> 15), 2246822507) >>> 0) % 1000) / 1000; }
@@ -148,16 +181,34 @@
   }
   function eredmenyRajzol() {
     const el = $('eredLista'); if (!el) return; el.textContent = '';
-    const m = [...szimulal(kint.get().length ? { helyek: kint.get() } : null).filter(() => kint.get().length), ...szimulal(tar.get())];
-    const jl = document.createElement('div'); jl.className = 'javaslat';
-    const jh = document.createElement('h3'); jh.textContent = 'Javaslat'; jl.append(jh);
-    for (const j of javaslatok(m)) { const p = document.createElement('p'); p.textContent = j; jl.append(p); }
-    el.append(jl);
-    for (const p of m) { const d = document.createElement('div'); d.className = 'tervsor';
-      d.innerHTML = '<b></b><span></span>'; d.children[0].textContent = (p.kint ? '✓ kiment · ' : '') + (p.datum ? p.datum.slice(5).replace('-', '.') + ' ' : '') + p.temaNev;
-      d.children[1].textContent = `${p.eleres} elérés · ${p.reakcio} reakció` + (p.cta ? ` · ${p.kattintas} kattintás` : ''); el.append(d); }
+    const v = kamp.get();
+    const ma = Date.now(), het = ma + 7 * 864e5;
+    if (!v.lista.length) { const p = document.createElement('p'); p.className = 'note'; p.textContent = 'Még nincs kampány. A Terv fülön három kérdéssel készíthetsz egyet.'; el.append(p); }
+    for (const k of v.lista) {
+      const m = szimulal(k), st = k.helyek.map(p => statusz(p));
+      const nKint = st.filter(x => x === 'kint').length, nEl = st.filter(x => x === 'elmaradt').length;
+      const nJon = k.helyek.filter((p, i) => st[i] === 'esedekes' && new Date(p.datum).getTime() <= het).length;
+      const cel = k.beall.cel, celSzamNev = (SZ.cel_szam || {})[cel] || 'kattintás';
+      const celSzam = cel === 'érdeklődés' ? m.reduce((a, p) => a + p.kattintas + Math.round(p.reakcio * 0.1), 0) : m.reduce((a, p) => a + p.kattintas, 0);
+      const c = document.createElement('div'); c.className = 'kampkartya'; if (k.id === v.aktiv) c.dataset.aktiv = '1';
+      const h = document.createElement('h3'); h.textContent = k.nev || 'Kampány'; c.append(h);
+      const al = document.createElement('p'); al.className = 'note'; al.textContent = `Cél: ${cel} · ${k.beall.kinek} · heti ${k.beall.heti}`; c.append(al);
+      const hal = document.createElement('p'); hal.className = 'kampszam'; hal.textContent = `${nKint} / ${k.helyek.length} poszt kint`; c.append(hal);
+      const hal2 = document.createElement('p'); hal2.className = 'note'; hal2.textContent = `${nEl} elmaradt · ${nJon} jön a héten`; c.append(hal2);
+      const cs = document.createElement('p'); cs.className = 'kampszam'; cs.textContent = `${celSzam} ${celSzamNev}`; c.append(cs);
+      const cs2 = document.createElement('p'); cs2.className = 'note'; cs2.textContent = 'a cél-szám (bemutató: mintha a kampány lefutott volna)'; c.append(cs2);
+      const j = javaslatok(m)[0]; if (j) { const jp = document.createElement('p'); jp.className = 'javaslat'; jp.textContent = 'Javaslat: ' + j; c.append(jp); }
+      const d = document.createElement('details'); const sm = document.createElement('summary'); sm.textContent = 'Részletek'; d.append(sm);
+      m.forEach((p, i) => { const r = document.createElement('div'); r.className = 'tervsor';
+        r.innerHTML = '<b></b><span></span>'; r.children[0].textContent = `${p.datum.slice(5).replace('-', '.')} ${p.temaNev} · ` + ({ kint: '✓ kint', esedekes: 'esedékes', elmaradt: 'elmaradt' })[st[i]];
+        r.children[1].textContent = `${p.eleres} elérés · ${p.reakcio} reakció` + (p.cta ? ` · ${p.kattintas} kattintás` : ''); d.append(r); });
+      c.append(d); el.append(c);
+    }
+    const kk = kint.get().filter(x => !v.lista.some(k => k.helyek.some(p => statusz(p) === 'kint' && p.tema === x.tema)));
+    if (kk.length) { const d = document.createElement('details'); const sm = document.createElement('summary'); sm.textContent = `Kampányon kívüli posztok (${kk.length})`; d.append(sm);
+      for (const p of kk) { const r = document.createElement('div'); r.className = 'tervsor'; r.textContent = `✓ ${p.datum.slice(5).replace('-', '.')} ${p.temaNev}`; d.append(r); }
+      el.append(d); }
   }
-
   // ── BEMUTATÓ képtár: a teszthez témánként egy kész fotó (bemutato/lista.json), egy koppintással betölthető.
   let DEMO = {};
   fetch('bemutato/lista.json').then(r => r.ok ? r.json() : {}).then(j => { DEMO = (j && j.kepek) || {}; demoGombok(); }).catch(() => {});

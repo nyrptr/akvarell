@@ -22,7 +22,13 @@
   "prompt_ki": "Az Akvarell Apartmanház (Zebegény, Dunakanyar)",
   "persona": "Te vagy a ház két kedves házigazdája.",
   "kampany": "akv-foto",
-  "ai_link": "https://claude.ai/artifact/E61KqgEQha2p2hZJUtEKhs"
+  "ai_link": "https://claude.ai/artifact/E61KqgEQha2p2hZJUtEKhs",
+  "arculat": {
+   "fo": "#1d5a8c",
+   "fo_sotet": "#8fbfe6",
+   "jelmondat": "Ahol a pihenés és a gyönyörű kilátás találkozik.",
+   "forras": "akvarellzebegeny.hu (logó kékje a ház tábláján mérve; jelmondat az oldalukról), 2026-11-27"
+  }
  },
  "temak": [
   {

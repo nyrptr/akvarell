@@ -489,3 +489,10 @@
 - Zárókép-váltás: az élő előnézet a zárókép előtt fél másodperccel indul (Péter: ne kelljen végignézni az egészet). t30-ban.
 - Sötét mód: a sablon-gombok (Nyugodt reggel…) és a fülek szövege olvashatatlan volt (sötét a sötéten) – sötét színpár.
 - Ellenőrzés: t24, t29, t30, t31, kapu, gyar_szabalyok 0 HIBA. t23 régi, hiányzó tesztképre vár (ismert).
+
+## 2026-11-27 – ZSEBMARKETING: kampánykártya + Akvarell-arculat (Péter: „Mehet a kampánykártya és az Akvarell-arculat”)
+- Terv → kampány: több kampány (`akvposzt-kampanyok`, a régi egy-terv átvéve), név (évszak · cél · kezdés), választó; soronként állapot: ✓ kint (kint poszt ugyanarról a témáról ±3 nap) / esedékes / elmaradt.
+- Eredmény: kampányonként egy kártya – haladás (kint / tervezett, elmaradt, a héten jön), egyetlen cél-szám (`szakma_meta.cel_szam`), egy javaslat, lenyitható részletek; kampányon kívüli posztok külön. Szállásnál 2 cél: foglalás / érdeklődés.
+- Arculat az ügyfélrétegben (`ceg.arculat`: márkakék a ház tábláján mérve, jelmondat az oldalukról): fejléc = cégnév + jelmondat, márkaszín a `--deep` változón; a beégetett zöld (#2f4237) mind változóra cserélve; sötét módban a kijelölt gombok szövege a háttérszín.
+- Saját hiba munka közben: az Eredmény-blokk cseréjekor kivágtam a bemutató képtárat és a kiküldést – a t29 megfogta, visszaállítva.
+- Teszt: t29 (kártya, haladás, 2 cél, csukott részletek, kint-jelölés, arculat) 0 HIBA; t24, t27, t28, t30, t31, kapu 0 HIBA.

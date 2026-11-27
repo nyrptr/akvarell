@@ -3,9 +3,8 @@
   "id": "autokereskedes",
   "nev": "Autókereskedő",
   "celok": [
-   "érdeklődő üzenet",
-   "próbaút-időpont",
-   "telefonhívás"
+   "érdeklődés",
+   "próbaút"
   ],
   "vevout": [
    "meglát",
@@ -44,7 +43,11 @@
    "családosok",
    "vállalkozók",
    "cserélni akarók"
-  ]
+  ],
+  "cel_szam": {
+   "érdeklődés": "érdeklődő (üzenet + kattintás)",
+   "próbaút": "kattintás az időpontkérésre"
+  }
  },
  "tudtad": {
   "hu": "Tudtad?",

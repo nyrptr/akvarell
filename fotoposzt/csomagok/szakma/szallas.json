@@ -4,8 +4,7 @@
   "nev": "Szállásadó",
   "celok": [
    "foglalás",
-   "üzenet / érdeklődés",
-   "weboldal-látogatás"
+   "érdeklődés"
   ],
   "vevout": [
    "meglát",
@@ -44,7 +43,11 @@
    "baráti társaság",
    "kirándulók",
    "külföldi vendégek"
-  ]
+  ],
+  "cel_szam": {
+   "foglalás": "kattintás a foglalásra",
+   "érdeklődés": "érdeklődő (üzenet + kattintás)"
+  }
  },
  "tudtad": {
   "hu": "Tudtad?",
