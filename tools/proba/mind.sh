@@ -22,4 +22,5 @@ pkill -f "wrangler pages dev" 2>/dev/null; kill "$SZ" 2>/dev/null
 echo "$K" | grep "^HIBA" | grep -vE "api/(zebegeny|taj)" | head -10; echo "$K" | tail -4
 HIB=$(echo "$K" | grep '^HIBA' | grep -vcE 'api/(zebegeny|taj)')
 [ "$HIB" = 0 ] || bukik "kapu.py ($HIB új hiba)"
+echo "$K" | tail -1 | grep -qE '^[0-9]+ hiba · képek:' || bukik "kapu.py nem futott végig (nincs záró összesítő sor – összeomlás vagy időtúllépés)"   # T-024 rokon: a csendben összeomló próba nem lehet zöld
 [ $ros = 0 ] && echo "MIND RENDBEN" || exit 1
