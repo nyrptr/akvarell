@@ -99,6 +99,25 @@ Ami a vázlatból hiányzott, és bekerül (AI-javaslat):
 Mérés = számolás és összevetés, nem AI. Négy szint:
 1. **Telefon (app):** mi készült, mit osztott meg, melyik javaslatot fogadta el/vetette el, milyen fotó jött. Helyben gyűlik, netnél kis csomagban felmegy hozzánk (Visszajelzés fül ugyanezen az úton).
 2. **Weboldal:** a posztok linkjei kampánycímkével (utm, Akvarellen már van: `akv-foto`); kattintás, ajánlatkérés, foglalás a mi végpontunkon számolva; süti csak hozzájárulással.
-3. **Meta (gépi út):** naponta egyszer a szerver lekéri az ügyfél oldalának számait (elérés, reakció, kattintás) az ő tokenjével. Korlát: oldalanként 24 óra alatt 4800 × aktív felhasználó hívás – napi egy lekérés messze alatta.
+3. **Meta:** ~~naponta a szerver kéri le~~ → **felülírta a 11-27-i döntés (lent):** az app kéri le megnyitáskor, az ügyfél saját kulcsával. Korlát: oldalanként 24 óra alatt 4800 × aktív felhasználó hívás – napi egy lekérés messze alatta.
 4. **Értelmezés:** program szabályok (ez a hét vs. kiinduló szint, mi ment jól, mi nem) → javaslatkártya az appban. AI csak ritkán, központilag, a szabályok javítására.
 **500 ügyfélnél:** egy időzített szerver-futás naponta, ügyfelenként sorban; Cloudflare ingyenes szinten 50 külső hívás/futás a korlát, ezért 500 ügyfélhez a fizetős Workers (havi ~5 USD, 10 000 hívás/futás). Nekünk a központi pult csak a kivételt mutatja: lejáró token, 10 napja nincs poszt, esés a számokban. Frissítés: motor a PWA-val magától, csomag a szerverről (egyszerre mind vagy egyenként).
+
+## DÖNTÉS – Meta-kapcsolat: telefon-központú modell (Péter, 2026-11-27: „Mehet: telefon-központú modell a hat kiegészítéssel”)
+```mermaid
+flowchart TD
+  R[Közös Meta-regisztráció – a miénk, önmagában semmit nem nyit] --> L[Ügyfél: Facebook-belépés az appból, egyszer]
+  L --> X[Egyszeri kulcscsere a szerveren – a kulcs nálunk nem marad]
+  X --> A[App ↔ Meta közvetlenül, az ügyfél kulcsával; adat a telefonon]
+  A --> O[Összefoglaló fel hozzánk – szerződés szerint; egyben mentés]
+  O --> P[Pult: kivételek]
+  H[Mi emberként: partner-hozzáférés a Business Suite-ban – hirdetés] -.-> A
+```
+Hat kiegészítés (mind AI nélkül):
+1. Instagram-poszt: a Meta nyilvános URL-ről tölti le a képet → pár percre a mi tárunkba (R2), közzététel után törlés. Facebookra közvetlen feltöltés a telefonról.
+2. Időzítés: Facebook-poszt a Meta saját időzítésével (10 perc – 30 nap); Instagram: értesítés a megadott időben (telepített app), egy koppintás.
+3. Háttér: iPhone-on nincs háttérfutás → számok megnyitáskor frissülnek.
+4. Mentés: az összefoglaló egyben mentés, új telefonra visszatölthető.
+5. Weboldal-mérés: kis kód az ügyfél oldalán, számláló nálunk, az app onnan olvas.
+6. Meta-ellenőrzés: tesztelőknél tesztelő szerep elég; sok ügyfélnél cégellenőrzés + alkalmazás-felülvizsgálat.
+Szerver-rész (kicsi): kulcscsere, rövid képtár, összefoglaló-mentés, weboldal-számláló. Sorrend: a Tervező után.
