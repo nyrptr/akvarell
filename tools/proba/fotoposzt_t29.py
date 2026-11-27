@@ -29,6 +29,11 @@ async def main():
       # tisztán: képtartalék logika
       r=await pg.evaluate("""()=>{const t=__terv.naptar({cel:'x',kinek:'y',heti:5},'2026-01-05');return {n:t.helyek.length,ev:t.helyek[0].evszak,ures:t.helyek.filter(h=>!h.tema).length,csere:t.helyek.filter(h=>h.csere).every(h=>__terv.vanAnyag(h.tema,h.evszak))}}""")
       if r['n']!=20 or r['ev']!='tel' or r['ures'] or not r['csere']: hib.append(f'{w}: naptar() {r}')
+      await pg.click('#modok button[data-mod=ered]'); await pg.wait_for_timeout(200)
+      if await pg.is_hidden('#ered') or not await pg.is_hidden('#terv'): hib.append(f'{w}: eredmény mód nem nyílt')
+      if 'BEMUTATÓ' not in await pg.inner_text('#ered'): hib.append(f'{w}: nincs bemutató-jelölés')
+      if await pg.locator('#eredLista .tervsor').count()!=n: hib.append(f'{w}: eredmény sorok ≠ terv sorok')
+      if await pg.locator('.javaslat p').count()<2: hib.append(f'{w}: kevés javaslat')
       await pg.reload(); await pg.wait_for_timeout(2500); await pg.click('#modok button[data-mod=terv]')
       if await pg.locator('.tervsor').count()!=8: hib.append(f'{w}: a terv nem maradt meg újratöltés után')
       await pg.click('.tervsor >> nth=0'); await pg.wait_for_timeout(300)

@@ -101,8 +101,9 @@
   }
 
   function modValt(mod) {
-    const terv = mod === 'terv';
-    $('terv').hidden = !terv;
+    const terv = mod !== 'poszt';
+    $('terv').hidden = mod !== 'terv';
+    if ($('ered')) { $('ered').hidden = mod !== 'ered'; if (mod === 'ered') eredmenyRajzol(); }
     $('lepsor').hidden = terv;
     for (const s of document.querySelectorAll('.lepes')) s.hidden = terv ? true : +s.dataset.l !== ((typeof S !== 'undefined' && S.lep) || 1);
     for (const b of document.querySelectorAll('#modok button')) b.setAttribute('aria-pressed', String(b.dataset.mod === mod));
@@ -123,5 +124,38 @@
     gombFriss();
   }
   window.__terv = { naptar, temaSor, vanAnyag, evszak, modValt };
+  // ── Eredmény (BEMUTATÓ): szimulált mérés a teszthez, amíg nincs Meta-bekötés. Minden szám jelölten nem valós.
+  // A javaslatokat ugyanaz a program-szabály adja, ami élesben a valódi számokra fut (AI nélkül).
+  function mag(s) { let h = 2166136261; for (const c of s) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return () => ((h = Math.imul(h ^ (h >>> 15), 2246822507) >>> 0) % 1000) / 1000; }
+  function szimulal(terv) {
+    const sorok = (terv && terv.helyek.length ? terv.helyek : temaSor().slice(0, 8).map((t, i) => ({ tema: t.id, temaNev: t.nev, cta: i % 3 === 2, lepes: vevoutLepes(i) })));
+    return sorok.map((p, i) => { const r = mag(p.tema + i);
+      const eleres = Math.round(180 + r() * 900 * (p.tema && /kilatas|duna|naplemente|havas/.test(p.tema) ? 1.6 : 1));
+      return { ...p, eleres, reakcio: Math.round(eleres * (0.03 + r() * 0.05)), kattintas: p.cta ? Math.round(eleres * (0.005 + r() * 0.02)) : 0 }; });
+  }
+  function javaslatok(m) {
+    if (!m.length) return [];
+    const temak = {}; for (const p of m) (temak[p.temaNev] = temak[p.temaNev] || []).push(p.eleres);
+    const atl = Object.entries(temak).map(([t, l]) => [t, l.reduce((a, b) => a + b, 0) / l.length]).sort((a, b) => b[1] - a[1]);
+    const ossz = m.reduce((a, p) => a + p.eleres, 0) / m.length, out = [];
+    if (atl[0]) out.push(`Több ilyen: „${atl[0][0]}” posztjai érték el a legtöbb embert (átlag ${Math.round(atl[0][1])}, az összátlag ${Math.round(ossz)}).`);
+    const gyenge = atl[atl.length - 1];
+    if (gyenge && gyenge[1] < ossz * 0.7) out.push(`Másik fotóval próbáld: „${gyenge[0]}” elmaradt az átlagtól (${Math.round(gyenge[1])}).`);
+    const k = m.filter(p => p.cta), kk = k.reduce((a, p) => a + p.kattintas, 0);
+    if (k.length) out.push(`A foglalási linkre ${kk} kattintás jött ${k.length} posztból.`);
+    return out;
+  }
+  function eredmenyRajzol() {
+    const el = $('eredLista'); if (!el) return; el.textContent = '';
+    const m = szimulal(tar.get());
+    const jl = document.createElement('div'); jl.className = 'javaslat';
+    const jh = document.createElement('h3'); jh.textContent = 'Javaslat'; jl.append(jh);
+    for (const j of javaslatok(m)) { const p = document.createElement('p'); p.textContent = j; jl.append(p); }
+    el.append(jl);
+    for (const p of m) { const d = document.createElement('div'); d.className = 'tervsor';
+      d.innerHTML = '<b></b><span></span>'; d.children[0].textContent = (p.datum ? p.datum.slice(5).replace('-', '.') + ' ' : '') + p.temaNev;
+      d.children[1].textContent = `${p.eleres} elérés · ${p.reakcio} reakció` + (p.cta ? ` · ${p.kattintas} kattintás` : ''); el.append(d); }
+  }
+  window.__terv.szimulal = szimulal; window.__terv.javaslatok = javaslatok;
   indit();
 })();

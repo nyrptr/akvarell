@@ -112,13 +112,13 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 .stb[aria-pressed=true]{border:2px solid var(--acc);padding:5px}
 .nagy{margin-top:12px}.nagy img{width:100%;border-radius:10px;border:1px solid var(--line)}
 [hidden]{display:none!important}
-.modok{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:0 0 6px}.modok button{min-height:44px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:700 15px Figtree,sans-serif;cursor:pointer}.modok button[aria-pressed=true]{background:#2f4237;color:#fff;-webkit-text-fill-color:#fff;border-color:#2f4237}.chip[aria-pressed=true]{background:#2f4237;color:#fff;-webkit-text-fill-color:#fff;border-color:#2f4237}.tervsor{display:grid;gap:2px;width:100%;min-height:44px;text-align:left;padding:10px 12px;margin:0 0 6px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:15px Figtree,sans-serif;cursor:pointer}.tervsor small{color:var(--muted,#666);font-size:13px}.tervfoto{padding-left:20px;line-height:1.6}</style>
+.modok{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:0 0 6px}.modok button{min-height:44px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:700 15px Figtree,sans-serif;cursor:pointer}.modok button[aria-pressed=true]{background:#2f4237;color:#fff;-webkit-text-fill-color:#fff;border-color:#2f4237}.chip[aria-pressed=true]{background:#2f4237;color:#fff;-webkit-text-fill-color:#fff;border-color:#2f4237}.tervsor{display:grid;gap:2px;width:100%;min-height:44px;text-align:left;padding:10px 12px;margin:0 0 6px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:15px Figtree,sans-serif;cursor:pointer}.tervsor small{color:var(--muted,#666);font-size:13px}.tervfoto{padding-left:20px;line-height:1.6}.bemutato{padding:10px 12px;border-radius:12px;border:1px dashed #b5542f;color:#8a3a1c;background:#fbeee8;font:600 14px Figtree,sans-serif}.javaslat{padding:4px 12px;margin:0 0 10px;border-radius:12px;background:#e8efe9;border:1px solid #2f4237}.javaslat p{margin:6px 0}@media (prefers-color-scheme:dark){.bemutato{background:#3a2218;color:#f3c7b4}.javaslat{background:#1d2a22;border-color:#9cc3a9}}</style>
 </head>
 <body>
 <div class="wrap">
 <header><div class="logo" aria-hidden="true">A</div><div><h1>Fotóból poszt</h1><p class="sub">Akvarell Apartmanház, Zebegény</p></div></header>
 <div class="note" id="ujValt" role="status" hidden>Új változat érkezett. <button class="btn sec" id="ujValtB">Frissítés most</button></div>
-<nav class="modok" id="modok" aria-label="Mód"><button type="button" data-mod="poszt" aria-pressed="true">Poszt</button><button type="button" data-mod="terv" aria-pressed="false">Terv</button></nav>
+<nav class="modok" id="modok" aria-label="Mód"><button type="button" data-mod="poszt" aria-pressed="true">Poszt</button><button type="button" data-mod="terv" aria-pressed="false">Terv</button><button type="button" data-mod="ered" aria-pressed="false">Eredmény</button></nav>
 <nav class="lepsor" id="lepsor" aria-label="Lépések"><button data-n="1" aria-current="step">1 Fotó</button><button data-n="2">2 Szöveg</button><button data-n="3">3 Kép</button><button data-n="4">4 Közzététel</button></nav>
 
 <section id="terv" hidden aria-labelledby="tervC">
@@ -130,6 +130,11 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 <button class="btn full" id="tervKeszit" disabled>Terv készítése</button>
 <div class="status" id="tervSt" role="status"></div>
 <div id="tervLista" hidden></div>
+</section>
+<section id="ered" hidden aria-labelledby="eredC">
+<h2 id="eredC">Eredmény</h2>
+<p class="bemutato" role="note">BEMUTATÓ – szimulált számok a teszthez, nem valós adat: úgy mutatja, mintha a 4 hetes terv már lefutott volna. Élesben a Facebook-bekötés után itt a saját oldalad számai lesznek.</p>
+<div id="eredLista"></div>
 </section>
 <section class="lepes" data-l="1">
 <label class="drop" id="drop"><input id="file" type="file" accept="image/*" multiple aria-label="Fotók készítése vagy kiválasztása"><img id="prev" alt="" hidden><span class="hint"><b>Fotózz vagy válassz képeket</b><span>Egy vagy több fotó (legfeljebb 20). Az első a borító.</span></span></label>

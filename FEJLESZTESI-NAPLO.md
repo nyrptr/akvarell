@@ -471,3 +471,6 @@
 - `betolto.js` az app.js után tölti; `sw.js` alapkészlet + `fotoposzt_pwa.py` hash tartalmazza; `fotoposzt_artifact.py` beágyazza.
 - Teszt: `tools/proba/fotoposzt_t29.py` (390 és 1280 px; kérdés nélkül tiltott gomb; heti 2 = 8 sor; hívás aránya és helye; fotókérés; lehetőség; kicsúszás; 44 px; naptar() tél/heti 5 = 20 sor, képtartalék csak anyaggal rendelkező témára; újratöltés után megmarad; koppintás → Poszt) 0 HIBA; mind.sh része. t24–t28, kapu 0 HIBA.
 - Nem tesztelt: valódi telefon; a claude.ai-os artifact nincs újra kiadva; helyzetkép most csak évszak (időjárás/hírek a következő körben a meglévő `/api/taj`-ból).
+
+## 2026-11-27 – ZSEBMARKETING: Eredmény (BEMUTATÓ) mód + claude.ai-os kiadás
+- Péter: „szimulált működést hozzunk létre a teszteléshez… a metás összekötéssel várjunk”. Új harmadik mód: Eredmény – szimulált (determinisztikus, jelölten nem valós) elérés/reakció/kattintás a terv soraira; a javaslatot ugyanaz a program-szabály adja, ami élesben fut (legjobb téma, elmaradó téma < 70% átlag, linkkattintás). t29 kiegészítve, 0 HIBA; t24, t28, kapu 0 HIBA. Artifact (69f9b8bb…) újra kiadva app.js + tervezo.js beágyazással.
