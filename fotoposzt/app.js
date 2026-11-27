@@ -494,7 +494,7 @@ for(const u of UT.slice()){const b=K.temak.find(t=>norm(t.nev)===norm(u.nev)||(t
 store.set('temak',UT);store.set('helyek',HELYEK);
 const HIDAK=['foatjaro','vasut','naphegy','ujvolgy'];
 function hidSor(){const w=$('hidw');w.hidden=!HIDAK.includes(S.tema);if(w.hidden)return;const r=$('hidR');r.innerHTML='';const hp=id=>HELYEK[id]||(K.helyek||{})[id];const sor=HIDAK.map(h=>[h,S.gps&&hp(h)?tav(S.gps,hp(h)):null]).sort((x,y)=>(x[1]??9)-(y[1]??9));for(const [h,d] of sor){const b=document.createElement('button');b.type='button';b.className='chip hidchip';const o=temaObj(h);b.textContent=o.nev;if(o.leir||d!=null){const sm=document.createElement('small');sm.textContent=[o.leir,d!=null?(d<1?Math.round(d*1000/10)*10+' m':d.toFixed(1).replace('.',',')+' km'):''].filter(Boolean).join(' · ');b.append(sm)}b.setAttribute('aria-pressed',S.tema===h);b.addEventListener('click',()=>{S.temaKezi=true;temaValaszt(h)});r.append(b)}}
-function temaValaszt(id){S.tema=id;osszegzes();try{felisOkFriss()}catch(e){}for(const c of document.querySelectorAll('#temak .chip'))c.setAttribute('aria-pressed',c.dataset.t===id);$('aptw').hidden=!['apartman','terasz'].includes(id);hidSor();S.cands=[];S.sel=null;$('valaszt').hidden=true;$('t3').hidden=true;$('out').hidden=true}
+function temaValaszt(id){S.tema=id;osszegzes();try{felisOkFriss()}catch(e){}try{if(EXTRA.length)fotokRajz()}catch(e){}for(const c of document.querySelectorAll('#temak .chip'))c.setAttribute('aria-pressed',c.dataset.t===id);$('aptw').hidden=!['apartman','terasz'].includes(id);hidSor();S.cands=[];S.sel=null;$('valaszt').hidden=true;$('t3').hidden=true;$('out').hidden=true}
 const temaKeres=nev=>K.temak.concat(UT).find(t=>norm(t.nev)===norm(nev)||(t.alias||[]).includes(norm(nev)));
 function temak(){const w=$('temak');w.innerHTML='';const gomb=t=>{const b=document.createElement('button');b.className='chip';b.dataset.t=t.id;b.textContent=t.nev+(HELYEK[t.id]?' •':'');b.setAttribute('aria-pressed',t.id===S.tema);b.addEventListener('click',()=>{S.temaKezi=true;temaValaszt(t.id);$('temaD').open=false;$('temaKer').value='';temaSzur('');$('alapw').scrollIntoView({behavior:'smooth',block:'center'})});b.dataset.k=norm([t.nev,t.en,t.de].concat(t.alias||[]).join(' '));return b};
  const csop=(cim,lista,plusz)=>{const c=document.createElement('div');c.className='csop';c.textContent=cim;const r=document.createElement('div');r.className='row';lista.forEach(t=>r.append(gomb(t)));if(plusz)r.append(plusz);w.append(c,r)};
@@ -585,12 +585,14 @@ $('fileAdd').addEventListener('change',async e=>{const uj=[...e.target.files];e.
 async function extrakBe(fs){const uj=[];for(const f of fs){let ex=null;try{ex=exif(await f.slice(0,262144).arrayBuffer())}catch(x){}
   const im=new Image();im.src=URL.createObjectURL(f);try{await im.decode()}catch(x){continue}
   const g=ex&&ex.gps;let tema=null;if(g){const pont=id=>HELYEK[id]||(K.helyek||{})[id];const sor=K.temak.concat(UT).filter(u=>pont(u.id)).map(u=>[u.id,tav(g,pont(u.id))]).sort((a,b)=>a[1]-b[1]);if(sor[0]&&sor[0][1]<.12)tema=sor[0][0]}
-  uj.push({f,img:im,gps:g,tema})}
+  let felis=false;if(!tema&&!OSZT_HIBA&&$('felisCb').checked){try{await refBe();if(!mp_){mp_=await import(new URL('felismero/vision_bundle.mjs',location.href).href);fs_=await mp_.FilesetResolver.forVisionTasks(new URL('felismero/',location.href).href)}
+   const hp=hasonlit(await beagyaz(mp_,fs_,im));const [a,b]=hp;if(a&&a[1]>=.55&&(!b||a[1]-b[1]>=.08)){tema=a[0];felis=true}}catch(e){}}
+  uj.push({f,img:im,gps:g,tema,felis})}
  EXTRA=uj;fotokRajz();S.cands=[];S.sel=null;if(S.lep===3){rajzKep();stilusRacs()}}
 function fotokRajz(){const w=$('fotokw'),box=$('fotok');$('fileAddL').hidden=!img;w.hidden=!img;if(!img)return;box.innerHTML='';
  const all=[{img,f:FILES[0],tema:S.tema}].concat(EXTRA);
  all.forEach((e,i)=>{const d=document.createElement('div');d.className='fk'+(i?'':' b');const im=document.createElement('img');im.src=e.img.src;im.alt=i?`${i+1}. fotó`:'Borító';d.append(im);
-  const sp=document.createElement('span');sp.textContent=i?String(i+1):'Borító';d.append(sp);
+  const sp=document.createElement('span');sp.textContent=(i?String(i+1):'Borító')+(e.tema?' · '+temaObj(e.tema).nev:(i?' · ?':''));d.append(sp);
   if(i){const x=document.createElement('button');x.type='button';x.textContent='×';x.setAttribute('aria-label',`${i+1}. fotó törlése`);x.addEventListener('click',ev=>{ev.stopPropagation();FILES.splice(i,1);EXTRA.splice(i-1,1);fotokRajz();S.cands=[];if(S.lep===3){rajzKep();stilusRacs()}});d.append(x);
    im.addEventListener('click',()=>{const f=FILES.splice(i,1)[0];FILES.unshift(f);fotokBe(FILES.slice())})}
   box.append(d)});
@@ -773,10 +775,11 @@ async function beagyaz(mp,fs,im){if(!beagyazo){let buf=null;try{const r=await fe
   if(!buf||buf.length<100000){const r=await fetch(new URL('felismero/hely_embedder.json',location.href).href);const j=await r.json();const bin=atob(j.b64);buf=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)buf[i]=bin.charCodeAt(i)}
   beagyazo=await mp.ImageEmbedder.createFromOptions(fs,{baseOptions:{modelAssetBuffer:buf},l2Normalize:true,quantize:false})}
  const v=Float32Array.from(beagyazo.embed(im).embeddings[0].floatEmbedding);let q=0;for(const x of v)q+=x*x;q=Math.sqrt(q)||1;for(let i=0;i<v.length;i++)v[i]/=q;return v}
-function hasonlit(v){const sc={};const add=(t,s)=>{(sc[t]=sc[t]||[]).push(s)};
+function hasonlit(v){const sc={},sj={};const add=(t,s)=>{(sc[t]=sc[t]||[]).push(s)};
  for(let i=0;i<REF.vek.length;i++){let d=0;const w=REF.vek[i];for(let k=0;k<v.length;k++)d+=v[k]*w[k];add(REF.cimkek[i],d)}
- for(const e of SAJATEMB){if(!e.v)continue;const w=i8be(e.v,v.length)[0];if(!w)continue;let d=0;for(let k=0;k<v.length;k++)d+=v[k]*w[k];add(e.t,d+.03)}
- return Object.entries(sc).map(([t,l])=>[t,l.sort((a,b)=>b-a).slice(0,3).reduce((a,b)=>a+b,0)/Math.min(3,l.length)]).sort((a,b)=>b[1]-a[1])}
+ for(const e of SAJATEMB){if(!e.v)continue;const w=i8be(e.v,v.length)[0];if(!w)continue;let d=0;for(let k=0;k<v.length;k++)d+=v[k]*w[k];add(e.t,d+.03);if(!(sj[e.t]>=d+.03))sj[e.t]=d+.03}
+ // a saját, megerősített minta a legerősebb bizonyíték: a téma pontja legalább a legjobb saját egyezés (1-NN), nem hígul a Commons-referenciákkal
+ return Object.entries(sc).map(([t,l])=>[t,Math.max(l.sort((a,b)=>b-a).slice(0,3).reduce((a,b)=>a+b,0)/Math.min(3,l.length),sj[t]||0)]).sort((a,b)=>b[1]-a[1])}
 function felisOkFriss(){const b=$('felisOk');if(!b)return;b.hidden=!(S.emb&&S.tema);b.disabled=!!S.felisOkKesz;b.textContent=S.felisOkKesz?'Megjegyeztem.':`Igen, ez van a képen: ${temaObj(S.tema).nev} – jegyezd meg`}
 function sajatTanul(){if(!S.emb||!S.tema)return;const v=i8ki(S.emb);for(const t of [S.tema,...(S.extra||[])])SAJATEMB.unshift({t,v,d:Date.now()});SAJATEMB=SAJATEMB.slice(0,300);store.set('sajatemb',SAJATEMB)}
 async function felismer(){if(!img||OSZT_HIBA||!$('felisCb').checked)return;const most=img;$('felisT').textContent='Képfelismerés fut a telefonon…';

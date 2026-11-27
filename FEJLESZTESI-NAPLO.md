@@ -1,5 +1,11 @@
 # Fejlesztési napló – Akvarell bemutató
 
+## 2026-11-27 – Claude (ZSEBMARKETING) – több fotó: mindet felismeri
+- Péter: „csak az elsőt próbálja meg felismerni… zebegényi séta… több épületet is fel kéne ismernie”. Ok: a további fotók témája csak GPS-ből jött (120 m-en belül); GPS nélkül üres maradt.
+- Javítás: a további fotókra is fut a képfelismerő (beágyazás + hasonlóság, ugyanazok a küszöbök); a bélyegképen látszik a felismert téma („2 · Templom”, ismeretlennél „2 · ?”); a borító témájának változása frissíti a bélyegeket.
+- Második hiba közben: egy saját, megerősített minta a Commons-referenciákkal átlagolva felhígult (top-3 átlag), így a megerősítés hatástalan volt. Javítás: a téma pontja legalább a legjobb saját egyezés (1-NN).
+- Teszt: `tools/proba/fotoposzt_t25.py` 0 HIBA (megerősített fotó a 2. helyen „Templom”-ként felismerve, bélyeg felirattal), t24 0 HIBA, `mind.sh` MIND RENDBEN; képernyőkép átnézve. Nem tesztelt: valódi iPhone, valódi zebegényi fotósor.
+
 ## 2026-11-27 – Claude (ZSEBMARKETING) – javítócsomag (Péter: „Mehet a javítócsomag, futhat a helyi képernyős teszt”)
 - Felismerő tanulás: új „Igen, ez van a képen – jegyezd meg” gomb (`#felisOk`); a megerősítés az eredeti fotó beágyazásából tanít (`sajatTanul`). A puszta választás továbbra sem tanít (gyár 21.).
 - Mentés/visszatöltés: a felismerési minta (`sajatemb`) is megy → átvihető másik eszközre és a csomagba.
