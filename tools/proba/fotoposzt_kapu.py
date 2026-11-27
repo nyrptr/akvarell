@@ -16,8 +16,8 @@ async def main():
             pg = await b.new_page(viewport={'width': w, 'height': h})
             pg.on('pageerror', lambda e, n=nev: hibak.append(f'{n} JS-hiba: {e}'))
             pg.on('response', lambda r, n=nev: r.status >= 400 and hibak.append(f'{n} {r.status}: {r.url}'))
-            await pg.goto(a.url); await pg.set_input_files('#file', a.foto)
-            await pg.wait_for_function("()=>!document.getElementById('t2').disabled")
+            await pg.goto(a.url); await pg.wait_for_function("()=>window.__zseb", timeout=20000); await pg.set_input_files('#file', a.foto)
+            await pg.wait_for_function("()=>!document.getElementById('t2').disabled", timeout=90000)
             await pg.wait_for_timeout(1500)
             for lep in (1, 2, 3, 4):
                 if lep == 2: await pg.click('#t2'); await pg.wait_for_selector('.cand')

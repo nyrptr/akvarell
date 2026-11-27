@@ -132,6 +132,7 @@
     $('lepsor').hidden = !poszt;
     if ($('posztVissza')) $('posztVissza').hidden = !poszt;
     if ($('kesz')) $('kesz').hidden = !poszt;
+    document.body.classList.toggle('poszt-mod', poszt);
     for (const s of document.querySelectorAll('.lepes')) s.hidden = !poszt ? true : +s.dataset.l !== ((window.__test && window.__test.S && window.__test.S.lep) || 1);
     const fo = poszt ? (window.__elozoMod || 'ma') : mod;
     for (const b of document.querySelectorAll('#modok button')) b.setAttribute('aria-pressed', String(b.dataset.mod === fo));

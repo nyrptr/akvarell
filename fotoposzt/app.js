@@ -797,7 +797,7 @@ async function felismer(){if(!img||OSZT_HIBA||!$('felisCb').checked)return;const
   if(!pont.length){$('felisT').textContent='Képfelismerés: nem találtam illő témát, válassz kézzel.';return}
   temaSorRajz();$('felisT').textContent='A képfelismerő szerint:';for(const [t,sc] of pont.slice(0,3)){const b=document.createElement('button');b.className='chip';b.textContent=`${temaObj(t).nev} (${Math.round(Math.min(1,sc)*100)}%)`;b.addEventListener('click',()=>{S.temaKezi=true;temaValaszt(t)});$('felisJ').append(b)}
   const biztos=pont[0][1]>=.5&&(!pont[1]||pont[0][1]-pont[1][1]>=.15);if(!biztos)$('felisT').textContent='A képfelismerő tippjei (bizonytalan, koppints, ha valamelyik jó):';
-  if(!S.temaKezi&&!S.helyFelismert&&biztos){temaValaszt(pont[0][0]);$('st1').textContent=`A képfelismerő alapján ezt a témát választottam: ${temaObj(pont[0][0]).nev}. Ha nem jó, koppints másikra.`}}
+  if(!S.temaKezi&&!S.helyFelismert&&biztos&&!(S.lep>=2&&S.tema)){/* késve érkező felismerés nem borítja a már választott szöveget (Péter, 11-27: „ebben a másodpercben frissült”) */temaValaszt(pont[0][0]);$('st1').textContent=`A képfelismerő alapján ezt a témát választottam: ${temaObj(pont[0][0]).nev}. Ha nem jó, koppints másikra.`}}
  catch(e){OSZT_HIBA=true;$('felisT').textContent='A képfelismerés itt nem indult el ('+(e&&e.message?e.message.slice(0,60):'hiba')+'); kézzel válassz témát.'}}
 keszlet();
 try{naptarFriss()}catch(e){}
