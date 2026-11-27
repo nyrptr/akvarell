@@ -3,6 +3,15 @@
 Állapot: v16, 2026-11-27. Repo: nyrptr/akvarell, ág `munka-fotoposzt`, mappa `fotoposzt/`.
 Üzleti terv (AI-vázlat Péter döntésére): https://claude.ai/artifact/Jj4nZiXhzxBVeQxNMry8qT
 
+## 0. Indulás és munkarend – ZSEBMARKETING chat (Péter döntése, 2026-11-27: „Mehet a munkarend”)
+Forrás: Péter, 2026-11-27: „mindig minden egyes dolognál futtasd végig magad a megfelelő rutinokon… használnád a gyárat, használnád a csatornát”. A három szintet Claude fogalmazta meg; Péter ábrán jóváhagyta.
+- Fejléc minden válaszban: `> ### 📲 ZSEBMARKETING`. Válasz vége: `Körök: N (…)`.
+- MINDEN ÜZENET (olcsó): `KAPOCS_KLON=<veledaholnapert klón> python3 tools/bemenet.py "<szó szerint>" "<feladat>"` (Iagent) – kérésnapló, KAPOCS-csatorna, útvonal; rövid nyugtánál `--nyugta`.
+- MINDEN MUNKALÉPÉS: `szerep.py betolt <útvonal>`; ennek a tárolónak az `AGENTS.md`-je (ág, `tools/verzio.py`, `FEJLESZTESI-NAPLO.md`); új szabály vagy irány → ábra + Péter igene; kapu: `tools/proba/mind.sh` (benne `fotoposzt_kapu.py`) + kép az élő Cloudflare-előnézetről („kész” csak így); generált posztszövegre a gyár platformszabályai (nincs kommentkérés, reklámnyelv, garancia); ügyfélhez vagy nyilvánosság elé menő munkánál független ellenőrző ügynök.
+- LÉPÉS VÉGE: vállalás (`Iagent gyar/vallalasok.yaml`, `tools/vallalas.py`), állapotsor (`veledaholnapert` `jegyzetek`: `tools/allapot.py sor|allit`), csatornajegyzet (`en-ugynok-mag` `kapcsolat/bejovo/`), ha más chatet érint; tanulság: ok, figyelmi ok, ellenszer (`szerep.py naplo` + `naplo/tanulsagok.md`).
+- Új chat ezen a terméken az első lépésben kér írási jogot a `veledaholnapert`, `Iagent` és `akvarell` tárolóhoz.
+- Jelölés Péternek: „Te mondtad:” = Péter szava; „Javaslatom:” = AI-javaslat (az „AI-értelmezés” címke érthetetlen volt neki, 11-27).
+
 ## 1. Mi ez
 Fotóból Facebook/Instagram poszt + első komment + képváltozatok + reel (videó zenével).
 Offline, AI nélkül is működik, HU/EN/DE paritással. Önmagát tanulja (saját felismerési minták),

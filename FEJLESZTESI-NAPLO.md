@@ -1,5 +1,9 @@
 # Fejlesztési napló – Akvarell bemutató
 
+## 2026-11-27 – Claude (ZSEBMARKETING chat, munka-fotoposzt)
+- Péter: „Mehet a munkarend” – a `fotoposzt/MOTOR-ATADO.md` új 0. pontja: indulás és munkarend három szinten (minden üzenet: bemenet.py; minden munkalépés: szerepek, AGENTS.md, kapu + élő kép, független ellenőr; lépés vége: vállalás, állapotsor, csatorna, tanulság).
+- Csak dokumentáció; kód nem változott, teszt nem kellett. Kutatási dokumentum (AI-vázlat): https://claude.ai/artifact/A5CWhAzRENyRQeYXMsyuE2
+
 ## 2026-11-26 – Claude (munka-fotoposzt)
 - Péter: „készíts az Akvarell vendégháznak egy olyan alkalmazást, ami … egy fényképből kész Facebook posztot csinál”, majd: AI nélkül is, három nyelven párhuzamosan, választható változatok, tanuljon; „föl kell tenni, hogy megnézzük, hogy megy online”.
 - **Új, önálló oldal:** `fotoposzt/index.html` + `fotoposzt/app.js` (a CSP miatt külön fájl, inline szkript nincs). A vendégoldalhoz, adatbázishoz, `functions/`-höz nem nyúl; noindex.
