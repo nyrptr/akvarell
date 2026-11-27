@@ -50,3 +50,6 @@ flowchart TD
 
 ## Bizonytalan (ellenőrizendő)
 Cloudflare D1/R2 pontos ingyenes korlátai; Google Cégprofil-poszt élettartama; Meta szöveghossz; page-token lejárata; AI Act (jogász); tesztelői ingyenesség adóügyi kezelése (könyvelő); Ptk./Fttv. szakaszszámok.
+
+## Kiegészítés: mozgóképes reel (Péter, 11-27: „mozgóképes reklámot is tudnunk kell csinálni… megindítja a kamerát, elfordítja egy kicsit… így is tudunk reelt készíteni”)
+AI-javaslat: a fotós-segéd kap egy **Videó** módot (rövid klipek, 3–6 mp: lassú fordulás a szobában, ajtónyitás/belépés, kilátás az ablakból, részlet), a telefon saját kamerájával; a reel-motor a fotók mellett **klipeket** is fűz (vágás a legjobb 2–3 mp-re, felirat, zene, zárókép) – a telefonon, AI nélkül (videókocka → vászon → felvétel, ahogy most a fotós reel). Kockázat: nagy fájlok és régebbi iPhone-ok teljesítménye – mérni kell. A Facebook-mintát (Péter linkje) belépés nélkül nem látjuk: képernyőfelvétel kell róla. Helye a sorrendben: 1. lépés része (fotós-segéd + reel-motor).
