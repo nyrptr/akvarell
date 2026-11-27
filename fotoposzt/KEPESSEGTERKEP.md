@@ -1,5 +1,5 @@
 # Zsebmarketing – képességtérkép (mit kell tudnia egy teljes értékű zsebmarketinesnek)
-Állapot: 2026-11-27 · ZSEBMARKETING · AI-javaslat (Claude), Péter jóváhagyására vár · váz: PR Smith SOSTAC® tervezési modell (Helyzet, Célok, Stratégia, Taktika, Akció, Kontroll), a gyár marketing-osztályának tudásával (vevőút 6 lépés, platformszabályok, mérés).
+Állapot: 2026-11-27 · ZSEBMARKETING · AI-javaslat (Claude), Péter jóváhagyta 2026-11-27 („Mehet a képességtérkép és ez a sorrend”: webapp → Tervező → Meta-bekötés → Visszajelzés) · váz: PR Smith SOSTAC® tervezési modell (Helyzet, Célok, Stratégia, Taktika, Akció, Kontroll), a gyár marketing-osztályának tudásával (vevőút 6 lépés, platformszabályok, mérés).
 Péter kérése (11-27): „teljes értékű zsebmarketinges legyen… visszajelző felület… megbeszéljük a marketinget, ez hogy fog felkerülni, akár saját marketing generátort is lehet csinálni.”
 
 ```mermaid
