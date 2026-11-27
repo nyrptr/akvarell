@@ -33,7 +33,7 @@ h2{font-size:17px;margin:24px 0 8px}
 .meta{font-size:14px;color:var(--mute);margin-top:6px}
 .row{display:flex;flex-wrap:wrap;gap:8px}
 .chip{min-height:44px;padding:0 14px;border-radius:22px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:600 15px Figtree,sans-serif;cursor:pointer}
-.kartya{background:var(--card,#fff);border:1px solid rgba(0,0,0,.1);border-radius:16px;padding:12px 14px;margin:10px 0}.kartya .kl{font:600 13px Figtree,sans-serif;color:#6b6b63;margin:10px 0 4px}.kartya .kl:first-child{margin-top:0}.kartya .row{gap:6px}.kartya .chip{padding:7px 11px;font-size:15px}.tval{font-weight:700}#osz{display:none!important}#formw{display:grid;grid-template-columns:1fr 1fr;gap:8px}#formw .chip{padding:16px 10px;font-size:16px;text-align:center;justify-content:center}#temaD>summary,#chkD>summary,#seg4>summary,#beall>summary{cursor:pointer;font:600 16px Figtree,sans-serif;padding:12px 0}#hidB{display:none!important}#aiw{margin-top:18px;border-top:1px solid rgba(0,0,0,.1);padding-top:6px}
+input[type=text],input[type=search],select,textarea{min-height:44px}input[type=checkbox]{width:40px;height:40px;min-width:40px;margin:0 10px 0 0;accent-color:#3F5646;vertical-align:middle;flex:0 0 auto}label.man,#helyw label,#ujHelyL{display:flex;align-items:center;gap:4px}.kartya{background:var(--card,#fff);border:1px solid rgba(0,0,0,.1);border-radius:16px;padding:12px 14px;margin:10px 0}.kartya .kl{font:600 13px Figtree,sans-serif;color:#6b6b63;margin:10px 0 4px}.kartya .kl:first-child{margin-top:0}.kartya .row{gap:6px}.kartya .chip{padding:7px 11px;font-size:15px}.tval{font-weight:700}#osz{display:none!important}#formw{display:grid;grid-template-columns:1fr 1fr;gap:8px}#formw .chip{padding:16px 10px;font-size:16px;text-align:center;justify-content:center}#temaD>summary,#chkD>summary,#seg4>summary,#beall>summary{cursor:pointer;font:600 16px Figtree,sans-serif;padding:12px 0}#hidB{display:none!important}#aiw{margin-top:18px;border-top:1px solid rgba(0,0,0,.1);padding-top:6px}
 .fotok{display:flex;gap:8px;overflow-x:auto;padding:8px 0}.fotok .fk{position:relative;flex:0 0 auto}.fotok img{width:76px;height:76px;object-fit:cover;border-radius:10px;display:block;border:2px solid transparent}.fotok .fk.b img{border-color:var(--deep)}.fotok .fk span{position:absolute;left:4px;bottom:4px;background:rgba(0,0,0,.6);color:#fff;font:600 11px Figtree,sans-serif;padding:1px 6px;border-radius:8px}.fotok .fk button{position:absolute;top:2px;right:2px;width:26px;height:26px;border-radius:13px;border:0;background:rgba(0,0,0,.6);color:#fff;font:600 14px sans-serif;cursor:pointer}.albumw{display:flex;gap:8px;overflow-x:auto;padding:6px 0}.albumw img{height:200px;border-radius:8px;flex:0 0 auto}
 .chip[aria-pressed=true]{background:var(--deep);color:var(--bg);border-color:var(--deep)}
 label.f{display:block;font-weight:600;font-size:14px;margin:14px 0 6px}
@@ -69,7 +69,7 @@ ul.chk li{display:grid;grid-template-columns:22px 1fr;gap:6px;font-size:15px;bac
 .warn::before{content:"!";color:var(--warn);font-weight:800}
 .fix::before{content:"↺";color:var(--deep);font-weight:800}
 .man{display:flex;gap:10px;align-items:center;margin-top:8px;font-size:15px}
-.man input{width:24px;height:24px;flex:none}
+.man input{width:40px;height:40px;flex:none}
 .verdict{margin-top:10px;padding:10px 12px;border-radius:10px;font-weight:700}
 .verdict.go{background:light-dark(#e3f1e7,#1f3a29);color:var(--ok)}
 .verdict.stop{background:light-dark(#fbe6e4,#3e1f1d);color:var(--bad)}
@@ -91,7 +91,7 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 .fresh{font-size:14px;font-weight:700;color:var(--ok);margin:4px 0 8px;min-height:20px}
 .btn.dolgozik{background:repeating-linear-gradient(45deg,var(--acc),var(--acc) 10px,light-dark(#cf6f53,#c06a50) 10px,light-dark(#cf6f53,#c06a50) 20px);color:#fff}
 .hely{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:8px;font-size:14px}.hely a{word-break:break-all}
-.hely label{display:flex;gap:8px;align-items:center;min-height:36px}.hely input[type=checkbox]{width:20px;height:20px}
+.hely label{display:flex;gap:8px;align-items:center;min-height:36px}.hely input[type=checkbox]{width:40px;height:40px}
 @media (prefers-reduced-motion:no-preference){.villan{animation:v 1.4s ease-out}@keyframes v{0%{box-shadow:0 0 0 4px var(--acc)}100%{box-shadow:0 0 0 0 transparent}}.btn.dolgozik{background-size:200% 100%;animation:cs 1s linear infinite}@keyframes cs{to{background-position:28px 0}}}
 .lepsor{position:sticky;top:0;z-index:5;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;background:var(--bg);padding:8px 0;margin:0 0 10px}
 .lepsor button{min-height:44px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--mute);font:700 14px Figtree,sans-serif;cursor:pointer}
