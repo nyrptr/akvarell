@@ -11,6 +11,7 @@ Forrás: Péter, 2026-11-27: „mindig minden egyes dolognál futtasd végig mag
 - MINDEN MUNKALÉPÉS: `szerep.py betolt <útvonal>`; ennek a tárolónak az `AGENTS.md`-je (ág, `tools/verzio.py`, `FEJLESZTESI-NAPLO.md`); új szabály vagy irány → ábra + Péter igene; kapu: `tools/proba/mind.sh` (benne `fotoposzt_kapu.py`) + kép az élő Cloudflare-előnézetről („kész” csak így); generált posztszövegre a gyár platformszabályai (nincs kommentkérés, reklámnyelv, garancia); ügyfélhez vagy nyilvánosság elé menő munkánál független ellenőrző ügynök.
 - LÉPÉS VÉGE: vállalás (`Iagent gyar/vallalasok.yaml`, `tools/vallalas.py`), állapotsor (`veledaholnapert` `jegyzetek`: `tools/allapot.py sor|allit`), csatornajegyzet (`en-ugynok-mag` `kapcsolat/bejovo/`), ha más chatet érint; tanulság: ok, figyelmi ok, ellenszer (`szerep.py naplo` + `naplo/tanulsagok.md`).
 - Új chat ezen a terméken az első lépésben kér írási jogot a `veledaholnapert`, `Iagent` és `akvarell` tárolóhoz.
+- HIBA → ALAPOK (Péter, 2026-11-27: „Mindig minden hibáról tájékoztatni kell az alapokat, mindig”): minden talált hiba azonnal hibajegy az ALAPOK-nak – `allapot.py atkuld … --chat ALAPOK` + csatornajegyzet.
 - Jelölés Péternek: „Te mondtad:” = Péter szava; „Javaslatom:” = AI-javaslat (az „AI-értelmezés” címke érthetetlen volt neki, 11-27).
 
 ## 1. Mi ez
