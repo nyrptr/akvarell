@@ -1,0 +1,96 @@
+# Zsebmarketing – a kész termék térképe (mi kell a kezünkben)
+Állapot: 2026-11-27 · ZSEBMARKETING · **AI-javaslat (Claude), Péter jóváhagyására vár** · független ellenőr: külön ügynök kutatása (lent, „Ellenőr”).
+Te mondtad (11-27): „Mire van szükségünk, minek kell a kezünkben lenni egy olyan kész terméknek, aminek ez a neve, hogy zsebmarketing… ilyen termék nincsen… azonnal kapunk tesztelőket… Minden szinten.”
+
+Vázlat: hét réteg. Egy termék akkor „kész”, ha mind a hétben van legalább a minimum (MVP), és van mérése, hogy működik-e.
+
+```mermaid
+flowchart TD
+  T[1 Termék: app + motor + Tervező] --> SZ[2 Szolgáltatás: bekötés, betanítás, támogatás]
+  SZ --> U[3 Üzlet: név, ár, csomag, cég]
+  U --> J[4 Jog és adat: GDPR, Meta, AI-jelölés, fotó]
+  J --> M[5 Működés: biztonság, mentés, kapacitás]
+  M --> P[6 Piacra lépés: tesztelők, esettanulmány]
+  P --> K[7 Kontroll: a termék saját mérőszámai]
+  K -->|tanuló kör| T
+```
+
+## 1. Termék
+| Elem | Minimum (tesztelőkhöz) | Állapot |
+|---|---|---|
+| Ügyfél-app (PWA) | „Ma” kártya, fotó → poszt/reel, képtár | megvan (v17 + javítócsomag) |
+| Háromrétegű motor | motor / szakmacsomag / ügyfélcsomag külön fájl | jóváhagyva, építés következik |
+| Tervező | beszélgetés → SOSTAC-terv → kampány, posztnaptár, helyzetkép, képtartalék | látványterv kész, kód következik |
+| Közzététel | Meta-kapcsolat (FB/IG), ütemezés | nincs – tulaj-engedély kell |
+| Mérés | FB/IG számok + weboldal, napi gyűjtés | nincs |
+| Visszajelzés fül | ügyfél egy gombbal jelez → hozzánk | nincs |
+| Központi pult | minden ügyfél állapota, frissítés egyszerre/egyenként | nincs |
+| Új szakma felvétele | szakmacsomag-sablon (szállás után: vendéglátás, autókereskedés) | nincs |
+
+## 2. Szolgáltatás
+- Bekötési menet (lépéslista, időigény mérve): fiókok, jogosultság, interjú, fotó-alapkészlet, első kampány.
+- Betanítás: AI egyszer, ember jóváhagy; változáskérés útja (Visszajelzés → mi).
+- Kapacitás: hány ügyfél fér egy emberre (méréssel, az első tesztelőknél).
+
+## 3. Üzlet
+- Név és logó: „Zsebmarketing” munkanév; védjegy-kereső (SZTNH) előtte. **Péter dönt.**
+- Ár és csomag: havidíj + bekötési díj modell (javaslat; ellenőr adatai alapján). **Péter dönt.**
+- Cégforma: Meta Tech Provider-hez ellenőrzött vállalkozás kell. **Péter dönt.**
+
+## 4. Jog és adat
+- Adatkezelési tájékoztató + adatfeldolgozói szerződés (GDPR 28. cikk) minden ügyféllel.
+- Meta Platform Terms, Fejlesztői szabályzat; App Review csak sok ügyfélnél.
+- AI-tartalom jelölése: EU AI Act 50. cikk (átláthatóság) – nálunk a kép valódi fotó, a szöveg programból; ellenőrizni, mi jelölendő.
+- Fotó: személy csak hozzájárulással; szerzői jog az ügyfélnél.
+- Reklámjog (Fttv.): nincs megtévesztés, garancia, nyomás; kommentkérés nem mehet.
+- Google Maps adata nem tárolható → OSM.
+Szakember nézze át, mielőtt fizető ügyfél jön (jogi osztály: nem jogi tanács).
+
+## 5. Működés
+- Kulcs/token csak titkosítva a szerveren (Cloudflare secret), soha fájlban.
+- Mentés: ügyfélcsomag + képtár exportja; helyreállítási próba.
+- Őr: napi ellenőrzés, hiba → jegy; takarékos AI- és Actions-használat.
+- Ingyenes korlátok (Cloudflare: 100k kérés/nap, D1 10 adatbázis/fiók, közös a VH-val) → mikor kell fizetős szint.
+
+## 6. Piacra lépés
+- 1. kör: Akvarell + 1–2 tesztelő ingyen, cserébe visszajelzés és esettanulmány.
+- 2. kör: más szakma (pl. vendéglátás) – az ágazatfüggetlenség próbája.
+- Demó: élő telefonos bemutató az Akvarell anyagából (az ügyfél engedélyével).
+
+## 7. Kontroll – a termék mérőszámai
+- Aktiválás: bekötéstől az első kint lévő posztig eltelt napok.
+- Használat: heti poszt/ügyfél; elfogadott vs. elvetett javaslat.
+- Hatás: az ügyfél célja (foglalás, üzenet) a kiinduló méréshez képest.
+- Megtartás: hány ügyfél használja 4 és 12 hét után.
+
+## Brainstorm – a „többi gondolkodás” (független ellenőr, 9 keresés, 2026-11-27)
+Ami a vázlatból hiányzott, és bekerül (AI-javaslat):
+| Réteg | Új elem | Miért |
+|---|---|---|
+| Termék | Meta-token figyelés + „kapcsold újra” jelzés | a hosszú token ~60 nap, csendben is lejárhat ([Meta](https://developers.facebook.com/docs/facebook-login/guides/access-tokens)) |
+| Termék | Ügyfél-jóváhagyás közzététel előtt, naplózva | a tartalomért az ügyfél felel, bizonyíték kell |
+| Termék | Sikertelen közzététel: újrapróba + értesítés | API-hiba rendszeres |
+| Termék | Képtárban jelölés: van-e felismerhető ember, van-e hozzájárulás | képmásjog, Ptk. 2:48. § |
+| Termék | Adatexport és fióktörlés | GDPR + Meta törlési URL |
+| Termék | Reel-zene csak jogtiszta | különben némítás/levétel |
+| Szolgáltatás | Személyes ~1 órás bekötés | a Meta-összekötés a legnagyobb lemorzsolódási pont |
+| Szolgáltatás | B2B ÁSZF, leiratkozási menet, válaszidő, helyettesítés | egyszemélyes működés kockázata |
+| Üzlet | Szolgáltatás-ár (havidíj + bekötés), éves fizetés | Buffer/Later/Ocoya/Predis eszközár 6–40 USD; mi szolgáltatás vagyunk (következtetés, piaci adattal nem ellenőrzött) |
+| Üzlet | Védjegy: SZTNH, 9/35/42. osztály, 81–108 ezer Ft, előtte kutatás | [díjtáblázat](https://sztnh.gov.hu/sites/default/files/dijtablazat_vedjegy.pdf); vigyázat: hamis díjbekérők |
+| Jog | Adatfeldolgozók listája (Cloudflare, Meta, AI) a szerződésben; Meta éves adatvédelmi felmérés | GDPR 28. cikk, Meta Platform Terms |
+| Jog | AI Act 50. cikk (2026-08-02-től): élő AI-beszélgetésnél jelezni, hogy AI; programból készült poszt valószínűleg nem jelölendő | **bizonytalan, jogász erősítse meg** |
+| Működés | Fotó/videó tár: R2 (10 GB ingyen), nem D1; Workers 10 ms CPU → képfeldolgozás a telefonon marad | [Cloudflare limits](https://developers.cloudflare.com/workers/platform/limits) |
+| Működés | Központi pult: szerepkör, kétlépcsős belépés, napló, fokozatos kiadás | egy hibás frissítés mindenkit érint |
+| Kontroll | Aktiválás = első poszt kint az első héten; lemorzsolódás-cél havi < 2% (kkv-SaaS jellemző 3–7%) | előre leírt pilot-siker/bukás kritérium |
+
+### A 3 alábecsült kockázat
+1. **Meta az egyetlen kapu** – ellenőrzés, App Review hetekig tarthat; addig a partner-hozzáférés kézi és nem skálázható.
+2. **Az emberi szolgáltatás ára** – bekötés, támogatás, hirdetés egy emberre; az árnak fedeznie kell.
+3. **Felelősség a tartalomért** – képmás, zene, megtévesztő állítás; jóváhagyási lépés + szerződés nélkül ránk szállhat.
+
+## Sorrend (AI-javaslat)
+1. Háromrétegű motor + Tervező (jóváhagyva) – benne már: jóváhagyási lépés, képtár-hozzájárulás jelölés.
+2. Pilot-kritériumok leírása az Akvarell + 1–2 tesztelő elé.
+3. Meta-kapcsolat partner-hozzáféréssel, token-figyeléssel, újrapróbával.
+4. Jogi csomag (adatkezelési tájékoztató, adatfeldolgozói szerződés, ÁSZF) – szakember átnézi, mielőtt fizető ügyfél jön.
+5. Név/védjegy, ár, cégforma – Péter dönt, a pilot adatai után.
