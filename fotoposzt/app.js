@@ -20,7 +20,9 @@ let TUDAS=store.get('tudas',[]),ST=store.get('stat',{}),TAN=store.get('tanult',[
 /* ellenőrzés egy szövegre */
 function hibak(t){t=t||'';const lc=t.toLowerCase(),h=[];
  const hits=ALLTILT.filter(w=>new RegExp(`(^|[^\\p{L}])${w}([^\\p{L}]|$)`,'iu').test(lc));if(hits.length)h.push('felsőfok/reklámszó: '+[...new Set(hits)].join(', '));
- if(/https?:\/\/|www\./i.test(t))h.push('link');if(PENZ.test(t))h.push('ár/kedvezmény');if(/#\p{L}/u.test(t))h.push('hashtag');if(EMO().test(t))h.push('emoji');if(t.length>400)h.push('túl hosszú');return h}
+ if(/https?:\/\/|www\./i.test(t))h.push('link');if(PENZ.test(t))h.push('ár/kedvezmény');if(/#\p{L}/u.test(t))h.push('hashtag');if(EMO().test(t))h.push('emoji');if(t.length>400)h.push('túl hosszú');if(KOMKER.test(t))h.push('kommentkérés');if((t.match(/\?/g)||[]).length>1)h.push('egynél több kérdés');return h}
+/* Péter döntése 2026-11-27 (A): valódi kérdés mehet a végén, kommentre/lájkra/jelölésre felszólítás nem */
+const KOMKER=/(írd|írjátok|írjatok|írja)\s+(meg|le|be)?\s*(kommentben|kommentbe|lent|alább)|kommentel(j|jetek|jen)|lájkol(d|játok|jatok)|jelöld\s+(meg|be)|jelöljétek|oszd\s+meg|osszátok\s+meg|comment\s+below|in\s+the\s+comments|tag\s+(a|your)\s+friend|like\s+(and|&)\s+share|schreib(t)?\s+(es\s+)?(uns\s+)?in\s+die\s+kommentare|markier(e|t)\s+(einen|deine)|teil(e|t)\s+(diesen|den)\s+beitrag/iu;
 /* automatikus javítás: ami gépiesen javítható */
 function javit(t,k){const f=[];let x=t;const ure=/https?:\/\/\S+|www\.\S+/gi;
  const urls=x.match(ure);if(urls){x=x.replace(ure,'');for(const u of urls)if(!k.includes(u))k=(k+' '+u).trim();f.push('a linket átraktam a kommentbe')}
