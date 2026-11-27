@@ -80,4 +80,9 @@ for (const f of ['motor/sablon/index.html', 'motor/sablon/admin.html', 'admin/ad
 // 19. A képek a ház mappájában vannak (hazak/<ház>/kepek/), a gyökérben nincs kepek/ mappa, és a kód nem hivatkozik rá közvetlenül.
 if (existsSync(join(gyoker, 'kepek'))) H('kepek/ mappa a gyökérben (a hazak/<ház>/kepek/ alá való)', 'kepek/');
 for (const f of ['app.js', 'admin/admin.js']) if (/["'`]\/kepek\//.test(olv(f))) H('közvetlen /kepek/ hivatkozás (HAZ.kepmappa kell)', f);
+// 20. Minden ház mappája ugyanazt a szerkezetet adja (hazak/<ház>/: haz.json, db/seed.sql, kepek/lista.js, tartalom/{tartalom,ui,oldalak,oldalak_hosszu,oldalak_hosszu_en,blog_alap,terkep,szerver}.js), és a haz.json-ban megvan a kötelező kulcs.
+for (const h of readdirSync(join(gyoker, 'hazak'))) {
+  for (const f of ['haz.json', 'db/seed.sql', 'kepek/lista.js', ...['tartalom', 'ui', 'oldalak', 'oldalak_hosszu', 'oldalak_hosszu_en', 'blog_alap', 'terkep', 'szerver'].map(x => 'tartalom/' + x + '.js')]) if (!existsSync(join(gyoker, 'hazak', h, f))) H('hiányzó ház-fájl: hazak/' + h + '/' + f, 'hazak/' + h);
+  if (existsSync(join(gyoker, 'hazak', h, 'haz.json'))) { const j = JSON.parse(olv('hazak/' + h + '/haz.json')); for (const k of ['azonosito', 'nev', 'teljes_nev', 'hely', 'kepek', 'kepmappa', 'taj', 'arcsoportok', 'ar', 'oldal']) if (!(k in j)) H('hiányzó kulcs a haz.json-ban: ' + k, 'hazak/' + h); }
+}
 console.log(hiba, 'HIBA'); process.exit(hiba ? 1 : 0);

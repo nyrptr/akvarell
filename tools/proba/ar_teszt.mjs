@@ -14,7 +14,7 @@ const ablak = {}; new Function('window', mag)(ablak); const minEjB = ablak.ARMAG
 for (const [tol, ig, min] of HAZ.ar.hosszu_hetvegek) for (const [e, t] of [[tol, ig], [ig, tol.slice(0, 8) + String(+ig.slice(8) + 3).padStart(2, '0')], ['2020-01-01', '2020-01-02']]) { db++;
   const sz = S.minEj(e, t), b = minEjB(e, t, HAZ.ar.hosszu_hetvegek);
   if (sz !== b) { hiba++; console.log('HIBA minEj', e, t, sz, b); } }
-{ const [tol, ig, min] = HAZ.ar.hosszu_hetvegek[0]; db += 3;
+if (HAZ.ar.hosszu_hetvegek.length) { const [tol, ig, min] = HAZ.ar.hosszu_hetvegek[0]; db += 3;
   if (S.minEj(tol, ig) !== min) { hiba++; console.log('HIBA minEj: a hétvégén belül', min); }
   if (S.minEj('2020-01-01', '2020-01-02') !== 1) { hiba++; console.log('HIBA minEj: hétköznap 1 éj'); }
   if (S.minEj(ig, tol) !== 1 && ig > tol) { hiba++; console.log('HIBA minEj: fordított'); } }

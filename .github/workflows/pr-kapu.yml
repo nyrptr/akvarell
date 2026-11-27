@@ -11,6 +11,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
+      - name: Generált ház-fájlok frissek (haz.js, szerver.js, telepit.js, index.html)
+        run: python3 scripts/haz_gen.py --ellenoriz
       - name: Gyár-szabályok
         run: node tools/proba/gyar_szabalyok.mjs
       - name: Kezelő-belépés ellenőrzése
@@ -24,9 +26,10 @@ jobs:
   utak:
     # Végigjátszott próbák (docs/ALAPELV.md 5/6.): helyi szerver friss adatbázissal, a valódi utak elejétől a végéig.
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
       - name: Böngésző a kezelő-úthoz (playwright + chromium, a tárolón kívülre)
@@ -36,5 +39,10 @@ jobs:
           echo "PLAYWRIGHT_HELY=$RUNNER_TEMP/pw/node_modules/" >> "$GITHUB_ENV"
       - name: Végigjátszott utak
         run: node tools/proba/utak/fut.mjs
+      - name: A többi ház váza a motoron (csak ha a motor kódja változott)
+        run: |
+          if git diff --name-only "origin/${{ github.base_ref }}...HEAD" | grep -qE '^(motor/|functions/|app\.js|admin/|db/|scripts/|tools/proba/)'; then
+            for h in $(ls hazak | grep -vx akvarell); do bash tools/proba/haz_proba.sh "$h"; done
+          else echo "a motor kódja nem változott: kimarad"; fi
       - name: A kezelő saját belépése (beüzemelés, belépés, kilépés, jelszócsere, korlát)
         run: node tools/proba/belepes_teszt.mjs
