@@ -50,7 +50,7 @@ async def main():
       if not await pg.is_hidden('#miniFoto'): hib.append(f'{w}: az 1. lépésnél fölöslegesen látszik a mini')
       if await pg.is_hidden('#prev'): hib.append(f'{w}: bemutató fotó nem töltődött be')
       await pg.evaluate("()=>__terv.modValt('terv')"); await pg.evaluate("()=>{document.getElementById('sajatKamp').open=true}"); await pg.click('#tervLista .tervsor >> nth=0'); await pg.wait_for_timeout(2500)
-      if await pg.is_hidden('#prev'): hib.append(f'{w}: terv-sorról nem jött fotó')
+      if not await pg.evaluate("()=>!!__test.IMG()&&__test.S.lep===4"): hib.append(f'{w}: terv-sorról nem lett kész poszt (fotó + 4. lépés)')
       r=await pg.evaluate("()=>{__test.S.ok=true;/* a kapu (hozzájárulás) külön teszt: t35 */document.getElementById('demoKi').click();return JSON.parse(localStorage.getItem('akvposzt-kint')||'[]')[0]}")
       if not r or not r.get('tema'): hib.append(f'{w}: szimulált kiküldés nem rögzült ({r})')
       await pg.evaluate("()=>__terv.modValt('ered')"); await pg.wait_for_timeout(200)

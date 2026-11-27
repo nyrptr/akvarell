@@ -133,6 +133,8 @@ body{padding-bottom:84px}.rejt{position:absolute;left:-9999px}
 #kesz{display:none}body.muhely #kesz{display:block}
 body[data-mod]:not([data-mod=ma]):not(.muhely) #frissSav{display:none}
 body:not(.muhely) .cand .tag:not(.ai){display:none}
+body[data-mod]:not([data-mod=poszt]) .lepes{display:none!important}
+.briefTobb summary{cursor:pointer;min-height:44px;padding:10px 0;color:var(--deep);font-weight:600}
 .posztKamp{border:1px solid var(--line);border-left:0;border-radius:12px;background:var(--card);padding:10px 12px;margin:0 0 10px;font:500 14px/1.4 Figtree,sans-serif}
 .posztKamp b{display:block;font-size:15px}.posztKamp small{display:block;color:var(--mute)}
 #reszl summary{display:block;cursor:pointer;padding:10px 0;min-height:44px;font:600 14px/1.4 Figtree,sans-serif}body:not(.muhely) #felisOk{display:none!important}#reszlS{color:var(--mute);font-weight:500}
@@ -296,9 +298,9 @@ body:not(.muhely) .cand .tag:not(.ai){display:none}
 </section>
 
 <section class="lepes" data-l="4" hidden>
-</div>
 <section id="out" hidden>
-<h2 style="margin-top:4px">Előnézet (szerkeszthető)</h2>
+<h2 style="margin-top:4px">Kész poszt <small class="note">– a szöveg átírható</small></h2>
+<div class="two" id="gyorsGombok" style="margin:0 0 10px"><button class="btn sec" id="mastKerek" type="button">Másik szöveget kérek</button><button class="btn sec" id="kinezetB" type="button">Más kinézet</button></div>
 <div class="fb">
 <div class="fbh"><div class="logo" aria-hidden="true">A</div><div><b>Akvarell Apartmanház</b><small id="fbsub">Piszkozat · nem ment ki</small></div></div>
 <textarea id="txt" rows="5" aria-label="Poszt szövege"></textarea>
@@ -309,7 +311,7 @@ body:not(.muhely) .cand .tag:not(.ai){display:none}
 <div id="ujtw" hidden><h2>Új tények az AI-tól: ellenőrizd</h2><p class="note">Pipáld ki, ami biztosan igaz. Ami nem igaz, azt töröld a szövegből, és pipáld ki, hogy nem szerepel benne. A kipipált tény bekerül a tudásba.</p><ul class="chk" id="ujt"></ul></div>
 <label class="man"><input type="checkbox" id="man"> A képen nincs felismerhető ember, vagy aki rajta van, beleegyezett.</label>
 <div class="verdict" id="ver"></div>
-<div id="demoKiW"><p class="bemutato" role="note">BEMUTATÓ: nincs Facebook-bekötés. A gomb úgy tesz, mintha kiment volna – az Eredmény fülön megjelenik.</p><button class="btn full" id="demoKi" type="button">Kiküldés (bemutató)</button><div class="status" id="demoKiSt" role="status"></div>
+<div id="demoKiW"><p class="bemutato" role="note">BEMUTATÓ: nincs Facebook-bekötés. A gomb úgy tesz, mintha kiment volna – az Eredmény fülön megjelenik.</p><button class="btn full" id="demoKi" type="button">Kiküldés (bemutató)</button><div class="status" id="demoKiSt" role="status"></div></div>
 <div class="acts">
 <button class="btn" id="cpT">Szöveg másolása</button>
 <button class="btn" id="svI">Kép megosztása</button>

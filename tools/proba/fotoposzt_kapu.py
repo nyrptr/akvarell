@@ -20,8 +20,12 @@ async def main():
             await pg.wait_for_function("()=>!document.getElementById('t2').disabled", timeout=90000)
             await pg.wait_for_timeout(1500)
             for lep in (1, 2, 3, 4):
-                if lep == 2: await pg.click('#t2'); await pg.wait_for_selector('.cand')
-                if lep == 3: await pg.click('.cand >> nth=0 >> text=Ezt választom'); await pg.click('#t3'); await pg.wait_for_selector('.stb')
+                if lep == 2:
+                    # 11-28: a „Kész posztot kérek” egyből a 4. lépésre visz (egyszerű rutin); a 2. lépést szerkesztésként mérjük
+                    await pg.click('#t2'); await pg.wait_for_timeout(1500)
+                    if await pg.evaluate("()=>__test.S.lep") != 4: hibak.append(f'{nev}: a Kész posztot kérek nem a kész posztra vitt')
+                    await pg.evaluate("()=>lep(2)"); await pg.wait_for_selector('.cand')
+                if lep == 3: await pg.click('.cand >> nth=0 >> .pick'); await pg.click('#t3'); await pg.wait_for_selector('.stb')
                 if lep == 4: await pg.click('#t4'); await pg.wait_for_timeout(400)
                 for d in ('temaD', 'beall', 'hid', 'chkD', 'seg4', 'kesz'):
                     await pg.evaluate(f"()=>{{const e=document.getElementById('{d}');if(e)e.open=true}}")

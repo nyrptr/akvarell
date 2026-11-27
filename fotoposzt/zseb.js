@@ -82,25 +82,30 @@
     c.append(el('span', 'cimke', j.cimke), el('h3', null, j.nev));
     const sor = (a, v) => { const r = el('div', 'sor2'); r.append(el('span', null, a), el('span', null, v)); return r; };
     c.append(sor('Miért most', j.miert));
-    c.append(el('p', 'note', 'Kinek szól'), chipSor((SZ.celcsoportok || ['párok']).map(x => [x, x]), st.kinek, false));
-    c.append(el('p', 'note', 'Nyelvek (külön poszt nyelvenként)'), chipSor(NYELV, st.nyelv, true));
+    // Egyszerű rutin (Péter végigjárása 11-27/28: a brief 80 mp-be és 4 megakadásba került): látszik a lényeg és a ráadás; a többi kitöltve, összecsukva.
+    const tobb = el('details', 'briefTobb'); const tobbS = el('summary'); tobb.append(tobbS);
+    const tobbFriss = () => { tobbS.textContent = `A többit beállítottam: ${st.kinek.join(', ')} · ${st.nyelv.map(x => (NYELV.find(n => n[0] === x) || [x, x])[1]).join(', ')} · módosítom`; };
+    tobb.append(el('p', 'note', 'Kinek szól'), chipSor((SZ.celcsoportok || ['párok']).map(x => [x, x]), st.kinek, false));
+    tobb.append(el('p', 'note', 'Nyelvek (külön poszt nyelvenként)'), chipSor(NYELV, st.nyelv, true));
+    tobb.addEventListener('click', () => setTimeout(tobbFriss, 0)); tobbFriss();
     c.append(el('p', 'note', 'Fő üzenet – átírhatod'));
     const ta = el('textarea'); ta.rows = 2; ta.value = st.uzenet; ta.style.width = '100%'; ta.addEventListener('input', () => { st.uzenet = ta.value; }); c.append(ta);
     const lep = s.lepes || 'foglalás';
-    c.append(sor('Meddig', j.tip === 'res' ? `${j.datum} előttig` : `${hd(j.cel)}-ig`), sor('Siker', ((SZ.cel_szam || {})[lep === 'érdeklődés' ? 'érdeklődés' : 'foglalás']) || 'foglalás'));
+    tobb.append(sor('Meddig', j.tip === 'res' ? `${j.datum} előttig` : `${hd(j.cel)}-ig`), sor('Siker', ((SZ.cel_szam || {})[lep === 'érdeklődés' ? 'érdeklődés' : 'foglalás']) || 'foglalás'));
     const rd = el('p', 'note'); rd.innerHTML = '<b>Ráadás – te döntesz</b> (pénz: mindig a te döntésed)'; c.append(rd);
     c.append(chipSor([['kesoi', 'Késői kijelentkezés'], ['udv', 'Üdvözlő ajándék'], ['kedv', 'Kedvezmény (te adod meg)'], ['semmi', 'Semmi']], st.radas, false));
-    c.append(el('p', 'note', 'Fotók – hogyan szeretnéd?'));
-    c.append(chipSor([['kint', 'Sétálok kint'], ['bent', 'Bent fotózok'], ['video', 'Videó (reel)'], ['modell', 'Modell: én'], ['kesz', 'Van kész képem']], st.foto, true));
-    c.append(el('p', 'note', 'Hirdetés (javaslat; bekötés után)'), chipSor([['posztok', 'Csak posztok'], ['kiemeles', 'Kis kiemelés 7 napig']], st.hirdetes, false));
-    c.append(el('p', 'note', 'Közzététel'), chipSor([['egyenkent', 'Egyenként jóváhagyom'], ['keret', 'Jóváhagyott keret (FB időzítve, IG értesítés)']], st.kozz, false));
+    tobb.append(el('p', 'note', 'Fotók – hogyan szeretnéd?'));
+    tobb.append(chipSor([['kint', 'Sétálok kint'], ['bent', 'Bent fotózok'], ['video', 'Videó (reel)'], ['modell', 'Modell: én'], ['kesz', 'Van kész képem']], st.foto, true));
+    tobb.append(el('p', 'note', 'Hirdetés (javaslat; a Facebook-bekötés után)'), chipSor([['posztok', 'Csak posztok'], ['kiemeles', 'Fizetett kiemelés 7 napig (te adod meg az összeget)']], st.hirdetes, false));
+    tobb.append(el('p', 'note', 'Közzététel'), chipSor([['egyenkent', 'Egyenként jóváhagyom'], ['keret', 'Jóváhagyott keret (FB időzítve, IG értesítés)']], st.kozz, false));
+    c.append(tobb);
     const hiba = el('p', 'status'); hiba.setAttribute('role', 'status');
-    c.append(gomb('Indítás', 'btn full', () => {
+    c.append(hiba, gomb('Indítás', 'btn full', () => {
       if (!st.nyelv.length) { hiba.textContent = 'Válassz legalább egy nyelvet.'; return; }
       if (!st.radas[0]) { hiba.textContent = 'A ráadásról te döntesz: válassz egyet (lehet „Semmi” is).'; return; }
       const k = epit(j, st); T.tar.set(k); b.hidden = true; T.rajzol(T.tar.get());
-      $('tervLista').scrollIntoView({ behavior: 'smooth' }); rajzMind();
-    }), hiba, gomb('Mégse', 'btn sec full', () => { b.hidden = true; }));
+      rajzMind(); T.modValt('ma'); /* indítás után a Ma fülre: ott az első poszt kártyája (Péter: „Lap aljára érkeztem”) */
+    }), gomb('Mégse', 'btn sec full', () => { b.hidden = true; }));
     b.append(c); b.scrollIntoView({ behavior: 'smooth' });
   }
 
@@ -171,7 +176,7 @@
         const c = el('div', 'kartya kiem');
         const mikor = kov.datum === most ? 'Ma' : hd(kov.datum) + ' ' + kov.nap;
         c.append(el('span', 'cimke', kov.fazis || 'Következő'), el('h3', null, `${mikor} ${kov.ido} – ${kov.temaNev}`), el('p', 'note', `${k.nev} · ${kov.cta ? 'foglalási linkkel' : 'hangulat, link nélkül'}`));
-        c.append(gomb('Elkészítem', 'btn full', () => { kampFej(k, kov); T.modValt('poszt'); try { lep(1); } catch (e) {} if (T.demoBetolt) T.demoBetolt(kov.tema); }));
+        c.append(gomb('Elkészítem', 'btn full', () => gyorsPoszt(k, kov)));
         fo.append(c);
       }
       const fk = (k.foto || []).find(f => f.tipus !== 'lehetőség');
@@ -320,7 +325,7 @@
     if (k.uzenet) sor.push('Fő üzenet: ' + k.uzenet);
     if (k.nyelvek && k.nyelvek.length) sor.push('Nyelvek: ' + k.nyelvek.map(x => NYN[x] || x).join(', '));
     if (k.radas) sor.push('Ráadás: ' + (RAD[k.radas] || k.radas));
-    sor.push(p.cta ? 'Foglalásra hív' : 'Hangulatposzt, még nem kér foglalást');
+    sor.push(p.cta ? 'Foglalásra hív' : 'Hangulatposzt; a foglalási link csak az első kommentben');
     d.append(el('small', null, sor.join(' · '))); d.hidden = false;
   }
   // Nyelv–napszak–évszak összecsukva; a sor mutatja, mi van beállítva.
@@ -400,6 +405,31 @@
     fej.after(pan);
     jb.addEventListener('click', () => { pan.hidden = !pan.hidden; if (!pan.hidden) { allj.textContent = 'Itt vagy most: ' + hol(); ta.focus(); } });
   })();
+
+  // ── Egyszerű rutin: Fotó → Kész poszt → Kiküldés (Péter: „Oké, készítek egy képet, én csak ezt akarom”).
+  // A 2–3. lépés megmarad szerkesztésnek, de a gép végigviszi: első szöveg, alap kinézet, a 4. lépésen a kész poszt.
+  function keszPoszt() {
+    try {
+      const S = window.__test.S; if (!window.__test.IMG()) { lep(1); return; }
+      S.csendes = true; lep(2); if (!S.cands.length) ujak(); if (S.cands.length && S.sel == null) valaszt(0); lep(3); lep(4); S.csendes = false;
+    } catch (e) { try { window.__test.S.csendes = false; } catch (e2) {} }
+  }
+  async function gyorsPoszt(k, p) {
+    kampFej(k, p); T.modValt('poszt'); try { lep(1); } catch (e) {}
+    if (!p || !p.tema || !T.demoBetolt) return;
+    const IMG = () => window.__test.IMG(), elotte = IMG();
+    const ok = await T.demoBetolt(p.tema); if (ok === false) return;
+    for (let i = 0; i < 50 && (!IMG() || IMG() === elotte); i++) await new Promise(r => setTimeout(r, 150));
+    await new Promise(r => setTimeout(r, 600));
+    keszPoszt();
+  }
+  window.__zseb.gyorsPoszt = gyorsPoszt; window.__zseb.keszPoszt = keszPoszt;
+  if ($('t2')) { $('t2').textContent = 'Kész posztot kérek'; const uj = $('t2').cloneNode(true); $('t2').replaceWith(uj); uj.addEventListener('click', keszPoszt); }
+  if ($('mastKerek')) $('mastKerek').addEventListener('click', () => {
+    try { const S = window.__test.S; S.csendes = true; const n = S.cands.length; let ix = (S.sel == null ? 0 : S.sel + 1);
+      if (ix >= n) { ujak(); ix = 0; } valaszt(ix); lep(4); S.csendes = false; } catch (e) {}
+  });
+  if ($('kinezetB')) $('kinezetB').addEventListener('click', () => { try { lep(3); } catch (e) {} });
   $('maUjPoszt').addEventListener('click', () => { kampFej(null); T.modValt('poszt'); try { lep(1); } catch (e) {} });
   document.addEventListener('zseb-mod', (e) => { if (e.detail === 'ma' || e.detail === 'terv') rajzMind(); if (e.detail === 'kep') kepRajz(); });
   rajzMind(); kepRajz();

@@ -8,7 +8,7 @@ async def main():
   async with async_playwright() as p:
     b=await p.chromium.launch();pg=await b.new_page(viewport={'width':390,'height':844})
     pg.on('pageerror',lambda e:errs.append(str(e)))
-    await pg.goto(URL);await pg.wait_for_timeout(1500);await pg.evaluate("()=>document.body.classList.add('muhely')")  # tanítás a Műhelyben (11-27)
+    await pg.goto(URL);await pg.wait_for_timeout(1500)
     # lépésgomb: az aktív gomb szövege látszik (szín ≠ háttér)
     c=await pg.evaluate("(()=>{const b=document.querySelector('#lepsor [aria-current=step]');const s=getComputedStyle(b);return [b.textContent,s.color,s.backgroundColor,s.webkitTextFillColor]})()")
     r['lepesgomb']=c
@@ -25,10 +25,10 @@ async def main():
     await pg.set_input_files('#file',FOTO);await pg.wait_for_timeout(9000)
     m=await pg.text_content('#meta');r['meta_jpg']=m[:80]
     if 'képernyőképnek' in m:hiba.append('valódi fotónál is figyelmeztet')
-    vis=await pg.is_visible('#felisOk');r['felisOk_lathato']=vis;r['felisOk']=await pg.text_content('#felisOk')
+    await pg.evaluate("()=>document.body.classList.add('muhely')");vis=await pg.is_visible('#felisOk');r['felisOk_lathato']=vis;r['felisOk']=await pg.text_content('#felisOk')
     n0=await pg.evaluate("window.__test.SAJAT().length")
     if vis:
-      await pg.click('#felisOk');await pg.wait_for_timeout(300)
+      await pg.evaluate("()=>document.body.classList.add('muhely')");await pg.click('#felisOk');await pg.wait_for_timeout(300)
       n1=await pg.evaluate("window.__test.SAJAT().length");r['tanult']=n1-n0;r['felisSt']=await pg.text_content('#felisSt')
       if n1<=n0:hiba.append('megerősítés nem tanított')
       if not await pg.is_disabled('#felisOk'):hiba.append('megerősítés kétszer is nyomható')

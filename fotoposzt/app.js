@@ -310,10 +310,12 @@ function reelKocka(g,t,T,kepek,sorok,st){const {W,H,top,side}=REEL,alja=H-REEL.b
   if(fan==='gepeles'){lat=Math.max(1,Math.ceil(hossz*Math.min(1,u/.6)));al=Math.min(be,ki2)}
   g.save();g.globalAlpha=al;g.translate(0,dy);
   const bw=Math.max(...ls.map(x=>g.measureText(x).width))+80;
+  /* a doboz a szöveg után tűnik fel és előtte tűnik el (Péter 11-28: üres doboz halvány szöveggel) */g.globalAlpha=al*al*al;
   if(fel==='sav'){const gr=g.createLinearGradient(0,cy-bh/2-120,0,cy+bh/2+120);gr.addColorStop(0,'rgba(20,30,25,0)');gr.addColorStop(.3,'rgba(20,30,25,.62)');gr.addColorStop(.7,'rgba(20,30,25,.62)');gr.addColorStop(1,'rgba(20,30,25,0)');g.fillStyle=gr;g.fillRect(0,cy-bh/2-120,W,bh+240);g.fillStyle='#FFFFFF'}
   else if(fel==='arnyek'){g.fillStyle='#FFFFFF';g.shadowColor='rgba(0,0,0,.75)';g.shadowBlur=18;g.shadowOffsetY=3}
   else if(fel==='cimke'){const x0=W/2-bw/2,y0=cy-bh/2-26,hh=bh+52,rr=26;g.save();g.shadowColor='rgba(0,0,0,.25)';g.shadowBlur=20;g.shadowOffsetY=6;g.fillStyle='#FFFDF8';g.beginPath();g.moveTo(x0+rr,y0);g.arcTo(x0+bw,y0,x0+bw,y0+hh,rr);g.arcTo(x0+bw,y0+hh,x0,y0+hh,rr);g.arcTo(x0,y0+hh,x0,y0,rr);g.arcTo(x0,y0,x0+bw,y0,rr);g.closePath();g.fill();g.restore();g.fillStyle='#2F4237'}
   else{folt(g,W/2,cy+8,(W-2*side)/2,bh/2+46,'#F7F1E6',.9,rnd(i+3));g.fillStyle='#2F4237'}
+  g.globalAlpha=Math.min(1,al*1.4);
   if(lat===Infinity){ls.forEach((x,k)=>g.fillText(x,W/2,cy-bh/2+lh*(k+.8)))}
   else{g.textAlign='left';let maradt=lat;ls.forEach((x,k)=>{if(maradt<=0)return;const w0=g.measureText(x).width,x0=W/2-w0/2;let s;
     if(fan==='szavankent'){const sz=x.split(' ');s=sz.slice(0,maradt).join(' ');maradt-=sz.length}else{s=x.slice(0,maradt);maradt-=x.length+1}
@@ -811,5 +813,5 @@ $('felisOk').addEventListener('click',()=>{if(!S.emb||!S.tema)return;sajatTanul(
   if(reg.waiting&&navigator.serviceWorker.controller)$('ujValt').hidden=false;reg.addEventListener('updatefound',()=>jelez(reg.installing));
   $('ujValtB').addEventListener('click',()=>{(reg.waiting||reg.installing)?.postMessage('frissits')});
   let ujra=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(ujra)return;ujra=true;location.reload()})}).catch(()=>{})}catch(e){}})();
-window.__test={felisOkFriss,merreMondat,ZENE,hasonlit,refBe,SAJAT:()=>SAJATEMB,extrakBe,fotokBe,EXTRA:()=>EXTRA,festKollazs,panelek,javitJSON,ALK,TELIHOLD,alkMondat,naptarFriss,alkalom,napido,holdKor,unnepek,husvet,reelKocka,altFriss,helyPanel,temaPontok,TERKEP,tavMondat,UT:()=>UT,K,hibak,javit,jeloltek,S,onell,KIZART,KHIBA,exif,beolvas,keres};
+window.__test={IMG:()=>img,felisOkFriss,merreMondat,ZENE,hasonlit,refBe,SAJAT:()=>SAJATEMB,extrakBe,fotokBe,EXTRA:()=>EXTRA,festKollazs,panelek,javitJSON,ALK,TELIHOLD,alkMondat,naptarFriss,alkalom,napido,holdKor,unnepek,husvet,reelKocka,altFriss,helyPanel,temaPontok,TERKEP,tavMondat,UT:()=>UT,K,hibak,javit,jeloltek,S,onell,KIZART,KHIBA,exif,beolvas,keres};
 }

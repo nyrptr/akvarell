@@ -117,7 +117,7 @@
       const sz = statusz(p); b.dataset.st = sz; b.children[0].textContent += ' · ' + CIMKE(p, sz);
       b.children[1].textContent = p.temaNev + (p.cta ? ' · hívás a foglalásra' : '');
       b.children[2].textContent = `Vevőút: ${p.lepes}` + (p.csere ? ' · képtartalék (az eredeti témához fotó kell)' : '');
-      b.addEventListener('click', () => { try { if (window.__zseb && window.__zseb.kampFej) window.__zseb.kampFej(terv, p); modValt('poszt'); lep(1); if (p.tema && !(window.__terv.demoBetolt && DEMO_VAN(p.tema))) temaValaszt(p.tema); else if (p.tema) window.__terv.demoBetolt(p.tema); } catch (e) {} });
+      b.addEventListener('click', () => { if (window.__zseb && window.__zseb.gyorsPoszt) window.__zseb.gyorsPoszt(terv, p); });
       el.append(b);
     });
     const fh = document.createElement('h3'); fh.textContent = 'Fotók, amiket kérünk'; el.append(fh);
@@ -134,7 +134,7 @@
     $('lepsor').hidden = !poszt;
     if ($('posztVissza')) $('posztVissza').hidden = !poszt;
     if ($('kesz')) $('kesz').hidden = !poszt;
-    document.body.classList.toggle('poszt-mod', poszt); document.body.dataset.mod = mod;
+    document.body.classList.toggle('poszt-mod', poszt); document.body.dataset.mod = mod; document.body.classList.remove('muhely'); if ($('muhelyB')) $('muhelyB').setAttribute('aria-pressed', 'false');
     for (const s of document.querySelectorAll('.lepes')) s.hidden = !poszt ? true : +s.dataset.l !== ((window.__test && window.__test.S && window.__test.S.lep) || 1);
     const fo = poszt ? (window.__elozoMod || 'ma') : mod;
     for (const b of document.querySelectorAll('#modok button')) b.setAttribute('aria-pressed', String(b.dataset.mod === fo));
