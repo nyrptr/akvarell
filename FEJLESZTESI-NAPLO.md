@@ -514,3 +514,6 @@
 
 ## 2026-11-27 – ZSEBMARKETING: lépésgombok iPhone-on
 - Péter iPhone-képe: „2. Szöveg”, „4. Közzététel” két sorba tört, a 4. kilógott. Új forma: kis „N. lépés” + szó; „Közzététel” → „Kiküldés”. 320 és 375 px-en nincs kilógás, 44 px magas. t24, t29, t30, t32, kapu 0 HIBA.
+
+## 2026-11-27 – ZSEBMARKETING: két köszöntés egymás után
+- Péter képe: „…Szép őszi napot innen! Békés adventi készülődést kívánunk!”. A „Szép őszi napot” mondat a mostani készletben nincs (valószínűleg a telefonján tanult AI-javaslatból jött), ezért a hibát nem tudtam reprodukálni. Védelem: az alkalmi köszöntés előtt a rövid köszöntő mondatok kimaradnak; ha az utolsó mondat maga is köszöntés, az alkalmi nem jön. t33 (7 téma, 42 szöveg) 0 HIBA – nem reprodukál, csak visszaesés ellen véd. t24, t32, kapu 0 HIBA.

@@ -154,7 +154,7 @@ function jeloltek(){
  for(const iv of ivek){if(out.length>=3)break;let seg=iv().filter(Boolean).filter((x,i,arr)=>arr.indexOf(x)===i);
   {const sz2=seg.filter(x=>x===tm||!x.id||!out.some(c=>c.ids.includes(x.id)));if(sz2.length>=3)seg=sz2}
   {const szo=x=>new Set((x[S.lang]||'').toLowerCase().match(/[a-záéíóöőúüű]{7,}/g)||[]);for(let k=seg.length-1;k>=0;k--){const x=seg[k];if(!x||!x.id||!/^(sz|g-.*-s|sz13)/.test(x.id))continue;const w=szo(x);if(seg.some((y,m)=>m!==k&&y&&[...szo(y)].some(v=>[...w].some(u=>u.slice(0,7)===v.slice(0,7)))))seg.splice(k,1)}}
-  if(alk){const u=seg[seg.length-1];if(u&&u.id&&!u.kerdes&&K.zaro.includes(u))seg.pop();seg.push(alk)}
+  if(alk){/* két üdvözlés egymás után ne legyen (Péter, 11-27): a puszta köszöntő-zárót elhagyjuk; ha az utolsó mondat maga is köszöntés, az alkalmi nem jön */const KOSZ=/(napot|estét|reggelt|hétvégét|ünnepeket|kívánunk|üdvözlet)[^.!?]*[.!]?\s*$/i;let u=seg[seg.length-1];while(u&&!u.kerdes&&(K.zaro.includes(u)||(u.hu||'').length<60)&&KOSZ.test(u.hu||'')){seg.pop();u=seg[seg.length-1]}u=seg[seg.length-1];const vege=((u&&u.hu)||'').split(/(?<=[.!?])\s+/).pop();if(!(u&&!u.kerdes&&KOSZ.test(vege)))seg.push(alk)}
   const txt=l=>seg.map(x=>x[l]).join(' ');
   while(Math.max(...L.map(l=>txt(l).length))>400&&seg.length>2){let ix=seg.findIndex(x=>x.id&&x.id.startsWith('sz-'));if(ix<0)ix=seg.findIndex(x=>x.id&&x.id.startsWith('x-'));if(ix<0)break;seg.splice(ix,1)}
   const k=km();const kulcs=txt('hu');if(out.some(c=>c.parts.hu===kulcs))continue;
