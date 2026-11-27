@@ -29,3 +29,15 @@ Gyár-kötés: a marketing tudása a MARKETING + KOMMUNIKÁCIÓ chat osztályáb
 - „Mehet a helyzetkép és a képtartalék a Tervezőbe”: a gép „ablaka” – naptár, nap, évszak (motor, offline); időjárás most+holnap és Duna (Akvarell `/api/taj`, met.no CC BY 4.0, OVF); helyi hírek/programok (napi egyszer, csak szabad vagy hivatalos forrás, forrásjelöléssel) – ügyfelenként a csomagban megadott forrásokkal.
 - Képtár: minden fotó magától címkét kap (évszak, idő, napszak, hely). Képtartalék négy lépcsőben: friss illő → tavalyi azonos évszak (nem állítja, hogy ma készült) → évszaktól független kép évszakhoz illő szöveggel → más téma ugyanabból a kampányból. A kampány soha nem áll meg.
 - Fotókérés csak teljesíthető: a kampány hetekkel előre jelez; időjárásfüggő kép csak lehetőségként („holnap köd várható – ha arra jársz”), nem feladatként. Forrás: Péter, 11-27: „olyan képet nem tudunk kérni, ami holnapra, amin az épp megfelelő időjárás van… a kampánynak fel kell arra is készülnie.”
+
+## Elv: folyamatos tudásgyűjtés, AI-nál visszamenőleges átnézés (Péter, 2026-11-27)
+Te mondtad: „amint AI-t kap a rendszer, nézze át az eddigi dolgokat, addig már tanulunk mindenhonnan… amit netről le bírunk szedni, térképtől kezdve bármit… tanuljon mindig… lehet, hogy ezek nem prioritások.”
+Javaslatom (AI-javaslat, nem prioritás-sorrend):
+```mermaid
+flowchart TD
+  G[Gyűjtés AI nélkül: app-napló, elvetett/elfogadott javaslat, ismeretlen fotó, OSM-térkép, időjárás, helyi hírek] --> V[Tanulnivaló-várólista az ügyfél mappájában]
+  V -->|amikor van AI – nálunk, kötegben| A[AI átnézi a várólistát + a friss forrásokat]
+  A --> E[Ember jóváhagy]
+  E --> F[Csomagfrissítés le az appba – utána megint AI nélkül fut]
+```
+Bemutató: `fotoposzt/frissites.js` + `bemutato/frissites.json` – az app „Frissítés érkezett” sávja (11-27).

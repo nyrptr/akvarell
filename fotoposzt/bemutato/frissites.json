@@ -1,0 +1,12 @@
+{
+ "verzio": "2026-11-27-tel",
+ "cim": "Téli mondatok – Akvarell",
+ "miert": "BEMUTATÓ: így érkezik egy központi frissítés. Élesben nálunk az AI átnézi az eddigi használatot és a friss forrásokat (időjárás, helyi hírek, térkép), az ember jóváhagyja, és a csomag lemegy az appba. Utána az app megint AI nélkül fut.",
+ "valtozas": ["4 új téli zárómondat (magyar, angol, német)", "a Tervező ezekből is választ"],
+ "zaro": [
+  {"id": "f1-tel1", "hu": "Télen korán sötétedik, a falu fényei kigyúlnak a Duna fölött.", "en": "In winter it gets dark early, and the village lights come on above the Danube.", "de": "Im Winter wird es früh dunkel, und über der Donau gehen die Lichter des Dorfes an."},
+  {"id": "f1-tel2", "hu": "Hideg reggel, meleg bögre, csendes Duna.", "en": "A cold morning, a warm mug, a quiet Danube.", "de": "Ein kalter Morgen, ein warmer Becher, eine stille Donau."},
+  {"id": "f1-tel3", "hu": "Télen is van mit nézni: a kopasz fák mögül jobban látszik a hegy.", "en": "There is plenty to see in winter too: the hills show better through the bare trees.", "de": "Auch im Winter gibt es viel zu sehen: Durch die kahlen Bäume sieht man die Berge besser."},
+  {"id": "f1-tel4", "hu": "Egy téli hétvége a Dunakanyarban lassabb, mint gondolnád.", "en": "A winter weekend in the Danube Bend is slower than you would think.", "de": "Ein Winterwochenende am Donauknie ist ruhiger, als man denkt."}
+ ]
+}

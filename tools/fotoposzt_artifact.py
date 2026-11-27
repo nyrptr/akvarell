@@ -10,6 +10,9 @@ h=(src/'index.html').read_text(encoding='utf8'); a=(src/'app.js').read_text(enco
 tag='<script src="betolto.js"></script>'
 assert h.count(tag)==1,'a betolto.js-tag pontosan egyszer kell'
 t=(src/'tervezo.js').read_text(encoding='utf8')
+fr=(src/'frissites.js').read_text(encoding='utf8'); ftag='<script src="frissites.js"></script>'
+assert h.count(ftag)==1
+h=h.replace(ftag,'<script>\n'+fr+'</script>')
 h=h.replace(tag,'<script>\n'+a+'</script>\n<script>\n'+t+'</script>')
 (out/'index.html').write_text(h,encoding='utf8')
 shutil.copytree(src/'bemutato',out/'bemutato',dirs_exist_ok=True)

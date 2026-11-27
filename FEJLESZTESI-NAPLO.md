@@ -477,3 +477,8 @@
 
 ## 2026-11-27 – ZSEBMARKETING: teljes szimuláció a teszthez (bemutató képtár + szimulált kiküldés)
 - Péter: „Le tudod szimulálni, hogy legyenek már fotók?… minden legyen leszimulálva.” `fotoposzt/bemutato/` – 7 téma kész fotóval (az Akvarell saját képei a `hazak/akvarell/kepek/`-ből, emberek nélkül, templomnál a festmény levágva), `lista.json`. 1. lépésben BEMUTATÓ képtár (koppintás → fotó a fájlmezőbe, a felismerő és a téma ugyanúgy fut); terv-sorra koppintva magától jön a téma fotója; 4. lépésben „Kiküldés (bemutató)” → az Eredmény fülön „✓ kiment”. Minden jelölten BEMUTATÓ. t29 kiegészítve 0 HIBA; kapu, t24, t25, t27, t28 0 HIBA. Artifact újra kiadva a bemutato/ mappával.
+
+## 2026-11-27 – ZSEBMARKETING: frissítés-szimuláció
+- Péter: „a frissítés szimuláció pedig mehet”. `fotoposzt/frissites.js`: a letöltött csomag-javítás a helyi tárban él, indításkor a készletbe fésülődik (id szerint, a javítás nyer), így az app.js már a frissített készletet olvassa – AI nélkül. Bemutató: `bemutato/frissites.json` (4 téli zárómondat, HU/EN/DE). Sáv: „Frissítés érkezett (bemutató)” → Letöltés → újraindul → „Frissítve…” + Visszaállítás. Artifact: inline. Korlát: `?csomag=` esetén a betöltő felülírja (élesben a javítás a szerver-csomagba kerül).
+- KEPESSEGTERKEP: Péter elve (folyamatos gyűjtés, AI-nál visszamenőleges átnézés) ábrával, AI-javaslatként.
+- Tesztek: t29 kiegészítve (sáv, letöltés, készletbe kerül, visszaállítás) 0 HIBA a Cloudflare-helyi és az artifact-építésen is; kapu, t24, t27, t28 0 HIBA.
