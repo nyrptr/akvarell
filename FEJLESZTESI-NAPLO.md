@@ -421,3 +421,13 @@
 - `fotoposzt/csomagok/README.md`: csomagszerkezet, `ceg` mezők.
 - Tesztek: gyar_szabalyok 0 HIBA; fotoposzt_kapu alap és `?csomag=proba` 0 HIBA; csomagteszt (alap / proba / hiányzó / érvénytelen név) rendben; t7 13 392 kombináció 0 hibás, JS-hiba nincs. A próbacsomag csak helyben volt, nem került a tárolóba.
 - Nem tesztelt: valódi második ügyfél adataival.
+
+## 2026-11-27 – Claude – fotóposzt v17 (Péter tesztje alapján)
+- Felismerés: az Ország úti aluljáró (`ujvolgy`) 0 referenciával ment – Péter fotójából 3 beágyazás (a fotó nincs benne), most felismeri. Más szögből még több fotó kell.
+- Hídnevek: „Aluljáró az Ország útnál”, „Aluljáró a Jánoshegy utcánál”; a választó leírást és GPS-távolságot mutat, távolság szerint rendezve. A téves „Ország út fölött” szövegek (minták, tény, séta, nyitó, záró) javítva Péter helyismerete szerint; az ellenőrizetlen 1941-es fotó-állítás törölve.
+- Új: „Merre jutsz innen” mondat – a fotó GPS-éből és (ha van) a nézési irányából (EXIF GPSImgDirection) a legközelebbi ismert hely, sétaidővel, légvonalból számolva. Új tények Pétertől: aluljárón át a templomhoz, szemben a Dunapart és a kerékpárút.
+- Szöveg: az „AI-tól kérj” gomb visszakerült (CSS `display:none!important` rejtette – hiba volt), egy koppintásra másolja a kérést. Az „Ezt választom” már nem tanít, csak a Tetszik / Nem ez / közzététel.
+- Reel: új választók – Háttér (papír, zsálya, rózsa, éjkék, elmosott fotó), Felirat kinézete (akvarellfolt, címke, sötét sáv, árnyék), Felirat mozgása (áttűnés, alulról, szavanként, gépelés), Zárókép (papír, fotó + logó, sötét, kör). 12 sablon (3 új), mindegyik más háttérrel és véggel; a Kever mindenre hat. Az előnézet ragad a lap tetején, amíg a beállításokat lapozod.
+- Gyár: 20. és 21. szabály (CSS nem rejtheti el, amit a program mutat; a választás nem tanít). Az új szabály egy régi esetet is talált (#osz) – rendbe téve.
+- Tesztek: gyar_szabalyok 0 HIBA; fotoposzt_kapu alap + próbacsomag 0 HIBA; t7 13 392 / 0 hibás; t17, t20, t22, új t23 hibátlan. t13, t16, t18, t21 régi feliratokra várnak (v12–v14 korabeli tesztek), nem a mostani változás hibái.
+- Nem tesztelt: valódi iPhone-on a nézési irány (EXIF) olvasása; Safari-ban a feliratmozgások.

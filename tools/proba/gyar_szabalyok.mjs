@@ -80,4 +80,11 @@ for (const f of ['motor/sablon/index.html', 'motor/sablon/admin.html', 'admin/ad
 // 19. A képek a ház mappájában vannak (hazak/<ház>/kepek/), a gyökérben nincs kepek/ mappa, és a kód nem hivatkozik rá közvetlenül.
 if (existsSync(join(gyoker, 'kepek'))) H('kepek/ mappa a gyökérben (a hazak/<ház>/kepek/ alá való)', 'kepek/');
 for (const f of ['app.js', 'admin/admin.js']) if (/["'`]\/kepek\//.test(olv(f))) H('közvetlen /kepek/ hivatkozás (HAZ.kepmappa kell)', f);
+// 20. Fotóposzt: amit a program megjelenít (.hidden=false), azt CSS nem rejtheti el véglegesen (11-27: az „AI-tól kérj” gomb így tűnt el).
+{ const h = olv('fotoposzt/index.html'), js = olv('fotoposzt/app.js');
+  for (const m of h.matchAll(/#([A-Za-z0-9_-]+)\s*\{[^}]*display\s*:\s*none\s*!important/g))
+    if (new RegExp(`\\$\\('${m[1]}'\\)\\.hidden\\s*=\\s*(false|!)`).test(js)) H('CSS display:none!important elrejti, amit a program megjelenítene', 'fotoposzt #' + m[1]); }
+// 21. Fotóposzt: a szövegválasztás („Ezt választom”) nem tanít – csak a Tetszik / Nem ez / közzététel (Péter, 11-27).
+{ const js = olv('fotoposzt/app.js'), v = js.slice(js.indexOf('function valaszt('), js.indexOf('\n', js.indexOf('function valaszt(')));
+  if (/ST\[id\]|store\.set\('stat'/.test(v)) H('a szövegválasztás tanítja a statisztikát', 'fotoposzt/app.js valaszt()'); }
 console.log(hiba, 'HIBA'); process.exit(hiba ? 1 : 0);

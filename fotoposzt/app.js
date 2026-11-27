@@ -139,7 +139,7 @@ function jeloltek(){
  const zar=K.zaro.filter(s=>(!s.evszak||s.evszak===ev)&&(!s.haz||HAZT.includes(S.tema))&&(!s.tt||s.tt===S.tema)&&!KIZART.has(s.id));
  const sz=[...(S.extra||[]).map(t=>huz((K.szin||[]).filter(s=>s.t===t),1)[0]).filter(Boolean),...huz((K.szin||[]).filter(s=>s.t===S.tema),2)];
  const hold=(['este','ejjel'].includes(ns)&&(!S.time||kul(S.time,MA())===0)&&telihold(S.time||MA()))?TELIHOLD:null,alk=alkMondat();
- const hg=K.hangulat[ns]?{id:'hg-'+ns,...K.hangulat[ns]}:null,td={id:'tudtad',...K.tudtad},tm=tavMondat();
+ const hg=K.hangulat[ns]?{id:'hg-'+ns,...K.hangulat[ns]}:null,td={id:'tudtad',...K.tudtad},tm=tavMondat(),mr=merreMondat();
  const km=()=>K.komment.find(m=>a&&m.apt===a)||K.komment.find(m=>!m.apt&&m.t===S.tema)||huz(K.komment.filter(m=>!m.apt&&!m.t),1)[0];
  const zarVesz=(kerdes)=>{const used=out.flatMap(c=>c.ids);let pool=zar.filter(z=>!used.includes(z.id)&&(kerdes==null||!!z.kerdes===kerdes));
   const sajt=pool.filter(z=>z.tt===S.tema);if(sajt.length&&Math.random()<.6)pool=sajt;return huz(pool.length?pool:zar,1)[0]};
@@ -147,8 +147,8 @@ function jeloltek(){
  // C) hely + két tény + hangulat + jókívánság, D) hangulat + hely + tény + kérdés
  const ivek=[
   ()=>[hold||hg,ny[0],sz[0],ten[0],tm,zarVesz(null)],
-  ()=>[ny[1]||ny[0],ten[1]||ten[0]?td:null,ten[1]||ten[0],tm,zarVesz(true)],
-  ()=>[ny[2]||ny[1]||ny[0],ten[0],ten[1],sz[1]||sz[0],tm,zarVesz(false)],
+  ()=>[ny[1]||ny[0],ten[1]||ten[0]?td:null,ten[1]||ten[0],tm||mr,zarVesz(true)],
+  ()=>[ny[2]||ny[1]||ny[0],ten[0],mr||ten[1],sz[1]||sz[0],tm,zarVesz(false)],
   ()=>[sz[1]||sz[0],ny[0],ten[2]||ten[0],tm,zarVesz(true)]].sort(()=>Math.random()-.5);
  {const pf=c=>(c.parts[S.lang]||'').slice(0,28);const u=out.filter((c,i)=>out.findIndex(d=>pf(d)===pf(c))===i);out.length=0;out.push(...u)}
  for(const iv of ivek){if(out.length>=3)break;let seg=iv().filter(Boolean).filter((x,i,arr)=>arr.indexOf(x)===i);
@@ -183,7 +183,7 @@ function tetszik(ix){const c=S.cands[ix];if(c.tetszik)return;c.tetszik=true;for(
  const t=tanul(c);rajzol(false);friss(t?'az AI-javaslat bekerült a készletbe, mindhárom nyelven':'megjegyeztem, ez a fajta többször jön');keszlet()}
 function nemez(ix){const c=S.cands[ix];for(const id of c.ids){ST[id]=ST[id]||{m:0,v:0,k:0};ST[id].m+=3}store.set('stat',ST);
  const uj=jeloltek().find(n=>!S.cands.some(o=>o.parts.hu===n.parts.hu));S.cands.splice(ix,1);if(uj){uj.uj=true;S.cands.splice(ix,0,uj)}if(S.sel===ix){S.sel=null;$('out').hidden=true}rajzol(false);friss('ritkábban mutatom; helyette egy új változat')}
-function valaszt(ix){S.sel=ix;const c=S.cands[ix];if(!c.valasztva){for(const id of c.ids){ST[id]=ST[id]||{m:0,v:0,k:0};ST[id].v++}c.valasztva=true;store.set('stat',ST)}
+function valaszt(ix){S.sel=ix;const c=S.cands[ix];/* a választás csak kipróbálás: nem tanít (Péter, 11-27) */
  const sajat=(c.src==='claude'||c.src==='ai')?'':$('nota').value.trim();let t=c.parts[S.lang]||'';{const am=alkMondat();if(am&&!t.includes(am[S.lang])&&(c.src==='minta'||c.tanultPoszt||c.src==='claude'||c.src==='ai'))t=t+' '+am[S.lang]}if(sajat)t=sajat.replace(/([^.!?])$/,'$1.')+' '+t;if((c.src==='claude'||c.src==='ai'||c.tanultPoszt)){const tm=tavMondat();if(tm&&!t.includes(tm[S.lang]))t=t+' '+tm[S.lang]}
  $('txt').value=t;altFriss();$('kom').value=((c.kom[S.lang]||'')+' '+link()).trim()+(S.gps&&$('helyKom').checked?'\n'+{hu:'Itt készült:',en:'Taken here:',de:'Hier aufgenommen:'}[S.lang]+' '+osm(S.gps):'');S.base=t;
  [...document.querySelectorAll('.cand')].forEach((b,i)=>b.setAttribute('aria-pressed',i===ix));
@@ -219,7 +219,7 @@ $('cpK').addEventListener('click',async()=>{$('st2').textContent=await copy($('k
 let dl=null,sample=null;
 (async()=>{if(!window.claude)return;try{dl=await window.claude.use('downloads')}catch(e){}try{sample=await window.claude.use('sample')}catch(e){}if(sample){$('cl').hidden=false;$('cl').disabled=!img}else{$('hidB').hidden=false}})();
 if(!window.claude)$('hidB').hidden=false;
-$('hidB').addEventListener('click',()=>{$('hid').open=true;$('hid').scrollIntoView({behavior:'smooth',block:'start'})});
+$('hidB').addEventListener('click',async()=>{$('hid').open=true;$('st3').textContent=await copy(keres(),'A kérés a vágólapon. Nyisd meg az AI-t, illeszd be, csatold a fotót, a választ másold vissza ide.',null);$('hid').scrollIntoView({behavior:'smooth',block:'start'})});
 const kepBlob=()=>new Promise(r=>$('cv').toBlob(r,'image/jpeg',.9));
 /* ===== Képleírás (alt szöveg) ===== */
 const NSA={hu:{reggel:'reggel',nappal:'napközben',este:'este',ejjel:'éjjel'},en:{reggel:'in the morning',nappal:'in daylight',este:'in the evening',ejjel:'at night'},de:{reggel:'am Morgen',nappal:'bei Tag',este:'am Abend',ejjel:'in der Nacht'}};
@@ -233,6 +233,17 @@ const ZENE=[['','Nincs zene'],['reggel','Reggeli: Grieg, Reggel'],['nyugodt','Cs
 const ANIM=[['vegyes','Vegyes (mindig más)'],['zoom','Lassú ráközelítés'],['pasztazas','Pásztázás'],['attunes','Áttűnés'],['beuszo','Beúszó'],['csuszas','Felcsúszó'],['beugro','Beugró'],['forgo','Forgó'],['redony','Függöny'],['csikok','Csíkok'],['kor','Kör'],['folt','Akvarellfolt'],['villanas','Fényvillanás']];
 const VEGYES=['attunes','beuszo','folt','csuszas','kor','redony','beugro','csikok','forgo','villanas'];
 S.reelSt=store.get('reelst','akvarell');S.anim=store.get('anim','vegyes');S.zene=store.get('zene','reggel');
+const HATTER=[['papir','Papír'],['zsalya','Zsálya'],['rozsa','Rózsa'],['ejkek','Éjkék'],['foto','Elmosott fotó']];
+const FELIRAT=[['folt','Akvarellfolt'],['cimke','Címke'],['sav','Sötét sáv'],['arnyek','Csak árnyék']];
+const FANIM=[['attunes','Áttűnés'],['alulrol','Alulról'],['szavankent','Szavanként'],['gepeles','Gépelés']];
+const VEGEK=[['papir','Papír + logó'],['foto','Fotó + logó'],['sotet','Sötét'],['kor','Kör']];
+S.hat=store.get('hat','papir');S.fel=store.get('fel','folt');S.fan=store.get('fan','attunes');S.veg=store.get('veg','papir');
+for(const [w,L,k] of [['hatw',HATTER,'hat'],['felw',FELIRAT,'fel'],['fanw',FANIM,'fan'],['vegw',VEGEK,'veg']]){const el=$(w);if(!el)continue;for(const [id,nev] of L){const b=document.createElement('button');b.className='chip';b.textContent=nev;b.dataset.v=id;b.setAttribute('aria-pressed',S[k]===id);b.addEventListener('click',()=>{S[k]=id;store.set(k,id);for(const x of el.children)x.setAttribute('aria-pressed',x===b);reelBeall({})});el.append(b)}}
+const HSZIN={papir:'#F4EEE3',zsalya:'#E2EADF',rozsa:'#F3E1D8',ejkek:'#1E2933'};let ELMOS=null;
+function hatterFest(g,W,H,r,im,alap){const h=S.hat||'papir';
+ if(h==='foto'&&im){if(!ELMOS||ELMOS.im!==im){const c=document.createElement('canvas');c.width=18;c.height=32;kepZ(c.getContext('2d'),im,0,0,18,32,1,0,0);ELMOS={im,c}}
+  g.save();g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';g.drawImage(ELMOS.c,0,0,W,H);g.fillStyle='rgba(20,26,24,.28)';g.fillRect(0,0,W,H);g.restore();return}
+ g.fillStyle=h==='papir'?(alap||HSZIN.papir):(HSZIN[h]||HSZIN.papir);g.fillRect(0,0,W,H);if(h!=='ejkek')papir(g,W,H,r)}
 (function(){const w=$('zenew');for(const [id,nev] of ZENE){const b=document.createElement('button');b.className='chip';b.textContent=nev;b.setAttribute('aria-pressed',S.zene===id);b.addEventListener('click',()=>{S.zene=id;store.set('zene',id);for(const x of w.children)x.setAttribute('aria-pressed',x===b);zeneProba()});w.append(b)}})();
 const ZBUF={};let ACTX=null,ZPROBA=null;
 async function zeneBuf(id){if(ZBUF[id])return ZBUF[id];const r=await fetch(new URL('zene/'+id+'.mp3',location.href).href);if(!r.ok)throw new Error('zene nem tölthető');ZBUF[id]=await ACTX.decodeAudioData(await r.arrayBuffer());return ZBUF[id]}
@@ -272,13 +283,13 @@ function reelKocka(g,t,T,kepek,sorok,st){const {W,H,top,side}=REEL,alja=H-REEL.b
    case 'villanas':{const f=q<.5?q*2:2-q*2;if(q>=.5)egy(i,u);g.fillStyle='rgba(255,252,244,'+f+')';g.fillRect(x,y,w,h);break}
    default:egy(i,u,{al:q})}};
  let clipT=null;
- if(st==='polaroid'||st==='kepeslap'){g.fillStyle=st==='polaroid'?'#E9E4DA':'#F2ECDF';g.fillRect(0,0,W,H);papir(g,W,H,r);const X=70,Y=top-40,PW=W-140,PH=alja-Y+40;
+ if(st==='polaroid'||st==='kepeslap'){hatterFest(g,W,H,r,kepek[0],st==='polaroid'?'#E9E4DA':'#F2ECDF');const X=70,Y=top-40,PW=W-140,PH=alja-Y+40;
   g.save();g.translate(W/2,(Y+PH/2));g.rotate(st==='polaroid'?-.015:0);g.shadowColor='rgba(0,0,0,.25)';g.shadowBlur=24;g.shadowOffsetY=8;g.fillStyle='#FFFDF8';g.fillRect(-PW/2-22,-PH/2-22,PW+44,PH+(st==='polaroid'?150:44));g.shadowColor='transparent';g.translate(-W/2,-(Y+PH/2));foto(X,Y,PW,PH);g.restore();
-  if(st==='kepeslap'){g.save();g.translate(W-170,top+40);g.rotate(.06);g.fillStyle='#FFFDF8';g.fillRect(0,0,110,130);g.strokeStyle='#B8553A';g.setLineDash([6,5]);g.lineWidth=3;g.strokeRect(8,8,94,114);g.setLineDash([]);g.fillStyle='#3F5646';g.font=SANS.replace('PX','18px');g.textAlign='center';g.fillText('ZEBEGÉNY',55,72);g.restore()}}
+  if(st==='kepeslap'){g.save();g.translate(W-170,top+40);g.rotate(.06);g.fillStyle='#FFFDF8';g.fillRect(0,0,110,130);g.strokeStyle='#B8553A';g.setLineDash([6,5]);g.lineWidth=3;g.strokeRect(8,8,94,114);g.setLineDash([]);g.fillStyle='#3F5646';g.font=SANS.replace('PX','18px');g.textAlign='center';g.fillText(C.kiscim,55,72);g.restore()}}
  else if(st==='film'){g.fillStyle='#141414';g.fillRect(0,0,W,H);const X=86,Y=0,PW=W-172,PH=H;foto(X,Y,PW,PH);g.fillStyle='#F4EEE3';for(let yy=20;yy<H;yy+=64){g.fillRect(26,yy,34,40);g.fillRect(W-60,yy,34,40)}}
- else if(st==='ecset'){g.fillStyle='#F6F0E5';g.fillRect(0,0,W,H);papir(g,W,H,r);folt(g,180,top-40,260,140,'#9FB7A8',.3,r);folt(g,W-160,alja+200,240,130,'#E0A48C',.28,r);
+ else if(st==='ecset'){hatterFest(g,W,H,r,kepek[0],'#F6F0E5');folt(g,180,top-40,260,140,'#9FB7A8',.3,r);folt(g,W-160,alja+200,240,130,'#E0A48C',.28,r);
   const X=60,Y=top-90,PW=W-120,PH=H-120-Y;g.save();g.beginPath();for(let k=0;k<=320;k++){const q=k/80;const jj=14*Math.sin(q*13+1)+8*Math.sin(q*37+2)+5*Math.sin(q*71);const [px,py]=q<1?[X+PW*q,Y+jj]:q<2?[X+PW+jj,Y+PH*(q-1)]:q<3?[X+PW*(3-q),Y+PH+jj]:[X+jj,Y+PH*(4-q)];k?g.lineTo(px,py):g.moveTo(px,py)}g.closePath();g.clip();foto(X,Y,PW,PH);g.restore()}
- else if(st==='akvarell'){g.fillStyle='#F4EEE3';g.fillRect(0,0,W,H);papir(g,W,H,r);folt(g,140,top-60,190,110,'#B8553A',.16,r);folt(g,W-110,alja+260,170,90,'#3F5646',.12,r);
+ else if(st==='akvarell'){hatterFest(g,W,H,r,kepek[0],'#F4EEE3');folt(g,140,top-60,190,110,'#B8553A',.16,r);folt(g,W-110,alja+260,170,90,'#3F5646',.12,r);
   const X=48,Y=top-120,PW=W-96,PH=H-60-Y;g.save();g.beginPath();const ph=[1.3,2.1,4.4],j=q=>4*Math.sin(q*9+ph[0])+2.5*Math.sin(q*23+ph[1])+1.4*Math.sin(q*51+ph[2]);
   const pt=q=>q<1?[X+PW*q,Y+j(q)]:q<2?[X+PW+j(q),Y+PH*(q-1)]:q<3?[X+PW*(3-q),Y+PH+j(q)]:[X+j(q),Y+PH*(4-q)];for(let i=0;i<=240;i++){const [x,y]=pt(i/60);i?g.lineTo(x,y):g.moveTo(x,y)}g.closePath();g.clip();foto(X,Y,PW,PH);g.restore()}
  else foto(0,0,W,H);
@@ -286,30 +297,60 @@ function reelKocka(g,t,T,kepek,sorok,st){const {W,H,top,side}=REEL,alja=H-REEL.b
  /* felső kis felirat a biztonsági sávon belül */
  if(t<kepT){if(['akvarell','polaroid','kepeslap','ecset'].includes(st)){g.save();g.translate(W/2,top+10);g.scale(.62,.62);felirat(g,0,0,'center',rnd(5));g.restore()}
   else{g.fillStyle='rgba(255,255,255,.92)';g.shadowColor='rgba(0,0,0,.45)';g.shadowBlur=12;g.font=SERIF.replace('PX','58px');g.fillText(C.rovid,W/2,top+20);g.font=SANS.replace('PX','20px');if('letterSpacing' in g)g.letterSpacing='3px';g.fillText(C.alcim,W/2,top+52);if('letterSpacing' in g)g.letterSpacing='0px';g.shadowBlur=0}}
- /* feliratok mondatonként */
- if(t<kepT&&sorok.length){const ns=sorok.length,ps=kepT/ns,i=Math.min(ns-1,Math.floor(t/ps)),u=(t-i*ps)/ps,a=Math.max(0,Math.min(1,u/.12,(1-u)/.1));
+ /* feliratok mondatonként: stílus (S.fel) és mozgás (S.fan) */
+ if(t<kepT&&sorok.length){const ns=sorok.length,ps=kepT/ns,i=Math.min(ns-1,Math.floor(t/ps)),u=(t-i*ps)/ps,ki2=Math.max(0,Math.min(1,(1-u)/.1));
+  const fan=S.fan||'attunes',fel=(st==='sav'&&(S.fel||'folt')==='folt')?'sav':(S.fel||'folt');
   g.font=SERIF.replace('PX','62px');const ls=sorTor(g,sorok[i],W-2*side-90).slice(0,4),lh=72,bh=ls.length*lh,cy=alja-60-bh/2;
-  g.save();g.globalAlpha=a;const be=Math.min(1,u/.12);g.translate(0,(1-be)*(S.anim==='beuszo'?40:0));if(S.anim==='beugro'){const sc=.85+.15*Math.min(1,be*1.2);g.translate(W/2,cy);g.scale(sc,sc);g.translate(-W/2,-cy)}
-  if(st==='sav'){g.fillStyle='#FFFFFF'}else{folt(g,W/2,cy+8,(W-2*side)/2,bh/2+46,'#F7F1E6',.9,rnd(i+3));g.fillStyle='#2F4237'}
-  ls.forEach((x,k)=>g.fillText(x,W/2,cy-bh/2+lh*(k+.8)));g.restore()}
- /* zárókép */
- if(t>=kepT-.6){const a=Math.min(1,(t-(kepT-.6))/.6);g.globalAlpha=a;g.fillStyle='#F4EEE3';g.fillRect(0,0,W,H);papir(g,W,H,r);
-  folt(g,W*.3,H*.36,260,140,'#9FB7A8',.22,rnd(8));folt(g,W*.72,H*.58,220,120,'#E0A48C',.22,rnd(9));
-  felirat(g,W/2,H*.47,'center',rnd(5));g.fillStyle='#2F4237';g.font=SERIF.replace('PX','52px');g.fillText(cim(S.tema,S.lang),W/2,H*.47+150);g.globalAlpha=1}
+  const be=Math.min(1,u/.12);let al=Math.min(be,ki2),dy=0;if(fan==='alulrol'){dy=(1-ki(be))*70}
+  let lat=Infinity;const osszes=ls.join(' '),hossz=osszes.length,szavak=osszes.split(' ').length;
+  if(fan==='szavankent'){lat=Math.ceil(szavak*Math.min(1,u/.55));al=ki2}
+  if(fan==='gepeles'){lat=Math.ceil(hossz*Math.min(1,u/.6));al=ki2}
+  g.save();g.globalAlpha=al;g.translate(0,dy);
+  const bw=Math.max(...ls.map(x=>g.measureText(x).width))+80;
+  if(fel==='sav'){const gr=g.createLinearGradient(0,cy-bh/2-120,0,cy+bh/2+120);gr.addColorStop(0,'rgba(20,30,25,0)');gr.addColorStop(.3,'rgba(20,30,25,.62)');gr.addColorStop(.7,'rgba(20,30,25,.62)');gr.addColorStop(1,'rgba(20,30,25,0)');g.fillStyle=gr;g.fillRect(0,cy-bh/2-120,W,bh+240);g.fillStyle='#FFFFFF'}
+  else if(fel==='arnyek'){g.fillStyle='#FFFFFF';g.shadowColor='rgba(0,0,0,.75)';g.shadowBlur=18;g.shadowOffsetY=3}
+  else if(fel==='cimke'){const x0=W/2-bw/2,y0=cy-bh/2-26,hh=bh+52,rr=26;g.save();g.shadowColor='rgba(0,0,0,.25)';g.shadowBlur=20;g.shadowOffsetY=6;g.fillStyle='#FFFDF8';g.beginPath();g.moveTo(x0+rr,y0);g.arcTo(x0+bw,y0,x0+bw,y0+hh,rr);g.arcTo(x0+bw,y0+hh,x0,y0+hh,rr);g.arcTo(x0,y0+hh,x0,y0,rr);g.arcTo(x0,y0,x0+bw,y0,rr);g.closePath();g.fill();g.restore();g.fillStyle='#2F4237'}
+  else{folt(g,W/2,cy+8,(W-2*side)/2,bh/2+46,'#F7F1E6',.9,rnd(i+3));g.fillStyle='#2F4237'}
+  if(lat===Infinity){ls.forEach((x,k)=>g.fillText(x,W/2,cy-bh/2+lh*(k+.8)))}
+  else{g.textAlign='left';let maradt=lat;ls.forEach((x,k)=>{if(maradt<=0)return;const w0=g.measureText(x).width,x0=W/2-w0/2;let s;
+    if(fan==='szavankent'){const sz=x.split(' ');s=sz.slice(0,maradt).join(' ');maradt-=sz.length}else{s=x.slice(0,maradt);maradt-=x.length+1}
+    g.fillText(s,x0,cy-bh/2+lh*(k+.8))});g.textAlign='center'}
+  g.restore()}
+ /* zárókép (S.veg) */
+ if(t>=kepT-.6){const a=Math.min(1,(t-(kepT-.6))/.6),v=S.veg||'papir',utso=kepek[kepek.length-1],cimS=cim(S.tema,S.lang);g.globalAlpha=a;
+  if(v==='foto'){kepZ(g,utso,0,0,W,H,1.08,0,0);g.fillStyle='rgba(20,26,24,.5)';g.fillRect(0,0,W,H);felirat(g,W/2,H*.45,'center',rnd(5));g.fillStyle='#FFFFFF';g.shadowColor='rgba(0,0,0,.6)';g.shadowBlur=14;g.font=SERIF.replace('PX','56px');g.fillText(cimS,W/2,H*.45+160);g.shadowBlur=0}
+  else if(v==='sotet'){g.fillStyle='#1E2933';g.fillRect(0,0,W,H);felirat(g,W/2,H*.45,'center',rnd(5));g.fillStyle='#F4EEE3';g.font=SERIF.replace('PX','54px');g.fillText(cimS,W/2,H*.45+160);g.font=SANS.replace('PX','24px');g.fillStyle='#C9B79A';g.fillText(C.hely[S.lang]||C.hely.hu,W/2,H*.45+215)}
+  else if(v==='kor'){hatterFest(g,W,H,r,utso,'#F4EEE3');const R=300,cx=W/2,cy=H*.34;g.save();g.beginPath();g.arc(cx,cy,R,0,6.2832);g.clip();kepZ(g,utso,cx-R,cy-R,2*R,2*R,1+.06*a,0,0);g.restore();g.strokeStyle='#FFFDF8';g.lineWidth=14;g.beginPath();g.arc(cx,cy,R,0,6.2832);g.stroke();
+   felirat(g,W/2,H*.62,'center',rnd(5));g.fillStyle=S.hat==='ejkek'||S.hat==='foto'?'#FFFFFF':'#2F4237';g.font=SERIF.replace('PX','52px');g.fillText(cimS,W/2,H*.62+150)}
+  else{hatterFest(g,W,H,r,utso,'#F4EEE3');folt(g,W*.3,H*.36,260,140,'#9FB7A8',.22,rnd(8));folt(g,W*.72,H*.58,220,120,'#E0A48C',.22,rnd(9));
+   felirat(g,W/2,H*.47,'center',rnd(5));g.fillStyle=S.hat==='ejkek'||S.hat==='foto'?'#FFFFFF':'#2F4237';g.font=SERIF.replace('PX','52px');g.fillText(cimS,W/2,H*.47+150)}
+  g.globalAlpha=1}
  g.restore()}
 let ELO=null;function reelElo(){if(S.form!=='reel'||!img)return;let cv=$('reelElo');if(!cv){cv=document.createElement('canvas');cv.id='reelElo';cv.width=540;cv.height=960;cv.style.cssText='width:100%;max-width:300px;border-radius:12px;display:block;margin:8px 0';$('reelEloHely').append(cv)}
  const c2=document.createElement('canvas');c2.width=REEL.W;c2.height=REEL.H;const g2=c2.getContext('2d'),g=cv.getContext('2d');const kepek=[img,...EXTRA.map(e=>e.img)],sorok=reelSorok(),T=Math.min(22,Math.max(8,sorok.length*3.4+REEL.veg,kepek.length*2.6+REEL.veg));
  if(ELO)cancelAnimationFrame(ELO);const t0=performance.now();const lep=()=>{if(S.form!=='reel'||S.lep!==3){ELO=null;return}const t=((performance.now()-t0)/1000)%T;reelKocka(g2,t,T,kepek,sorok,S.reelSt);g.drawImage(c2,0,0,540,960);ELO=requestAnimationFrame(lep)};ELO=requestAnimationFrame(lep)}
 
-const SABLON=[['nyugodt','Nyugodt reggel','akvarell · lassú · Grieg',{st:'akvarell',an:'zoom',z:'reggel'}],['este','Esti hangulat','ecset · áttűnés · Borodin',{st:'ecset',an:'attunes',z:'este'}],['vidam','Vidám nap','tiszta · vegyes · Mendelssohn',{st:'tiszta',an:'vegyes',z:'vidam'}],['lap','Képeslap','képeslap · beúszó · Bach',{st:'kepeslap',an:'beuszo',z:'nyugodt'}],['mozi','Mozi','filmszalag · villanás · Mendelssohn',{st:'film',an:'villanas',z:'vidam'}],['muvesz','Művész','ecset · akvarellfolt · Bach',{st:'ecset',an:'folt',z:'nyugodt'}],['duna','Duna-part','akvarell · pásztázás · Smetana',{st:'akvarell',an:'pasztazas',z:'folyo'}],['seta','Séta','polaroid · vegyes · Grieg',{st:'polaroid',an:'vegyes',z:'tancos'}],['emlek','Emlékkönyv','polaroid · forgó · Grieg',{st:'polaroid',an:'forgo',z:'reggel'}]];
-function reelBeall(o){if(o.st)S.reelSt=o.st;if(o.an)S.anim=o.an;if(o.z!=null&&ZENE.some(x=>x[0]===o.z))S.zene=o.z;store.set('reelst',S.reelSt);store.set('anim',S.anim);store.set('zene',S.zene);
- for(const [w,v] of [['reelw',S.reelSt],['animw',S.anim],['zenew',S.zene]])for(const b of $(w).children)b.setAttribute('aria-pressed',b.dataset.v===v);
- for(const b of $('sablonw').children){const sb=SABLON.find(x=>x[0]===b.dataset.v)[3];b.setAttribute('aria-pressed',sb.st===S.reelSt&&sb.an===S.anim&&sb.z===S.zene)}
- const nv=(L,v)=>(L.find(x=>x[0]===v)||['',''])[1];$('reelOsz').textContent=`Most: ${nv(REELST,S.reelSt)} · ${nv(ANIM,S.anim)} · ${S.zene?nv(ZENE,S.zene):'zene nélkül'}`;reelElo()}
+const SABLON=[
+['nyugodt','Nyugodt reggel','akvarell · papír · Grieg',{st:'akvarell',an:'zoom',z:'reggel',hat:'papir',fel:'folt',fan:'attunes',veg:'papir'}],
+['este','Esti hangulat','ecset · éjkék · Borodin',{st:'ecset',an:'attunes',z:'este',hat:'ejkek',fel:'arnyek',fan:'alulrol',veg:'sotet'}],
+['vidam','Vidám nap','tiszta · címke · Mendelssohn',{st:'tiszta',an:'vegyes',z:'vidam',hat:'papir',fel:'cimke',fan:'szavankent',veg:'foto'}],
+['lap','Képeslap','képeslap · rózsa · Bach',{st:'kepeslap',an:'beuszo',z:'nyugodt',hat:'rozsa',fel:'cimke',fan:'gepeles',veg:'kor'}],
+['mozi','Mozi','filmszalag · sáv · Mendelssohn',{st:'film',an:'villanas',z:'vidam',hat:'papir',fel:'sav',fan:'alulrol',veg:'sotet'}],
+['muvesz','Művész','ecset · zsálya · Bach',{st:'ecset',an:'folt',z:'nyugodt',hat:'zsalya',fel:'folt',fan:'szavankent',veg:'papir'}],
+['duna','Duna-part','akvarell · elmosott fotó · Smetana',{st:'akvarell',an:'pasztazas',z:'folyo',hat:'foto',fel:'arnyek',fan:'attunes',veg:'foto'}],
+['seta','Séta','polaroid · zsálya · tánc',{st:'polaroid',an:'vegyes',z:'tancos',hat:'zsalya',fel:'cimke',fan:'alulrol',veg:'kor'}],
+['emlek','Emlékkönyv','polaroid · rózsa · Grieg',{st:'polaroid',an:'forgo',z:'reggel',hat:'rozsa',fel:'folt',fan:'gepeles',veg:'papir'}],
+['csendes','Csendes este','sáv · sötét · Borodin',{st:'sav',an:'attunes',z:'este',hat:'papir',fel:'sav',fan:'attunes',veg:'sotet'}],
+['gyors','Gyors hír','tiszta · csíkok · vidám',{st:'tiszta',an:'csikok',z:'vidam',hat:'papir',fel:'sav',fan:'szavankent',veg:'foto'}],
+['kert','Kertben','akvarell · kör · tánc',{st:'akvarell',an:'kor',z:'tancos',hat:'zsalya',fel:'cimke',fan:'alulrol',veg:'kor'}]];
+function reelBeall(o){if(o.st)S.reelSt=o.st;if(o.an)S.anim=o.an;if(o.z!=null&&ZENE.some(x=>x[0]===o.z))S.zene=o.z;for(const k of ['hat','fel','fan','veg'])if(o[k]){S[k]=o[k];store.set(k,o[k])}store.set('reelst',S.reelSt);store.set('anim',S.anim);store.set('zene',S.zene);
+ for(const [w,v] of [['reelw',S.reelSt],['animw',S.anim],['zenew',S.zene],['hatw',S.hat],['felw',S.fel],['fanw',S.fan],['vegw',S.veg]])for(const b of $(w).children)b.setAttribute('aria-pressed',b.dataset.v===v);
+ for(const b of $('sablonw').children){const sb=SABLON.find(x=>x[0]===b.dataset.v)[3];b.setAttribute('aria-pressed',sb.st===S.reelSt&&sb.an===S.anim&&sb.z===S.zene&&sb.hat===S.hat&&sb.fel===S.fel&&sb.fan===S.fan&&sb.veg===S.veg)}
+ const nv=(L,v)=>(L.find(x=>x[0]===v)||['',''])[1];$('reelOsz').textContent=`Most: ${nv(REELST,S.reelSt)}, ${nv(HATTER,S.hat).toLowerCase()} háttér · ${nv(ANIM,S.anim)} · felirat: ${nv(FELIRAT,S.fel).toLowerCase()}, ${nv(FANIM,S.fan).toLowerCase()} · zárókép: ${nv(VEGEK,S.veg).toLowerCase()} · ${S.zene?nv(ZENE,S.zene):'zene nélkül'}`;reelElo()}
 (function(){const w=$('sablonw');for(const [id,nev,al,o] of SABLON){const b=document.createElement('button');b.type='button';b.className='sabl chip';b.dataset.v=id;b.innerHTML=`${nev}<small>${al}</small>`;b.addEventListener('click',()=>{reelBeall(o);if(o.z)zeneProba()});w.append(b)}
  for(const [w,L] of [['reelw',REELST],['animw',ANIM],['zenew',ZENE]])[...$(w).children].forEach((b,k)=>b.dataset.v=L[k][0]);
  for(const f of document.querySelectorAll('.ful[data-f]'))f.addEventListener('click',()=>{for(const g of document.querySelectorAll('.ful[data-f]')){g.setAttribute('aria-selected',g===f);$(g.dataset.f).hidden=g!==f}});
- $('kever').addEventListener('click',()=>{const r=L=>L[Math.floor(Math.random()*L.length)][0];reelBeall({st:r(REELST),an:r(ANIM),z:r(ZENE.filter(x=>x[0]))})});
+ $('kever').addEventListener('click',()=>{const r=L=>L[Math.floor(Math.random()*L.length)][0];reelBeall({st:r(REELST),an:r(ANIM),z:r(ZENE.filter(x=>x[0])),hat:r(HATTER),fel:r(FELIRAT),fan:r(FANIM),veg:r(VEGEK)})});
  for(const w of ['reelw','animw','zenew'])$(w).addEventListener('click',()=>setTimeout(()=>reelBeall({}),0));
  reelBeall({})})();
 function reelSorok(){const c=S.cands&&S.cands[S.sel];if(c&&c.reel&&c.reel[S.lang]&&c.reel[S.lang].length)return c.reel[S.lang];
@@ -452,7 +493,7 @@ let UT=store.get('temak',[]),HELYEK=store.get('helyek',{});
 for(const u of UT.slice()){const b=K.temak.find(t=>norm(t.nev)===norm(u.nev)||(t.alias||[]).includes(norm(u.nev)));if(b){const uh=u.hely||HELYEK[u.id];if(uh&&!HELYEK[b.id])HELYEK[b.id]=uh;delete HELYEK[u.id];UT=UT.filter(x=>x!==u);if(S.tema===u.id)S.tema=b.id}else if(u.hely&&!HELYEK[u.id])HELYEK[u.id]=u.hely}
 store.set('temak',UT);store.set('helyek',HELYEK);
 const HIDAK=['foatjaro','vasut','naphegy','ujvolgy'];
-function hidSor(){const w=$('hidw');w.hidden=!HIDAK.includes(S.tema);if(w.hidden)return;const r=$('hidR');r.innerHTML='';for(const h of HIDAK){const b=document.createElement('button');b.type='button';b.className='chip';b.textContent=temaObj(h).nev;b.setAttribute('aria-pressed',S.tema===h);b.addEventListener('click',()=>{S.temaKezi=true;temaValaszt(h)});r.append(b)}}
+function hidSor(){const w=$('hidw');w.hidden=!HIDAK.includes(S.tema);if(w.hidden)return;const r=$('hidR');r.innerHTML='';const hp=id=>HELYEK[id]||(K.helyek||{})[id];const sor=HIDAK.map(h=>[h,S.gps&&hp(h)?tav(S.gps,hp(h)):null]).sort((x,y)=>(x[1]??9)-(y[1]??9));for(const [h,d] of sor){const b=document.createElement('button');b.type='button';b.className='chip hidchip';const o=temaObj(h);b.textContent=o.nev;if(o.leir||d!=null){const sm=document.createElement('small');sm.textContent=[o.leir,d!=null?(d<1?Math.round(d*1000/10)*10+' m':d.toFixed(1).replace('.',',')+' km'):''].filter(Boolean).join(' · ');b.append(sm)}b.setAttribute('aria-pressed',S.tema===h);b.addEventListener('click',()=>{S.temaKezi=true;temaValaszt(h)});r.append(b)}}
 function temaValaszt(id){S.tema=id;osszegzes();for(const c of document.querySelectorAll('#temak .chip'))c.setAttribute('aria-pressed',c.dataset.t===id);$('aptw').hidden=!['apartman','terasz'].includes(id);hidSor();S.cands=[];S.sel=null;$('valaszt').hidden=true;$('t3').hidden=true;$('out').hidden=true}
 const temaKeres=nev=>K.temak.concat(UT).find(t=>norm(t.nev)===norm(nev)||(t.alias||[]).includes(norm(nev)));
 function temak(){const w=$('temak');w.innerHTML='';const gomb=t=>{const b=document.createElement('button');b.className='chip';b.dataset.t=t.id;b.textContent=t.nev+(HELYEK[t.id]?' •':'');b.setAttribute('aria-pressed',t.id===S.tema);b.addEventListener('click',()=>{S.temaKezi=true;temaValaszt(t.id);$('temaD').open=false;$('temaKer').value='';temaSzur('');$('alapw').scrollIntoView({behavior:'smooth',block:'center'})});b.dataset.k=norm([t.nev,t.en,t.de].concat(t.alias||[]).join(' '));return b};
@@ -484,17 +525,29 @@ function exif(buf){try{const v=new DataView(buf);if(v.getUint16(0)!==0xFFD8)retu
    const ifd=(p,want)=>{const n=g16(t+p),r={};for(let i=0;i<n;i++){const e=t+p+2+i*12,tag=g16(e);if(want.includes(tag))r[tag]={cnt:g32(e+4),off:g32(e+8),pos:e+8}}return r};
    const str=e=>{let s='';for(let i=0;i<e.cnt-1;i++)s+=String.fromCharCode(v.getUint8(t+e.off+i));return s};
    const rat=(e,k)=>g32(t+e.off+k*8)/g32(t+e.off+k*8+4);
-   const i0=ifd(g32(t+4),[0x8769,0x8825,0x0132]);let date=null,gps=null;
+   const i0=ifd(g32(t+4),[0x8769,0x8825,0x0132]);let date=null,gps=null,irany=null;
    if(i0[0x8769]){const ex=ifd(i0[0x8769].off,[0x9003]);if(ex[0x9003])date=str(ex[0x9003])}if(!date&&i0[0x0132])date=str(i0[0x0132]);
-   if(i0[0x8825]){const gi=ifd(i0[0x8825].off,[1,2,3,4]);if(gi[2]&&gi[4]){const dm=e=>rat(e,0)+rat(e,1)/60+rat(e,2)/3600;let la=dm(gi[2]),lo=dm(gi[4]);
+   if(i0[0x8825]){const gi=ifd(i0[0x8825].off,[1,2,3,4,0x11]);if(gi[0x11]){const x=rat(gi[0x11],0);if(isFinite(x))irany=x%360}if(gi[2]&&gi[4]){const dm=e=>rat(e,0)+rat(e,1)/60+rat(e,2)/3600;let la=dm(gi[2]),lo=dm(gi[4]);
     if(gi[1]&&String.fromCharCode(v.getUint8(gi[1].pos))==='S')la=-la;if(gi[3]&&String.fromCharCode(v.getUint8(gi[3].pos))==='W')lo=-lo;gps=[la,lo]}}
-   let d=null;const p=date&&date.match(/(\d{4}):(\d\d):(\d\d) (\d\d):(\d\d)/);if(p)d=new Date(+p[1],p[2]-1,+p[3],+p[4],+p[5]);return {d,gps}}
+   let d=null;const p=date&&date.match(/(\d{4}):(\d\d):(\d\d) (\d\d):(\d\d)/);if(p)d=new Date(+p[1],p[2]-1,+p[3],+p[4],+p[5]);return {d,gps,irany}}
   if((m&0xFF00)!==0xFF00)break;o+=2+v.getUint16(o+2)}}catch(e){}return null}
 const tav=(a,b)=>{const r=x=>x*Math.PI/180,dl=r(b[0]-a[0]),dn=r(b[1]-a[1]),h=Math.sin(dl/2)**2+Math.cos(r(a[0]))*Math.cos(r(b[0]))*Math.sin(dn/2)**2;return 12742*Math.asin(Math.sqrt(h))};
 
 const osm=g=>`https://www.openstreetmap.org/?mlat=${g[0].toFixed(5)}&mlon=${g[1].toFixed(5)}#map=17/${g[0].toFixed(5)}/${g[1].toFixed(5)}`;
 let HAZ=store.get('haz',null);
 function tavKm(){return S.gps&&HAZ?tav(S.gps,HAZ):null}
+/* Merre jutsz innen: a fotó helyéből (és ha van, a nézési irányából) a legközelebbi ismert hely, sétaidővel. Légvonalbeli közelítés. */
+function merreMondat(){if(!S.gps||tav(S.gps,C.koord)>3)return null;const hp=id=>HELYEK[id]||(K.helyek||{})[id];
+ const br=(a,b)=>{const r=x=>x*Math.PI/180,y=Math.sin(r(b[1]-a[1]))*Math.cos(r(b[0])),x=Math.cos(r(a[0]))*Math.sin(r(b[0]))-Math.sin(r(a[0]))*Math.cos(r(b[0]))*Math.cos(r(b[1]-a[1]));return (Math.atan2(y,x)*180/Math.PI+360)%360};
+ let sor=K.temak.filter(t=>!t.altalanos&&!t.haz&&!['sziget','duna'].includes(t.id)&&t.id!==S.tema&&!(S.extra||[]).includes(t.id)&&hp(t.id)&&t.cim).map(t=>{const d=tav(S.gps,hp(t.id)),b=br(S.gps,hp(t.id));return {t,d,b,rel:S.irany==null?null:((b-S.irany+540)%360)-180}}).filter(x=>x.d>=.15&&x.d<=2);
+ if(!sor.length)return null;if(S.irany!=null){const el=sor.filter(x=>Math.abs(x.rel)<=50);if(el.length)sor=el}sor.sort((x,y)=>x.d-y.d);const x=sor[0];
+ const p=Math.max(2,Math.round(x.d*1.25/4.5*60)),c=x.t.cim,kis=s=>/^(A|Az) /.test(s)?s.charAt(0).toLowerCase()+s.slice(1):(/^[AÁEÉIÍOÓÖŐUÚÜŰ]/i.test(s)?'az ':'a ')+s;
+ let hu,en,de;if(x.rel!=null){const r=Math.abs(x.rel);const k=r<=50?0:r>=130?2:x.rel>0?1:3;
+  hu=k===0?', abba az irányba, amerre a kép néz':k===2?', a hátad mögött':k===1?', jobb kéz felé':', bal kéz felé';
+  en=k===0?', in the direction the photo faces':k===2?', behind you':k===1?', to your right':', to your left';
+  de=k===0?', in Blickrichtung des Fotos':k===2?', hinter dir':k===1?', rechter Hand':', linker Hand';}
+ else{const i=Math.round(x.b/45)%8;hu=', '+['északra','északkeletre','keletre','délkeletre','délre','délnyugatra','nyugatra','északnyugatra'][i];en=', to the '+['north','north-east','east','south-east','south','south-west','west','north-west'][i];de=', im '+['Norden','Nordosten','Osten','Südosten','Süden','Südwesten','Westen','Nordwesten'][i]}
+ return {id:'merre-'+x.t.id,hu:`Innen kb. ${p} perc sétára van ${kis(c.hu)}${hu}.`,en:`About a ${p}-minute walk from here${en}: ${c.en}.`,de:`Etwa ${p} Gehminuten von hier${de}: ${c.de}.`}}
 function tavMondat(){if(!$('helyTav').checked)return null;const d=tavKm();if(d==null||d<.15||d>30)return null;
  const m=Math.round(d*1000/50)*50,k=d.toFixed(1);const hu=d<1?m+' méterre':k.replace('.',',')+' km-re',en=d<1?m+' m':k+' km',de=d<1?m+' m':k.replace('.',',')+' km';
  return {id:'tav',hu:`A kép kb. ${hu} készült a háztól.`,en:`This photo was taken about ${en} from the house.`,de:`Dieses Foto entstand etwa ${de} vom Haus entfernt.`}}
@@ -520,7 +573,7 @@ let img=null;
 let FILES=[],EXTRA=[];
 async function fotokBe(fs){FILES=fs.slice(0,20);const f=FILES[0];if(!f)return;
  let ex=null;try{ex=exif(await f.slice(0,262144).arrayBuffer())}catch(x){}
- S.time=ex&&ex.d?ex.d:null;S.gps=ex&&ex.gps;$('st1').textContent='';S.temaKezi=false;S.helyFelismert=false;S.tema='kilatas';S.extra=[];S.felisTema=[];temak();$('felisT').textContent='';$('felisJ').innerHTML='';
+ S.time=ex&&ex.d?ex.d:null;S.gps=ex&&ex.gps;S.irany=ex&&ex.irany!=null?ex.irany:null;$('st1').textContent='';S.temaKezi=false;S.helyFelismert=false;S.tema='kilatas';S.extra=[];S.felisTema=[];temak();$('felisT').textContent='';$('felisJ').innerHTML='';
  let hely='';if(S.gps){const km=tav(S.gps,C.koord);hely=km<3?' · '+C.hely.ben+' készült':` · ${Math.round(km)} km-re ${C.hely.tol}`}
  helyPanel();$('meta').textContent=S.time?`Készült: ${S.time.toLocaleDateString('hu-HU')}, ${({reggel:'reggel',nappal:'nappal',este:'este',ejjel:'éjjel'})[napszak(S.time)]} (${({tel:'tél',tavasz:'tavasz',nyar:'nyár',osz:'ősz'})[evszak(S.time)]})${hely}`:`A fotóban nincs felvételi dátum (a fájl dátuma csak a mentésé, azt nem használom).${hely} Napszakot, évszakot a „További beállítások” alatt adhatsz meg.`;
  const url=URL.createObjectURL(f);const im=new Image();
@@ -670,7 +723,7 @@ function temaSorRajz(){const w=$('temaSor');if(!w)return;w.innerHTML='';const ti
   b.addEventListener('click',()=>{if(t===S.tema){if(!S.extra.length)return;const u=S.extra.shift();S.temaKezi=true;temaValaszt(u)}else if(S.extra.includes(t))S.extra=S.extra.filter(x=>x!==t);else{S.extra.push(t);if(S.extra.length>2)S.extra.shift()}S.cands=[];S.sel=null;temaSorRajz()});w.append(b)}
  const m=document.createElement('button');m.type='button';m.className='chip';m.id='temaMas';m.textContent='Másik téma…';m.addEventListener('click',()=>{$('temaD').open=true;$('temaD').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(()=>$('temaKer').focus({preventScroll:true}),300)});w.append(m);
  const ex=S.extra.map(t=>temaObj(t).nev);$('temaMag').textContent=`A szöveg fő témája: ${temaObj(S.tema).nev}`+(ex.length?`, mellé: ${ex.join(', ')}.`:'.')+' Koppintással jelölöd be vagy veszed ki; a „fő” kivétele után a következő lesz a fő.'}
-function osszegzes(){try{naptarFriss()}catch(e){}$('alapw').hidden=!img;if(img){$('temaB').textContent=temaObj(S.tema).nev;temaSorRajz()}if(!img){$('osz').hidden=true;return}$('osz').hidden=false;
+function osszegzes(){try{naptarFriss()}catch(e){}$('alapw').hidden=!img;if(img){$('temaB').textContent=temaObj(S.tema).nev;temaSorRajz()}if(!img)return;/* #osz: régi összegző sor, az #alapw váltotta ki; rejtve marad */
  $('osz').textContent=`${temaObj(S.tema).nev} · ${nsAkt()?NSN[nsAkt()]+(S.nsKez?'':S.time?' (fotóból)':' (képből becsülve)'):'napszak: nincs megadva'} · ${EVN[evAkt()]}${S.evKez?'':S.time?' (fotóból)':' (mai dátum, a fotóban nincs dátum)'} · ${LN[S.lang]}`;
  $('beallS').textContent='Extra beállítások'+($('nota').value.trim()?' (saját első mondat)':'')}
 function chipSor(id,kulcs){for(const b of document.querySelectorAll('#'+id+' .chip'))b.addEventListener('click',()=>{S[kulcs]=b.dataset.v;for(const c of document.querySelectorAll('#'+id+' .chip'))c.setAttribute('aria-pressed',c===b);osszegzes();if(S.cands.length&&!S.cands.some(c=>c.src==='claude'||c.src==='ai'))S.cands=[]})}
@@ -744,5 +797,5 @@ async function felismer(){if(!img||OSZT_HIBA||!$('felisCb').checked)return;const
 keszlet();
 try{naptarFriss()}catch(e){}
 $('alkCb').addEventListener('change',()=>{if(S.cands.length&&!S.cands.some(c=>c.src==='claude'||c.src==='ai'))S.cands=[];if(S.sel!=null){S.csendes=true;valaszt(S.sel);S.csendes=false}});
-window.__test={ZENE,hasonlit,refBe,SAJAT:()=>SAJATEMB,extrakBe,fotokBe,EXTRA:()=>EXTRA,festKollazs,panelek,javitJSON,ALK,TELIHOLD,alkMondat,naptarFriss,alkalom,napido,holdKor,unnepek,husvet,reelKocka,altFriss,helyPanel,temaPontok,TERKEP,tavMondat,UT:()=>UT,K,hibak,javit,jeloltek,S,onell,KIZART,KHIBA,exif,beolvas,keres};
+window.__test={merreMondat,ZENE,hasonlit,refBe,SAJAT:()=>SAJATEMB,extrakBe,fotokBe,EXTRA:()=>EXTRA,festKollazs,panelek,javitJSON,ALK,TELIHOLD,alkMondat,naptarFriss,alkalom,napido,holdKor,unnepek,husvet,reelKocka,altFriss,helyPanel,temaPontok,TERKEP,tavMondat,UT:()=>UT,K,hibak,javit,jeloltek,S,onell,KIZART,KHIBA,exif,beolvas,keres};
 }
