@@ -511,3 +511,6 @@
 - Képtár: fotólista a kampányból + szakmából, útmutató kártya (bent/kint/részlet szabályok), natív kamera, program-ellenőrzés AI nélkül (tájolás, méret ≥2048×1080, élesség Laplace-szórással, fény/beégés); videó mód: 4 klip (Artam-minta szabályai), klip-ellenőrzés (álló, 2–8 mp), reel a klipekből a telefonon (vászon + MediaRecorder, áttűnés, zárókép logóval). BEMUTATÓ klipek: a bemutató fotókból lassú ráközelítéssel (ffmpeg), jelölve.
 - Tesztek: új `fotoposzt_t32.py` (390 világos + 1280 sötét; Ma, javaslat, brief kötelező ráadás, fázisok, Ma → Elkészítem → poszt → Vissza, Képtár útmutató + 4 pontos ellenőrzés, éles képet élesnek mér, 4 bemutató klip → reel kész, 44 px, kicsúszás, `?mod=poszt`) 0 HIBA Cloudflare-helyin és az artifact-építésen; t24, t25, t27–t31, kapu 0 HIBA (t29 a fülekhez igazítva); mind.sh része.
 - Nem tesztelt: valódi iPhone kamera/videó, MediaRecorder Safari-n (mp4), zene a klip-reelen (következő kör), a „Beállítás” még a poszt-folyamat alján („Extra”).
+
+## 2026-11-27 – ZSEBMARKETING: lépésgombok iPhone-on
+- Péter iPhone-képe: „2. Szöveg”, „4. Közzététel” két sorba tört, a 4. kilógott. Új forma: kis „N. lépés” + szó; „Közzététel” → „Kiküldés”. 320 és 375 px-en nincs kilógás, 44 px magas. t24, t29, t30, t32, kapu 0 HIBA.

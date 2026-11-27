@@ -126,7 +126,7 @@ body{padding-bottom:84px}.rejt{position:absolute;left:-9999px}
 .sor2{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:15px}.sor2 span:first-child{color:var(--mute)}
 .fazis{font:700 13px Figtree,sans-serif;color:var(--deep);margin:14px 0 4px;text-transform:none}
 .ell{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.ell span{font:600 13px Figtree,sans-serif;padding:4px 10px;border-radius:12px;border:1px solid var(--line)}.ell .jo{color:var(--ok);border-color:var(--ok)}.ell .rossz{color:var(--bad);border-color:var(--bad)}
-#klipV{width:100%;max-width:360px;border-radius:12px;display:block;margin:8px auto}</style>
+#klipV{width:100%;max-width:360px;border-radius:12px;display:block;margin:8px auto}.lepsor button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;line-height:1.1;padding:4px 2px;white-space:nowrap}.lepsor button small{font:600 11px Figtree,sans-serif;opacity:.85}.lepsor button span{font:700 15px Figtree,sans-serif}</style>
 </head>
 <body>
 <div class="wrap">
@@ -135,7 +135,7 @@ body{padding-bottom:84px}.rejt{position:absolute;left:-9999px}
 <div id="frissSav" hidden role="status"></div>
 <nav class="fulsav" id="modok" aria-label="Fő menü"><button type="button" data-mod="ma" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"/></svg><span>Ma</span></button><button type="button" data-mod="terv" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg><span>Kampányok</span></button><button type="button" data-mod="kep" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/></svg><span>Képtár</span></button><button type="button" data-mod="ered" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20V10M12 20V4M19 20v-7"/></svg><span>Eredmény</span></button></nav>
 <button type="button" class="vissza" id="posztVissza" hidden>‹ Vissza</button>
-<nav class="lepsor" id="lepsor" aria-label="Lépések"><button data-n="1" aria-current="step">1. Fotó</button><button data-n="2">2. Szöveg</button><button data-n="3">3. Kép</button><button data-n="4">4. Közzététel</button></nav>
+<nav class="lepsor" id="lepsor" aria-label="Lépések"><button data-n="1" aria-current="step"><small>1. lépés</small><span>Fotó</span></button><button data-n="2"><small>2. lépés</small><span>Szöveg</span></button><button data-n="3"><small>3. lépés</small><span>Kép</span></button><button data-n="4"><small>4. lépés</small><span>Kiküldés</span></button></nav>
 <div id="miniFoto" hidden><span></span></div>
 
 <section id="ma" aria-labelledby="maC">
