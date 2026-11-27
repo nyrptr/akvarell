@@ -223,7 +223,7 @@ $('cpA').addEventListener('click',async()=>{try{await navigator.clipboard.writeT
 
 /* ===== Reel: 1080×1920, a telefonon rögzítve ===== */
 const REELST=[['akvarell','Akvarell keret'],['tiszta','Tiszta'],['sav','Sáv alul']];
-const ZENE=[['','Nincs zene'],['reggel','Nyugodt: Grieg, Reggel'],['vidam','Vidám: Mendelssohn, Olasz szimfónia']];
+const ZENE=[['','Nincs zene'],['reggel','Reggeli: Grieg, Reggel'],['nyugodt','Csendes zongora: Bach, Ária'],['este','Esti vonósok: Borodin, Notturno'],['vidam','Vidám: Mendelssohn, Olasz szimfónia']];
 const ANIM=[['zoom','Lassú ráközelítés'],['beuszo','Beúszó'],['beugro','Beugró'],['attunes','Áttűnés']];
 S.reelSt=store.get('reelst','akvarell');S.anim=store.get('anim','zoom');S.zene=store.get('zene','reggel');
 (function(){const w=$('zenew');for(const [id,nev] of ZENE){const b=document.createElement('button');b.className='chip';b.textContent=nev;b.setAttribute('aria-pressed',S.zene===id);b.addEventListener('click',()=>{S.zene=id;store.set('zene',id);for(const x of w.children)x.setAttribute('aria-pressed',x===b);zeneProba()});w.append(b)}})();
