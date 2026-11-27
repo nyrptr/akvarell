@@ -1,6 +1,8 @@
 {
 const $=id=>document.getElementById(id);
 const K=JSON.parse($('keszlet').textContent);
+const C=K.ceg;
+document.title=C.rovid+' fotóposzt';document.querySelectorAll('.logo').forEach(e=>e.textContent=C.logobetu);document.querySelector('header .sub').textContent=C.nev+', '+C.hely.hu;document.querySelector('.fbh b').textContent=C.nev;
 const L=['hu','en','de'],LN={hu:'Magyar',en:'English',de:'Deutsch'};
 const S={stilus:'felirat',lang:'hu',tema:'kilatas',time:null,gps:null,cands:[],sel:null,ts:'',auto:[],small:null};
 const TILT={hu:['legjobb','legszebb','legerősebb','legolcsóbb','legcsodálatosabb','tökéletes','egyedülálló','páratlan','csodálatos','mesés','paradicsom','garantált','ingyen','ingyenes'],
@@ -49,7 +51,7 @@ const cim=(id,l)=>{const t=temaObj(id);return (t.cim&&t.cim[l])||(l==='hu'?t.nev
 
 /* ===== Naptár, nap, hold: internet nélkül, a telefon órájából ===== */
 const MA=()=>S.ma?new Date(S.ma):new Date();
-const ZEB=[47.8001,18.9094];
+const ZEB=C.koord;
 function husvet(y){const a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),hn=Math.floor((h+l-7*m+114)/31),nap=(h+l-7*m+114)%31+1;return new Date(y,hn-1,nap)}
 const napP=(d,n)=>new Date(d.getFullYear(),d.getMonth(),d.getDate()+n);
 const nap0=d=>new Date(d.getFullYear(),d.getMonth(),d.getDate());
@@ -112,14 +114,14 @@ const ALK={
 const TELIHOLD={id:'hold',hu:'Ma este telihold van a Duna fölött.',en:'Tonight there is a full moon over the Danube.',de:'Heute Abend steht der Vollmond über der Donau.'};
 function alkMondat(){if(!$('alkCb')||!$('alkCb').checked)return null;const a=alkalom(S.lang);if(!a)return null;const m=ALK[a.id];return m?{id:'alk-'+a.id,...m}:null}
 function naptarFriss(){const ma=MA(),ny=napido(ma,false),ke=napido(ma,true),a=alkalom(S.lang,ma);
- const ar=ny?new Date(ny-40*6e4):null;let t=`Ma Zebegényben: napkelte ${ora(ke)}, napnyugta ${ora(ny)}, aranyóra kb. ${ora(ar)}-tól.`;
+ const ar=ny?new Date(ny-40*6e4):null;let t=`Ma ${C.hely.ben}: napkelte ${ora(ke)}, napnyugta ${ora(ny)}, aranyóra kb. ${ora(ar)}-tól.`;
  if(telihold(ma))t+=' Ma telihold van.';$('naptarT').textContent=t;
  const w=$('alkW');if(a&&ALK[a.id]){w.hidden=false;$('alkL').textContent=`Jókívánság a végére: ${a.nev}${a.n?` (${a.n} nap múlva)`:' (ma)'} – „${ALK[a.id][S.lang]}”`}else w.hidden=true}
 
 function jeloltek(){
  const ns=nsAkt(),ev=evAkt(),a=apt(),out=[];
  {const temak=[...new Set([S.tema].concat(EXTRA.map(e=>e.tema)).filter(Boolean))];
-  if(temak.length>=2){const ES={hu:'és',en:'and',de:'und'},NYI={hu:'Mai sétánk Zebegényben: ',en:'Our walk in Zebegény today: ',de:'Unser Spaziergang in Zebegény heute: '};
+  if(temak.length>=2){const ES={hu:'és',en:'and',de:'und'},NYI={hu:'Mai sétánk '+C.hely.ben+': ',en:'Our walk in '+C.hely.en+' today: ',de:'Unser Spaziergang in '+C.hely.de+' heute: '};
    const nev=(t,l)=>{const o=temaObj(t);return l==='hu'?o.nev:(o[l]||o.nev)};
    const lista=l=>{const n=temak.slice(0,4).map(t=>nev(t,l));return n.length>1?n.slice(0,-1).join(', ')+' '+ES[l]+' '+n[n.length-1]:n[0]};
    const tk=temak.slice(0,3).filter(t=>(K.seta||{})[t]&&!KIZART.has('seta-'+t)).map(t=>({id:'seta-'+t,...K.seta[t]}));
@@ -131,7 +133,7 @@ function jeloltek(){
  (K.mintak||[]).forEach((m,i)=>m.id=m.id||'mm-'+i);
  const NSZO={reggel:/(^|[^a-záéíóöőúüű])(reggel|délelőtt|hajnal)/i,este:/(^|[^a-záéíóöőúüű])(este|esti|naplemente|alkony)/i,ejjel:/(^|[^a-záéíóöőúüű])(éjszaka|éjjel|csillag)/i},nsM=nsAkt(),idoOk=m=>!nsM||Object.entries(NSZO).every(([k,re])=>k===nsM||(k==='este'&&nsM==='ejjel')||(k==='ejjel'&&nsM==='este')||!re.test(m.hu));
  for(const m of huz((K.mintak||[]).filter(m=>m.tema===S.tema&&idoOk(m)),out.length?1:2))out.push({ids:[m.id],src:'minta',parts:per(l=>m[l]),kom:per(l=>(K.komment.find(k=>k.id==='m1')||{})[l]||'')});
- const ut=UT.find(t=>t.id===S.tema);const sajatNy=ut?[{id:'u-op-'+ut.id,hu:ut.nev+', Zebegény.',en:(ut.en||ut.nev)+', Zebegény.',de:(ut.de||ut.nev)+', Zebegény.'},{id:'u-op2-'+ut.id,hu:'Ma ide vitt az utunk: '+ut.nev+'.',en:'Today our walk led us here: '+(ut.en||ut.nev)+'.',de:'Heute hat uns der Weg hierher geführt: '+(ut.de||ut.nev)+'.'}]:[];
+ const ut=UT.find(t=>t.id===S.tema);const sajatNy=ut?[{id:'u-op-'+ut.id,hu:ut.nev+', '+C.hely.hu+'.',en:(ut.en||ut.nev)+', '+C.hely.en+'.',de:(ut.de||ut.nev)+', '+C.hely.de+'.'},{id:'u-op2-'+ut.id,hu:'Ma ide vitt az utunk: '+ut.nev+'.',en:'Today our walk led us here: '+(ut.en||ut.nev)+'.',de:'Heute hat uns der Weg hierher geführt: '+(ut.de||ut.nev)+'.'}]:[];
  const ny=huz(K.nyito.filter(s=>s.t===S.tema).concat(sajatNy),3);
  const ten=huz(K.teny.filter(s=>(a&&s.apt===a)||(!s.apt&&tTema(s,S.tema))),3);
  const zar=K.zaro.filter(s=>(!s.evszak||s.evszak===ev)&&(!s.haz||HAZT.includes(S.tema))&&(!s.tt||s.tt===S.tema)&&!KIZART.has(s.id));
@@ -160,7 +162,7 @@ function jeloltek(){
  return out.slice(0,3)}
 
 function link(){const d=new Date(),p=n=>String(n).padStart(2,'0');S.ts=`F-${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}-${S.lang}`;
- return (K.url[apt()]||K.url[''])+`?utm_source=facebook&utm_medium=social&utm_campaign=akv-foto&utm_content=${S.ts}`}
+ return (K.url[apt()]||K.url[''])+`?utm_source=facebook&utm_medium=social&utm_campaign=${C.kampany}&utm_content=${S.ts}`}
 
 function rajzol(szamol){const box=$('cands');box.innerHTML='';
  S.cands.forEach((c,ix)=>{const b=document.createElement('div');b.className='cand';b.setAttribute('aria-pressed',S.sel===ix);
@@ -199,7 +201,7 @@ function ellenoriz(fixel){
  out.push(h.includes('link')?['bad','Link van a posztban']:['ok','Link nincs a posztban']);
  out.push(PENZ.test(t+' '+k)?['bad','Ár/kedvezmény: a tulajdonos dönti el']:['ok','Nincs ár, kedvezmény']);
  out.push(h.includes('hashtag')||h.includes('emoji')?['bad','Hashtag vagy emoji maradt']:['ok','Nincs hashtag, emoji']);
- out.push(/https:\/\/akvarellzebegeny\.hu\/\S*utm_source=facebook/.test(k)?['ok','Első komment: mért foglalási link']:['bad','Hiányzik a mért foglalási link a kommentből']);
+ out.push((k.includes(K.url[''])&&/utm_source=facebook/.test(k))?['ok','Első komment: mért foglalási link']:['bad','Hiányzik a mért foglalási link a kommentből']);
  const cc=S.cands[S.sel];if(cc&&cc.ujT&&cc.ujT.length){$('ujtw').hidden=false;if(!$('ujt').dataset.k||$('ujt').dataset.k!==String(S.sel)+cc.ujT.join('|')){$('ujt').dataset.k=String(S.sel)+cc.ujT.join('|');$('ujt').innerHTML='';cc.ujT.forEach((t,i)=>{const li=document.createElement('li');const l=document.createElement('label');l.className='man';l.style.margin='0';const cb=document.createElement('input');cb.type='checkbox';cb.checked=cc.ujOk[i];cb.addEventListener('change',()=>{cc.ujOk[i]=cb.checked;ellenoriz(false)});l.append(cb,document.createTextNode(t));li.append(l);$('ujt').append(li)})}
   const nincs=cc.ujOk.filter(x=>!x).length;out.push(nincs?['bad',`${nincs} új tény még nincs ellenőrizve (lent)`]:['ok','Az AI új tényei ellenőrizve'])}else{$('ujtw').hidden=true;$('ujt').dataset.k=''}
  out.push($('man').checked?['ok','Emberek a képen: rendben']:['bad','Pipáld ki lent, ha nincs felismerhető ember, vagy beleegyezett']);
@@ -221,7 +223,7 @@ $('hidB').addEventListener('click',()=>{$('hid').open=true;$('hid').scrollIntoVi
 const kepBlob=()=>new Promise(r=>$('cv').toBlob(r,'image/jpeg',.9));
 /* ===== Képleírás (alt szöveg) ===== */
 const NSA={hu:{reggel:'reggel',nappal:'napközben',este:'este',ejjel:'éjjel'},en:{reggel:'in the morning',nappal:'in daylight',este:'in the evening',ejjel:'at night'},de:{reggel:'am Morgen',nappal:'bei Tag',este:'am Abend',ejjel:'in der Nacht'}};
-function altFriss(){const l=S.lang,ns=nsAkt(),h=cim(S.tema,l),z=/Zebegény/.test(h)?'':', Zebegény';const n=ns?' '+NSA[l][ns]:'';
+function altFriss(){const l=S.lang,ns=nsAkt(),h=cim(S.tema,l),hn=C.hely[l]||C.hely.hu,z=h.includes(hn)?'':', '+hn;const n=ns?' '+NSA[l][ns]:'';
  $('alt').value={hu:`Fotó: ${h}${z}${n}.`,en:`Photo: ${h}${z}${n}.`,de:`Foto: ${h}${z}${n}.`}[l]}
 $('cpA').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('alt').value);$('st2').textContent='Képleírás másolva.'}catch(e){$('alt').select();$('st2').textContent='Jelöld ki és másold.'}});
 
@@ -283,7 +285,7 @@ function reelKocka(g,t,T,kepek,sorok,st){const {W,H,top,side}=REEL,alja=H-REEL.b
  if(st==='sav'){const gr=g.createLinearGradient(0,alja-520,0,H);gr.addColorStop(0,'rgba(20,30,25,0)');gr.addColorStop(.35,'rgba(20,30,25,.6)');gr.addColorStop(1,'rgba(20,30,25,.8)');g.fillStyle=gr;g.fillRect(0,alja-520,W,H-alja+520)}
  /* felső kis felirat a biztonsági sávon belül */
  if(t<kepT){if(['akvarell','polaroid','kepeslap','ecset'].includes(st)){g.save();g.translate(W/2,top+10);g.scale(.62,.62);felirat(g,0,0,'center',rnd(5));g.restore()}
-  else{g.fillStyle='rgba(255,255,255,.92)';g.shadowColor='rgba(0,0,0,.45)';g.shadowBlur=12;g.font=SERIF.replace('PX','58px');g.fillText('Akvarell',W/2,top+20);g.font=SANS.replace('PX','20px');if('letterSpacing' in g)g.letterSpacing='3px';g.fillText('APARTMANHÁZ · ZEBEGÉNY',W/2,top+52);if('letterSpacing' in g)g.letterSpacing='0px';g.shadowBlur=0}}
+  else{g.fillStyle='rgba(255,255,255,.92)';g.shadowColor='rgba(0,0,0,.45)';g.shadowBlur=12;g.font=SERIF.replace('PX','58px');g.fillText(C.rovid,W/2,top+20);g.font=SANS.replace('PX','20px');if('letterSpacing' in g)g.letterSpacing='3px';g.fillText(C.alcim,W/2,top+52);if('letterSpacing' in g)g.letterSpacing='0px';g.shadowBlur=0}}
  /* feliratok mondatonként */
  if(t<kepT&&sorok.length){const ns=sorok.length,ps=kepT/ns,i=Math.min(ns-1,Math.floor(t/ps)),u=(t-i*ps)/ps,a=Math.max(0,Math.min(1,u/.12,(1-u)/.1));
   g.font=SERIF.replace('PX','62px');const ls=sorTor(g,sorok[i],W-2*side-90).slice(0,4),lh=72,bh=ls.length*lh,cy=alja-60-bh/2;
@@ -363,9 +365,9 @@ $('kitettem').addEventListener('click',()=>{try{sajatTanul()}catch(e){}
 /* AI-kérés (Claude és a kézi híd ugyanazt kapja) */
 function keres(){const minta=LOG.slice(0,3).map(e=>'- '+e.txt).join('\n')||'- (még nincs)';
  const t=temaObj(S.tema),tudas=K.temak.map(tm=>{const f=K.teny.filter(x=>!x.apt&&tTema(x,tm.id)).map(x=>x.hu);return f.length?`${tm.cim?tm.cim.hu:tm.nev}: ${f.join(' ')}`:''}).filter(Boolean);
- return `Az Akvarell Apartmanház (Zebegény, Dunakanyar) Facebook-oldalára írsz posztot a mellékelt fotóhoz.
+ return `${C.prompt_ki} Facebook-oldalára írsz posztot a mellékelt fotóhoz.
 
-PERSONA: Te vagy a ház két kedves házigazdája. Itt élsz, szereted Zebegényt, és úgy írsz, mint aki egy barátjának küld képeslapot: meleg, kíváncsi, kicsit költői, de pontos. Mesélsz, nem reklámozol. Tegezel (németül du). Nem túlzol, nem lelkendezel.
+PERSONA: ${C.persona} Itt élsz, szereted ${C.hely.t}, és úgy írsz, mint aki egy barátjának küld képeslapot: meleg, kíváncsi, kicsit költői, de pontos. Mesélsz, nem reklámozol. Tegezel (németül du). Nem túlzol, nem lelkendezel.
 
 A POSZT ÍVE (3–4 rövid mondat, max. 320 karakter):
 1. Pillanat: egy konkrét, érzékletes részlet a képből vagy a napszakból (${nsAkt()?NSN[nsAkt()]:'napszak: ítéld meg a képből'}, ${evAkt()?EVN[evAkt()]:'évszak: ítéld meg a képből'}), ne tárgyszerű képleírás.
@@ -455,7 +457,7 @@ function temaValaszt(id){S.tema=id;osszegzes();for(const c of document.querySele
 const temaKeres=nev=>K.temak.concat(UT).find(t=>norm(t.nev)===norm(nev)||(t.alias||[]).includes(norm(nev)));
 function temak(){const w=$('temak');w.innerHTML='';const gomb=t=>{const b=document.createElement('button');b.className='chip';b.dataset.t=t.id;b.textContent=t.nev+(HELYEK[t.id]?' •':'');b.setAttribute('aria-pressed',t.id===S.tema);b.addEventListener('click',()=>{S.temaKezi=true;temaValaszt(t.id);$('temaD').open=false;$('temaKer').value='';temaSzur('');$('alapw').scrollIntoView({behavior:'smooth',block:'center'})});b.dataset.k=norm([t.nev,t.en,t.de].concat(t.alias||[]).join(' '));return b};
  const csop=(cim,lista,plusz)=>{const c=document.createElement('div');c.className='csop';c.textContent=cim;const r=document.createElement('div');r.className='row';lista.forEach(t=>r.append(gomb(t)));if(plusz)r.append(plusz);w.append(c,r)};
- csop('A ház',K.temak.filter(t=>t.haz));csop('Zebegény',K.temak.filter(t=>!t.haz&&!t.altalanos));csop('Hangulat, évszak',K.temak.filter(t=>t.altalanos));
+ csop('A ház',K.temak.filter(t=>t.haz));csop(C.hely.hu,K.temak.filter(t=>!t.haz&&!t.altalanos));csop('Hangulat, évszak',K.temak.filter(t=>t.altalanos));
  const p=document.createElement('button');p.className='chip';p.textContent='+ Új téma';p.addEventListener('click',()=>{$('ujtemaw').hidden=!$('ujtemaw').hidden;$('ujHelyL').hidden=!S.gps;$('ujNev').focus()});
  csop('Saját',UT,p)}
 
@@ -519,7 +521,7 @@ let FILES=[],EXTRA=[];
 async function fotokBe(fs){FILES=fs.slice(0,20);const f=FILES[0];if(!f)return;
  let ex=null;try{ex=exif(await f.slice(0,262144).arrayBuffer())}catch(x){}
  S.time=ex&&ex.d?ex.d:null;S.gps=ex&&ex.gps;$('st1').textContent='';S.temaKezi=false;S.helyFelismert=false;S.tema='kilatas';S.extra=[];S.felisTema=[];temak();$('felisT').textContent='';$('felisJ').innerHTML='';
- let hely='';if(S.gps){const km=tav(S.gps,[47.800,18.909]);hely=km<3?' · Zebegényben készült':` · ${Math.round(km)} km-re Zebegénytől`}
+ let hely='';if(S.gps){const km=tav(S.gps,C.koord);hely=km<3?' · '+C.hely.ben+' készült':` · ${Math.round(km)} km-re ${C.hely.tol}`}
  helyPanel();$('meta').textContent=S.time?`Készült: ${S.time.toLocaleDateString('hu-HU')}, ${({reggel:'reggel',nappal:'nappal',este:'este',ejjel:'éjjel'})[napszak(S.time)]} (${({tel:'tél',tavasz:'tavasz',nyar:'nyár',osz:'ősz'})[evszak(S.time)]})${hely}`:`A fotóban nincs felvételi dátum (a fájl dátuma csak a mentésé, azt nem használom).${hely} Napszakot, évszakot a „További beállítások” alatt adhatsz meg.`;
  const url=URL.createObjectURL(f);const im=new Image();
  im.onload=()=>{img=im;$('prev').src=url;$('prev').hidden=false;$('drop').classList.add('has');$('go').disabled=false;$('cl').disabled=false;$('t2').disabled=false;S.small=null;S.cands=[];S.sel=null;$('valaszt').hidden=true;$('t3').hidden=true;$('out').hidden=true;S.nsBecs='';fenyBecsles();ujraKep();osszegzes();felismer();fotokRajz()};
@@ -553,14 +555,14 @@ function felirat(g,cx,cy,igaz,r){
  if(LOGO&&LOGO.complete&&LOGO.naturalWidth){const mw=260,mh=120,k=Math.min(mw/LOGO.naturalWidth,mh/LOGO.naturalHeight);const w=LOGO.naturalWidth*k,h=LOGO.naturalHeight*k;
   folt(g,cx,cy,w*.7,h*.8,'#F7F1E6',.78,r);g.drawImage(LOGO,cx-w/2,cy-h/2,w,h);return}
  g.textAlign=igaz;g.textBaseline='alphabetic';const x=igaz==='left'?cx-150:cx;
- g.font='italic 600 84px "Cormorant Garamond", Georgia, serif';const w1=g.measureText('Akvarell').width;
- g.font='600 25px Figtree, sans-serif';const w2=g.measureText('APARTMANHÁZ · ZEBEGÉNY').width+40;
+ g.font='italic 600 84px "Cormorant Garamond", Georgia, serif';const w1=g.measureText(C.rovid).width;
+ g.font='600 25px Figtree, sans-serif';const w2=g.measureText(C.alcim).width+40;
  const bw=Math.max(w1,w2),fx=igaz==='left'?x+bw/2:cx;
  folt(g,fx-bw*.42,cy-52,bw*.16,22,'#B8553A',.22,r);folt(g,fx,cy-6,bw*.62,74,'#F7F1E6',.78,r);folt(g,fx+bw*.56,cy-64,bw*.1,14,'#3F5646',.16,r);
- g.fillStyle='#2F4237';g.font='italic 600 84px "Cormorant Garamond", Georgia, serif';g.fillText('Akvarell',x,cy+8);
- g.fillStyle='#B8553A';g.font='600 25px Figtree, sans-serif';if('letterSpacing' in g)g.letterSpacing='3px';g.fillText('APARTMANHÁZ · ZEBEGÉNY',x,cy+48);if('letterSpacing' in g)g.letterSpacing='0px'}
+ g.fillStyle='#2F4237';g.font='italic 600 84px "Cormorant Garamond", Georgia, serif';g.fillText(C.rovid,x,cy+8);
+ g.fillStyle='#B8553A';g.font='600 25px Figtree, sans-serif';if('letterSpacing' in g)g.letterSpacing='3px';g.fillText(C.alcim,x,cy+48);if('letterSpacing' in g)g.letterSpacing='0px'}
 const STILUSOK=[['tiszta','Tiszta'],['felirat','Felirat'],['keret','Akvarell keret'],['ecset','Ecsetvonás'],['vazlat','Vázlatfüzet'],['polaroid','Polaroid'],['kepeslap','Képeslap'],['sav','Sáv']];
-const UDV={hu:'Üdvözlet Zebegényből',en:'Greetings from Zebegény',de:'Grüße aus Zebegény'};
+const UDV={hu:'Üdvözlet '+C.hely.bol,en:'Greetings from '+C.hely.en,de:'Grüße aus '+C.hely.de};
 function kisLogo(g,x,y,mw,mh,szin){if(LOGO&&LOGO.complete&&LOGO.naturalWidth){const k=Math.min(mw/LOGO.naturalWidth,mh/LOGO.naturalHeight);g.drawImage(LOGO,x-LOGO.naturalWidth*k/2,y-LOGO.naturalHeight*k/2,LOGO.naturalWidth*k,LOGO.naturalHeight*k);return true}return false}
 function illeszt(g,t,max,px,font){let f=px;g.font=font.replace('PX',f+'px');while(g.measureText(t).width>max&&f>20){f-=2;g.font=font.replace('PX',f+'px')}return f}
 const FORMATUM={feed:{w:1080,h:1350,top:150,bot:150,side:70,nev:'Feed 4:5 (ajánlott)'},negyzet:{w:1080,h:1080,top:110,bot:110,side:70,nev:'Négyzet 1:1'},story:{w:1080,h:1920,top:270,bot:672,side:65,nev:'Story 9:16'}};
@@ -603,7 +605,7 @@ function festKep(cv,st){const F=FORMATUM[S.form]||FORMATUM.story,W=F.w,H=F.h,y0=
   const t=UDV[S.lang];g.font=SERIF.replace('PX','60px');const w=Math.min(g.measureText(t).width+70,700);
   folt(g,x0+w/2,y0+40,w/2+10,62,'#F7F1E6',.85,r);g.fillStyle='#2F4237';illeszt(g,t,w-50,60,SERIF);g.textAlign='left';g.fillText(t,x0+35,y0+60);
   g.save();g.translate(x1-90,y0+60);g.rotate(.05);g.fillStyle='#F7F1E6';g.fillRect(-85,-100,170,200);g.setLineDash([8,7]);g.strokeStyle='#B8553A';g.lineWidth=3;g.strokeRect(-75,-90,150,180);g.setLineDash([]);
-  g.textAlign='center';if(!kisLogo(g,0,-5,130,120)){g.fillStyle='#2F4237';g.font=SERIF.replace('PX','40px');g.fillText('Akvarell',0,0);g.fillStyle='#B8553A';g.font=SANS.replace('PX','16px');g.fillText('ZEBEGÉNY',0,34)}g.restore();
+  g.textAlign='center';if(!kisLogo(g,0,-5,130,120)){g.fillStyle='#2F4237';g.font=SERIF.replace('PX','40px');g.fillText(C.rovid,0,0);g.fillStyle='#B8553A';g.font=SANS.replace('PX','16px');g.fillText(C.kiscim,0,34)}g.restore();
   g.textAlign='center';g.font=SANS.replace('PX','30px');const w2=g.measureText(hely).width+60;folt(g,W/2,y1-30,w2/2,38,'#F7F1E6',.85,r);g.fillStyle='#2F4237';g.fillText(hely,W/2,y1-19);return}
  if(st==='felirat'){felirat(g,x0+40+150,y1-50,'left',r)}
  if(st==='sav'){const gr=g.createLinearGradient(0,y1-330,0,H);gr.addColorStop(0,'rgba(20,30,25,0)');gr.addColorStop(.45,'rgba(20,30,25,.7)');gr.addColorStop(1,'rgba(20,30,25,.85)');g.fillStyle=gr;g.fillRect(0,y1-330,W,H-(y1-330));

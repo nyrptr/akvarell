@@ -409,3 +409,11 @@
 - Új: `fotoposzt/MOTOR-ATADO.md` – a motor teljes tudása az új (Zsebmarketing) chathez: felépítés, keszlet, felismerő-tanítás, reel/hang, Meta, gyár, döntések (többes témaválasztás miértje), tanulságok, következő lépések.
 - Üzleti terv (AI-vázlat, Péter döntésére): https://claude.ai/artifact/Jj4nZiXhzxBVeQxNMry8qT
 - Kód nem változott; nem tesztelt: semmi új futó rész.
+
+## 2026-11-27 – Claude – fotóposzt: tudáscsomag-betöltés (motor általánosítás 1. lépés)
+- `fotoposzt/betolto.js` (új): `?csomag=<név>` → `csomagok/<név>.json` lesz a keszlet; hibás/hiányzó csomagnál alapcsomag + figyelmeztetés. Név: `[a-z0-9-]{1,40}`.
+- `fotoposzt/app.js`: minden beégetett Akvarell/Zebegény-szöveg és -koordináta a `K.ceg`-ből jön (fejléc, képfelirat, képeslap, „Üdvözlet …”, AI-prompt, napszámítás, fotótávolság, utm_campaign, komment-ellenőrzés).
+- `fotoposzt/index.html`: keszlet + `ceg` mező; az `app.js` a betöltőn át indul.
+- `fotoposzt/csomagok/README.md`: csomagszerkezet, `ceg` mezők.
+- Tesztek: gyar_szabalyok 0 HIBA; fotoposzt_kapu alap és `?csomag=proba` 0 HIBA; csomagteszt (alap / proba / hiányzó / érvénytelen név) rendben; t7 13 392 kombináció 0 hibás, JS-hiba nincs. A próbacsomag csak helyben volt, nem került a tárolóba.
+- Nem tesztelt: valódi második ügyfél adataival.

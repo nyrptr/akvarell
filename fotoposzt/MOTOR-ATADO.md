@@ -7,7 +7,7 @@
 Fotóból Facebook/Instagram poszt + első komment + képváltozatok + reel (videó zenével).
 Offline, AI nélkül is működik, HU/EN/DE paritással. Önmagát tanulja (saját felismerési minták),
 van AI-másoló híd (kész promptot ad, a visszamásolt JSON-t javítja), helyfelismerő, maximális változatosság.
-Cél: a motor ne Akvarell-specifikus maradjon -> tudáscsomag ügyfelenként (`?csomag=`), ez még NINCS kész.
+Tudáscsomag ügyfelenként: `?csomag=<név>` betölti a `csomagok/<név>.json`-t (`betolto.js`); a cégadatok a `ceg` mezőben (lásd `csomagok/README.md`). KÉSZ (11-27): felület, képfelirat, AI-prompt, koordináta, foglalási link. HÁTRA: csomagonkénti felismerő, logó/színek a csomagban.
 
 ## 2. Hol fut
 - Forrás: `fotoposzt/index.html` (egy fájl, ~190 KB) + `app.js`; tudás: `<script id="keszlet">` JSON.
@@ -77,7 +77,7 @@ Cél: a motor ne Akvarell-specifikus maradjon -> tudáscsomag ügyfelenként (`?
 - A `\b` regex magyar ékezettel hibás -> explicit betűosztály.
 
 ## 11. Következő lépések
-1. Motor általánosítása: keszlet -> `csomagok/<ügyfél>.json`, `?csomag=` betöltés, logó/színek a csomagban.
+1. Motor általánosítása: a `?csomag=` betöltés és a `ceg` mező kész (11-27). Hátra: színek és logó a csomagban, csomagonkénti felismerő-referenciák, a csomag-összeállító eszköz.
 2. Kampánymodul: kampány = cél, időszak, üzenet, kell-kép lista, posztsorrend; képkérés-lista; állapot.
 3. Képjavítás (fény, szín, horizont, ferde falak) – égcsere/tárgytörlés NEM automatikus (megtévesztő).
 4. Második tesztcsomag egy másik dunakanyari szálláshoz.
