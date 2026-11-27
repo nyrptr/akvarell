@@ -229,7 +229,12 @@ S.reelSt=store.get('reelst','akvarell');S.anim=store.get('anim','zoom');S.zene=s
 (function(){const w=$('zenew');for(const [id,nev] of ZENE){const b=document.createElement('button');b.className='chip';b.textContent=nev;b.setAttribute('aria-pressed',S.zene===id);b.addEventListener('click',()=>{S.zene=id;store.set('zene',id);for(const x of w.children)x.setAttribute('aria-pressed',x===b);zeneProba()});w.append(b)}})();
 const ZBUF={};let ACTX=null,ZPROBA=null;
 async function zeneBuf(id){if(ZBUF[id])return ZBUF[id];const r=await fetch(new URL('zene/'+id+'.mp3',location.href).href);if(!r.ok)throw new Error('zene nem tölthető');ZBUF[id]=await ACTX.decodeAudioData(await r.arrayBuffer());return ZBUF[id]}
-async function zeneProba(){try{if(ZPROBA){ZPROBA.stop();ZPROBA=null}if(!S.zene)return;ACTX=ACTX||new (window.AudioContext||window.webkitAudioContext)();await ACTX.resume();const b=await zeneBuf(S.zene);const src=ACTX.createBufferSource(),g=ACTX.createGain();src.buffer=b;src.connect(g);g.connect(ACTX.destination);const t=ACTX.currentTime;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.8,t+.6);g.gain.setValueAtTime(.8,t+5);g.gain.linearRampToValueAtTime(0,t+6.5);src.start();src.stop(t+6.6);ZPROBA=src}catch(e){$('reelSt').textContent='A zene itt nem játszható le: '+(e.message||e)}}
+function hangMod(){try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}}
+let ZAUD=null;
+function zeneProba(){if(ZAUD){ZAUD.pause();ZAUD=null}if(!S.zene){$('reelSt').textContent='';return}hangMod();
+ const a=new Audio(new URL('zene/'+S.zene+'.mp3',location.href).href);a.volume=.9;ZAUD=a;
+ a.play().then(()=>{$('reelSt').textContent='♪ Szól a minta (6 mp). Ha nem hallod: kapcsold ki a telefon némítását (oldalsó kapcsoló), és vedd fel a hangerőt.'}).catch(e=>{$('reelSt').textContent='A zenét nem tudtam elindítani: '+(e&&e.message||e)});
+ setTimeout(()=>{if(ZAUD===a){a.pause();ZAUD=null}},6500)}
 (function(){const w=$('animw');for(const [id,nev] of ANIM){const b=document.createElement('button');b.className='chip';b.textContent=nev;b.setAttribute('aria-pressed',S.anim===id);b.addEventListener('click',()=>{S.anim=id;store.set('anim',id);for(const x of w.children)x.setAttribute('aria-pressed',x===b);reelElo()});w.append(b)}})();
 (function(){const w=$('reelw');for(const [id,nev] of REELST){const b=document.createElement('button');b.className='chip';b.textContent=nev;b.setAttribute('aria-pressed',S.reelSt===id);b.addEventListener('click',()=>{S.reelSt=id;store.set('reelst',id);for(const x of w.children)x.setAttribute('aria-pressed',x===b);reelElo()});w.append(b)}})();
 const mondatok=t=>(String(t).match(/[^.!?]+[.!?]+["”“]*|[^.!?]+$/g)||[]).map(x=>x.trim()).filter(Boolean);
@@ -272,7 +277,7 @@ let ELO=null;function reelElo(){if(S.form!=='reel'||!img)return;let cv=$('reelEl
 function reelSorok(){const c=S.cands&&S.cands[S.sel];if(c&&c.reel&&c.reel[S.lang]&&c.reel[S.lang].length)return c.reel[S.lang];
  return mondatok($('txt').value).filter(x=>x.length<=120).slice(0,4)}
 async function reelKeszit(){if(!img){$('reelSt').textContent='Előbb a fotó.';return}
- if(S.zene){try{ACTX=ACTX||new (window.AudioContext||window.webkitAudioContext)();ACTX.resume()}catch(e){}}
+ if(S.zene){hangMod();if(ZAUD){ZAUD.pause();ZAUD=null}try{ACTX=ACTX||new (window.AudioContext||window.webkitAudioContext)();ACTX.resume()}catch(e){}}
  const mt=(S.zene?['video/mp4;codecs=avc1.42E01E,mp4a.40.2','video/mp4;codecs=avc1.42E01E,opus','video/mp4;codecs=avc1,opus','video/mp4;codecs=avc1,mp4a','video/mp4','video/webm;codecs=vp9,opus','video/webm;codecs=vp8,opus','video/webm']:['video/mp4;codecs=avc1.42E01E','video/mp4;codecs=avc1','video/mp4','video/webm;codecs=vp9','video/webm;codecs=vp8','video/webm']).find(m=>window.MediaRecorder&&MediaRecorder.isTypeSupported&&MediaRecorder.isTypeSupported(m));
  const cv=document.createElement('canvas');cv.width=REEL.W;cv.height=REEL.H;const g=cv.getContext('2d');
  if(!mt||!cv.captureStream){$('reelSt').textContent='Ez a böngésző nem tud videót rögzíteni. Próbáld Chrome-ban vagy Safariban.';return}
@@ -286,7 +291,7 @@ async function reelKeszit(){if(!img){$('reelSt').textContent='Előbb a fotó.';r
  await new Promise(res=>{const lep=()=>{const t=(performance.now()-t0)/1000;reelKocka(g,Math.min(t,T),T,kepek,sorok,S.reelSt);$('reelSt').textContent=`Készül a reel… ${Math.min(100,Math.round(t/T*100))}% (maradj ezen a képernyőn)`;if(t<T)requestAnimationFrame(lep);else res()};requestAnimationFrame(lep)});
  await new Promise(r=>setTimeout(r,150));rec.stop();await kesz;stream.getTracks().forEach(x=>x.stop());
  const tipus=mt.split(';')[0],blob=new Blob(ch,{type:tipus});S.reel={blob,ext:tipus.includes('mp4')?'mp4':'webm',T};
- const v=$('reelV');v.src=URL.createObjectURL(blob);v.hidden=false;$('reelA').hidden=false;$('reelB').disabled=false;$('reelB').textContent='Reel újra';
+ const v=$('reelV');v.src=URL.createObjectURL(blob);v.hidden=false;if(S.zene&&zsrc){v.addEventListener('loadedmetadata',()=>{if(v.audioTracks&&v.audioTracks.length===0)$('reelSt').textContent+=' Figyelem: ezen a telefonon a zene nem került a videóba; a Facebookon adj hozzá zenét.'},{once:true})}$('reelA').hidden=false;$('reelB').disabled=false;$('reelB').textContent='Reel újra';
  $('reelSt').textContent=`Kész: ${Math.round(T)} mp, ${(blob.size/1048576).toFixed(1).replace('.',',')} MB, ${S.reel.ext.toUpperCase()}.`+(S.reel.ext==='webm'?' Ez a böngésző WebM-et készít; ha a Facebook nem fogadja, telefonon (Safari, Chrome) MP4 lesz.':'')+' Szöveg a posztba: ugyanaz, mint fent.'}
 $('reelB').addEventListener('click',()=>reelKeszit().catch(e=>{$('reelB').disabled=false;$('reelSt').textContent='A reel nem készült el: '+(e&&e.message||e)}));
 async function reelMent(){if(!S.reel)return;const fn=`akvarell-reel-${S.ts||'poszt'}.${S.reel.ext}`;
