@@ -396,3 +396,11 @@
 - Zeneminta HTML-hanggal (iPhone némítókapcsoló), hangsáv-ellenőrzés a kész videóban.
 - Gyár: fotoposzt_kapu 0 HIBA, 13392 poszt 0 hiba.
 - Péter iránya (AI-javaslat a megvalósításra): a motor ne Akvarell-specifikus legyen. Következő lépés: a tudáscsomag (témák, tények, minták, helyek, beágyazások, márka/logó/színek) külön csomagfájlba kerül, a motor ?csomag= alapján tölti; az Akvarell az első csomag.
+
+## Fotóposzt v16 (2026-11-27)
+- 1. lépés: „Mi van a képen?” – egy sorban a választott téma (fő) és a felismerő tippjei; többet is be lehet jelölni (fő + legfeljebb 2 mellé). A mellé jelölt témák hangulatmondata bekerül a szövegbe, és a közzétételkor a felismerő mindegyikre tanul. A külön felismerő-szövegek eltűntek.
+- Szöveg: a minták napszak szerint szűrve (esti fotóhoz nem jön reggeli minta); a három változat nem ismétli egymás mondatait; azonos szótövű hangulatmondat nem kerül egy posztba kétszer.
+- 4. lépés reelnél a kész videó látszik az előnézetben, a poszt és az első komment alatta.
+- +3 közkincs zene (Smetana: Moldva, Grieg: Anitra tánca, Borodin: Közép-Ázsia pusztáin), 2 új sablon.
+- Felismerő: 135 referencia, 15 hely (új: Duna-part, kilátás, megállóhely, falu). Kihagyásos mérés: 77% első találat, automatikus választásnál 96%.
+- Gyár: fotoposzt_kapu 0 HIBA; 13392 poszt 0 hiba.
