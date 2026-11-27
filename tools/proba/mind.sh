@@ -10,6 +10,7 @@ TZ=Europe/Budapest node tools/proba/ar_teszt.mjs | tail -1 | grep -q ' 0 HIBA' |
 node tools/proba/belepes_teszt.mjs >/dev/null 2>&1 || bukik belepes_teszt
 node tools/proba/access_teszt.mjs >/dev/null 2>&1 || bukik access_teszt
 node tools/proba/utak/fut.mjs >/dev/null 2>&1 || bukik utak
+for h in $(ls hazak | grep -vx akvarell); do bash tools/proba/haz_proba.sh "$h" >/dev/null 2>&1 || bukik "haz_proba:$h"; done   # a többi ház váza a motoron
 M=$(mktemp -d)
 WRANGLER_SEND_METRICS=false CI=1 setsid npx --yes wrangler pages dev . --port 8788 --d1 DB=proba --persist-to "$M" --binding HELYI_KEZELO=igen --binding LEVEL_PROBA=igen --binding OLDAL_URL=http://localhost:8788 >/tmp/wr-mind.log 2>&1 &
 SZ=$!

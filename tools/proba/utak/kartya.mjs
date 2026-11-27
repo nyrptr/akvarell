@@ -47,10 +47,10 @@ ok((await get('/api/kartya/' + b.j.token)).s === 200, 'a kártya leiratkozás ut
 
 // 5. szobánkénti állandó QR-kód: aki a házból igényli, annak egy ottlét jár, és a kezelő látja, melyik szobában (6–8. kérés; a 9. már a 6. pont korlátja)
 const SK = V.szoba_kodok, szobak = Object.keys(SK || {});
-ok(szobak.length >= 2 && szobak.every(id => typeof SK[id] === 'string' && SK[id].length >= 8), 'minden apartmannak van saját kódja', SK);
+ok(szobak.length >= 1 && szobak.every(id => typeof SK[id] === 'string' && SK[id].length >= 8), 'minden apartmannak van saját kódja', SK);
 ok(new Set(Object.values(SK)).size === szobak.length, 'a kódok szobánként különbözők');
 ok(JSON.stringify((await vendegek()).szoba_kodok) === JSON.stringify(SK), 'a kód állandó: újabb lekérésre ugyanaz (nem cserélődik)');
-const [s1, s2] = szobak, kod = SK[s1];
+const [s1, s2 = s1] = szobak, kod = SK[s1];   // egy szobás háznál s2 = s1 (a „másik szoba” lépések ugyanarra a szobára futnak)
 const c = await post('/api/kartya', { nev: 'Próba Cili', email: 'cili@proba.test', haz: kod });
 ok(c.j.ottlet === 1, 'érvényes szobakóddal: 1 ottlét', c.j);
 let Cv = (await vendegek()).vendegek.find(x => x.email === 'cili@proba.test');
@@ -62,7 +62,7 @@ ok(d2.j.mar_van === true && (await get('/api/kartya/' + d.j.token)).j.ottlet ===
 const Dv = (await vendegek()).vendegek.find(x => x.email === 'dora@proba.test');
 ok(JSON.stringify(Dv.szobak) === JSON.stringify([s2]), 'a másik szoba kódjáról kért vendégnél az a szoba látszik', Dv.szobak);
 const uj = await kezelo.post('szoba_kod', { ap: s1 });
-ok(uj.s === 200 && uj.j.szoba_kodok[s1] !== kod && uj.j.szoba_kodok[s2] === SK[s2], 'új kód egy szobának: csak az a kód cserélődik, a többi marad');
+ok(uj.s === 200 && uj.j.szoba_kodok[s1] !== kod && (s2 === s1 || uj.j.szoba_kodok[s2] === SK[s2]), 'új kód egy szobának: csak az a kód cserélődik, a többi marad');
 ok((await kezelo.post('szoba_kod', { ap: 'nincsilyen' })).s === 400, 'ismeretlen apartmanra nem kérhető kód');
 
 // 6. kéréskorlát: egy címről óránként 8 kártyakérés (ez a 9.)

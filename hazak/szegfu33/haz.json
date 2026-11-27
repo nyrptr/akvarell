@@ -1,0 +1,80 @@
+{
+  "_leiras": "VÁZ (scripts/haz_vaz.py): helyőrző értékek – az árak, a cím, az „oldal” szövegei és a hosszú hétvégék a ház saját adatai szerint töltendők. Nem éles.",
+  "azonosito": "sze",
+  "nev": "Szegfű33",
+  "teljes_nev": "Szegfű33 vendégház",
+  "hely": "Zebegény",
+  "cim": "[VÁZ] cím",
+  "regi_oldal": "",
+  "kepek": {
+    "hero": "vaz.jpg",
+    "kilatas": "vaz.jpg",
+    "jakuzzi": "vaz.jpg"
+  },
+  "taj": {
+    "_leiras": "A ház környezete (táj-réteg): hová esik a ház, melyik vízmérce és időjárás-pont tartozik hozzá. A motor ezt olvassa; a táj tartalma (látnivalók, ajánlók, térkép) a hazak/<ház>/tartalom/ mappában él.",
+    "lat": 47.8,
+    "lon": 18.91,
+    "merce": "Nagymaros",
+    "merce_kulcs": "nagymaros",
+    "felvizi_merce": "Esztergom",
+    "felvizi_kulcs": "esztergom",
+    "api": "/api/taj",
+    "idozona": "Europe/Budapest"
+  },
+  "arcsoportok": [
+    {
+      "id": "egy",
+      "cim": "Szegfű33"
+    }
+  ],
+  "ar": {
+    "gyerek_ejszakankent": 15000,
+    "egy_ejszakas_felar": 20000,
+    "hosszu_tartozkodas": {
+      "min_ejszaka": 7,
+      "kedvezmeny_szazalek": 5
+    },
+    "ifa_fo_ejszakankent": 750,
+    "hosszu_hetvegek": [],
+    "kiemelt": {
+      "_leiras": "Kiemelt (hétvégi) éjszaka: ezeken a hétnapokon (0=vasárnap … 6=szombat), ezekben a hónapokban (1–12), december N. napjától, a húsvéthoz képest [tol, ig] napon belül, és a pünkösdi napokon (húsvét + N nap).",
+      "hetnapok": [
+        5,
+        6
+      ],
+      "honapok": [
+        6,
+        7,
+        8
+      ],
+      "december_ettol": 24,
+      "husvet_tol": -2,
+      "husvet_ig": 0,
+      "punkosd_napok": [
+        48,
+        49
+      ]
+    }
+  },
+  "oldal": {
+    "alap_url": "https://vaz.invalid",
+    "cim": "Szegfű33 vendégház – Zebegény",
+    "leiras": "[VÁZ]",
+    "og_cim": "Szegfű33 vendégház",
+    "og_leiras": "[VÁZ]",
+    "logo_szo": "Szegfű33",
+    "kezelo_cim": "Szegfű33 – kezelő",
+    "jsonld": {
+      "@context": "https://schema.org",
+      "@type": "LodgingBusiness",
+      "name": "Szegfű33 vendégház",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Zebegény",
+        "addressCountry": "HU"
+      }
+    }
+  },
+  "kepmappa": "/hazak/szegfu33/kepek/"
+}

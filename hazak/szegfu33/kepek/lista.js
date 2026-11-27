@@ -1,0 +1,1 @@
+window.HELYI_KEPEK = {};

@@ -47,4 +47,7 @@ for ut, tart in ki.items():
     if '--ellenoriz' in sys.argv:
         if not os.path.exists(p) or open(p, encoding='utf-8').read() != tart: print('ELAVULT', ut); rossz = 1
     else: open(p, 'w', encoding='utf-8').write(tart); print('írva', ut)
+# a kezdő adatbázis-töltés (functions/_kozos/telepit.js) ugyanabból a házból
+import subprocess
+rossz |= subprocess.call([sys.executable, os.path.join(gy, 'scripts', 'telepit_gen.py'), haz] + (['--ellenoriz'] if '--ellenoriz' in sys.argv else []), cwd=gy, stdout=subprocess.DEVNULL if '--ellenoriz' not in sys.argv else None) != 0
 sys.exit(rossz)

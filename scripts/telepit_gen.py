@@ -5,7 +5,7 @@ def st(p):
     s=re.sub(r'--[^\n]*','',s)
     return [x.strip() for x in s.split(';\n') if x.strip()]
 sema=st('db/schema.sql'); seed=st('hazak/'+haz+'/db/seed.sql')
-open('functions/_kozos/telepit.js','w').write(
+S = (
 "// GENERÁLT a db/schema.sql és a hazak/<ház>/db/seed.sql fájlokból (scripts/telepit_gen.py). Kézzel ne szerkeszd.\n"
 "// Első indításkor, ha az adatbázis üres, létrehozza a táblákat és betölti a kezdő tartalmat.\n"
 f"const SEMA = {json.dumps(sema, ensure_ascii=False)};\n"
@@ -19,4 +19,7 @@ f"const SEED = {json.dumps(seed, ensure_ascii=False)};\n"
 "  if (!n.n) await db.batch(SEED.map(s => db.prepare(s)));\n"
 "  kesz = true;\n"
 "}\n")
-print(len(sema),len(seed))
+if '--ellenoriz' in sys.argv:
+    if (open('functions/_kozos/telepit.js').read() if os.path.exists('functions/_kozos/telepit.js') else '') != S: print('ELAVULT: functions/_kozos/telepit.js (python3 scripts/telepit_gen.py ' + haz + ')'); sys.exit(1)
+else:
+    open('functions/_kozos/telepit.js','w').write(S); print(len(sema),len(seed))
