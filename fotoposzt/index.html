@@ -33,6 +33,7 @@ h2{font-size:17px;margin:24px 0 8px}
 .meta{font-size:14px;color:var(--mute);margin-top:6px}
 .row{display:flex;flex-wrap:wrap;gap:8px}
 .chip{min-height:44px;padding:0 14px;border-radius:22px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:600 15px Figtree,sans-serif;cursor:pointer}
+.fotok{display:flex;gap:8px;overflow-x:auto;padding:8px 0}.fotok .fk{position:relative;flex:0 0 auto}.fotok img{width:76px;height:76px;object-fit:cover;border-radius:10px;display:block;border:2px solid transparent}.fotok .fk.b img{border-color:var(--deep)}.fotok .fk span{position:absolute;left:4px;bottom:4px;background:rgba(0,0,0,.6);color:#fff;font:600 11px Figtree,sans-serif;padding:1px 6px;border-radius:8px}.fotok .fk button{position:absolute;top:2px;right:2px;width:26px;height:26px;border-radius:13px;border:0;background:rgba(0,0,0,.6);color:#fff;font:600 14px sans-serif;cursor:pointer}.albumw{display:flex;gap:8px;overflow-x:auto;padding:6px 0}.albumw img{height:200px;border-radius:8px;flex:0 0 auto}
 .chip[aria-pressed=true]{background:var(--deep);color:var(--bg);border-color:var(--deep)}
 label.f{display:block;font-weight:600;font-size:14px;margin:14px 0 6px}
 select,input[type=text],textarea{width:100%;font:16px/1.45 Figtree,sans-serif;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-height:44px}
@@ -110,8 +111,10 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 <nav class="lepsor" id="lepsor" aria-label="Lépések"><button data-n="1" aria-current="step">1 Fotó</button><button data-n="2">2 Szöveg</button><button data-n="3">3 Kép</button><button data-n="4">4 Közzététel</button></nav>
 
 <section class="lepes" data-l="1">
-<label class="drop" id="drop"><input id="file" type="file" accept="image/*" aria-label="Fotó készítése vagy kiválasztása"><img id="prev" alt="" hidden><span class="hint"><b>Fotózz vagy válassz képet</b><span>Telefonon a „Fotó készítése” is megjelenik.</span></span></label>
+<label class="drop" id="drop"><input id="file" type="file" accept="image/*" multiple aria-label="Fotók készítése vagy kiválasztása"><img id="prev" alt="" hidden><span class="hint"><b>Fotózz vagy válassz képeket</b><span>Egy vagy több fotó (legfeljebb 20). Az első a borító.</span></span></label>
 <div class="meta" id="meta"></div>
+<div id="fotokw" hidden><div class="fotok" id="fotok"></div><p class="note" id="fotokT"></p></div>
+<label class="chip" for="fileAdd" id="fileAddL" hidden style="display:inline-flex;align-items:center;cursor:pointer;margin-top:6px">+ Még fotó<input id="fileAdd" type="file" accept="image/*" multiple hidden></label>
 <div class="note" id="felisT"></div><div class="row" id="felisJ"></div>
 <div class="osz" id="osz" hidden></div>
 <div class="status" id="st1" role="status"></div>
@@ -121,7 +124,7 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 <label class="f" for="ujEn">angolul (ha más)</label><input id="ujEn" type="text"><label class="f" for="ujDe">németül (ha más)</label><input id="ujDe" type="text">
 <label id="ujHelyL"><input type="checkbox" id="ujHely" checked> Jegyezd meg a helyét is (ahol ez a fotó készült)</label>
 <button class="btn sec full" id="ujB">Téma hozzáadása</button><div class="status" id="ujSt"></div><div class="row" id="sajatL" style="margin-top:8px"></div></div>
-<div id="hidw" hidden><label class="f">Melyik vasúti híd vagy átjáró?</label><div class="row" id="hidR"></div></div>
+<div id="hidw" hidden><label class="f">Melyik vasúti híd vagy aluljáró?</label><div class="row" id="hidR"></div></div>
 <div id="aptw" hidden><label class="f" for="apt">Melyik apartman?</label>
 <select id="apt"><option value="">Nem tudom / mindegy</option><option value="amrita">Amrita (földszint, nagy terasz)</option><option value="szonyi">Szőnyi (emelet)</option><option value="bereny">Berény</option><option value="karpathy">Kárpáthy</option></select></div>
 <div class="note" id="naptarT" role="status"></div>
@@ -168,13 +171,26 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 
 <section class="lepes" data-l="3" hidden>
 <h2 style="margin-top:4px">Formátum</h2>
-<div class="row" id="formw"><button class="chip" data-v="feed" aria-pressed="true">Feed 4:5 (ajánlott)</button><button class="chip" data-v="negyzet" aria-pressed="false">Négyzet 1:1</button><button class="chip" data-v="story" aria-pressed="false">Story 9:16</button></div>
+<div class="row" id="formw"><button class="chip" data-v="feed" aria-pressed="true">Feed 4:5 (ajánlott)</button><button class="chip" data-v="negyzet" aria-pressed="false">Négyzet 1:1</button><button class="chip" data-v="story" aria-pressed="false">Story 9:16</button><button class="chip" data-v="reel" aria-pressed="false">Reel (videó)</button></div>
 <p class="note">A felirat és a logó mindig a biztonsági sávon belül marad, így nem vágja le a Facebook, és a Story gombjai sem takarják.</p>
+<div id="kepPanel">
+<div id="elrw" hidden><h2>Elrendezés</h2><div class="row" id="elrR"><button class="chip" data-v="album" aria-pressed="true">Album (minden fotó külön)</button><button class="chip" data-v="kollazs" aria-pressed="false">Kollázs (egy képen)</button></div>
+<p class="note" id="elrT"></p></div>
 <h2>Válassz kinézetet</h2>
 <div class="stilusok" id="stilusok"></div>
 <div class="nagy" id="miniw" hidden><img id="mini" alt="A kész kép"><p class="note" id="miniT"></p></div>
 <div class="row" style="margin-top:8px"><label class="chip" for="logo" style="display:inline-flex;align-items:center;cursor:pointer">Saját logó feltöltése<input id="logo" type="file" accept="image/png,image/jpeg,image/webp" hidden></label><button class="chip" id="logoDel" hidden>Logó törlése</button></div>
 <p class="note" id="logoSt">Logó nélkül a felirat szövege kerül a képre.</p>
+<div class="albumw" id="albumw" hidden></div>
+</div>
+<div id="reelPanel" hidden><h2>Reel (rövid videó a fotókból)</h2>
+<p class="note">A telefonon készül, internet és AI nélkül: a fotók egymás után, mozgással, a szöveg mondatonként, a végén az Akvarell felirat. Zenét a Facebookon adj hozzá a saját zenetárából: az jogtiszta.</p>
+<label class="f">Keret</label><div class="row" id="reelw"></div>
+<label class="f">Mozgás</label><div class="row" id="animw"></div>
+<button class="btn full" id="reelB" style="margin-top:8px">Reel készítése</button>
+<div class="status" id="reelSt" role="status"></div>
+<video id="reelV" controls playsinline muted hidden style="width:100%;max-width:360px;border-radius:12px;margin-top:8px;display:block"></video>
+<div class="acts" id="reelA" hidden><button class="btn" id="reelSh">Videó megosztása</button><button class="btn sec" id="reelDl">Videó mentése</button></div></div>
 <button class="btn full" id="t4">Tovább: közzététel</button>
 </section>
 
@@ -203,14 +219,7 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 <h2>Képleírás (alt szöveg)</h2>
 <p class="note">A Facebookon a fotónál a „Helyettesítő szöveg” mezőbe. A gyengénlátók képernyőolvasója ezt olvassa fel.</p>
 <div class="row"><input id="alt" type="text" aria-label="Képleírás" style="flex:1"><button class="chip" id="cpA">Másolás</button></div>
-<h2>Reel (rövid videó a fotóból)</h2>
-<p class="note">A telefonon készül, internet és AI nélkül: lassú ráközelítés, a szöveg mondatonként, a végén az Akvarell felirat. Zenét a Facebookon adj hozzá a saját zenetárából: az jogtiszta.</p>
-<div class="row" id="reelw"></div>
-<div class="row" style="margin-top:8px"><label class="chip" for="reelF" style="display:inline-flex;align-items:center;cursor:pointer">+ További fotók a reelbe<input id="reelF" type="file" accept="image/*" multiple hidden></label><button class="chip" id="reelFDel" hidden>Továbbiak törlése</button></div>
-<button class="btn full" id="reelB" style="margin-top:8px">Reel készítése</button>
-<div class="status" id="reelSt" role="status"></div>
-<video id="reelV" controls playsinline muted hidden style="width:100%;max-width:360px;border-radius:12px;margin-top:8px;display:block"></video>
-<div class="acts" id="reelA" hidden><button class="btn" id="reelSh">Videó megosztása</button><button class="btn sec" id="reelDl">Videó mentése</button></div>
+
 <h2>Közzététel (te csinálod, 1 perc)</h2>
 <ol class="how">
 <li>Szöveg másolása, majd „Kép megosztása” → Facebook (vagy mentsd a képet).</li>
@@ -482,10 +491,11 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 },
 {
 "id": "vasut",
-"nev": "Hétlyukú völgyhíd",
-"en": "Seven-arch viaduct",
-"de": "Siebenbogiges Viadukt",
+"nev": "Hétlyukú híd",
+"en": "Seven-Arch Bridge",
+"de": "Siebenbogenbrücke",
 "alias": [
+"hét-híd",
 "hétlyukú híd",
 "híd",
 "vasút",
@@ -494,9 +504,9 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 "völgyhíd"
 ],
 "cim": {
-"hu": "A hétlyukú vasúti völgyhíd",
-"en": "The seven-arch railway viaduct",
-"de": "Das siebenbogige Eisenbahnviadukt"
+"hu": "A Hétlyukú híd",
+"en": "The Seven-Arch Bridge",
+"de": "Die Siebenbogenbrücke"
 }
 },
 {
@@ -584,51 +594,52 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 },
 {
 "id": "foatjaro",
-"nev": "Vasúti átjáró (főbejárat)",
-"en": "Railway underpass",
-"de": "Bahnunterführung",
+"nev": "Petőfi téri aluljáró",
+"en": "Petőfi tér underpass",
+"de": "Unterführung am Petőfi tér",
 "alias": [
 "aluljáró",
-"főbejárat",
-"vasúti átjáró",
-"vasúti híd a főtér felé",
-"főtér"
+"petőfi tér",
+"vasúti aluljáró",
+"megállóhely"
 ],
 "cim": {
-"hu": "Zebegény főbejárata",
-"en": "The main way into Zebegény",
-"de": "Der Haupteingang von Zebegény"
+"hu": "A Petőfi téri aluljáró",
+"en": "The underpass at Petőfi tér",
+"de": "Die Unterführung am Petőfi tér"
 }
 },
 {
 "id": "naphegy",
-"nev": "Átjáró a Naphegy felé",
+"nev": "Aluljáró a Naphegy felé",
 "en": "Underpass to Naphegy",
-"de": "Durchgang zum Naphegy",
+"de": "Unterführung zum Naphegy",
 "alias": [
 "naphegy",
-"naphegyi átjáró",
-"jánoshegy"
+"jánoshegy",
+"jánoshegy-naphegy"
 ],
 "cim": {
-"hu": "Zebegény, Naphegy",
-"en": "Zebegény, Naphegy",
-"de": "Zebegény, Naphegy"
+"hu": "Aluljáró a Naphegy felé",
+"en": "Underpass towards Naphegy",
+"de": "Unterführung zum Naphegy"
 }
 },
 {
 "id": "ujvolgy",
-"nev": "Vasúti híd az Újvölgy felé",
-"en": "Railway bridge to Újvölgy",
-"de": "Bahnbrücke zum Újvölgy",
+"nev": "Vasúti híd az Ország út fölött",
+"en": "Railway bridge over Ország út",
+"de": "Bahnbrücke über die Ország út",
 "alias": [
 "újvölgy",
-"újvölgyi híd"
+"ország út",
+"északi vasúti híd",
+"12-es főút"
 ],
 "cim": {
-"hu": "Zebegény, Újvölgy",
-"en": "Zebegény, Újvölgy",
-"de": "Zebegény, Újvölgy"
+"hu": "Vasúti híd az Ország út fölött",
+"en": "Railway bridge over Ország út",
+"de": "Bahnbrücke über die Ország út"
 }
 }
 ],
@@ -1049,37 +1060,37 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 {
 "id": "fo-n1",
 "t": "foatjaro",
-"hu": "A falu kapuja a vasút alatt.",
-"en": "The village gate, under the railway.",
-"de": "Das Tor des Dorfes, unter der Bahn."
+"hu": "A Petőfi téri aluljáró.",
+"en": "The underpass at Petőfi tér.",
+"de": "Die Unterführung am Petőfi tér."
 },
 {
 "id": "fo-n2",
 "t": "foatjaro",
-"hu": "Itt lép be mindenki Zebegénybe.",
-"en": "This is where everyone steps into Zebegény.",
-"de": "Hier betritt jeder Zebegény."
+"hu": "Pár lépés a vasút alatt, és már a falu közepén vagy.",
+"en": "A few steps under the railway, and you are in the middle of the village.",
+"de": "Ein paar Schritte unter der Bahn, und du bist mitten im Dorf."
 },
 {
 "id": "nap-n1",
 "t": "naphegy",
-"hu": "Egy kis átjáró a vasút alatt, a Naphegy felé.",
-"en": "A small passage under the railway, towards Naphegy.",
-"de": "Ein kleiner Durchgang unter der Bahn, Richtung Naphegy."
+"hu": "Egy kis aluljáró a vasút alatt, a Naphegy felé.",
+"en": "A small underpass beneath the railway, towards Naphegy.",
+"de": "Eine kleine Unterführung unter der Bahn, Richtung Naphegy."
 },
 {
 "id": "ujv-n1",
 "t": "ujvolgy",
-"hu": "Vasúti híd az Újvölgy felé.",
-"en": "A railway bridge towards Újvölgy.",
-"de": "Eine Bahnbrücke Richtung Újvölgy."
+"hu": "Vasúti híd az Ország út fölött.",
+"en": "A railway bridge over Ország út.",
+"de": "Eine Bahnbrücke über die Ország út."
 },
 {
 "id": "v-n7",
 "t": "vasut",
-"hu": "A hétlyukú völgyhíd.",
-"en": "The seven-arch viaduct.",
-"de": "Das siebenbogige Viadukt."
+"hu": "A Hétlyukú híd.",
+"en": "The Seven-Arch Bridge.",
+"de": "Die Siebenbogenbrücke."
 }
 ],
 "hangulat": {
@@ -1599,61 +1610,70 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 "naphegy",
 "ujvolgy"
 ],
-"forras": "Péter (helyi tudás)",
+"forras": "OpenStreetMap (© OpenStreetMap közreműködők)",
 "hu": "Zebegényben több vasúti híd és átjáró is van.",
 "en": "Zebegény has several railway bridges and underpasses.",
 "de": "In Zebegény gibt es mehrere Bahnbrücken und Durchgänge."
 },
 {
-"id": "x-hetlyuk",
+"id": "x-het1",
 "t": [
 "vasut"
 ],
-"forras": "Péter (helyi tudás)",
-"hu": "A völgyhidat hét boltíve miatt hívják hétlyukú hídnak.",
-"en": "The viaduct is called the seven-hole bridge because of its seven arches.",
-"de": "Wegen seiner sieben Bögen nennt man das Viadukt die Sieben-Loch-Brücke."
+"forras": "Wikipedia (Zebegény)",
+"hu": "A Hétlyukú híd 1850-ben épült.",
+"en": "The Seven-Arch Bridge was built in 1850.",
+"de": "Die Siebenbogenbrücke wurde 1850 gebaut."
 },
 {
-"id": "x-fo1",
+"id": "x-het2",
+"t": [
+"vasut"
+],
+"forras": "OpenStreetMap (© OpenStreetMap közreműködők)",
+"hu": "Nevét hét boltívéről kapta.",
+"en": "It is named after its seven arches.",
+"de": "Ihren Namen hat sie von ihren sieben Bögen."
+},
+{
+"id": "x-pt1",
 "t": [
 "foatjaro"
 ],
-"forras": "Péter (helyi tudás)",
-"hu": "Ez a falu főbejárata: a Duna-parti lejárattal szemben a vasút alatt átbújva egyenesen a Főtér felé visz az út.",
-"en": "This is the village's main entrance: opposite the way down to the Danube, the road ducks under the railway and leads straight to the Main Square.",
-"de": "Das ist der Haupteingang des Dorfes: gegenüber dem Weg zur Donau führt die Straße unter der Bahn hindurch direkt zum Hauptplatz."
+"forras": "OpenStreetMap (© OpenStreetMap közreműködők); Wikipedia (Zebegény megállóhely)",
+"hu": "A Petőfi téri aluljáró a vasút alatt vezet át, közvetlenül a falu központjában álló vasúti megállóhely mellett.",
+"en": "The Petőfi tér underpass leads under the railway, right next to the train stop in the centre of the village.",
+"de": "Die Unterführung am Petőfi tér führt unter der Bahn hindurch, direkt neben der Haltestelle im Dorfzentrum."
 },
 {
-"id": "x-fo2",
-"t": [
-"foatjaro",
-"templom"
-],
-"forras": "Péter (helyi tudás)",
-"hu": "Az út végén a templom áll.",
-"en": "At the end of the road stands the church.",
-"de": "Am Ende der Straße steht die Kirche."
-},
-{
-"id": "x-nap1",
+"id": "x-nh1",
 "t": [
 "naphegy"
 ],
-"forras": "Péter (helyi tudás)",
-"hu": "Egy kisebb vasúti átjáró a Naphegy felé vezet.",
-"en": "A smaller railway underpass leads towards Naphegy.",
-"de": "Ein kleinerer Bahndurchgang führt zum Naphegy."
+"forras": "OpenStreetMap (© OpenStreetMap közreműködők)",
+"hu": "Az aluljáró a vasút alatt a Jánoshegy-Naphegy utca felé vezet.",
+"en": "The underpass leads under the railway towards Jánoshegy-Naphegy street.",
+"de": "Die Unterführung führt unter der Bahn zur Straße Jánoshegy-Naphegy."
 },
 {
-"id": "x-ujv1",
+"id": "x-ou1",
 "t": [
 "ujvolgy"
 ],
-"forras": "Péter (helyi tudás)",
-"hu": "Az Újvölgy felé egy másik vasúti híd vezet.",
-"en": "Another railway bridge leads towards Újvölgy.",
-"de": "Eine weitere Bahnbrücke führt zum Újvölgy."
+"forras": "OpenStreetMap (© OpenStreetMap közreműködők); Fortepan",
+"hu": "Ez a vasúti híd a 12-es főút, az Ország út fölött vezet át.",
+"en": "This railway bridge crosses over main road 12, Ország út.",
+"de": "Diese Bahnbrücke führt über die Hauptstraße 12, die Ország út."
+},
+{
+"id": "x-ou2",
+"t": [
+"ujvolgy"
+],
+"forras": "Fortepan (1941)",
+"hu": "Egy 1941-es fotó is megörökítette.",
+"en": "A photo from 1941 also captured it.",
+"de": "Auch ein Foto von 1941 hat sie festgehalten."
 }
 ],
 "zaro": [
@@ -2590,52 +2610,52 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 "forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
 },
 {
-"id": "m11-fo1",
+"id": "m12-pt1",
 "tema": "foatjaro",
-"hu": "A falu kapuja a vasút alatt. A Duna-parti lejárattal szemben bújik át az út, és egyenesen a Főtér felé visz. Az út végén a templom vár.",
-"en": "The village gate, under the railway. Opposite the way down to the Danube, the road ducks through and leads straight to the Main Square. At the end of the road, the church is waiting.",
-"de": "Das Tor des Dorfes, unter der Bahn. Gegenüber dem Weg zur Donau schlüpft die Straße hindurch und führt direkt zum Hauptplatz. Am Ende der Straße wartet die Kirche.",
-"forras": "AI-vázlat (Claude), Péter helyi leírásából; Péter jóváhagyására vár"
+"hu": "A Petőfi téri aluljáró. Pár lépés a vasút alatt, és már a falu közepén vagy. A sötét boltív mögött már látszik a falu napfénye.",
+"en": "The underpass at Petőfi tér. A few steps under the railway, and you are in the middle of the village. Beyond the dark arch, the sunlight of the village already shows.",
+"de": "Die Unterführung am Petőfi tér. Ein paar Schritte unter der Bahn, und du bist mitten im Dorf. Hinter dem dunklen Bogen zeigt sich schon das Sonnenlicht des Dorfes.",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
 },
 {
-"id": "m11-fo2",
+"id": "m12-pt2",
 "tema": "foatjaro",
-"hu": "Itt lép be mindenki Zebegénybe. A sötét boltív mögött már látszik a falu napfénye. Pár lépés, és a zaj helyén csend lesz.",
-"en": "This is where everyone steps into Zebegény. Beyond the dark arch, the sunlight of the village already shows. A few steps, and the noise gives way to quiet.",
-"de": "Hier betritt jeder Zebegény. Hinter dem dunklen Bogen zeigt sich schon das Sonnenlicht des Dorfes. Ein paar Schritte, und der Lärm weicht der Stille.",
-"forras": "AI-vázlat (Claude), Péter helyi leírásából; Péter jóváhagyására vár"
+"hu": "Aki vonattal jön, itt bújik át először a vasút alatt. Az aluljáró a megállóhely mellett van, a falu központjában. Pár lépés, és a zaj helyén csend lesz.",
+"en": "Anyone arriving by train first passes under the railway here. The underpass is next to the train stop, in the centre of the village. A few steps, and the noise gives way to quiet.",
+"de": "Wer mit dem Zug kommt, geht hier zuerst unter der Bahn hindurch. Die Unterführung liegt neben der Haltestelle, im Dorfzentrum. Ein paar Schritte, und der Lärm weicht der Stille.",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
 },
 {
-"id": "m11-fo3",
-"tema": "foatjaro",
-"hu": "Zebegényben több vasúti híd és átjáró is van, de ez a főbejárat. Innen egyenesen a Főtér és a templom felé visz az út. Nálatok melyik a falu kapuja?",
-"en": "Zebegény has several railway bridges and underpasses, but this is the main entrance. From here the road leads straight to the Main Square and the church. Which is the gate of your village?",
-"de": "In Zebegény gibt es mehrere Bahnbrücken und Durchgänge, aber das ist der Haupteingang. Von hier führt die Straße direkt zum Hauptplatz und zur Kirche. Welches ist das Tor eures Dorfes?",
-"forras": "AI-vázlat (Claude), Péter helyi leírásából; Péter jóváhagyására vár"
-},
-{
-"id": "m11-v1",
+"id": "m12-v1",
 "tema": "vasut",
-"hu": "A hétlyukú völgyhíd. Hét boltív, fölötte a vonat, alatta a völgy. Már egy 1910-es képeslapon is szerepel.",
-"en": "The seven-arch viaduct. Seven arches, the train above, the valley below. It already appears on a postcard from 1910.",
-"de": "Das siebenbogige Viadukt. Sieben Bögen, oben der Zug, unten das Tal. Es ist schon auf einer Postkarte von 1910 zu sehen.",
-"forras": "AI-vázlat (Claude), Péter helyi leírásából; Péter jóváhagyására vár"
+"hu": "A Hétlyukú híd 1850-ben épült. Nevét hét boltívéről kapta. Már egy 1910-es képeslapon is szerepel.",
+"en": "The Seven-Arch Bridge was built in 1850. It is named after its seven arches. It already appears on a postcard from 1910.",
+"de": "Die Siebenbogenbrücke wurde 1850 gebaut. Ihren Namen hat sie von ihren sieben Bögen. Sie ist schon auf einer Postkarte von 1910 zu sehen.",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
 },
 {
-"id": "m11-nap1",
+"id": "m12-v2",
+"tema": "vasut",
+"hu": "Hét boltív, fölötte a vonat, alatta a völgy. A Hétlyukú híd 1850 óta áll itt. Te vonattal jönnél legközelebb?",
+"en": "Seven arches, the train above, the valley below. The Seven-Arch Bridge has stood here since 1850. Would you come by train next time?",
+"de": "Sieben Bögen, oben der Zug, unten das Tal. Die Siebenbogenbrücke steht hier seit 1850. Würdest du das nächste Mal mit dem Zug kommen?",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
+},
+{
+"id": "m12-nh1",
 "tema": "naphegy",
-"hu": "Egy kis átjáró a vasút alatt, a Naphegy felé. Innen kanyargó utcák visznek fölfelé a házak közé. Érdemes lassan sétálni.",
-"en": "A small passage under the railway, towards Naphegy. From here, winding streets lead up among the houses. It is worth walking slowly.",
-"de": "Ein kleiner Durchgang unter der Bahn, Richtung Naphegy. Von hier führen gewundene Straßen hinauf zwischen die Häuser. Es lohnt sich, langsam zu gehen.",
-"forras": "AI-vázlat (Claude), Péter helyi leírásából; Péter jóváhagyására vár"
+"hu": "Egy kis aluljáró a vasút alatt, a Naphegy felé. Innen kanyargó utcák visznek fölfelé a házak közé. Érdemes lassan sétálni.",
+"en": "A small underpass beneath the railway, towards Naphegy. From here, winding streets lead up among the houses. It is worth walking slowly.",
+"de": "Eine kleine Unterführung unter der Bahn, Richtung Naphegy. Von hier führen gewundene Straßen hinauf zwischen die Häuser. Es lohnt sich, langsam zu gehen.",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
 },
 {
-"id": "m11-ujv1",
+"id": "m12-ou1",
 "tema": "ujvolgy",
-"hu": "Vasúti híd az Újvölgy felé. A völgy felé csendesebb lesz minden. Egy jó séta végén itt is megállunk egy percre.",
-"en": "A railway bridge towards Újvölgy. Towards the valley, everything grows quieter. At the end of a good walk, we stop here for a minute too.",
-"de": "Eine Bahnbrücke Richtung Újvölgy. Zum Tal hin wird alles stiller. Am Ende eines guten Spaziergangs halten wir auch hier kurz an.",
-"forras": "AI-vázlat (Claude), Péter helyi leírásából; Péter jóváhagyására vár"
+"hu": "Vasúti híd az Ország út fölött. Egy 1941-es fotó is megörökítette. Azóta is ugyanígy fut át rajta a vonat.",
+"en": "A railway bridge over Ország út. A photo from 1941 also captured it. Trains still cross it the same way today.",
+"de": "Eine Bahnbrücke über die Ország út. Auch ein Foto von 1941 hat sie festgehalten. Bis heute fahren die Züge auf die gleiche Weise darüber.",
+"forras": "AI-vázlat (Claude), forrásolt tényekből; Péter jóváhagyására vár"
 }
 ],
 "helyek": {
@@ -2686,6 +2706,22 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 "svab": [
 47.8013192,
 18.9090191
+],
+"vasut": [
+47.796489,
+18.910882
+],
+"foatjaro": [
+47.80063,
+18.90905
+],
+"naphegy": [
+47.79323,
+18.9111
+],
+"ujvolgy": [
+47.807467,
+18.902639
 ]
 },
 "helyek_forras": "© OpenStreetMap közreműködők (ODbL)",
@@ -3030,7 +3066,99 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 "en": "Towards the valley, everything grows quieter.",
 "de": "Zum Tal hin wird alles stiller."
 }
-]
+],
+"seta": {
+"templom": {
+"hu": "A templomot Kós Károly és Jánszky Béla tervezte.",
+"en": "The church was designed by Károly Kós and Béla Jánszky.",
+"de": "Die Kirche entwarfen Károly Kós und Béla Jánszky."
+},
+"vasut": {
+"hu": "A Hétlyukú híd 1850-ben épült.",
+"en": "The Seven-Arch Bridge was built in 1850.",
+"de": "Die Siebenbogenbrücke wurde 1850 gebaut."
+},
+"szonyi": {
+"hu": "Szőnyi István egykori háza 1967 óta emlékmúzeum.",
+"en": "István Szőnyi's former home has been a memorial museum since 1967.",
+"de": "István Szőnyis ehemaliges Haus ist seit 1967 ein Gedenkmuseum."
+},
+"hajozas": {
+"hu": "A hajózástörténeti kiállítás 1984 nyarán nyílt meg.",
+"en": "The shipping history exhibition opened in the summer of 1984.",
+"de": "Die Ausstellung zur Schifffahrtsgeschichte wurde im Sommer 1984 eröffnet."
+},
+"kalvaria": {
+"hu": "A Kálvária-kápolna 1853-ban épült.",
+"en": "The Calvary chapel was built in 1853.",
+"de": "Die Kalvarienkapelle wurde 1853 erbaut."
+},
+"kilato": {
+"hu": "A Kós Károly-kilátót 2015 nyarán avatták fel.",
+"en": "The Károly Kós lookout tower was opened in the summer of 2015.",
+"de": "Der Károly-Kós-Aussichtsturm wurde im Sommer 2015 eingeweiht."
+},
+"orszagzaszlo": {
+"hu": "Az emlékművet Maróti Géza tervezte.",
+"en": "The memorial was designed by Géza Maróti.",
+"de": "Das Denkmal entwarf Géza Maróti."
+},
+"strand": {
+"hu": "A Partifecske-strand 2015 óta engedélyezett fürdőhely.",
+"en": "Partifecske beach has been an approved bathing place since 2015.",
+"de": "Der Partifecske-Strand ist seit 2015 eine zugelassene Badestelle."
+},
+"dory": {
+"hu": "A Dőry-kastély 1917-ben épült.",
+"en": "The Dőry mansion was built in 1917.",
+"de": "Das Dőry-Schloss wurde 1917 gebaut."
+},
+"sarkanydomb": {
+"hu": "A Sárkánydombon rendezték a sárkányeregető fesztivált.",
+"en": "The kite festival was held on Kite Hill.",
+"de": "Auf dem Drachenhügel fand das Drachenfest statt."
+},
+"maroti": {
+"hu": "Maróti Géza 1912-ben kezdett villát építeni Zebegényben.",
+"en": "Géza Maróti began building a villa in Zebegény in 1912.",
+"de": "Géza Maróti begann 1912 in Zebegény eine Villa zu bauen."
+},
+"foatjaro": {
+"hu": "A Petőfi téri aluljáró a vasúti megállóhely mellett van.",
+"en": "The Petőfi tér underpass is next to the train stop.",
+"de": "Die Unterführung am Petőfi tér liegt neben der Haltestelle."
+},
+"ujvolgy": {
+"hu": "Az Ország út fölötti vasúti hidat egy 1941-es fotó is megörökítette.",
+"en": "The railway bridge over Ország út was captured in a photo from 1941.",
+"de": "Die Bahnbrücke über die Ország út wurde auf einem Foto von 1941 festgehalten."
+},
+"hajoallomas": {
+"hu": "A hajóállomás a Pazeller Jakab sétánynál van.",
+"en": "The boat pier is on Pazeller Jakab promenade.",
+"de": "Der Schiffsanleger liegt an der Pazeller-Jakab-Promenade."
+},
+"szikla": {
+"hu": "A Sziklaszentély a Szőnyi István utcában van.",
+"en": "The rock chapel is on Szőnyi István utca.",
+"de": "Die Felskapelle liegt in der Szőnyi-István-Straße."
+},
+"svab": {
+"hu": "A Sváb Gyűjtemény a falu régi életét mutatja be.",
+"en": "The Swabian Collection shows the old life of the village.",
+"de": "Die Schwäbische Sammlung zeigt das alte Leben des Dorfes."
+},
+"falu": {
+"hu": "Zebegény nevét már egy 1295-ös oklevél említi.",
+"en": "Zebegény is already mentioned in a charter from 1295.",
+"de": "Zebegény wird schon in einer Urkunde von 1295 erwähnt."
+},
+"naphegy": {
+"hu": "A Naphegy felé egy kis aluljáró vezet a vasút alatt.",
+"en": "A small underpass leads under the railway towards Naphegy.",
+"de": "Eine kleine Unterführung führt unter der Bahn zum Naphegy."
+}
+}
 }
 </script>
 

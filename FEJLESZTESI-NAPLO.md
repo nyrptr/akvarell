@@ -366,3 +366,11 @@
 ## Fotóposzt v11.1 (2026-11-27)
 - Péter valós próbája: a ChatGPT-ből kimásolt válasz nem volt érvényes JSON („okos” idézőjelek, \[ \], zárójel nélküli reel-lista, üres uj_tenyek). A beolvasás most ezeket megjavítja; Péter válasza mindhárom változattal és reel-sorokkal beolvasódik.
 - A kérés kéri: egyetlen json kódblokk, egyenes idézőjelek.
+
+## Fotóposzt v12 (2026-11-27)
+- Vasúti hidak OSM-ből (Péter saját elnevezése helyett): Hétlyukú híd (1850, Wikipedia), Petőfi téri aluljáró a megállóhely mellett, aluljáró a Jánoshegy-Naphegy utca felé, vasúti híd az Ország út (12-es főút) fölött (Fortepan 1941). Koordinátákkal, GPS-ből felismerhetők.
+- Több fotó (legfeljebb 20, az Instagram-körhinta korlátja): az első a borító, koppintással cserélhető, × törlés, „+ Még fotó”. Fotónként helyfelismerés.
+- Séta-poszt: ha a fotók több helyről valók, „Mai sétánk Zebegényben: …” szöveg, helyenként egy önállóan is érthető ténnyel.
+- 3. lépés: Album (minden fotó külön, azonos arányban) vagy Kollázs (Rács, Polaroidok, Csíkok); Reel formátum a 3. lépésben, élő előnézettel; mozgás: lassú ráközelítés, beúszó, beugró, áttűnés.
+- 4. lépés: több kép megosztása/mentése egyszerre, reelnél a videó.
+- Teszt: 11232 poszt 0 hiba; 3 GPS-es fotóból séta-poszt, album 3 kép, kollázs 3 sablon, reel MP4 a CSP alatt.
