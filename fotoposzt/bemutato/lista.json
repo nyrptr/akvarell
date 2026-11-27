@@ -29,5 +29,24 @@
    "fajl": "duna.jpg",
    "forras": "akvarell_apartmanhaz_zebegeny_szallas_galeria_006-1.jpg"
   }
- }
+ },
+ "klipek": [
+  {
+   "fajl": "klip-haz.mp4",
+   "cim": "Kint, távolról"
+  },
+  {
+   "fajl": "klip-kilatas.mp4",
+   "cim": "Kint, közelebb"
+  },
+  {
+   "fajl": "klip-apartman.mp4",
+   "cim": "Bent, tágan"
+  },
+  {
+   "fajl": "klip-terasz.mp4",
+   "cim": "Részlet"
+  }
+ ],
+ "klipek_megjegyzes": "BEMUTATÓ klipek: a bemutató fotókból lassú ráközelítéssel (ffmpeg), nem valódi videó."
 }

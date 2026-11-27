@@ -32,8 +32,9 @@
       if (!uj) { el.hidden = true; return; }
       el.hidden = false; el.className = 'bemutato';
       const p = document.createElement('p'); p.textContent = `Frissítés érkezett (bemutató): ${uj.cim}.`; el.append(p);
-      const m = document.createElement('p'); m.textContent = uj.miert; el.append(m);
-      const ul = document.createElement('ul'); for (const v of uj.valtozas || []) { const li = document.createElement('li'); li.textContent = v; ul.append(li); } el.append(ul);
+      const det = document.createElement('details'); const sm = document.createElement('summary'); sm.textContent = 'Mi változik?'; det.append(sm);
+      const m = document.createElement('p'); m.textContent = uj.miert; det.append(m);
+      const ul = document.createElement('ul'); for (const v of uj.valtozas || []) { const li = document.createElement('li'); li.textContent = v; ul.append(li); } det.append(ul); el.append(det);
       const b = document.createElement('button'); b.type = 'button'; b.className = 'btn full'; b.id = 'frissLe'; b.textContent = 'Frissítés letöltése';
       b.addEventListener('click', () => { try { localStorage.setItem(KULCS, JSON.stringify(uj)); } catch (e) {} b.textContent = 'Letöltve – újraindul…'; setTimeout(() => location.reload(), 900); });
       el.append(b);

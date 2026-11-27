@@ -47,7 +47,158 @@
   "cel_szam": {
    "foglalás": "kattintás a foglalásra",
    "érdeklődés": "érdeklődő (üzenet + kattintás)"
-  }
+  },
+  "kampanyok": [
+   {
+    "id": "unnep",
+    "nev": "Kiemelt időszak",
+    "kivalto": "unnep",
+    "lepes": "foglalás",
+    "uzenet": "{alkalom} nálunk: csendes napok, közel a természethez – foglalj időben.",
+    "temak": [
+     "kilatas",
+     "terasz",
+     "apartman",
+     "haz"
+    ],
+    "foto": [
+     "a ház ünnepi hangulatban",
+     "az ablakból a kilátás",
+     "este, lámpafényben"
+    ]
+   },
+   {
+    "id": "res",
+    "nev": "Üres napok",
+    "kivalto": "res",
+    "lepes": "foglalás",
+    "uzenet": "{datum}: még szabad nálunk – egy rövid kiruccanás a hét közepén.",
+    "temak": [
+     "kilatas",
+     "apartman",
+     "jacuzzi"
+    ],
+    "foto": [
+     "a szoba reggeli fényben",
+     "részlet: kávé az ablakban"
+    ]
+   },
+   {
+    "id": "esemeny",
+    "nev": "Helyi esemény",
+    "kivalto": "esemeny",
+    "lepes": "érdeklődés",
+    "uzenet": "{esemeny} – szállás pár perc sétára.",
+    "temak": [
+     "falu",
+     "templom",
+     "kilatas"
+    ],
+    "foto": [
+     "a falu az esemény idején",
+     "az út a háztól az eseményig"
+    ]
+   },
+   {
+    "id": "hetkoznap",
+    "nev": "Hétköznapi pihenő",
+    "kivalto": "mindig",
+    "lepes": "foglalás",
+    "uzenet": "Hétköznap is ki lehet szakadni: csend, kilátás, lassú reggelek.",
+    "temak": [
+     "kilatas",
+     "terasz",
+     "apartman"
+    ],
+    "foto": [
+     "üres terasz reggel",
+     "könyv és tea az ablaknál"
+    ]
+   },
+   {
+    "id": "visszahivas",
+    "nev": "Visszahívás",
+    "kivalto": "mindig",
+    "lepes": "visszatérő vendég",
+    "uzenet": "Akik már jártak nálunk, tudják: más évszakban is érdemes visszajönni.",
+    "temak": [
+     "kilatas",
+     "haz",
+     "duna"
+    ],
+    "foto": [
+     "ugyanaz a nézet ebben az évszakban"
+    ]
+   },
+   {
+    "id": "nyelv",
+    "nev": "Német vendégek",
+    "kivalto": "mindig",
+    "lepes": "ismertség",
+    "uzenet": "A Dunakanyar, egy órára Budapesttől – csendes szállás kilátással.",
+    "nyelvek": [
+     "de"
+    ],
+    "temak": [
+     "duna",
+     "kilatas",
+     "haz"
+    ],
+    "foto": [
+     "a Duna-kanyar a házból"
+    ]
+   }
+  ],
+  "unnepek": [
+   [
+    "01-01",
+    "Újév"
+   ],
+   [
+    "02-14",
+    "Valentin-nap"
+   ],
+   [
+    "03-15",
+    "Március 15."
+   ],
+   [
+    "05-01",
+    "Május 1."
+   ],
+   [
+    "08-20",
+    "Augusztus 20."
+   ],
+   [
+    "10-23",
+    "Október 23."
+   ],
+   [
+    "11-01",
+    "Mindenszentek"
+   ],
+   [
+    "12-24",
+    "Karácsony"
+   ],
+   [
+    "12-31",
+    "Szilveszter"
+   ],
+   [
+    "husvet",
+    "Húsvét"
+   ],
+   [
+    "punkosd",
+    "Pünkösd"
+   ]
+  ],
+  "foglalasi_ablak": [
+   14,
+   90
+  ]
  },
  "tudtad": {
   "hu": "Tudtad?",

@@ -104,10 +104,11 @@
         b.setAttribute('aria-pressed', String(k.id === v.aktiv)); b.addEventListener('click', () => { tar.valaszt(k.id); rajzol(tar.get()); }); w.append(b); }
       el.append(w); }
     const h = document.createElement('h3'); h.textContent = `${terv.nev || 'Kampány'} · ${terv.beall.kinek} · heti ${terv.beall.heti}`; el.append(h);
-    let het = -1;
+    let het = null;
     terv.helyek.forEach((p, i) => {
       const w = Math.floor((new Date(p.datum) - new Date(terv.helyek[0].datum)) / 6048e5);
-      if (w !== het) { het = w; const t = document.createElement('p'); t.className = 'note'; t.textContent = `${w + 1}. hét`; el.append(t); }
+      const fej = p.fazis || `${w + 1}. hét`;
+      if (fej !== het) { het = fej; const t = document.createElement('p'); t.className = p.fazis ? 'fazis' : 'note'; t.textContent = fej; el.append(t); }
       const b = document.createElement('button'); b.type = 'button'; b.className = 'tervsor';
       b.innerHTML = '<b></b><span></span><small></small>';
       b.children[0].textContent = `${p.datum.slice(5).replace('-', '.')} ${p.nap} ${p.ido}`;
@@ -123,13 +124,20 @@
     el.append(ul);
   }
 
+  // Fő fülek (11-27): ma · terv (Kampányok) · kep (Képtár) · ered; a poszt-folyamat (lépések) belőlük nyílik.
   function modValt(mod) {
-    const terv = mod !== 'poszt';
-    $('terv').hidden = mod !== 'terv';
-    if ($('ered')) { $('ered').hidden = mod !== 'ered'; if (mod === 'ered') eredmenyRajzol(); }
-    $('lepsor').hidden = terv;
-    for (const s of document.querySelectorAll('.lepes')) s.hidden = terv ? true : +s.dataset.l !== ((window.__test && window.__test.S && window.__test.S.lep) || 1);
-    for (const b of document.querySelectorAll('#modok button')) b.setAttribute('aria-pressed', String(b.dataset.mod === mod));
+    const poszt = mod === 'poszt';
+    for (const id of ['ma', 'terv', 'kep', 'ered']) if ($(id)) $(id).hidden = mod !== id;
+    if (mod === 'ered') eredmenyRajzol();
+    $('lepsor').hidden = !poszt;
+    if ($('posztVissza')) $('posztVissza').hidden = !poszt;
+    if ($('kesz')) $('kesz').hidden = !poszt;
+    for (const s of document.querySelectorAll('.lepes')) s.hidden = !poszt ? true : +s.dataset.l !== ((window.__test && window.__test.S && window.__test.S.lep) || 1);
+    const fo = poszt ? (window.__elozoMod || 'ma') : mod;
+    for (const b of document.querySelectorAll('#modok button')) b.setAttribute('aria-pressed', String(b.dataset.mod === fo));
+    if (!poszt) window.__elozoMod = mod;
+    try { document.dispatchEvent(new CustomEvent('zseb-mod', { detail: mod })); } catch (e) {}
+    window.scrollTo({ top: 0 });
   }
 
   function indit() {
@@ -142,6 +150,11 @@
       $('tervSt').textContent = 'Új kampány kész. Egy sorra koppintva elkészítheted azt a posztot. A korábbi kampányaid fent választhatók.';
     });
     for (const b of document.querySelectorAll('#modok button')) b.addEventListener('click', () => modValt(b.dataset.mod));
+    if ($('posztVissza')) $('posztVissza').addEventListener('click', () => modValt(window.__elozoMod || 'ma'));
+    // Indulás: ?mod= (teszt, mélylink), különben a Ma; fotó betöltésekor a poszt-folyamat nyílik.
+    const um = new URLSearchParams(location.search).get('mod');
+    modValt(['ma', 'terv', 'kep', 'ered', 'poszt'].includes(um) ? um : 'ma');
+    for (const id of ['file', 'fileAdd']) if ($(id)) $(id).addEventListener('change', () => { if ($('lepsor').hidden) modValt('poszt'); });
     const t = tar.get(); if (t) { Object.assign(allapot, { cel: t.beall.cel, kinek: t.beall.kinek, heti: String(t.beall.heti) });
       chipek('tervCel', SZ.celok || [], 'cel'); chipek('tervKinek', SZ.celcsoportok || [], 'kinek'); chipek('tervHeti', ['2', '3', '5'], 'heti'); rajzol(t); }
     gombFriss();
@@ -167,7 +180,7 @@
       const t = document.querySelector('#temak .chip[aria-pressed=true]'); m.querySelector('span').textContent = t ? 'Téma: ' + t.textContent : 'A fotód'; }
   }
   try { new MutationObserver(miniFriss).observe($('lepsor'), { attributes: true, subtree: true, attributeFilter: ['aria-current', 'hidden'] }); } catch (e) {}
-  window.__terv = { naptar, temaSor, vanAnyag, evszak, modValt, statusz, kamp };
+  window.__terv = { naptar, temaSor, vanAnyag, evszak, modValt, statusz, kamp, tar, rajzol: (t) => rajzol(t), K, SZ };
   // ── Eredmény (BEMUTATÓ): szimulált mérés a teszthez, amíg nincs Meta-bekötés. Minden szám jelölten nem valós.
   // A javaslatokat ugyanaz a program-szabály adja, ami élesben a valódi számokra fut (AI nélkül).
   function mag(s) { let h = 2166136261; for (const c of s) h = Math.imul(h ^ c.charCodeAt(0), 16777619); return () => ((h = Math.imul(h ^ (h >>> 15), 2246822507) >>> 0) % 1000) / 1000; }

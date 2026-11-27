@@ -20,6 +20,7 @@ K=$(python3 tools/proba/kapu.py --url http://localhost:8788 --kepek tmp/kapu 2>&
 F=$(python3 tools/proba/fotoposzt_kapu.py --url http://localhost:8788/fotoposzt/ --foto hazak/akvarell/kepek/Karpathy-apartman-nappali.jpg 2>&1); echo "$F" | tail -3
 echo "$F" | tail -1 | grep -q '^0 HIBA' || bukik fotoposzt_kapu
 T=$(python3 tools/proba/fotoposzt_t29.py http://localhost:8788/fotoposzt/ 2>&1); echo "$T" | tail -1 | grep -q '^0 HIBA' || bukik fotoposzt_tervezo
+T=$(python3 tools/proba/fotoposzt_t32.py http://localhost:8788/fotoposzt/ 2>&1); echo "$T" | tail -1 | grep -q '^0 HIBA' || bukik fotoposzt_negy_ful
 pkill -f "wrangler pages dev" 2>/dev/null; kill "$SZ" 2>/dev/null
 echo "$K" | grep "^HIBA" | grep -vE "api/(zebegeny|taj)" | head -10; echo "$K" | tail -4
 HIB=$(echo "$K" | grep '^HIBA' | grep -vcE 'api/(zebegeny|taj)')

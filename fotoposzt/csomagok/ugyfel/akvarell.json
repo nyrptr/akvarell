@@ -3981,5 +3981,14 @@
    "en": "At Jánoshegy utca, too, a railway bridge spans the road.",
    "de": "Auch an der Jánoshegy utca überspannt eine Bahnbrücke die Straße."
   }
- }
+ },
+ "esemenyek": [
+  {
+   "id": "meseadvent",
+   "nev": "Meseadvent Zebegényben",
+   "tol": "12-01",
+   "ig": "12-24",
+   "forras": "programturizmus.hu (2026)"
+  }
+ ]
 }

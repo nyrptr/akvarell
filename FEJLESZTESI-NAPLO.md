@@ -502,3 +502,12 @@
 - Rejtett hiba közben: a tervezo.js `S`-re hivatkozott, ami az app.js-ben nem globális → Terv/Eredmény után a Poszt mód mindig az 1. lépést mutatta. Most `window.__test.S`.
 - Saját hiba: üres `<img>` a rejtett sávban – a kapu 12 hibát adott, javítva (a kép csak megjelenéskor jön létre).
 - t29 (mini a 2. lépésnél igen, az 1.-nél nem), kapu, t24, t30 0 HIBA.
+
+## 2026-11-27 – ZSEBMARKETING: egységes terv 1. lépés – négy fül, kampánymenedzser, fotós-segéd videó móddal
+- Péter: „Mehet az egységes terv, 1. lépés: négy fül + kampánymenedzser + fotós-segéd (videó móddal)”.
+- Felület: alsó fülsáv – Ma · Kampányok · Képtár · Eredmény; a poszt-folyamat (1–4. lépés) a fülekből nyílik, „‹ Vissza”; indulás a Ma-n (`?mod=` mélylink/teszt; fotó betöltésekor magától a poszt-folyamat). Új kártya-komponensek, címkék, ügyfél-márkaszín kiemelésként; a frissítés-sáv tömörebb („Mi változik?” lenyitva).
+- `fotoposzt/zseb.js` (új): kampánymenedzser – kiváltók: ünnep a foglalási ablakban (14–90 nap, szakma `unnepek`, húsvét/pünkösd számolva), helyi esemény (ügyfél `esemenyek`: Meseadvent), üres napok (BEMUTATÓ foglaltság, `bemutato/foglaltsag.json`); javaslat → brief (miért most, kinek, nyelvek, fő üzenet szerkeszthető, meddig, siker, ráadás = kötelező ügyfél-döntés, fotómód, hirdetés-javaslat, közzétételi mód) → fázisos idővonal (Felvezetés · Fő hét · Utolsó hívás · Utána); kész kampányok a szakmacsomagból (`kampanyok`); a régi 3 kérdés „Saját kampány” alatt.
+- Ma: egy fő teendő (következő esedékes poszt → „Elkészítem” a téma fotójával), fotókérés, haladás, egy javaslat.
+- Képtár: fotólista a kampányból + szakmából, útmutató kártya (bent/kint/részlet szabályok), natív kamera, program-ellenőrzés AI nélkül (tájolás, méret ≥2048×1080, élesség Laplace-szórással, fény/beégés); videó mód: 4 klip (Artam-minta szabályai), klip-ellenőrzés (álló, 2–8 mp), reel a klipekből a telefonon (vászon + MediaRecorder, áttűnés, zárókép logóval). BEMUTATÓ klipek: a bemutató fotókból lassú ráközelítéssel (ffmpeg), jelölve.
+- Tesztek: új `fotoposzt_t32.py` (390 világos + 1280 sötét; Ma, javaslat, brief kötelező ráadás, fázisok, Ma → Elkészítem → poszt → Vissza, Képtár útmutató + 4 pontos ellenőrzés, éles képet élesnek mér, 4 bemutató klip → reel kész, 44 px, kicsúszás, `?mod=poszt`) 0 HIBA Cloudflare-helyin és az artifact-építésen; t24, t25, t27–t31, kapu 0 HIBA (t29 a fülekhez igazítva); mind.sh része.
+- Nem tesztelt: valódi iPhone kamera/videó, MediaRecorder Safari-n (mp4), zene a klip-reelen (következő kör), a „Beállítás” még a poszt-folyamat alján („Extra”).

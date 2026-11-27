@@ -1,0 +1,60 @@
+# Egységes terv 1. lépés (11-27): négy fül, kampánymenedzser (javaslat → brief → fázisos idővonal), Ma kártya,
+# Képtár fotós-segéd (útmutató + program-ellenőrzés), videó mód (bemutató klipek → reel). Képernyőképek: /tmp/t32-*.png
+import asyncio,sys
+from playwright.async_api import async_playwright
+URL=sys.argv[1] if len(sys.argv)>1 else 'http://127.0.0.1:8788/fotoposzt/'
+FOTO='fotoposzt/bemutato/templom.jpg'
+async def main():
+  async with async_playwright() as p:
+    b=await p.chromium.launch(); hib=[]
+    for w,cs in ((390,'light'),(1280,'dark')):
+      pg=await b.new_page(viewport={'width':w,'height':900},color_scheme=cs); err=[]; pg.on('pageerror',lambda e:err.append(str(e)))
+      await pg.goto(URL); await pg.wait_for_timeout(3000)
+      if await pg.is_hidden('#ma') or not await pg.is_hidden('#lepsor'): hib.append(f'{w}: nem a Ma nyílt')
+      if 'Kampányt kérek' not in await pg.inner_text('#maFo'): hib.append(f'{w}: üres Ma-kártya hiányzik')
+      await pg.click('#modok button[data-mod=terv]'); await pg.wait_for_timeout(300)
+      n=await pg.locator('#kampJav .kartya').count()
+      if n<1: hib.append(f'{w}: nincs kampányjavaslat')
+      await pg.screenshot(path=f'/tmp/t32-{w}-kamp.png',full_page=True)
+      await pg.click('#kampJav .kartya >> nth=0 >> text=Megnézem'); await pg.wait_for_timeout(300)
+      if await pg.is_hidden('#brief'): hib.append(f'{w}: brief nem nyílt')
+      await pg.click('#brief >> text=Indítás'); await pg.wait_for_timeout(200)
+      if 'ráadásról' not in await pg.inner_text('#brief'): hib.append(f'{w}: ráadás-döntés nem kötelező')
+      await pg.click('#brief >> text=Semmi'); await pg.click('#brief >> text=Indítás'); await pg.wait_for_timeout(400)
+      t=await pg.text_content('#tervLista')
+      for f in ('Felvezetés','Utolsó hívás','Utána'):
+        if f not in t: hib.append(f'{w}: fázis hiányzik: {f}')
+      await pg.screenshot(path=f'/tmp/t32-{w}-ido.png',full_page=True)
+      await pg.click('#modok button[data-mod=ma]'); await pg.wait_for_timeout(300)
+      if 'Elkészítem' not in await pg.inner_text('#maFo'): hib.append(f'{w}: Ma nem mutat teendőt')
+      await pg.screenshot(path=f'/tmp/t32-{w}-ma.png',full_page=True)
+      await pg.click('#maFo >> text=Elkészítem'); await pg.wait_for_timeout(3500)
+      if await pg.is_hidden('#lepsor') or await pg.is_hidden('#posztVissza'): hib.append(f'{w}: Elkészítem nem nyitotta a poszt-folyamatot')
+      await pg.click('#posztVissza'); await pg.wait_for_timeout(200)
+      if await pg.is_hidden('#ma'): hib.append(f'{w}: Vissza nem a Ma-ra vitt')
+      await pg.click('#modok button[data-mod=kep]'); await pg.wait_for_timeout(300)
+      if await pg.locator('#kepLista .tervsor').count()<2: hib.append(f'{w}: kevés fotókérés')
+      await pg.click('#kepLista .tervsor >> nth=0'); await pg.wait_for_timeout(200)
+      if await pg.locator('#kepSeged li').count()<3: hib.append(f'{w}: nincs útmutató')
+      await pg.set_input_files('#kepFile',FOTO); await pg.wait_for_timeout(1500)
+      if await pg.locator('#kepEll .ell span').count()!=4: hib.append(f'{w}: program-ellenőrzés nem 4 pont')
+      r=await pg.evaluate("()=>new Promise(res=>{const i=new Image();i.onload=()=>res(__zseb.ellenoriz(i));i.src='bemutato/templom.jpg'})")
+      if not r['eles']: hib.append(f'{w}: éles képet életlennek mért ({r})')
+      await pg.click('#kepMod >> text=Videó (reel)'); await pg.wait_for_timeout(200)
+      await pg.click('text=Bemutató klipek betöltése'); await pg.wait_for_timeout(2500)
+      if (await pg.text_content('#kepLista')).count('✓ megvan')!=4: hib.append(f'{w}: bemutató klipek nem töltődtek')
+      await pg.click('#klipReel')
+      try: await pg.wait_for_selector('#klipV:not([hidden])',timeout=60000)
+      except Exception: hib.append(f'{w}: klip-reel nem készült el')
+      await pg.screenshot(path=f'/tmp/t32-{w}-kep.png',full_page=True)
+      sw=await pg.evaluate("()=>document.documentElement.scrollWidth>innerWidth+1")
+      if sw: hib.append(f'{w}: vízszintes kicsúszás')
+      kis=await pg.evaluate("()=>[...document.querySelectorAll('#modok button,#kampJav button,#maFo button,#kepLista button')].filter(e=>e.offsetParent&&e.getBoundingClientRect().height<44).length")
+      if kis: hib.append(f'{w}: {kis} gomb 44 px alatt')
+      if err: hib.append(f'{w}: JS {err[0]}')
+      await pg.close()
+    pg=await b.new_page(); await pg.goto(URL+'?mod=poszt'); await pg.wait_for_timeout(2500)
+    if await pg.is_hidden('#lepsor'): hib.append('?mod=poszt nem a poszt-folyamatot nyitotta')
+    for h in hib: print('HIBA',h)
+    print(len(hib),'HIBA'); await b.close()
+asyncio.run(main())
