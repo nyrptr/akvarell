@@ -1,5 +1,9 @@
 # Fejlesztési napló – Akvarell bemutató
 
+## 2026-11-27 – Claude (ZSEBMARKETING) – a claude.ai-os változat átvétele
+- Péter: „vedd is át a Claude-os felületet, meg az egészet is”. `tools/fotoposzt_artifact.py`: az artifact index.html-je a munkaágból áll elő; a 069e87a-ból bájtra azonos a v17 artifacttal (sha256 13aa2d86…), a helyek-emb.json is. Innentől a ZSEBMARKETING tölti fel mindkét változatot ugyanabból a commitból.
+- Nem tesztelt: a .tflite → base64-JSON átalakítás (nem változott, nem kellett).
+
 ## 2026-11-27 – Claude (ZSEBMARKETING chat, munka-fotoposzt)
 - Péter: „Mehet a munkarend” – a `fotoposzt/MOTOR-ATADO.md` új 0. pontja: indulás és munkarend három szinten (minden üzenet: bemenet.py; minden munkalépés: szerepek, AGENTS.md, kapu + élő kép, független ellenőr; lépés vége: vállalás, állapotsor, csatorna, tanulság).
 - Csak dokumentáció; kód nem változott, teszt nem kellett. Kutatási dokumentum (AI-vázlat): https://claude.ai/artifact/A5CWhAzRENyRQeYXMsyuE2
