@@ -404,3 +404,8 @@
 - +3 közkincs zene (Smetana: Moldva, Grieg: Anitra tánca, Borodin: Közép-Ázsia pusztáin), 2 új sablon.
 - Felismerő: 135 referencia, 15 hely (új: Duna-part, kilátás, megállóhely, falu). Kihagyásos mérés: 77% első találat, automatikus választásnál 96%.
 - Gyár: fotoposzt_kapu 0 HIBA; 13392 poszt 0 hiba.
+
+## 2026-11-27 – Claude – fotóposzt motor-átadó
+- Új: `fotoposzt/MOTOR-ATADO.md` – a motor teljes tudása az új (Zsebmarketing) chathez: felépítés, keszlet, felismerő-tanítás, reel/hang, Meta, gyár, döntések (többes témaválasztás miértje), tanulságok, következő lépések.
+- Üzleti terv (AI-vázlat, Péter döntésére): https://claude.ai/artifact/Jj4nZiXhzxBVeQxNMry8qT
+- Kód nem változott; nem tesztelt: semmi új futó rész.
