@@ -238,7 +238,7 @@ const FELIRAT=[['folt','Akvarellfolt'],['cimke','Címke'],['sav','Sötét sáv']
 const FANIM=[['attunes','Áttűnés'],['alulrol','Alulról'],['szavankent','Szavanként'],['gepeles','Gépelés']];
 const VEGEK=[['papir','Papír + logó'],['foto','Fotó + logó'],['sotet','Sötét'],['kor','Kör']];
 S.hat=store.get('hat','papir');S.fel=store.get('fel','folt');S.fan=store.get('fan','attunes');S.veg=store.get('veg','papir');
-for(const [w,L,k] of [['hatw',HATTER,'hat'],['felw',FELIRAT,'fel'],['fanw',FANIM,'fan'],['vegw',VEGEK,'veg']]){const el=$(w);if(!el)continue;for(const [id,nev] of L){const b=document.createElement('button');b.className='chip';b.textContent=nev;b.dataset.v=id;b.setAttribute('aria-pressed',S[k]===id);b.addEventListener('click',()=>{S[k]=id;store.set(k,id);for(const x of el.children)x.setAttribute('aria-pressed',x===b);reelBeall({})});el.append(b)}}
+for(const [w,L,k] of [['hatw',HATTER,'hat'],['felw',FELIRAT,'fel'],['fanw',FANIM,'fan'],['vegw',VEGEK,'veg']]){const el=$(w);if(!el)continue;for(const [id,nev] of L){const b=document.createElement('button');b.className='chip';b.textContent=nev;b.dataset.v=id;b.setAttribute('aria-pressed',S[k]===id);b.addEventListener('click',()=>{S[k]=id;store.set(k,id);S.eloUgr=k;for(const x of el.children)x.setAttribute('aria-pressed',x===b);reelBeall({})});el.append(b)}}
 const HSZIN={papir:'#F4EEE3',zsalya:'#E2EADF',rozsa:'#F3E1D8',ejkek:'#1E2933'};let ELMOS=null;
 function hatterFest(g,W,H,r,im,alap){const h=S.hat||'papir';
  if(h==='foto'&&im){if(!ELMOS||ELMOS.im!==im){const c=document.createElement('canvas');c.width=18;c.height=32;kepZ(c.getContext('2d'),im,0,0,18,32,1,0,0);ELMOS={im,c}}
@@ -303,8 +303,9 @@ function reelKocka(g,t,T,kepek,sorok,st){const {W,H,top,side}=REEL,alja=H-REEL.b
   g.font=SERIF.replace('PX','62px');const ls=sorTor(g,sorok[i],W-2*side-90).slice(0,4),lh=72,bh=ls.length*lh,cy=alja-60-bh/2;
   const be=Math.min(1,u/.12);let al=Math.min(be,ki2),dy=0;if(fan==='alulrol'){dy=(1-ki(be))*70}
   let lat=Infinity;const osszes=ls.join(' '),hossz=osszes.length,szavak=osszes.split(' ').length;
-  if(fan==='szavankent'){lat=Math.ceil(szavak*Math.min(1,u/.55));al=ki2}
-  if(fan==='gepeles'){lat=Math.ceil(hossz*Math.min(1,u/.6));al=ki2}
+  /* üres felirat-doboz ellen (11-27): a doboz az első szóval/betűvel együtt tűnik fel */
+  if(fan==='szavankent'){lat=Math.max(1,Math.ceil(szavak*Math.min(1,u/.55)));al=Math.min(be,ki2)}
+  if(fan==='gepeles'){lat=Math.max(1,Math.ceil(hossz*Math.min(1,u/.6)));al=Math.min(be,ki2)}
   g.save();g.globalAlpha=al;g.translate(0,dy);
   const bw=Math.max(...ls.map(x=>g.measureText(x).width))+80;
   if(fel==='sav'){const gr=g.createLinearGradient(0,cy-bh/2-120,0,cy+bh/2+120);gr.addColorStop(0,'rgba(20,30,25,0)');gr.addColorStop(.3,'rgba(20,30,25,.62)');gr.addColorStop(.7,'rgba(20,30,25,.62)');gr.addColorStop(1,'rgba(20,30,25,0)');g.fillStyle=gr;g.fillRect(0,cy-bh/2-120,W,bh+240);g.fillStyle='#FFFFFF'}
@@ -326,9 +327,9 @@ function reelKocka(g,t,T,kepek,sorok,st){const {W,H,top,side}=REEL,alja=H-REEL.b
    felirat(g,W/2,H*.47,'center',rnd(5));g.fillStyle=S.hat==='ejkek'||S.hat==='foto'?'#FFFFFF':'#2F4237';g.font=SERIF.replace('PX','52px');g.fillText(cimS,W/2,H*.47+150)}
   g.globalAlpha=1}
  g.restore()}
-let ELO=null;function reelElo(){if(S.form!=='reel'||!img)return;let cv=$('reelElo');if(!cv){cv=document.createElement('canvas');cv.id='reelElo';cv.width=540;cv.height=960;cv.style.cssText='width:100%;max-width:300px;border-radius:12px;display:block;margin:8px 0';$('reelEloHely').append(cv)}
+let ELO=null;function reelElo(){if(S.form!=='reel'||!img)return;try{const h=$('reelEloHely'),v=$('reelV');if(!v.hidden){v.hidden=true;$('reelA').hidden=true;$('reelB').disabled=false;try{$('reelSt').textContent='A beállítás változott – a videót készítsd újra (fent az élő előnézet).'}catch(e){}}h.hidden=false;h.classList.add('ragad')}catch(e){}let cv=$('reelElo');if(!cv){cv=document.createElement('canvas');cv.id='reelElo';cv.width=540;cv.height=960;cv.style.cssText='width:100%;max-width:360px;border-radius:12px;display:block;margin:8px 0';$('reelEloHely').append(cv)}
  const c2=document.createElement('canvas');c2.width=REEL.W;c2.height=REEL.H;const g2=c2.getContext('2d'),g=cv.getContext('2d');const kepek=[img,...EXTRA.map(e=>e.img)],sorok=reelSorok(),T=Math.min(22,Math.max(8,sorok.length*3.4+REEL.veg,kepek.length*2.6+REEL.veg));
- if(ELO)cancelAnimationFrame(ELO);const t0=performance.now();const lep=()=>{if(S.form!=='reel'||S.lep!==3){ELO=null;return}const t=((performance.now()-t0)/1000)%T;reelKocka(g2,t,T,kepek,sorok,S.reelSt);g.drawImage(c2,0,0,540,960);ELO=requestAnimationFrame(lep)};ELO=requestAnimationFrame(lep)}
+ if(ELO)cancelAnimationFrame(ELO);const ugr=S.eloUgr==='veg'?Math.max(0,T-REEL.veg-.5):0;S.eloUgr=null;const t0=performance.now()-ugr*1000;const lep=()=>{if(S.form!=='reel'||S.lep!==3){ELO=null;return}const t=((performance.now()-t0)/1000)%T;reelKocka(g2,t,T,kepek,sorok,S.reelSt);g.drawImage(c2,0,0,540,960);ELO=requestAnimationFrame(lep)};ELO=requestAnimationFrame(lep)}
 
 const SABLON=[
 ['nyugodt','Nyugodt reggel','akvarell · papír · Grieg',{st:'akvarell',an:'zoom',z:'reggel',hat:'papir',fel:'folt',fan:'attunes',veg:'papir'}],
@@ -370,7 +371,7 @@ async function reelKeszit(){if(!img){$('reelSt').textContent='Előbb a fotó.';r
  await new Promise(res=>{const lep=()=>{const t=(performance.now()-t0)/1000;reelKocka(g,Math.min(t,T),T,kepek,sorok,S.reelSt);$('reelSt').textContent=`Készül a reel… ${Math.min(100,Math.round(t/T*100))}% (maradj ezen a képernyőn)`;if(t<T)requestAnimationFrame(lep);else res()};requestAnimationFrame(lep)});
  await new Promise(r=>setTimeout(r,150));rec.stop();await kesz;stream.getTracks().forEach(x=>x.stop());
  const tipus=mt.split(';')[0],blob=new Blob(ch,{type:tipus});S.reel={blob,ext:tipus.includes('mp4')?'mp4':'webm',T};
- const v=$('reelV');v.src=URL.createObjectURL(blob);v.hidden=false;if(S.zene&&zsrc){v.addEventListener('loadedmetadata',()=>{if(v.audioTracks&&v.audioTracks.length===0)$('reelSt').textContent+=' Figyelem: ezen a telefonon a zene nem került a videóba; a Facebookon adj hozzá zenét.'},{once:true})}$('reelA').hidden=false;$('reelB').disabled=false;$('reelB').textContent='Reel újra';
+ const v=$('reelV');v.src=URL.createObjectURL(blob);v.hidden=false;try{const h=$('reelEloHely');h.classList.remove('ragad');h.hidden=true}catch(e){}if(S.zene&&zsrc){v.addEventListener('loadedmetadata',()=>{if(v.audioTracks&&v.audioTracks.length===0)$('reelSt').textContent+=' Figyelem: ezen a telefonon a zene nem került a videóba; a Facebookon adj hozzá zenét.'},{once:true})}$('reelA').hidden=false;$('reelB').disabled=false;$('reelB').textContent='Reel újra';
  $('reelSt').textContent=`Kész: ${Math.round(T)} mp, ${(blob.size/1048576).toFixed(1).replace('.',',')} MB, ${S.reel.ext.toUpperCase()}.`+(S.reel.ext==='webm'?' Ez a böngésző WebM-et készít; ha a Facebook nem fogadja, telefonon (Safari, Chrome) MP4 lesz.':'')+' Most: Tovább: közzététel – ott látod a posztot a videóval és az első kommentet.';$('t4').scrollIntoView({behavior:'smooth',block:'center'})}
 $('reelB').addEventListener('click',()=>reelKeszit().catch(e=>{$('reelB').disabled=false;$('reelSt').textContent='A reel nem készült el: '+(e&&e.message||e)}));
 async function reelMent(){if(!S.reel)return;const fn=`akvarell-reel-${S.ts||'poszt'}.${S.reel.ext}`;

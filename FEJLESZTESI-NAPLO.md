@@ -482,3 +482,10 @@
 - Péter: „a frissítés szimuláció pedig mehet”. `fotoposzt/frissites.js`: a letöltött csomag-javítás a helyi tárban él, indításkor a készletbe fésülődik (id szerint, a javítás nyer), így az app.js már a frissített készletet olvassa – AI nélkül. Bemutató: `bemutato/frissites.json` (4 téli zárómondat, HU/EN/DE). Sáv: „Frissítés érkezett (bemutató)” → Letöltés → újraindul → „Frissítve…” + Visszaállítás. Artifact: inline. Korlát: `?csomag=` esetén a betöltő felülírja (élesben a javítás a szerver-csomagba kerül).
 - KEPESSEGTERKEP: Péter elve (folyamatos gyűjtés, AI-nál visszamenőleges átnézés) ábrával, AI-javaslatként.
 - Tesztek: t29 kiegészítve (sáv, letöltés, készletbe kerül, visszaállítás) 0 HIBA a Cloudflare-helyi és az artifact-építésen is; kapu, t24, t27, t28 0 HIBA.
+
+## 2026-11-27 – ZSEBMARKETING: Péter végigpróbájának hibái (claude.ai, laptop, sötét mód)
+- Ragadós reel-előnézet (AKVARELL-hibajegy, átvéve, eddig nyitva – most javítva): ragadás csak beállítás közben (`.ragad`), kész videónál az előnézet eltűnik; új beállításra a régi videó eltűnik, az előnézet visszajön, „A beállítás változott – készítsd újra”; előnézet nagyobb (60vh / 360 px, ragadva 34vh). Teszt: `tools/proba/fotoposzt_t30.py` (3 állapot képernyőképpel) 0 HIBA.
+- Üres fehér felirat-doboz a reel elején (Péter képe): címke-felirat + szavanként/gépelés mozgásnál a doboz teljes fedéssel kirajzolódott, mielőtt az első szó megjelent. Javítás: a doboz az első szóval együtt tűnik fel. Teszt: `fotoposzt_t31.py` – a régi kódon 2 HIBA (reprodukálta), az újon 0.
+- Zárókép-váltás: az élő előnézet a zárókép előtt fél másodperccel indul (Péter: ne kelljen végignézni az egészet). t30-ban.
+- Sötét mód: a sablon-gombok (Nyugodt reggel…) és a fülek szövege olvashatatlan volt (sötét a sötéten) – sötét színpár.
+- Ellenőrzés: t24, t29, t30, t31, kapu, gyar_szabalyok 0 HIBA. t23 régi, hiányzó tesztképre vár (ismert).
