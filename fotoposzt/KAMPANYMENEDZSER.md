@@ -21,3 +21,20 @@ flowchart TD
 ```
 - Forrás-alap: foglalási ablak – a szabadidős utazók többsége 1–3 hónappal előre tervez és foglal (TravelBoom 2026, revenue-hub.com); helyi naptár: pl. Zebegény Meseadvent 12.01–12.24 (programturizmus.hu); a kampányok szezonra előre (houfy.com playbook).
 - Következő lépés (kutatás): Meta (közönség, nyelv, elhelyezés, formátum-méretek) és Google (Cégprofil-poszt, hirdetés) – mit kell tudnia a posztnak, hogy a beállításoknak megfeleljen; több párhuzamos kampány.
+
+## Kampánytípusok – szálláshely-szakmai alapon (Péter, 11-27: „üres napok feltöltése, vagy bármi más… ez kicsit gyenge”)
+AI-javaslat; minden típusnak van kiváltója (mi indítja) – a kampánymenedzser ebből javasol, az ügyfél dönt.
+| Kiváltó | Kampány | Forrás |
+|---|---|---|
+| Foglalási naptár: lyuk két foglalás között | Üres napok feltöltése (rés-éjszakák), rövid átfutás | sendsquared.com gap night |
+| Naptár: üres hétköznapok | Hétköznapi ajánlat (pl. alkotói/pihenő hét) | guesty.com weekday |
+| Előző évek: 30% alatti 14 napos szakasz | Holtszezon-kampány | guesty.com off-season |
+| Ünnep/szünet a foglalási ablakban (1–3 hó) | Kiemelt időszak korai foglalásra (szilveszter, húsvét, nyári szünet) | TravelBoom 2026 |
+| Helyi esemény a naptárban | Esemény-kampány (Meseadvent, nyári hajó, fesztivál) | programturizmus.hu |
+| Rövid foglalások túlsúlya | Hosszabb tartózkodás (pl. 7 éj kedvezmény – az Akvarellnek már van) | hostfully.com |
+| Sok OTA-foglalás | Közvetlen foglalás (jutalék nélkül) | sendsquared.com |
+| Korábbi vendégek | Visszahívás / ajánlás / értékelés | vacasa.com |
+| Új nyelvi piac | Ismertség (DE/EN közönség) | Meta ODAX |
+| Prémium egység (jacuzzi, Deluxe) | Felértékelés / élménycsomag (romantikus hétvége) | – |
+Kemény határ: ár, kedvezmény, csomag = az ügyfél döntése (pénz); a menedzser csak javasol, indokkal.
+Adatforrás, ami nálunk már megvan: az Akvarell saját foglalási rendszere (functions/_kozos/naptar.js iCal-szinkron) – a rés-éjszakák gépi felismeréséhez.
