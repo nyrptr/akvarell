@@ -33,6 +33,7 @@ h2{font-size:17px;margin:24px 0 8px}
 .meta{font-size:14px;color:var(--mute);margin-top:6px}
 .row{display:flex;flex-wrap:wrap;gap:8px}
 .chip{min-height:44px;padding:0 14px;border-radius:22px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:600 15px Figtree,sans-serif;cursor:pointer}
+.kartya{background:var(--card,#fff);border:1px solid rgba(0,0,0,.1);border-radius:16px;padding:12px 14px;margin:10px 0}.kartya .kl{font:600 13px Figtree,sans-serif;color:#6b6b63;margin:10px 0 4px}.kartya .kl:first-child{margin-top:0}.kartya .row{gap:6px}.kartya .chip{padding:7px 11px;font-size:15px}.tval{font-weight:700}#osz{display:none!important}#formw{display:grid;grid-template-columns:1fr 1fr;gap:8px}#formw .chip{padding:16px 10px;font-size:16px;text-align:center;justify-content:center}#temaD>summary,#chkD>summary,#seg4>summary,#beall>summary{cursor:pointer;font:600 16px Figtree,sans-serif;padding:12px 0}#hidB{display:none!important}#aiw{margin-top:18px;border-top:1px solid rgba(0,0,0,.1);padding-top:6px}
 .fotok{display:flex;gap:8px;overflow-x:auto;padding:8px 0}.fotok .fk{position:relative;flex:0 0 auto}.fotok img{width:76px;height:76px;object-fit:cover;border-radius:10px;display:block;border:2px solid transparent}.fotok .fk.b img{border-color:var(--deep)}.fotok .fk span{position:absolute;left:4px;bottom:4px;background:rgba(0,0,0,.6);color:#fff;font:600 11px Figtree,sans-serif;padding:1px 6px;border-radius:8px}.fotok .fk button{position:absolute;top:2px;right:2px;width:26px;height:26px;border-radius:13px;border:0;background:rgba(0,0,0,.6);color:#fff;font:600 14px sans-serif;cursor:pointer}.albumw{display:flex;gap:8px;overflow-x:auto;padding:6px 0}.albumw img{height:200px;border-radius:8px;flex:0 0 auto}
 .chip[aria-pressed=true]{background:var(--deep);color:var(--bg);border-color:var(--deep)}
 label.f{display:block;font-weight:600;font-size:14px;margin:14px 0 6px}
@@ -118,24 +119,33 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 <div class="note" id="felisT"></div><div class="row" id="felisJ"></div>
 <div class="osz" id="osz" hidden></div>
 <div class="status" id="st1" role="status"></div>
-<label class="f">Miről szól a kép?</label>
+<div class="kartya" id="alapw" hidden>
+<div class="kl">Téma</div><div class="row"><button class="chip tval" id="temaB" aria-pressed="true">Kilátás</button><button class="chip" id="temaMas">Másik téma…</button></div>
+<div class="kl">A poszt nyelve</div>
+<div class="row" id="langs"><button class="chip" data-l="hu" aria-pressed="true">Magyar</button><button class="chip" data-l="en" aria-pressed="false">English</button><button class="chip" data-l="de" aria-pressed="false">Deutsch</button></div>
+<div class="kl">Napszak</div>
+<div class="row" id="nsw"><button class="chip" data-v="" aria-pressed="true">A fotóból</button><button class="chip" data-v="reggel">Reggel</button><button class="chip" data-v="nappal">Nappal</button><button class="chip" data-v="este">Este</button><button class="chip" data-v="ejjel">Éjjel</button></div>
+<div class="kl">Évszak</div>
+<div class="row" id="evw"><button class="chip" data-v="" aria-pressed="true">A fotóból</button><button class="chip" data-v="tavasz">Tavasz</button><button class="chip" data-v="nyar">Nyár</button><button class="chip" data-v="osz">Ősz</button><button class="chip" data-v="tel">Tél</button></div>
+</div>
+<details id="temaD"><summary>Miről szól a kép? Válassz témát</summary>
+<input id="temaKer" type="search" placeholder="Keresés: pl. híd, templom, strand" aria-label="Téma keresése" style="margin-top:8px">
 <div id="temak"></div>
 <div class="hely" id="ujtemaw" hidden><label class="f" for="ujNev" style="margin-top:0">Új téma neve magyarul</label><input id="ujNev" type="text" placeholder="pl. Malom-patak">
 <label class="f" for="ujEn">angolul (ha más)</label><input id="ujEn" type="text"><label class="f" for="ujDe">németül (ha más)</label><input id="ujDe" type="text">
 <label id="ujHelyL"><input type="checkbox" id="ujHely" checked> Jegyezd meg a helyét is (ahol ez a fotó készült)</label>
 <button class="btn sec full" id="ujB">Téma hozzáadása</button><div class="status" id="ujSt"></div><div class="row" id="sajatL" style="margin-top:8px"></div></div>
+</details>
 <div id="hidw" hidden><label class="f">Melyik vasúti híd vagy aluljáró?</label><div class="row" id="hidR"></div></div>
 <div id="aptw" hidden><label class="f" for="apt">Melyik apartman?</label>
 <select id="apt"><option value="">Nem tudom / mindegy</option><option value="amrita">Amrita (földszint, nagy terasz)</option><option value="szonyi">Szőnyi (emelet)</option><option value="bereny">Berény</option><option value="karpathy">Kárpáthy</option></select></div>
+
+<details id="beall"><summary id="beallS">Extra beállítások</summary>
 <div class="note" id="naptarT" role="status"></div>
 <label class="man" id="alkW" hidden><input type="checkbox" id="alkCb" checked> <span id="alkL"></span></label>
-<details id="beall"><summary id="beallS">További beállítások</summary>
-<label class="f">A poszt nyelve</label>
-<div class="row" id="langs"><button class="chip" data-l="hu" aria-pressed="true">Magyar</button><button class="chip" data-l="en" aria-pressed="false">English</button><button class="chip" data-l="de" aria-pressed="false">Deutsch</button></div>
-<label class="f">Napszak</label>
-<div class="row" id="nsw"><button class="chip" data-v="" aria-pressed="true">A fotóból</button><button class="chip" data-v="reggel">Reggel</button><button class="chip" data-v="nappal">Nappal</button><button class="chip" data-v="este">Este</button><button class="chip" data-v="ejjel">Éjjel</button></div>
-<label class="f">Évszak</label>
-<div class="row" id="evw"><button class="chip" data-v="" aria-pressed="true">A fotóból</button><button class="chip" data-v="tavasz">Tavasz</button><button class="chip" data-v="nyar">Nyár</button><button class="chip" data-v="osz">Ősz</button><button class="chip" data-v="tel">Tél</button></div>
+
+
+
 <label class="man"><input type="checkbox" id="felisCb" checked> Képfelismerés a telefonon (AI nélkül, ingyenes; első használatkor kb. 20 MB letöltés)</label>
 <label class="f" for="nota">Saját első mondat (nem kötelező, a poszt nyelvén)</label>
 <input id="nota" type="text" placeholder="pl. Ma reggel köd ült a Dunán.">
@@ -149,7 +159,17 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 </section>
 
 <section class="lepes" data-l="2" hidden>
-<div class="two" id="gombok"><button class="btn" id="go" disabled>Változatok (AI nélkül)</button><button class="btn sec" id="cl" disabled hidden>AI-javaslat (fotó alapján)</button><button class="btn sec" id="hidB" hidden>AI-javaslat (másolással)</button></div>
+
+
+
+<section id="valaszt" hidden>
+<h2>Válassz egyet</h2>
+<p class="note">Magyarul látod, alatta az, ami kimegy. A három nyelv mondatról mondatra ugyanaz.</p>
+<div class="fresh" id="fresh" role="status"></div><div class="cands" id="cands"></div>
+<button class="btn sec full" id="more">Három másik</button>
+</section>
+<div id="aiw"><h2>Nem tetszik egyik sem?</h2><p class="note">Kérj AI-javaslatot: a program ugyanígy ellenőrzi.</p>
+<div class="two" id="gombok"><button class="btn" id="go" disabled hidden>Változatok (AI nélkül)</button><button class="btn sec" id="cl" disabled hidden>AI-javaslat (fotó alapján)</button><button class="btn sec" id="hidB" hidden>AI-javaslat (másolással)</button></div>
 <div class="status" id="st" role="status"></div>
 <details id="hid">
 <summary>AI-javaslat másolással (Claude app, ChatGPT, Gemini)</summary>
@@ -159,13 +179,7 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 <textarea id="aiv" rows="4" placeholder="Ide illeszd az AI teljes válaszát"></textarea>
 <button class="btn sec full" id="aiBe">Beolvasás</button>
 <div class="status" id="st3" role="status"></div>
-</details>
-<section id="valaszt" hidden>
-<h2>Válassz egyet</h2>
-<p class="note">Magyarul látod, alatta az, ami kimegy. A három nyelv mondatról mondatra ugyanaz.</p>
-<div class="fresh" id="fresh" role="status"></div><div class="cands" id="cands"></div>
-<button class="btn sec full" id="more">Három másik</button>
-</section>
+</details></div>
 <button class="btn full" id="t3" hidden>Tovább: kép</button>
 </section>
 
@@ -184,12 +198,14 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 <div class="albumw" id="albumw" hidden></div>
 </div>
 <div id="reelPanel" hidden><h2>Reel (rövid videó a fotókból)</h2>
-<p class="note">A telefonon készül, internet és AI nélkül: a fotók egymás után, mozgással, a szöveg mondatonként, a végén az Akvarell felirat. Zenét a Facebookon adj hozzá a saját zenetárából: az jogtiszta.</p>
+<p class="note">A telefonon készül, internet és AI nélkül: a fotók egymás után, mozgással, a szöveg mondatonként, a végén az Akvarell felirat. </p>
 <label class="f">Keret</label><div class="row" id="reelw"></div>
 <label class="f">Mozgás</label><div class="row" id="animw"></div>
+<label class="f">Zene (jogtiszta, közkincs klasszikus felvételek)</label><div class="row" id="zenew"></div>
+<p class="note" id="zeneT">A felvételek a Musopen közkincsnek (Public domain / CC0) adott felvételei a Wikimedia Commonsról: szabadon felhasználhatók, díj nélkül. A Facebook gépi zenefelismerője ritkán így is jelezhet; ilyenkor a Facebook saját zenetárából válassz.</p>
 <button class="btn full" id="reelB" style="margin-top:8px">Reel készítése</button>
 <div class="status" id="reelSt" role="status"></div>
-<video id="reelV" controls playsinline muted hidden style="width:100%;max-width:360px;border-radius:12px;margin-top:8px;display:block"></video>
+<video id="reelV" controls playsinline hidden style="width:100%;max-width:360px;border-radius:12px;margin-top:8px;display:block"></video>
 <div class="acts" id="reelA" hidden><button class="btn" id="reelSh">Videó megosztása</button><button class="btn sec" id="reelDl">Videó mentése</button></div></div>
 <button class="btn full" id="t4">Tovább: közzététel</button>
 </section>
@@ -203,8 +219,7 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 <canvas id="cv" width="1080" height="1350" hidden></canvas><img id="pimg" class="pimg" alt="A poszt képe">
 <div class="cm"><b>Első komment</b><textarea id="kom" rows="3" aria-label="Első komment"></textarea></div>
 </div>
-<h2>Ellenőrzés (program)</h2>
-<ul class="chk" id="chk"></ul>
+<details id="chkD"><summary id="chkS">Ellenőrzés</summary><ul class="chk" id="chk"></ul></details>
 <div id="ujtw" hidden><h2>Új tények az AI-tól: ellenőrizd</h2><p class="note">Pipáld ki, ami biztosan igaz. Ami nem igaz, azt töröld a szövegből, és pipáld ki, hogy nem szerepel benne. A kipipált tény bekerül a tudásba.</p><ul class="chk" id="ujt"></ul></div>
 <label class="man"><input type="checkbox" id="man"> A képen nincs felismerhető ember, vagy aki rajta van, beleegyezett.</label>
 <div class="verdict" id="ver"></div>
@@ -216,11 +231,8 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 <button class="btn sec wide" id="kitettem">Közzétettem a Facebookon</button>
 </div>
 <div class="status" id="st2" role="status"></div>
-<h2>Képleírás (alt szöveg)</h2>
-<p class="note">A Facebookon a fotónál a „Helyettesítő szöveg” mezőbe. A gyengénlátók képernyőolvasója ezt olvassa fel.</p>
-<div class="row"><input id="alt" type="text" aria-label="Képleírás" style="flex:1"><button class="chip" id="cpA">Másolás</button></div>
+<details id="seg4"><summary>Segítség: hogyan tedd közzé, képleírás</summary>
 
-<h2>Közzététel (te csinálod, 1 perc)</h2>
 <ol class="how">
 <li>Szöveg másolása, majd „Kép megosztása” → Facebook (vagy mentsd a képet).</li>
 <li>Vagy: <a href="https://business.facebook.com/latest/composer" target="_blank" rel="noopener">Meta Business Suite → Bejegyzés létrehozása</a>, fotó, beillesztés, közzététel.</li>
@@ -228,11 +240,20 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 <li>Végül itt: „Közzétettem a Facebookon”. Ebből tanul a rendszer.</li>
 </ol>
 <p class="note">Az automatikus közzététel (a Meta hivatalos felületén, az oldal saját kulcsával, ahogy a Veled a holnapért Pultja is posztol) ehhez az oldalhoz még nincs bekötve. Addig: másolás és beillesztés.</p>
+<h2>Képleírás (alt szöveg)</h2>
+<p class="note">A Facebookon a fotónál a „Helyettesítő szöveg” mezőbe. A gyengénlátók képernyőolvasója ezt olvassa fel.</p>
+<div class="row"><input id="alt" type="text" aria-label="Képleírás" style="flex:1"><button class="chip" id="cpA">Másolás</button></div>
+</details>
 </section>
+
+
+
 <p class="note" id="nincsSz">Előbb válassz szöveget a 2. lépésben.</p>
 
+
+</section>
 <details id="kesz">
-<summary>Készlet, tudás és tanulás</summary>
+<summary>Extra: készlet, tanulás, mentés</summary>
 <div class="stat" id="stat"></div>
 <ul class="chk" id="kchk"></ul>
 <h2>Utolsó közzétett posztok</h2>
@@ -244,7 +265,6 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 <div class="status" id="st4" role="status"></div>
 <p class="note">A tanulás most ezen az eszközön tárolódik; az Akvarell motorba kötve közös lesz minden telefonon. A mondatkészlet AI-vázlat forrásokkal, a tulajdonos jóváhagyásáig tervezet.</p>
 </details>
-</section>
 </div>
 
 <script id="keszlet" type="application/json">

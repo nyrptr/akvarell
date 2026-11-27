@@ -381,3 +381,11 @@
 - Saját tanulás: közzétételkor a fotó számsora a választott témával a telefonon marad, és a következő felismerésnél számít.
 - Szövegek: minden témához legalább 2–4 kész poszt, nyitó, hangulatmondat és témazáró kérdés; 5 új hangulati téma (naplemente, reggeli/étel, hó/tél, kert, éjszaka) képfelismerő-címkékkel; a Jánoshegy utcai vasúti híd Commons-név szerint.
 - Teszt: 13392 poszt 0 hiba, önellenőrzés üres; reel, album, AI-beolvasás, felismerés a CSP alatt is.
+
+## Fotóposzt v14 (2026-11-27) – Péter visszajelzése alapján egyszerűbb kezelés
+- 1. lépés: a fotó alatt egy kártya: Téma (koppintásra témaválasztó kereséssel), Nyelv, Napszak, Évszak – mindig látszik; a hosszú témalista lenyíló keresővel; az „Extra beállítások” alatt csak a ritka dolgok (saját első mondat, naptár, hely, felismerő ki/be).
+- 2. lépés: elöl a saját (AI nélküli) szövegek, alattuk „Nem tetszik egyik sem?” – AI-javaslat másolással.
+- 3. lépés: a formátum (Feed, Négyzet, Story, Reel) nagy gombokban.
+- 4. lépés: az ellenőrzés lenyílóban („minden rendben ✓”, csak hibánál nyílik ki); közzétételi útmutató és képleírás a „Segítség” alatt; készlet/mentés külön „Extra” panelben.
+- Reel zenével: két közkincs (Public domain) Musopen-felvétel a Wikimedia Commonsról (Grieg: Reggel; Mendelssohn: Olasz szimfónia I.), 25 mp, be- és kiúsztatva. Forrás: fotoposzt/zene/FORRAS.txt.
+- Teszt: 13392 poszt 0 hiba; reel zenével (H.264 + hang) a CSP alatt is.
