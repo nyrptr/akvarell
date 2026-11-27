@@ -374,3 +374,10 @@
 - 3. lépés: Album (minden fotó külön, azonos arányban) vagy Kollázs (Rács, Polaroidok, Csíkok); Reel formátum a 3. lépésben, élő előnézettel; mozgás: lassú ráközelítés, beúszó, beugró, áttűnés.
 - 4. lépés: több kép megosztása/mentése egyszerre, reelnél a videó.
 - Teszt: 11232 poszt 0 hiba; 3 GPS-es fotóból séta-poszt, album 3 kép, kollázs 3 sablon, reel MP4 a CSP alatt.
+
+## Fotóposzt v13 (2026-11-27) – betanítás
+- Helyfelismerés hasonlósággal: MobileNet-V3 Large képbeágyazó (MediaPipe, Apache-2.0) + legközelebbi szomszédok. Referencia: 108 Wikimedia Commons-fotó 11 zebegényi helyről (csak számsorok kerülnek az appba, a forrásoldalak a helyek-emb.json-ban).
+- Mérés (kihagyásos keresztvalidáció, 11 hely): 80,6% első találat; automatikus választás csak ≥0,55 hasonlóság és ≥0,08 különbség esetén: ezeknél 97% pontos. Valódi fotók: templom automatikusan felismerve; Szőnyi Múzeum első tipp (a régi felismerő templomnak nézte); naplemente és utcakép: nincs téves helyfelismerés.
+- Saját tanulás: közzétételkor a fotó számsora a választott témával a telefonon marad, és a következő felismerésnél számít.
+- Szövegek: minden témához legalább 2–4 kész poszt, nyitó, hangulatmondat és témazáró kérdés; 5 új hangulati téma (naplemente, reggeli/étel, hó/tél, kert, éjszaka) képfelismerő-címkékkel; a Jánoshegy utcai vasúti híd Commons-név szerint.
+- Teszt: 13392 poszt 0 hiba, önellenőrzés üres; reel, album, AI-beolvasás, felismerés a CSP alatt is.

@@ -299,7 +299,7 @@ $('svI').addEventListener('click',async()=>{if(S.form==='reel'&&S.reel){$('reelS
  $('st2').textContent=(await ment())+' (A megosztás itt nem érhető el.)'});
 
 /* Kitettem: tanulás */
-$('kitettem').addEventListener('click',()=>{
+$('kitettem').addEventListener('click',()=>{try{sajatTanul()}catch(e){}
  if(!S.ok){$('st2').textContent='Csak ellenőrzött poszt számít: javítsd a pirosakat.';return}
  const c=S.cands[S.sel];if(!c)return;if(c.kitett){$('st2').textContent='Ezt már rögzítettem.';return}
  for(const id of c.ids){ST[id]=ST[id]||{m:0,v:0,k:0};ST[id].k++}
@@ -405,7 +405,7 @@ function temaValaszt(id){S.tema=id;osszegzes();for(const c of document.querySele
 const temaKeres=nev=>K.temak.concat(UT).find(t=>norm(t.nev)===norm(nev)||(t.alias||[]).includes(norm(nev)));
 function temak(){const w=$('temak');w.innerHTML='';const gomb=t=>{const b=document.createElement('button');b.className='chip';b.dataset.t=t.id;b.textContent=t.nev+(HELYEK[t.id]?' •':'');b.setAttribute('aria-pressed',t.id===S.tema);b.addEventListener('click',()=>{S.temaKezi=true;temaValaszt(t.id)});return b};
  const csop=(cim,lista,plusz)=>{const c=document.createElement('div');c.className='csop';c.textContent=cim;const r=document.createElement('div');r.className='row';lista.forEach(t=>r.append(gomb(t)));if(plusz)r.append(plusz);w.append(c,r)};
- csop('A ház',K.temak.filter(t=>t.haz));csop('Zebegény',K.temak.filter(t=>!t.haz));
+ csop('A ház',K.temak.filter(t=>t.haz));csop('Zebegény',K.temak.filter(t=>!t.haz&&!t.altalanos));csop('Hangulat, évszak',K.temak.filter(t=>t.altalanos));
  const p=document.createElement('button');p.className='chip';p.textContent='+ Új téma';p.addEventListener('click',()=>{$('ujtemaw').hidden=!$('ujtemaw').hidden;$('ujHelyL').hidden=!S.gps;$('ujNev').focus()});
  csop('Saját',UT,p)}
 $('ujB').addEventListener('click',()=>{const nev=$('ujNev').value.trim(),en=$('ujEn').value.trim(),de=$('ujDe').value.trim();
@@ -631,19 +631,45 @@ const TERKEP={templom:['church','bell cote','monastery','dome','mosque','stupa',
  orszagzaszlo:['flagpole','obelisk','triumphal arch'],
  falu:['street sign','traffic light','cab','minivan','sports car','convertible','jeep','pickup','police van','moving van','mailbox','picket fence','worm fence','tile roof','pay-phone','car wheel','limousine','barbershop','bakery','grocery store','mobile home'],
  tura:['mountain tent','backpack','hen-of-the-woods','bolete','agaric','stinkhorn','earthstar','hay'],
- haz:['greenhouse','birdhouse','lawn mower','pot','vase','sundial']};
-let osztalyozo=null,OSZT_HIBA=false;try{$('felisCb').checked=store.get('felis',true)}catch(e){}
+ haz:['birdhouse','lawn mower','sundial'],
+ etel:['plate','espresso','coffee mug','cup','teapot','red wine','wine bottle','bagel','french loaf','pretzel','pizza','ice cream','trifle','guacamole','carbonara','consomme','hot pot','potpie','burrito','strawberry','orange','lemon','fig','pomegranate','banana','pineapple','dough','eggnog','tray','dining table','wooden spoon','frying pan'],
+ kert:['daisy','pot','vase',"yellow lady's slipper",'hip','rapeseed','buckeye','greenhouse','beehive','bee','ant','hummingbird','butterfly','admiral','monarch','cabbage butterfly','lycaenid','sulphur butterfly','ringlet','hay','corn','ear','acorn'],
+ havas:['alp','ski','dogsled','snowplow','snowmobile','shovel','igloo'],
+ ejszaka:['planetarium']};
+let osztalyozo=null,OSZT_HIBA=false,mp_=null,fs_=null;try{$('felisCb').checked=store.get('felis',true)}catch(e){}
 $('felisCb').addEventListener('change',()=>{store.set('felis',$('felisCb').checked);if($('felisCb').checked)felismer()});
 function temaPontok(cats){const p={};for(const c of cats){const n=String(c.categoryName||'').toLowerCase();for(const [t,l] of Object.entries(TERKEP))if(l.some(x=>n===x||n.startsWith(x+',')||n.split(', ').includes(x)))p[t]=(p[t]||0)+c.score}return Object.entries(p).sort((a,b)=>b[1]-a[1])}
 function fenyBecsles(){if(S.time||!img)return;const c=document.createElement('canvas');c.width=48;c.height=48;const g=c.getContext('2d');g.drawImage(img,0,0,48,48);const d=g.getImageData(0,0,48,48).data;let L=0,w=0,n=0;
  for(let i=0;i<d.length;i+=4){const r=d[i],gg=d[i+1],b=d[i+2];L+=(.2126*r+.7152*gg+.0722*b)/255;if(r>gg&&gg>b&&r-b>70)w++;n++}L/=n;w/=n;S.nsBecs=L<.16?'ejjel':(w>.12&&L<.45)?'este':'';S.fenyAdat={L:+L.toFixed(2),w:+w.toFixed(2)}}
+
+/* ===== Helyfelismerés hasonlósággal (MobileNet-V3 beágyazás + legközelebbi szomszédok) =====
+   Referenciák: Wikimedia Commons szabad licencű fotói (felismero/helyek-emb.json), plusz a saját, közzétett fotóitok (ezen a telefonon). */
+let beagyazo=null,REF=null,SAJATEMB=store.get('sajatemb',[]);
+function i8be(b64,dim){const bin=atob(b64),n=bin.length/dim|0,out=[];for(let r=0;r<n;r++){const v=new Float32Array(dim);let q=0;for(let i=0;i<dim;i++){const x=bin.charCodeAt(r*dim+i);v[i]=(x>127?x-256:x)/127;q+=v[i]*v[i]}q=Math.sqrt(q)||1;for(let i=0;i<dim;i++)v[i]/=q;out.push(v)}return out}
+function i8ki(v){let s='';for(const x of v){const q=Math.max(-127,Math.min(127,Math.round(x*127/Math.max(1e-6,maxAbs(v)))));s+=String.fromCharCode(q<0?q+256:q)}return btoa(s)}
+function maxAbs(v){if(v._m)return v._m;let m=0;for(const x of v)m=Math.max(m,Math.abs(x));v._m=m;return m}
+async function refBe(){if(REF)return REF;const r=await fetch(new URL('felismero/helyek-emb.json',location.href).href);const j=await r.json();
+ REF={dim:j.dim,cimkek:j.cimkek,vek:i8be(j.v,j.dim)};return REF}
+async function beagyaz(mp,fs,im){if(!beagyazo){let buf=null;try{const r=await fetch(new URL('felismero/hely_embedder.tflite',location.href).href);if(r.ok)buf=new Uint8Array(await r.arrayBuffer())}catch(e){}
+  if(!buf||buf.length<100000){const r=await fetch(new URL('felismero/hely_embedder.json',location.href).href);const j=await r.json();const bin=atob(j.b64);buf=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)buf[i]=bin.charCodeAt(i)}
+  beagyazo=await mp.ImageEmbedder.createFromOptions(fs,{baseOptions:{modelAssetBuffer:buf},l2Normalize:true,quantize:false})}
+ const v=Float32Array.from(beagyazo.embed(im).embeddings[0].floatEmbedding);let q=0;for(const x of v)q+=x*x;q=Math.sqrt(q)||1;for(let i=0;i<v.length;i++)v[i]/=q;return v}
+function hasonlit(v){const sc={};const add=(t,s)=>{(sc[t]=sc[t]||[]).push(s)};
+ for(let i=0;i<REF.vek.length;i++){let d=0;const w=REF.vek[i];for(let k=0;k<v.length;k++)d+=v[k]*w[k];add(REF.cimkek[i],d)}
+ for(const e of SAJATEMB){if(!e.v)continue;const w=i8be(e.v,v.length)[0];if(!w)continue;let d=0;for(let k=0;k<v.length;k++)d+=v[k]*w[k];add(e.t,d+.03)}
+ return Object.entries(sc).map(([t,l])=>[t,l.sort((a,b)=>b-a).slice(0,3).reduce((a,b)=>a+b,0)/Math.min(3,l.length)]).sort((a,b)=>b[1]-a[1])}
+function sajatTanul(){if(!S.emb||!S.tema)return;SAJATEMB.unshift({t:S.tema,v:i8ki(S.emb),d:Date.now()});SAJATEMB=SAJATEMB.slice(0,300);store.set('sajatemb',SAJATEMB)}
 async function felismer(){if(!img||OSZT_HIBA||!$('felisCb').checked)return;const most=img;$('felisT').textContent='Képfelismerés fut a telefonon…';
- try{if(!osztalyozo){const mp=await import(new URL('felismero/vision_bundle.mjs',location.href).href);const fs=await mp.FilesetResolver.forVisionTasks(new URL('felismero/',location.href).href);
+ try{if(!mp_){mp_=await import(new URL('felismero/vision_bundle.mjs',location.href).href);fs_=await mp_.FilesetResolver.forVisionTasks(new URL('felismero/',location.href).href)}const mp=mp_,fs=fs_;if(!osztalyozo){
    let buf=null;try{const r=await fetch(new URL('felismero/effnet_int8.tflite',location.href).href);if(r.ok)buf=new Uint8Array(await r.arrayBuffer())}catch(e){}
    if(!buf||buf.length<100000){const r=await fetch(new URL('felismero/modell.json',location.href).href);const j=await r.json();const bin=atob(j.b64);buf=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)buf[i]=bin.charCodeAt(i)}
    osztalyozo=await mp.ImageClassifier.createFromOptions(fs,{baseOptions:{modelAssetBuffer:buf},maxResults:10})}
   if(most!==img)return;const cats=osztalyozo.classify(img).classifications[0].categories;S.felisNyers=cats.slice(0,5).map(c=>c.categoryName+' '+Math.round(c.score*100)+'%');
-  const pont=temaPontok(cats);S.felisTema=pont;$('felisJ').innerHTML='';
+  let hpont=[];try{await refBe();S.emb=await beagyaz(mp_,fs_,img);if(most!==img)return;hpont=hasonlit(S.emb);S.hasonlo=hpont.slice(0,3).map(([t,s])=>t+' '+s.toFixed(2))}catch(e){S.hasonloHiba=String(e&&e.message||e).slice(0,80)}
+  const [h1,h2]=hpont;const hBiztos=h1&&h1[1]>=.55&&(!h2||h1[1]-h2[1]>=.08);
+  if(hBiztos&&!S.temaKezi&&!S.helyFelismert){temaValaszt(h1[0]);$('felisJ').innerHTML='';$('felisT').textContent=`Felismertem a képen: ${temaObj(h1[0]).nev}. Ha nem jó, koppints másik témára.`;$('st1').textContent='';return}
+  const pont=temaPontok(cats);for(const [t,sc] of hpont.slice(0,2))if(sc>=.38){const i=pont.findIndex(p=>p[0]===t);if(i>=0)pont[i][1]=Math.max(pont[i][1],sc);else pont.push([t,sc])}
+  if(S.nsBecs==='este'||(S.time&&napszak(S.time)==='este'))pont.push(['naplemente',.35]);if(S.nsBecs==='ejjel')pont.push(['ejszaka',.35]);pont.sort((a,b)=>b[1]-a[1]);S.felisTema=pont;$('felisJ').innerHTML='';
   if(!pont.length){$('felisT').textContent='Képfelismerés: nem találtam illő témát, válassz kézzel.';return}
   $('felisT').textContent='A képfelismerő szerint:';for(const [t,sc] of pont.slice(0,3)){const b=document.createElement('button');b.className='chip';b.textContent=`${temaObj(t).nev} (${Math.round(Math.min(1,sc)*100)}%)`;b.addEventListener('click',()=>{S.temaKezi=true;temaValaszt(t)});$('felisJ').append(b)}
   const biztos=pont[0][1]>=.5&&(!pont[1]||pont[0][1]-pont[1][1]>=.15);if(!biztos)$('felisT').textContent='A képfelismerő tippjei (bizonytalan, koppints, ha valamelyik jó):';
@@ -652,5 +678,5 @@ async function felismer(){if(!img||OSZT_HIBA||!$('felisCb').checked)return;const
 keszlet();
 try{naptarFriss()}catch(e){}
 $('alkCb').addEventListener('change',()=>{if(S.cands.length&&!S.cands.some(c=>c.src==='claude'||c.src==='ai'))S.cands=[];if(S.sel!=null){S.csendes=true;valaszt(S.sel);S.csendes=false}});
-window.__test={extrakBe,fotokBe,EXTRA:()=>EXTRA,festKollazs,panelek,javitJSON,ALK,TELIHOLD,alkMondat,naptarFriss,alkalom,napido,holdKor,unnepek,husvet,reelKocka,altFriss,helyPanel,temaPontok,TERKEP,tavMondat,UT:()=>UT,K,hibak,javit,jeloltek,S,onell,KIZART,KHIBA,exif,beolvas,keres};
+window.__test={hasonlit,refBe,SAJAT:()=>SAJATEMB,extrakBe,fotokBe,EXTRA:()=>EXTRA,festKollazs,panelek,javitJSON,ALK,TELIHOLD,alkMondat,naptarFriss,alkalom,napido,holdKor,unnepek,husvet,reelKocka,altFriss,helyPanel,temaPontok,TERKEP,tavMondat,UT:()=>UT,K,hibak,javit,jeloltek,S,onell,KIZART,KHIBA,exif,beolvas,keres};
 }

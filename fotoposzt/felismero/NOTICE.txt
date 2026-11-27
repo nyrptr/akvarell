@@ -2,3 +2,10 @@ Képfelismerő (AI nélküli, a böngészőben fut, ingyenes):
 - MediaPipe Tasks Vision 1.2.3 (vision_bundle.mjs, vision_wasm_internal.*) – Google, Apache License 2.0
 - EfficientNet-Lite0 int8 képosztályozó modell (effnet_int8.tflite) – Google MediaPipe Models, Apache License 2.0
 Forrás: npm @mediapipe/tasks-vision; storage.googleapis.com/mediapipe-models/image_classifier/efficientnet_lite0/int8/1/
+- MobileNet-V3 Large képbeágyazó modell (hely_embedder.tflite) – Google MediaPipe Models, Apache License 2.0
+  Forrás: storage.googleapis.com/mediapipe-models/image_embedder/mobilenet_v3_large/float32/1/
+- helyek-emb.json: 108 referencia-beágyazás (számsor, nem kép) a Wikimedia Commons szabad licencű fotóiból
+  (Zebegény kategóriái: Our Lady of the Snow Church, Zebegény Viaduct, Calvary chapel, Stations of the Cross,
+  Kós Károly-kilátó, Dőry Mansion, Maróti-villa, Országzászló és hősi emlékmű, Szőnyi István Emlékmúzeum,
+  Zebegény Maritime Museum, Sziklakápolna, Railway bridge (Jánoshegy utca)). Az egyes fotók oldalai és szerzői
+  a helyek-emb.json „forrasok” mezőjében, fotónként.
