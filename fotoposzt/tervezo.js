@@ -128,7 +128,7 @@
     $('terv').hidden = mod !== 'terv';
     if ($('ered')) { $('ered').hidden = mod !== 'ered'; if (mod === 'ered') eredmenyRajzol(); }
     $('lepsor').hidden = terv;
-    for (const s of document.querySelectorAll('.lepes')) s.hidden = terv ? true : +s.dataset.l !== ((typeof S !== 'undefined' && S.lep) || 1);
+    for (const s of document.querySelectorAll('.lepes')) s.hidden = terv ? true : +s.dataset.l !== ((window.__test && window.__test.S && window.__test.S.lep) || 1);
     for (const b of document.querySelectorAll('#modok button')) b.setAttribute('aria-pressed', String(b.dataset.mod === mod));
   }
 
@@ -157,6 +157,16 @@
     if ($('fejLogo') && c.logobetu) $('fejLogo').textContent = c.logobetu;
   }
   arculat();
+  // A kiválasztott fotó a 2–4. lépésnél is látszik (Péter, 11-27: „eltűnik a kép”).
+  function miniFriss() {
+    const m = $('miniFoto'), pv = $('prev'); if (!m || !pv) return;
+    const l = (window.__test && window.__test.S && window.__test.S.lep) || 1, poszt = !$('lepsor').hidden;
+    const van = pv.src && !pv.hidden;
+    m.hidden = !(poszt && l >= 2 && van);
+    if (!m.hidden) { let im = m.querySelector('img'); if (!im) { im = document.createElement('img'); im.alt = 'A kiválasztott fotó'; m.prepend(im); } if (im.src !== pv.src) im.src = pv.src;
+      const t = document.querySelector('#temak .chip[aria-pressed=true]'); m.querySelector('span').textContent = t ? 'Téma: ' + t.textContent : 'A fotód'; }
+  }
+  try { new MutationObserver(miniFriss).observe($('lepsor'), { attributes: true, subtree: true, attributeFilter: ['aria-current', 'hidden'] }); } catch (e) {}
   window.__terv = { naptar, temaSor, vanAnyag, evszak, modValt, statusz, kamp };
   // ── Eredmény (BEMUTATÓ): szimulált mérés a teszthez, amíg nincs Meta-bekötés. Minden szám jelölten nem valós.
   // A javaslatokat ugyanaz a program-szabály adja, ami élesben a valódi számokra fut (AI nélkül).

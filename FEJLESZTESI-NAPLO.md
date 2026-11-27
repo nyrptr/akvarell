@@ -496,3 +496,9 @@
 - Arculat az ügyfélrétegben (`ceg.arculat`: márkakék a ház tábláján mérve, jelmondat az oldalukról): fejléc = cégnév + jelmondat, márkaszín a `--deep` változón; a beégetett zöld (#2f4237) mind változóra cserélve; sötét módban a kijelölt gombok szövege a háttérszín.
 - Saját hiba munka közben: az Eredmény-blokk cseréjekor kivágtam a bemutató képtárat és a kiküldést – a t29 megfogta, visszaállítva.
 - Teszt: t29 (kártya, haladás, 2 cél, csukott részletek, kint-jelölés, arculat) 0 HIBA; t24, t27, t28, t30, t31, kapu 0 HIBA.
+
+## 2026-11-27 – ZSEBMARKETING: fotó a 2–4. lépésnél, lépésgomb-feliratok
+- Péter: „eltűnik a kép… először úgy tűnt, hogy két szöveget ad”. Új `#miniFoto` sáv a lépéssor alatt (kis kép + téma) a 2–4. lépésnél; lépésgombok „1. Fotó / 2. Szöveg / 3. Kép / 4. Közzététel”.
+- Rejtett hiba közben: a tervezo.js `S`-re hivatkozott, ami az app.js-ben nem globális → Terv/Eredmény után a Poszt mód mindig az 1. lépést mutatta. Most `window.__test.S`.
+- Saját hiba: üres `<img>` a rejtett sávban – a kapu 12 hibát adott, javítva (a kép csak megjelenéskor jön létre).
+- t29 (mini a 2. lépésnél igen, az 1.-nél nem), kapu, t24, t30 0 HIBA.
