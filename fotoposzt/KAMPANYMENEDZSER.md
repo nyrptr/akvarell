@@ -38,3 +38,27 @@ AI-javaslat; minden típusnak van kiváltója (mi indítja) – a kampánymenedz
 | Prémium egység (jacuzzi, Deluxe) | Felértékelés / élménycsomag (romantikus hétvége) | – |
 Kemény határ: ár, kedvezmény, csomag = az ügyfél döntése (pénz); a menedzser csak javasol, indokkal.
 Adatforrás, ami nálunk már megvan: az Akvarell saját foglalási rendszere (functions/_kozos/naptar.js iCal-szinkron) – a rés-éjszakák gépi felismeréséhez.
+
+## Teljes kép szerepek mentén (Péter, 11-27: „végigmenni a szerepeken… nagy képet… a felületnek is állítódni kell… dizájnos, modern”)
+AI-javaslat. Egy kis szállásnak egy ügynökség ezeket a szerepeket adná – az appban mindegyiknek van egy gépi része és egy emberi döntése.
+| Szerep | Mit csinál egy embere | Az appban (AI nélkül) | Ügyfél dönt / mi |
+|---|---|---|---|
+| Kampánymenedzser / stratéga | mikor, mit, miért | „Most ezt javaslom” a kiváltókból (naptár-rés, ünnep a foglalási ablakban, helyi esemény, előző év) + indoklás | választ / saját kampány |
+| Szövegíró | üzenet, nyelvek | brief fő üzenete + mondatkészlet HU/EN/DE | átír egy sort |
+| Fotós | képlista, beállítás | fotós-segéd: lista a kampányból, útmutató kártya, program-ellenőrzés; módok: séta kint / bent / modell | maga fotóz vagy kéri; modellnél hozzájárulás |
+| Social media manager | ütemezés, közzététel | idővonal fázisokkal, „Ma” kártya; bekötve: kész poszt magától megy (FB időzítés), IG értesítés | automata vagy „én nyomom” |
+| Hirdetéskezelő | keret, közönség | keret-javaslat: „csak posztok” vagy „kis kiemelés N napig”; a Meta minimuma napi 1 USD, tesztre jellemzően napi 5 USD 6–7 napig (webfx.com) | pénz: mindig az ügyfél |
+| Elemző | mérés, tanulság | kampánykártya: haladás + egy cél-szám + egy javaslat | – |
+| Revenue manager | ár, minimum éj | csak jelez („dec. 9–11. üres”) | ár: az ügyfél |
+| Jogi / adat | képmás, reklámjog | modell-fotónál hozzájárulás-jelölés; tiltólista (kommentkérés, garancia) | – |
+
+Kész kampányok (sablon, kitölthető) + saját kampány: Kiemelt időszak, Üres napok, Hétköznapi pihenő, Helyi esemény, Visszahívás, Új nyelvi piac, Hosszabb tartózkodás, Prémium élmény. Szakmánként más készlet (szakmacsomag) – nem Akvarell-specifikus.
+Sorrend (ha több fut): a „Ma” kártya fésüli össze; fázisok: felvezetés → fő hét → utolsó hívás → utána.
+Felület: új kezdőképernyő a kampánymenedzserrel (látványterv a chatben, 11-27); modern, meleg, letisztult; az ügyfél márkaszíne kiemelésként. Péter feltevése: a vendégházaknál a használók többsége nő – a tesztelőkkel ellenőrizni, nem sztereotípiára tervezni.
+
+## Önellenőrzés – eddigi hibáim, amire ennél figyelek
+1. Szó szerint építettem (Tervező = lista) → előbb a szakma, ábra, jóváhagyás.
+2. Átvett hibát hagytam nyitva → nyitott hibák előbb.
+3. Felületet nem frissítettem a gondolkodással → minden körben látható képernyő.
+4. Akvarellre szabtam a magot → minden a szakma- és ügyfélrétegben.
+5. Rejtett hiba csak éles próbán jött ki (S nem globális, üres doboz, ragadás) → minden állapotról képernyőkép, sötét módban is.
