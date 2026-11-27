@@ -24,3 +24,8 @@ flowchart TD
 
 Határok (őszintén): fizetett hirdetés beállítása ember (mi); kommentre válasz csak jóváhagyott piszkozat; profi fotózást nem vált ki.
 Gyár-kötés: a marketing tudása a MARKETING + KOMMUNIKÁCIÓ chat osztályából jön (Iagent `szerepek/marketing.md`, gyar/dontesek.yaml 137: a marketing osztály általános, projekt-szabály a projektmappába) – nem építjük újra.
+
+## Jóváhagyott kiegészítések (Péter, 2026-11-27)
+- „Mehet a helyzetkép és a képtartalék a Tervezőbe”: a gép „ablaka” – naptár, nap, évszak (motor, offline); időjárás most+holnap és Duna (Akvarell `/api/taj`, met.no CC BY 4.0, OVF); helyi hírek/programok (napi egyszer, csak szabad vagy hivatalos forrás, forrásjelöléssel) – ügyfelenként a csomagban megadott forrásokkal.
+- Képtár: minden fotó magától címkét kap (évszak, idő, napszak, hely). Képtartalék négy lépcsőben: friss illő → tavalyi azonos évszak (nem állítja, hogy ma készült) → évszaktól független kép évszakhoz illő szöveggel → más téma ugyanabból a kampányból. A kampány soha nem áll meg.
+- Fotókérés csak teljesíthető: a kampány hetekkel előre jelez; időjárásfüggő kép csak lehetőségként („holnap köd várható – ha arra jársz”), nem feladatként. Forrás: Péter, 11-27: „olyan képet nem tudunk kérni, ami holnapra, amin az épp megfelelő időjárás van… a kampánynak fel kell arra is készülnie.”

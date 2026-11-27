@@ -28,6 +28,9 @@ async def main():
                 for x in await pg.evaluate(MERES): hibak.append(f'{nev} {lep}. lépés: {x}')
             await pg.close()
         await b.close()
+    import subprocess as _sp, pathlib as _pl
+    _r=_sp.run(['python3',str(_pl.Path(__file__).resolve().parent.parent/'fotoposzt_pwa.py'),'--ellenoriz'],capture_output=True,text=True)
+    if _r.returncode: hibak.append('PWA: '+_r.stdout.strip())
     for x in sorted(set(hibak)): print('HIBA', x)
     print(f'{len(set(hibak))} HIBA')
 asyncio.run(main())

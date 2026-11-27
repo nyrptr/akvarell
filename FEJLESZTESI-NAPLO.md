@@ -1,5 +1,12 @@
 # Fejlesztési napló – Akvarell bemutató
 
+## 2026-11-27 – Claude (ZSEBMARKETING) – telepíthető webapp (PWA)
+- Péter jóváhagyta a sorrendet („Mehet a képességtérkép és ez a sorrend”: webapp → Tervező → Meta → Visszajelzés). 1. lépés.
+- Új: `fotoposzt/manifest.webmanifest`, `fotoposzt/ikon/` (180/192/512), `fotoposzt/sw.js` (oldal és kód: hálózat első, net nélkül tárolt; csomag: hálózat első; felismerő/zene: tárolt első), `index.html`: manifest, iOS-meta, „Új változat érkezett – Frissítés most” sáv; `app.js`: service worker csak önálló oldalon (claude.ai-os artifactban nem).
+- Kiadás: `python3 tools/fotoposzt_pwa.py` bélyegzi a változatot (hash); a `fotoposzt_kapu.py` hibát ad, ha elavult (a mind.sh része).
+- Képességtérkép: helyzetkép, képtár, négylépcsős képtartalék, teljesíthető fotókérés (Péter jóváhagyta).
+- Teszt: `fotoposzt_t26.py` 0 HIBA (manifest, ikonok, átvétel, net nélküli indulás, frissítés-jelzés és -csere), t24, t25 0 HIBA, `mind.sh` MIND RENDBEN (3 ismert api/taj 503). Nem tesztelt: valódi iPhone-on a kezdőképernyőre tétel (Péter próbája); az előnézet Access-belépése a telepített appban.
+
 ## 2026-11-27 – Claude (ZSEBMARKETING) – több fotó: mindet felismeri
 - Péter: „csak az elsőt próbálja meg felismerni… zebegényi séta… több épületet is fel kéne ismernie”. Ok: a további fotók témája csak GPS-ből jött (120 m-en belül); GPS nélkül üres maradt.
 - Javítás: a további fotókra is fut a képfelismerő (beágyazás + hasonlóság, ugyanazok a küszöbök); a bélyegképen látszik a felismert téma („2 · Templom”, ismeretlennél „2 · ?”); a borító témájának változása frissíti a bélyegeket.

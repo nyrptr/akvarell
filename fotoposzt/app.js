@@ -802,5 +802,11 @@ keszlet();
 try{naptarFriss()}catch(e){}
 $('alkCb').addEventListener('change',()=>{if(S.cands.length&&!S.cands.some(c=>c.src==='claude'||c.src==='ai'))S.cands=[];if(S.sel!=null){S.csendes=true;valaszt(S.sel);S.csendes=false}});
 $('felisOk').addEventListener('click',()=>{if(!S.emb||!S.tema)return;sajatTanul();S.felisOkKesz=true;felisOkFriss();$('felisSt').textContent=`Megjegyeztem: legközelebb AI nélkül is felismerem (${temaObj(S.tema).nev}). Mentéssel átvihető másik telefonra és a központba.`});
+// Telepíthető webapp: service worker (az artifact keretében nem fut – ott nincs is rá szükség)
+(()=>{try{if(!('serviceWorker' in navigator)||window.claude||!/^https?:$/.test(location.protocol))return;
+ navigator.serviceWorker.register('sw.js').then(reg=>{const jelez=w=>{if(!w)return;w.addEventListener('statechange',()=>{if(w.state==='installed'&&navigator.serviceWorker.controller)$('ujValt').hidden=false})};
+  if(reg.waiting&&navigator.serviceWorker.controller)$('ujValt').hidden=false;reg.addEventListener('updatefound',()=>jelez(reg.installing));
+  $('ujValtB').addEventListener('click',()=>{(reg.waiting||reg.installing)?.postMessage('frissits')});
+  let ujra=false;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(ujra)return;ujra=true;location.reload()})}).catch(()=>{})}catch(e){}})();
 window.__test={felisOkFriss,merreMondat,ZENE,hasonlit,refBe,SAJAT:()=>SAJATEMB,extrakBe,fotokBe,EXTRA:()=>EXTRA,festKollazs,panelek,javitJSON,ALK,TELIHOLD,alkMondat,naptarFriss,alkalom,napido,holdKor,unnepek,husvet,reelKocka,altFriss,helyPanel,temaPontok,TERKEP,tavMondat,UT:()=>UT,K,hibak,javit,jeloltek,S,onell,KIZART,KHIBA,exif,beolvas,keres};
 }

@@ -4,6 +4,12 @@
 <meta name="robots" content="noindex">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#2f4237">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Fotóposzt">
+<link rel="apple-touch-icon" href="ikon/ikon-180.png">
 <title>Akvarell fotóposzt</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,600&family=Figtree:wght@400;600;800&display=swap" rel="stylesheet">
@@ -111,6 +117,7 @@ summary{min-height:44px;display:flex;align-items:center;font-weight:700;cursor:p
 <body>
 <div class="wrap">
 <header><div class="logo" aria-hidden="true">A</div><div><h1>Fotóból poszt</h1><p class="sub">Akvarell Apartmanház, Zebegény</p></div></header>
+<div class="note" id="ujValt" role="status" hidden>Új változat érkezett. <button class="btn sec" id="ujValtB">Frissítés most</button></div>
 <nav class="lepsor" id="lepsor" aria-label="Lépések"><button data-n="1" aria-current="step">1 Fotó</button><button data-n="2">2 Szöveg</button><button data-n="3">3 Kép</button><button data-n="4">4 Közzététel</button></nav>
 
 <section class="lepes" data-l="1">

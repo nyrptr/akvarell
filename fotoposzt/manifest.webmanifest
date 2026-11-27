@@ -1,0 +1,16 @@
+{
+  "name": "Fotóból poszt",
+  "short_name": "Fotóposzt",
+  "description": "Fotóból kész poszt és reel, három nyelven, AI nélkül is.",
+  "lang": "hu",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f4ee",
+  "theme_color": "#2f4237",
+  "icons": [
+    {"src": "ikon/ikon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "ikon/ikon-512.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "ikon/ikon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}
