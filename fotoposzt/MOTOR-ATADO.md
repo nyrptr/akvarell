@@ -4,6 +4,7 @@
 Üzleti terv (AI-vázlat Péter döntésére): https://claude.ai/artifact/Jj4nZiXhzxBVeQxNMry8qT
 
 ## 0. Indulás és munkarend – ZSEBMARKETING chat (Péter döntése, 2026-11-27: „Mehet a munkarend”)
+- GAZDA (Péter, 2026-11-27: „Mehet: a fotoposzt mappa gazdája a ZSEBMARKETING”): a `fotoposzt/` mappát csak a ZSEBMARKETING módosítja, a `munka-fotoposzt` ágon; a tároló többi része a `ZAR-akvarell.md` szerint a KAPOCS-chaté. A fotóposzt-chat (AKVARELL VENDÉGHÁZ ALKALMAZÁS) kérése a KAPOCS-csatornán jön.
 Forrás: Péter, 2026-11-27: „mindig minden egyes dolognál futtasd végig magad a megfelelő rutinokon… használnád a gyárat, használnád a csatornát”. A három szintet Claude fogalmazta meg; Péter ábrán jóváhagyta.
 - Fejléc minden válaszban: `> ### 📲 ZSEBMARKETING`. Válasz vége: `Körök: N (…)`.
 - MINDEN ÜZENET (olcsó): `KAPOCS_KLON=<veledaholnapert klón> python3 tools/bemenet.py "<szó szerint>" "<feladat>"` (Iagent) – kérésnapló, KAPOCS-csatorna, útvonal; rövid nyugtánál `--nyugta`.
