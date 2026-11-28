@@ -21,7 +21,7 @@ async def main():
         if await pg.is_hidden('#frissSav'): hib.append('frissítés-sáv nem látszik a Ma fülön')
         await pg.get_by_role('button', name='Elkészítem').click(); await pg.wait_for_timeout(2500)
         if await pg.is_hidden('#posztKamp'): hib.append('nincs kampányfejléc a posztkészítésben')
-        elif 'Ráadás' not in await pg.inner_text('#posztKamp'): hib.append('a kampányfejlécből hiányzik a ráadás')
+        elif '1/' not in await pg.inner_text('#posztKamp'): hib.append('a kampányfejlécből hiányzik, hányadik poszt')
         if not await pg.is_hidden('#frissSav'): hib.append('frissítés-sáv látszik a posztkészítésben')
         if await pg.evaluate("()=>document.getElementById('reszl').open"): hib.append('nyelv/napszak/évszak nincs összecsukva')
         if 'magyar' not in await pg.inner_text('#reszlS'): hib.append('az összecsukott sor nem mutatja a nyelvet')

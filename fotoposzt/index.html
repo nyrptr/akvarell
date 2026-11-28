@@ -146,6 +146,15 @@ header h1{font-size:clamp(20px,6.2vw,30px);overflow-wrap:anywhere;hyphens:auto}.
 .lejatszo{position:relative;display:block;max-width:360px;margin:8px auto 0}
 .lejatszo video{width:100%;display:block;border-radius:12px;cursor:pointer}
 .lejatszoB{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:48px;margin-top:6px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:700 15px Figtree,sans-serif;cursor:pointer}
+
+.kampSav,.kampSor{display:block;width:100%;text-align:left;border:1px solid var(--line);border-left:4px solid var(--deep);border-radius:12px;background:var(--card);color:var(--ink);padding:12px 14px;margin:0 0 10px;min-height:56px;cursor:pointer;font:inherit}
+.kampSav b,.kampSor b{display:block;font-size:16px}.kampSav small,.kampSor small{display:block;color:var(--mute);font-size:13px;margin-top:2px}
+.kampSor[aria-current=true]{background:var(--soft,#eef3f8)}
+.kartya.halk{background:none;border-style:dashed}.kartya.halk p{margin:0;color:var(--mute)}
+.linkgomb{background:none;border:0;color:var(--deep);font:600 14px Figtree,sans-serif;text-decoration:underline;min-height:44px;padding:0 6px;cursor:pointer}
+.futoK,.ujKamp{margin:10px 0}.futoK>summary,.ujKamp>summary{cursor:pointer;min-height:44px;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--card);font:600 15px Figtree,sans-serif;list-style:none}
+.futoK>summary::-webkit-details-marker,.ujKamp>summary::-webkit-details-marker{display:none}.futoK[open]>summary,.ujKamp[open]>summary{margin-bottom:10px}
+#kampValaszt{display:none}
 </style>
 </head>
 <body>
@@ -305,7 +314,7 @@ header h1{font-size:clamp(20px,6.2vw,30px);overflow-wrap:anywhere;hyphens:auto}.
 <section id="out" hidden>
 <div class="kartya siker" id="gyorsInfo" hidden role="status"><b>Kész a poszt – a gép elkészítette.</b><ol style="margin:6px 0 0 18px;padding:0"><li>Nézd át a szöveget és a képet (a szöveg átírható).</li><li>Ha nem tetszik: Másik szöveget kérek / Más kinézet.</li><li>Lent pipáld ki, és küldd ki.</li></ol></div>
 <h2 style="margin-top:4px">Kész poszt <small class="note">– a szöveg átírható</small></h2>
-<div class="two" id="gyorsGombok" style="margin:0 0 10px"><button class="btn sec" id="mastKerek" type="button">Másik szöveget kérek</button><button class="btn sec" id="kinezetB" type="button">Más kinézet</button></div>
+<div class="two" id="gyorsGombok" style="margin:0 0 10px"><button class="btn sec" id="mastKerek" type="button">Másik szöveget kérek</button><button class="btn sec" id="kinezetB" type="button">Kép stílusa, videó</button></div>
 <div class="fb">
 <div class="fbh"><div class="logo" aria-hidden="true">A</div><div><b>Akvarell Apartmanház</b><small id="fbsub">Piszkozat · nem ment ki</small></div></div>
 <textarea id="txt" rows="5" aria-label="Poszt szövege"></textarea>

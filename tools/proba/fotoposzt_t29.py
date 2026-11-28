@@ -41,7 +41,7 @@ async def main():
       if await pg.locator('#tervLista .tervsor').count()!=8: hib.append(f'{w}: a terv nem maradt meg újratöltés után')
       await pg.click('#tervLista .tervsor >> nth=0'); await pg.wait_for_timeout(300)
       if not await pg.is_hidden('#terv') or await pg.is_hidden('#lepsor'): hib.append(f'{w}: sorra koppintás nem vitt poszt módba')
-      await pg.evaluate("()=>__terv.modValt('poszt')"); await pg.wait_for_timeout(200)
+      await pg.wait_for_timeout(3000); await pg.evaluate("()=>{__terv.modValt('poszt');lep(1)}"); await pg.wait_for_timeout(200)  # 11-28: a sor kész posztra visz; a képtárat az 1. lépésen mérjük
       if await pg.is_hidden('#demoW'): hib.append(f'{w}: bemutató képtár nem látszik')
       await pg.click('#demoKepek .chip >> nth=0'); await pg.wait_for_timeout(2500)
       await pg.evaluate("()=>lep(2)"); await pg.wait_for_timeout(300)
@@ -66,7 +66,8 @@ async def main():
       k=await pg.evaluate("()=>JSON.parse(document.getElementById('keszlet').textContent).zaro.filter(z=>z.id.startsWith('f1-')).length")
       if k!=4: hib.append(f'{w}: frissítés nem került a készletbe ({k})')
       if 'Frissítve' not in await pg.inner_text('#frissSav'): hib.append(f'{w}: nincs „Frissítve” jelzés')
-      await pg.click('#frissSav .chip'); await pg.wait_for_timeout(3500)
+      await pg.evaluate("()=>document.body.classList.add('muhely')"); await pg.click('#frissSav .chip');  # letöltés után csak a Műhelyben (11-28)
+      await pg.wait_for_timeout(3500)
       k=await pg.evaluate("()=>JSON.parse(document.getElementById('keszlet').textContent).zaro.filter(z=>z.id.startsWith('f1-')).length")
       if k!=0: hib.append(f'{w}: visszaállítás nem működött')
       if err: hib.append(f'{w}: JS {err[0]}')
