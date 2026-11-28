@@ -48,5 +48,15 @@
    "cim": "Részlet"
   }
  ],
- "klipek_megjegyzes": "BEMUTATÓ klipek: a bemutató fotókból lassú ráközelítéssel (ffmpeg), nem valódi videó."
+ "klipek_megjegyzes": "BEMUTATÓ klipek: a bemutató fotókból lassú ráközelítéssel (ffmpeg), nem valódi videó.",
+ "nyers": [
+  {
+   "fajl": "nyers-duna-allo.mp4",
+   "nev": "Duna, álló (bemutató, 18 mp, az eleje életlen)"
+  },
+  {
+   "fajl": "nyers-kilatas-fekvo.mp4",
+   "nev": "Kilátás, fekvő (bemutató, 16 mp, a vége sötét)"
+  }
+ ]
 }

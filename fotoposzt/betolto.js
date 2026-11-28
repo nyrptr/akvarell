@@ -6,7 +6,7 @@
   const nev = new URLSearchParams(location.search).get('csomag');
   const indit = () => { const s = document.createElement('script'); s.src = 'app.js';
     s.onload = () => { const t = document.createElement('script'); t.src = 'tervezo.js';
-      t.onload = () => { const z = document.createElement('script'); z.src = 'zseb.js'; document.body.append(z); }; document.body.append(t); };
+      t.onload = () => { const z = document.createElement('script'); z.src = 'zseb.js'; z.onload = () => { const v = document.createElement('script'); v.src = 'vago.js'; document.body.append(v); }; document.body.append(z); }; document.body.append(t); };
     document.body.append(s); };
   const hiba = (szoveg) => {
     const p = document.createElement('p');

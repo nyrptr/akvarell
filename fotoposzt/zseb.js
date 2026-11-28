@@ -258,7 +258,7 @@
   function kepRajz() {
     for (const b of document.querySelectorAll('#kepMod .chip')) b.setAttribute('aria-pressed', String(b.dataset.km === kepMod));
     const w = $('kepLista'); w.textContent = ''; $('kepSeged').hidden = true;
-    $('klipW').hidden = kepMod !== 'video';
+    $('klipW').hidden = true; if (window.__vago) window.__vago.mutat(kepMod === 'video');
     if (kepMod === 'foto') {
       const k = T.tar.get(); const lista = [...((k && k.foto) || []).filter(f => f.tipus === 'kérés'), ...(SZ.fotolista || []).slice(0, 4).map(m => ({ mit: m, tipus: 'kérés' }))];
       const lat = new Set(); for (const f of lista) { if (lat.has(f.mit)) continue; lat.add(f.mit);
@@ -268,7 +268,7 @@
       KLIP.forEach((kl, i) => { const b = el('button', 'tervsor'); b.type = 'button'; b.innerHTML = '<b></b><small></small>';
         b.children[0].textContent = `${i + 1}. ${kl.cim}` + (KLIPEK[i] ? ' · ✓ megvan' : ''); b.children[1].textContent = kl.tipp;
         b.addEventListener('click', () => segedKlip(i)); w.append(b); });
-      w.append(gomb('Bemutató klipek betöltése', 'btn sec full', demoKlipek));
+      w.append(gomb('Bemutató nyers klipek betöltése (próbához)', 'btn sec full', demoKlipek));
       klipRajz();
     }
   }
@@ -314,10 +314,10 @@
   $('klipFile').addEventListener('change', (e) => { const f = e.target.files[0]; e.target.value = ''; if (f && SEG && SEG.klip != null) klipBe(SEG.klip, URL.createObjectURL(f)); });
   function klipBe(i, url) {
     const v = document.createElement('video'); v.muted = true; v.playsInline = true; v.preload = 'metadata'; v.src = url;
-    v.onloadedmetadata = () => { KLIPEK[i] = { url, dur: v.duration, allo: v.videoHeight > v.videoWidth, w: v.videoWidth, h: v.videoHeight }; kepRajz(); };
+    v.onloadedmetadata = () => { KLIPEK[i] = { url, dur: v.duration, allo: v.videoHeight > v.videoWidth, w: v.videoWidth, h: v.videoHeight }; if (window.__vago) window.__vago.hozzaad(url, KLIP[i] ? KLIP[i].cim : 'klip'); kepRajz(); };
   }
   async function demoKlipek() {
-    try { const j = await (await fetch('bemutato/lista.json')).json(); (j.klipek || []).slice(0, 4).forEach((k, i) => klipBe(i, 'bemutato/' + k.fajl)); } catch (e) {}
+    try { const j = await (await fetch('bemutato/lista.json')).json(); const nyers = j.nyers || []; if (nyers.length && window.__vago) { for (const k of nyers) window.__vago.hozzaad('bemutato/' + k.fajl, k.nev); return; } (j.klipek || []).slice(0, 4).forEach((k, i) => klipBe(i, 'bemutato/' + k.fajl)); } catch (e) {}
   }
   function klipRajz() {
     const w = $('klipek'); w.textContent = ''; const van = KLIPEK.filter(Boolean);

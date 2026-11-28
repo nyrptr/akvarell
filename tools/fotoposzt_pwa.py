@@ -4,7 +4,7 @@ Ha a VALTOZAT nem változik, a telepített app nem veszi észre az új kiadást.
 import hashlib,pathlib,re,sys
 d=pathlib.Path(__file__).resolve().parent.parent/'fotoposzt'
 h=hashlib.sha256()
-for n in ['index.html','app.js','betolto.js','tervezo.js','zseb.js','frissites.js','manifest.webmanifest']:h.update((d/n).read_bytes())
+for n in ['index.html','app.js','betolto.js','tervezo.js','zseb.js','vago.js','frissites.js','manifest.webmanifest']:h.update((d/n).read_bytes())
 v=h.hexdigest()[:12]
 sw=(d/'sw.js').read_text(encoding='utf8');m=re.search(r"const VALTOZAT='([^']*)';",sw)
 if '--ellenoriz' in sys.argv:
