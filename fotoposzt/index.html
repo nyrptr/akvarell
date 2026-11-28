@@ -134,7 +134,11 @@ body{padding-bottom:84px}.rejt{position:absolute;left:-9999px}
 body[data-mod]:not([data-mod=ma]):not(.muhely) #frissSav{display:none}
 body:not(.muhely) .cand .tag:not(.ai){display:none}
 body[data-mod]:not([data-mod=poszt]) .lepes{display:none!important}
-.briefTobb summary{cursor:pointer;min-height:44px;padding:10px 0;color:var(--deep);font-weight:600}
+.briefTobb summary{cursor:pointer;min-height:44px;padding:12px;margin:8px 0;border:1px solid var(--deep);border-radius:12px;color:var(--deep);font-weight:600;list-style:none}.briefTobb summary::-webkit-details-marker{display:none}
+.kartya.siker{border:1px solid #2e7d4f;background:#eef7f0}.kartya.siker h3,.kartya.siker b{color:#1f5c38}
+@media (prefers-color-scheme:dark){.kartya.siker{background:#173322;border-color:#5fb07f}.kartya.siker h3,.kartya.siker b{color:#bfe8cd}}
+#frissSav[data-kesz]{display:none}
+header h1{font-size:clamp(20px,6.2vw,30px);overflow-wrap:anywhere;hyphens:auto}.muhelyB{min-width:50px;padding:4px 6px;font-size:11px}#jegyzetB+.muhelyB,#muhelyB{margin-left:6px}body.muhely #frissSav[data-kesz]{display:block}
 .posztKamp{border:1px solid var(--line);border-left:0;border-radius:12px;background:var(--card);padding:10px 12px;margin:0 0 10px;font:500 14px/1.4 Figtree,sans-serif}
 .posztKamp b{display:block;font-size:15px}.posztKamp small{display:block;color:var(--mute)}
 #reszl summary{display:block;cursor:pointer;padding:10px 0;min-height:44px;font:600 14px/1.4 Figtree,sans-serif}body:not(.muhely) #felisOk{display:none!important}#reszlS{color:var(--mute);font-weight:500}
@@ -299,6 +303,7 @@ body[data-mod]:not([data-mod=poszt]) .lepes{display:none!important}
 
 <section class="lepes" data-l="4" hidden>
 <section id="out" hidden>
+<div class="kartya siker" id="gyorsInfo" hidden role="status"><b>Kész a poszt – a gép elkészítette.</b><ol style="margin:6px 0 0 18px;padding:0"><li>Nézd át a szöveget és a képet (a szöveg átírható).</li><li>Ha nem tetszik: Másik szöveget kérek / Más kinézet.</li><li>Lent pipáld ki, és küldd ki.</li></ol></div>
 <h2 style="margin-top:4px">Kész poszt <small class="note">– a szöveg átírható</small></h2>
 <div class="two" id="gyorsGombok" style="margin:0 0 10px"><button class="btn sec" id="mastKerek" type="button">Másik szöveget kérek</button><button class="btn sec" id="kinezetB" type="button">Más kinézet</button></div>
 <div class="fb">

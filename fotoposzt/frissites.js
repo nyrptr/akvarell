@@ -23,12 +23,13 @@
     fetch('bemutato/frissites.json', { cache: 'no-cache' }).then(r => r.ok ? r.json() : null).then(uj => {
       el.textContent = '';
       if (akt && (!uj || akt.verzio === uj.verzio)) {
-        el.hidden = false; el.className = 'bemutato';
+        el.hidden = false; el.className = 'bemutato'; el.dataset.kesz = '1'; /* letöltés után csak a Műhelyben látszik (Péter 11-28) */
         const p = document.createElement('p'); p.textContent = `Frissítve (${akt.cim}): ` + (akt.valtozas || []).join('; ') + '.'; el.append(p);
         const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.textContent = 'Visszaállítás (újra kipróbálni)';
         b.addEventListener('click', () => { localStorage.removeItem(KULCS); location.reload(); }); el.append(b);
         return;
       }
+      delete el.dataset.kesz;
       if (!uj) { el.hidden = true; return; }
       el.hidden = false; el.className = 'bemutato';
       const p = document.createElement('p'); p.textContent = `Frissítés érkezett (bemutató): ${uj.cim}.`; el.append(p);
