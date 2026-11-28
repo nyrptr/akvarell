@@ -1,6 +1,6 @@
 // Fotóposzt service worker – telepíthető webapp, offline indulás, frissítés jelzése.
 // VALTOZAT: minden kiadásnál a tools/fotoposzt_pwa.py írja át (a tartalom hash-e) → a telefon új változatot lát.
-const VALTOZAT='79a94bcf0094';
+const VALTOZAT='685f679beb04';
 const HEJ='fotoposzt-hej-'+VALTOZAT, FUTO='fotoposzt-futo';
 const ALAP=['./','index.html','app.js','betolto.js','tervezo.js','zseb.js','frissites.js','manifest.webmanifest','ikon/ikon-192.png','ikon/ikon-512.png','ikon/ikon-180.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(HEJ).then(c=>c.addAll(ALAP)))});

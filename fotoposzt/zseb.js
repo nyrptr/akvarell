@@ -485,9 +485,10 @@
 
   // Tiszta lap (Péter 11-28: „ugyanonnan induljak, mint az előbb”): minden helyi adat törlése, újraindítás. A Műhely tetején.
   if ($('kesz')) {
-    const tb = gomb('Elölről kezdem – tiszta lap', 'btn full', () => {
-      if (!tb.dataset.biztos) { tb.dataset.biztos = '1'; tb.textContent = 'Biztos? Minden kampány és beállítás törlődik – koppints újra'; setTimeout(() => { delete tb.dataset.biztos; tb.textContent = 'Elölről kezdem – tiszta lap'; }, 5000); return; }
-      try { for (const k of Object.keys(localStorage)) if (k.startsWith('akvposzt-')) localStorage.removeItem(k); sessionStorage.clear(); } catch (e) {}
+    const tb = gomb('Kampányok törlése – újrapróbálom', 'btn full', () => {
+      if (!tb.dataset.biztos) { tb.dataset.biztos = '1'; tb.textContent = 'Biztos? A kampányaid törlődnek. Amit a rendszer tanult, megmarad. Koppints újra.'; setTimeout(() => { delete tb.dataset.biztos; tb.textContent = 'Kampányok törlése – újrapróbálom'; }, 6000); return; }
+      // Péter 11-28: csak a kampányok mennek; a tanulás (mondatok, felismerés, témák, stílus) és a letöltött frissítés megmarad
+      try { for (const k of ['akvposzt-kampanyok', 'akvposzt-terv', 'akvposzt-kint']) localStorage.removeItem(k); sessionStorage.clear(); } catch (e) {}
       location.reload();
     });
     tb.id = 'tisztaLap'; const sum = $('kesz').querySelector('summary'); (sum ? sum.after(tb) : $('kesz').prepend(tb));
