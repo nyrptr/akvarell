@@ -339,7 +339,7 @@
   if ($('muhelyB')) $('muhelyB').addEventListener('click', () => {
     const be = !document.body.classList.contains('muhely'); document.body.classList.toggle('muhely', be);
     $('muhelyB').setAttribute('aria-pressed', String(be));
-    if (be) { const k = $('kesz'); if (k) { k.open = true; k.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }
+    const k = $('kesz'); if (k) { k.hidden = !be && document.body.dataset.mod !== 'poszt'; if (be) { k.open = true; k.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }
   });
   // Saját lejátszó: a telefon vezérlői nem takarják a videót; koppintás = indít/megállít.
   function lejatszo(v) {
@@ -430,6 +430,16 @@
       if (ix >= n) { ujak(); ix = 0; } valaszt(ix); lep(4); S.csendes = false; } catch (e) {}
   });
   if ($('kinezetB')) $('kinezetB').addEventListener('click', () => { try { lep(3); } catch (e) {} });
+
+  // Tiszta lap (Péter 11-28: „ugyanonnan induljak, mint az előbb”): minden helyi adat törlése, újraindítás. A Műhely tetején.
+  if ($('kesz')) {
+    const tb = gomb('Elölről kezdem – tiszta lap', 'btn full', () => {
+      if (!tb.dataset.biztos) { tb.dataset.biztos = '1'; tb.textContent = 'Biztos? Minden kampány és beállítás törlődik – koppints újra'; setTimeout(() => { delete tb.dataset.biztos; tb.textContent = 'Elölről kezdem – tiszta lap'; }, 5000); return; }
+      try { for (const k of Object.keys(localStorage)) if (k.startsWith('akvposzt-')) localStorage.removeItem(k); sessionStorage.clear(); } catch (e) {}
+      location.reload();
+    });
+    tb.id = 'tisztaLap'; const sum = $('kesz').querySelector('summary'); (sum ? sum.after(tb) : $('kesz').prepend(tb));
+  }
   $('maUjPoszt').addEventListener('click', () => { kampFej(null); T.modValt('poszt'); try { lep(1); } catch (e) {} });
   document.addEventListener('zseb-mod', (e) => { if (e.detail === 'ma' || e.detail === 'terv') rajzMind(); if (e.detail === 'kep') kepRajz(); });
   rajzMind(); kepRajz();
